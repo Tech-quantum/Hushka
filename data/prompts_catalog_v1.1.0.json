@@ -1,0 +1,2432 @@
+{
+  "schema_version": "1.0",
+  "dataset_version": "1.1.0",
+  "collected_at": "2026-10-04",
+  "description": "Canonical PromptVault catalog. Public reusable prompt templates normalized into one compact schema. These are original/normalized formulations based on public sources, not private system prompts.",
+  "schema": {
+    "fields": [
+      "id",
+      "provider",
+      "model",
+      "modality",
+      "category",
+      "title",
+      "prompt",
+      "variables",
+      "tags",
+      "source_ids"
+    ],
+    "required": [
+      "id",
+      "provider",
+      "category",
+      "title",
+      "prompt"
+    ],
+    "notes": "Keep the canonical record compact. Add optional metadata in future versions only when it materially improves search, filtering, rendering, or evaluation."
+  },
+  "sources": [
+    {
+      "id": "xai_imagine_generation",
+      "provider": "xAI",
+      "type": "official_docs",
+      "url": "https://x.ai/grok/use-cases/image-generation",
+      "note": "Official Grok image generation use cases and prompting guidance."
+    },
+    {
+      "id": "xai_imagine_editing",
+      "provider": "xAI",
+      "type": "official_docs",
+      "url": "https://x.ai/grok/use-cases/image-editing",
+      "note": "Official Grok image editing/restyling/compositing guidance."
+    },
+    {
+      "id": "xai_imagine_docs",
+      "provider": "xAI",
+      "type": "official_docs",
+      "url": "https://docs.x.ai/developers/model-capabilities/imagine",
+      "note": "Official Imagine generation/editing documentation."
+    },
+    {
+      "id": "xai_imagine_20",
+      "provider": "xAI",
+      "type": "official_docs",
+      "url": "https://x.ai/news/grok-imagine-image-2",
+      "note": "Official Imagine Image 2.0 announcement and capabilities."
+    },
+    {
+      "id": "google_nano_prompt",
+      "provider": "Google DeepMind",
+      "type": "official_docs",
+      "url": "https://deepmind.google/models/gemini-image/prompt-guide/",
+      "note": "Official Gemini Image/Nano Banana prompt construction and editing guidance."
+    },
+    {
+      "id": "google_nano_cloud",
+      "provider": "Google Cloud",
+      "type": "official_docs",
+      "url": "https://cloud.google.com/blog/products/ai-machine-learning/ultimate-prompting-guide-for-nano-banana",
+      "note": "Official Google Cloud Nano Banana prompting guide."
+    },
+    {
+      "id": "google_gemini_api_image",
+      "provider": "Google",
+      "type": "official_docs",
+      "url": "https://ai.google.dev/gemini-api/docs/image-generation",
+      "note": "Official Gemini API image-generation examples and capabilities."
+    },
+    {
+      "id": "xai_grok_public_prompts",
+      "provider": "xAI",
+      "type": "official_docs",
+      "url": "https://github.com/xai-org/grok-prompts",
+      "note": "Official public repository containing Grok system/product prompts."
+    },
+    {
+      "id": "lovable_prompting_bible",
+      "provider": "Lovable",
+      "type": "official_guide",
+      "url": "https://lovable.dev/blog/2025-01-16-lovable-prompting-handbook",
+      "note": null
+    },
+    {
+      "id": "lovable_app_builder",
+      "provider": "Lovable",
+      "type": "official_product",
+      "url": "https://lovable.dev/build/app-builder",
+      "note": null
+    },
+    {
+      "id": "lovable_chatgpt",
+      "provider": "Lovable",
+      "type": "official_docs",
+      "url": "https://docs.lovable.dev/tips-tricks/chatgpt-app",
+      "note": null
+    },
+    {
+      "id": "lovable_mcp",
+      "provider": "Lovable",
+      "type": "official_docs",
+      "url": "https://lovable.dev/mcp",
+      "note": null
+    },
+    {
+      "id": "deepseek_prompt_library",
+      "provider": "DeepSeek",
+      "type": "official_library",
+      "url": "https://api-docs.deepseek.com/prompt-library/",
+      "note": null
+    },
+    {
+      "id": "deepseek_json",
+      "provider": "DeepSeek",
+      "type": "official_docs",
+      "url": "https://api-docs.deepseek.com/guides/json_mode/",
+      "note": null
+    },
+    {
+      "id": "deepseek_harness_prompt",
+      "provider": "DeepSeek",
+      "type": "official_open_source",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/system-prompt/README.md",
+      "note": null
+    },
+    {
+      "id": "openai_llm_prompting",
+      "provider": "OpenAI",
+      "type": "official_cookbook",
+      "url": "https://cookbook.openai.com/articles/how_to_work_with_large_language_models"
+    },
+    {
+      "id": "openai_meta_prompting",
+      "provider": "OpenAI",
+      "type": "official_cookbook",
+      "url": "https://cookbook.openai.com/examples/enhance_your_prompts_with_meta_prompting"
+    },
+    {
+      "id": "anthropic_prompting_best_practices",
+      "provider": "Anthropic",
+      "type": "official_docs",
+      "url": "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/prompt-templates-and-variables"
+    }
+  ],
+  "stats": {
+    "total_prompts": 94,
+    "providers": [
+      "anthropic",
+      "deepseek",
+      "gemini",
+      "grok",
+      "lovable",
+      "midjourney",
+      "openai"
+    ],
+    "categories": [
+      "agentic-workflow",
+      "analysis",
+      "anti-hallucination",
+      "art-style",
+      "aspect-ratio",
+      "authentication",
+      "backend",
+      "background",
+      "canvas-extension",
+      "character-consistency",
+      "cinematic",
+      "classification",
+      "code-explanation",
+      "code-generation",
+      "code-rewrite",
+      "coding",
+      "color",
+      "completion",
+      "composition",
+      "context",
+      "copywriting",
+      "debugging",
+      "delimiter",
+      "document-creation",
+      "editing",
+      "environment",
+      "evaluation",
+      "extraction",
+      "few-shot",
+      "formatting",
+      "identity-preservation",
+      "image-editing",
+      "image-generation",
+      "image-reference",
+      "infographic",
+      "instruction",
+      "integration",
+      "iteration",
+      "localization",
+      "long-context",
+      "minimal-prompt",
+      "multi-image",
+      "new-project",
+      "outfit",
+      "outpainting",
+      "photography",
+      "portrait",
+      "product",
+      "product-normalization",
+      "prompt-discovery",
+      "prompt-engineering",
+      "quote-extraction",
+      "reasoning",
+      "refactoring",
+      "research",
+      "restoration",
+      "role",
+      "roleplay",
+      "routine",
+      "scenario",
+      "scope-control",
+      "self-check",
+      "seo",
+      "social-media",
+      "specificity",
+      "storyboard",
+      "structured-output",
+      "style-reference",
+      "style-transfer",
+      "summarization",
+      "targeted-edit",
+      "testing",
+      "text-in-image",
+      "time-period",
+      "tool-use",
+      "translation",
+      "typography",
+      "ui",
+      "version-control",
+      "writing",
+      "xml-structure"
+    ],
+    "duplicates_removed": 0,
+    "source_files": [
+      "data/prompts_catalog_v1.0.0.json",
+      "data/prompts_midjourney_v0.1.0.json",
+      "data/prompts_openai_claude_v0.1.0.json"
+    ]
+  },
+  "prompts": [
+    {
+      "id": "grok-img-001",
+      "provider": "grok",
+      "model": "Grok Imagine",
+      "modality": "text-to-image",
+      "category": "portrait",
+      "title": "Editorial Photorealistic Portrait",
+      "prompt": "Create a photorealistic editorial portrait of [SUBJECT], wearing [OUTFIT], in [LOCATION]. Frame as a [SHOT_TYPE] from a [CAMERA_ANGLE] perspective. Use [LIGHTING] with natural skin texture, realistic fabric detail, controlled depth of field, and a refined magazine-photography finish. Aspect ratio: [ASPECT_RATIO].",
+      "variables": [
+        "SUBJECT",
+        "OUTFIT",
+        "LOCATION",
+        "SHOT_TYPE",
+        "CAMERA_ANGLE",
+        "LIGHTING",
+        "ASPECT_RATIO"
+      ],
+      "tags": [
+        "portrait",
+        "photorealistic",
+        "editorial",
+        "camera",
+        "lighting"
+      ],
+      "source_ids": [
+        "xai_imagine_generation"
+      ]
+    },
+    {
+      "id": "grok-img-002",
+      "provider": "grok",
+      "model": "Grok Imagine",
+      "modality": "text-to-image",
+      "category": "product",
+      "title": "Premium Product Hero",
+      "prompt": "Generate a premium commercial hero image of [PRODUCT] centered on [SURFACE], against [BACKGROUND]. Use [LIGHTING] to create controlled reflections and realistic material texture. Camera: [LENS] at [ANGLE]. Minimal composition, generous negative space, luxury advertising aesthetic. Add no unintended text or objects. Output [ASPECT_RATIO].",
+      "variables": [
+        "PRODUCT",
+        "SURFACE",
+        "BACKGROUND",
+        "LIGHTING",
+        "LENS",
+        "ANGLE",
+        "ASPECT_RATIO"
+      ],
+      "tags": [
+        "product",
+        "advertising",
+        "commercial",
+        "minimal",
+        "photorealistic"
+      ],
+      "source_ids": [
+        "xai_imagine_generation"
+      ]
+    },
+    {
+      "id": "grok-img-003",
+      "provider": "grok",
+      "model": "Grok Imagine",
+      "modality": "image-edit",
+      "category": "identity-preservation",
+      "title": "Background Replacement — Preserve Subject",
+      "prompt": "Edit the uploaded image. Replace only the background with [NEW_BACKGROUND]. Keep the person's identity, face, hairstyle, pose, clothing, proportions, and accessories unchanged. Match the new background's perspective, lighting direction, shadows, and color temperature to the subject. Preserve all important foreground details.",
+      "variables": [
+        "NEW_BACKGROUND"
+      ],
+      "tags": [
+        "edit",
+        "background",
+        "identity",
+        "preservation"
+      ],
+      "source_ids": [
+        "xai_imagine_editing"
+      ]
+    },
+    {
+      "id": "grok-img-004",
+      "provider": "grok",
+      "model": "Grok Imagine",
+      "modality": "image-edit",
+      "category": "style-transfer",
+      "title": "Controlled Style Transformation",
+      "prompt": "Transform the uploaded image into [STYLE]. Preserve the original subject, composition, pose, silhouette, and key visual details. Change the rendering language, materials, color treatment, and surface texture to match [STYLE], while keeping the scene recognizable and coherent.",
+      "variables": [
+        "STYLE"
+      ],
+      "tags": [
+        "edit",
+        "style-transfer",
+        "preservation"
+      ],
+      "source_ids": [
+        "xai_imagine_editing",
+        "xai_imagine_docs"
+      ]
+    },
+    {
+      "id": "grok-img-005",
+      "provider": "grok",
+      "model": "Grok Imagine",
+      "modality": "image-edit",
+      "category": "multi-image",
+      "title": "Combine Reference Images",
+      "prompt": "Combine the supplied reference images into one coherent scene. Use [SUBJECT_FROM_IMAGE_1] from image 1, [ELEMENT_FROM_IMAGE_2] from image 2, and [ELEMENT_FROM_IMAGE_3] from image 3. Match perspective, scale, lighting, shadows, color grading, and depth of field so the final result looks like one photograph. Keep each selected element recognizable.",
+      "variables": [
+        "SUBJECT_FROM_IMAGE_1",
+        "ELEMENT_FROM_IMAGE_2",
+        "ELEMENT_FROM_IMAGE_3"
+      ],
+      "tags": [
+        "multi-image",
+        "composition",
+        "references",
+        "photorealistic"
+      ],
+      "source_ids": [
+        "xai_imagine_docs"
+      ]
+    },
+    {
+      "id": "grok-img-006",
+      "provider": "grok",
+      "model": "Grok Imagine",
+      "modality": "image-edit",
+      "category": "canvas-extension",
+      "title": "Seamless Canvas Extension",
+      "prompt": "Extend the uploaded image to [ASPECT_RATIO]. Keep the existing subject and composition unchanged. Generate only the missing surrounding environment, continuing the original perspective, textures, lighting direction, shadows, and color palette seamlessly. Do not alter the original subject.",
+      "variables": [
+        "ASPECT_RATIO"
+      ],
+      "tags": [
+        "outpaint",
+        "canvas",
+        "composition",
+        "preservation"
+      ],
+      "source_ids": [
+        "xai_imagine_editing",
+        "xai_imagine_20"
+      ]
+    },
+    {
+      "id": "grok-img-007",
+      "provider": "grok",
+      "model": "Grok Imagine",
+      "modality": "text-to-image",
+      "category": "cinematic",
+      "title": "Cinematic Night Scene",
+      "prompt": "Create a cinematic [SHOT_TYPE] of [SUBJECT] in [LOCATION] at night. Use [LIGHT_SOURCES] as motivated practical lighting, atmospheric depth, subtle volumetric haze, realistic reflections, and controlled contrast. Camera perspective: [CAMERA_ANGLE], lens look: [LENS_LOOK]. Mood: [MOOD]. Composition should feel like a frame from a high-budget feature film.",
+      "variables": [
+        "SHOT_TYPE",
+        "SUBJECT",
+        "LOCATION",
+        "LIGHT_SOURCES",
+        "CAMERA_ANGLE",
+        "LENS_LOOK",
+        "MOOD"
+      ],
+      "tags": [
+        "cinematic",
+        "night",
+        "lighting",
+        "film"
+      ],
+      "source_ids": [
+        "xai_imagine_generation"
+      ]
+    },
+    {
+      "id": "grok-img-008",
+      "provider": "grok",
+      "model": "Grok Imagine",
+      "modality": "text-to-image",
+      "category": "typography",
+      "title": "Text-Accurate Poster",
+      "prompt": "Design a polished [POSTER_TYPE] with the exact headline \"[HEADLINE]\" placed [TEXT_POSITION]. Use [TYPOGRAPHY_STYLE], strong visual hierarchy, and [COLOR_PALETTE]. Main visual: [SUBJECT]. Keep text spelling exact and legible. Composition should be balanced for [USE_CASE]. Aspect ratio: [ASPECT_RATIO].",
+      "variables": [
+        "POSTER_TYPE",
+        "HEADLINE",
+        "TEXT_POSITION",
+        "TYPOGRAPHY_STYLE",
+        "COLOR_PALETTE",
+        "SUBJECT",
+        "USE_CASE",
+        "ASPECT_RATIO"
+      ],
+      "tags": [
+        "poster",
+        "typography",
+        "text",
+        "design"
+      ],
+      "source_ids": [
+        "xai_imagine_20",
+        "xai_imagine_generation"
+      ]
+    },
+    {
+      "id": "grok-img-009",
+      "provider": "grok",
+      "model": "Grok Imagine",
+      "modality": "image-edit",
+      "category": "product-normalization",
+      "title": "E-commerce Photo Normalization",
+      "prompt": "Normalize all supplied product photos into one consistent e-commerce style: [BACKGROUND], [LIGHTING], neutral color balance, consistent camera height, matching scale, and subtle natural shadow. Preserve the exact product shape, branding, colors, and proportions. Output all images with the same [ASPECT_RATIO] and visual treatment.",
+      "variables": [
+        "BACKGROUND",
+        "LIGHTING",
+        "ASPECT_RATIO"
+      ],
+      "tags": [
+        "ecommerce",
+        "batch",
+        "normalization",
+        "product"
+      ],
+      "source_ids": [
+        "xai_imagine_editing"
+      ]
+    },
+    {
+      "id": "grok-img-010",
+      "provider": "grok",
+      "model": "Grok Imagine",
+      "modality": "image-edit",
+      "category": "targeted-edit",
+      "title": "Change One Element Only",
+      "prompt": "Edit only [TARGET_ELEMENT] in the uploaded image. Change it to [NEW_VALUE]. Keep every other visible element unchanged, including subject identity, pose, framing, background, lighting, camera perspective, and texture. Make the modification physically consistent with the original scene.",
+      "variables": [
+        "TARGET_ELEMENT",
+        "NEW_VALUE"
+      ],
+      "tags": [
+        "edit",
+        "localized",
+        "preservation",
+        "precision"
+      ],
+      "source_ids": [
+        "xai_imagine_editing",
+        "xai_imagine_20"
+      ]
+    },
+    {
+      "id": "gemini-img-001",
+      "provider": "gemini",
+      "model": "Gemini Image / Nano Banana",
+      "modality": "text-to-image",
+      "category": "portrait",
+      "title": "Detailed Character Portrait",
+      "prompt": "Create a detailed [STYLE] portrait of [SUBJECT]. Describe the subject's appearance, [OUTFIT], expression, and pose. Place them in [SETTING] with [LIGHTING]. Use [COMPOSITION] and a [CAMERA_LOOK] perspective. Prioritize natural anatomy, believable materials, coherent shadows, and the requested visual style. Aspect ratio: [ASPECT_RATIO].",
+      "variables": [
+        "STYLE",
+        "SUBJECT",
+        "OUTFIT",
+        "SETTING",
+        "LIGHTING",
+        "COMPOSITION",
+        "CAMERA_LOOK",
+        "ASPECT_RATIO"
+      ],
+      "tags": [
+        "portrait",
+        "subject",
+        "setting",
+        "style",
+        "camera"
+      ],
+      "source_ids": [
+        "google_nano_prompt"
+      ]
+    },
+    {
+      "id": "gemini-img-002",
+      "provider": "gemini",
+      "model": "Gemini Image / Nano Banana",
+      "modality": "image-edit",
+      "category": "identity-preservation",
+      "title": "Edit While Keeping Identity",
+      "prompt": "Use the uploaded image as the identity reference. Change only [EDIT]. Preserve the person's facial identity, recognizable features, hairstyle, body proportions, pose, and expression unless explicitly required by the edit. Keep the original visual details that are unrelated to the requested change.",
+      "variables": [
+        "EDIT"
+      ],
+      "tags": [
+        "edit",
+        "identity",
+        "reference",
+        "preservation"
+      ],
+      "source_ids": [
+        "google_nano_prompt"
+      ]
+    },
+    {
+      "id": "gemini-img-003",
+      "provider": "gemini",
+      "model": "Gemini Image / Nano Banana",
+      "modality": "image-edit",
+      "category": "outfit",
+      "title": "Outfit Replacement",
+      "prompt": "Replace the subject's clothing with [NEW_OUTFIT]. Keep the person's face, hair, pose, body proportions, hands, and background unchanged. Make the new clothing fit naturally with correct folds, seams, shadows, and lighting consistent with the original photograph.",
+      "variables": [
+        "NEW_OUTFIT"
+      ],
+      "tags": [
+        "outfit",
+        "fashion",
+        "edit",
+        "preservation"
+      ],
+      "source_ids": [
+        "google_nano_prompt"
+      ]
+    },
+    {
+      "id": "gemini-img-004",
+      "provider": "gemini",
+      "model": "Gemini Image / Nano Banana",
+      "modality": "image-edit",
+      "category": "background",
+      "title": "Environment Swap",
+      "prompt": "Replace the current environment with [NEW_SETTING]. Preserve the subject exactly as provided. Rebuild perspective, depth, ambient light, contact shadows, reflections, and color temperature so the subject naturally belongs in the new environment. Keep the subject's original pose and framing.",
+      "variables": [
+        "NEW_SETTING"
+      ],
+      "tags": [
+        "background",
+        "environment",
+        "lighting",
+        "edit"
+      ],
+      "source_ids": [
+        "google_nano_prompt"
+      ]
+    },
+    {
+      "id": "gemini-img-005",
+      "provider": "gemini",
+      "model": "Gemini Image / Nano Banana",
+      "modality": "image-edit",
+      "category": "multi-image",
+      "title": "Reference Image Composition",
+      "prompt": "Create one coherent image using the uploaded references. Treat reference 1 as [ROLE_1], reference 2 as [ROLE_2], and reference 3 as [ROLE_3]. Preserve the important visual identity of each referenced element. Combine them with consistent scale, perspective, lighting, shadows, depth, and color grading.",
+      "variables": [
+        "ROLE_1",
+        "ROLE_2",
+        "ROLE_3"
+      ],
+      "tags": [
+        "multi-image",
+        "references",
+        "composition",
+        "consistency"
+      ],
+      "source_ids": [
+        "google_nano_prompt",
+        "google_nano_cloud"
+      ]
+    },
+    {
+      "id": "gemini-img-006",
+      "provider": "gemini",
+      "model": "Gemini Image / Nano Banana",
+      "modality": "text-to-image",
+      "category": "product",
+      "title": "Studio Product Photograph",
+      "prompt": "Create a professional studio photograph of [PRODUCT]. Show [PRODUCT_DETAILS] clearly. Place it on [SURFACE] with [BACKGROUND]. Use [LIGHTING] and a [CAMERA_VIEW] composition. Materials should look physically accurate, with realistic reflections and shadows. Intended use: [USE_CASE]. Aspect ratio: [ASPECT_RATIO].",
+      "variables": [
+        "PRODUCT",
+        "PRODUCT_DETAILS",
+        "SURFACE",
+        "BACKGROUND",
+        "LIGHTING",
+        "CAMERA_VIEW",
+        "USE_CASE",
+        "ASPECT_RATIO"
+      ],
+      "tags": [
+        "product",
+        "studio",
+        "commercial",
+        "photography"
+      ],
+      "source_ids": [
+        "google_nano_prompt",
+        "google_gemini_api_image"
+      ]
+    },
+    {
+      "id": "gemini-img-007",
+      "provider": "gemini",
+      "model": "Gemini Image / Nano Banana",
+      "modality": "text-to-image",
+      "category": "infographic",
+      "title": "Information-Rich Diagram",
+      "prompt": "Create a clear infographic explaining [TOPIC]. Use a [LAYOUT] structure with sections for [SECTIONS]. Include exact text in quotes: \"[TEXT]\". Use [VISUAL_STYLE], readable typography, clear hierarchy, simple icons, and accurate relationships between elements. Keep the design uncluttered and suitable for [AUDIENCE].",
+      "variables": [
+        "TOPIC",
+        "LAYOUT",
+        "SECTIONS",
+        "TEXT",
+        "VISUAL_STYLE",
+        "AUDIENCE"
+      ],
+      "tags": [
+        "infographic",
+        "diagram",
+        "text",
+        "education"
+      ],
+      "source_ids": [
+        "google_nano_prompt"
+      ]
+    },
+    {
+      "id": "gemini-img-008",
+      "provider": "gemini",
+      "model": "Gemini Image / Nano Banana",
+      "modality": "text-to-image",
+      "category": "localization",
+      "title": "Localized Sign or Poster",
+      "prompt": "Create a [DESIGN_TYPE] for [REGION/CULTURE]. Render the exact phrase \"[TEXT]\" in [LANGUAGE], using culturally appropriate visual cues, typography, colors, and environmental details associated with [REGION/CULTURE]. Keep the text legible and compositionally integrated.",
+      "variables": [
+        "DESIGN_TYPE",
+        "REGION/CULTURE",
+        "TEXT",
+        "LANGUAGE"
+      ],
+      "tags": [
+        "localization",
+        "language",
+        "typography",
+        "culture"
+      ],
+      "source_ids": [
+        "google_nano_prompt"
+      ]
+    },
+    {
+      "id": "gemini-img-009",
+      "provider": "gemini",
+      "model": "Gemini Image / Nano Banana",
+      "modality": "image-edit",
+      "category": "restoration",
+      "title": "Photo Restoration",
+      "prompt": "Restore the uploaded photograph. Repair [DAMAGE_TYPES] while preserving the original person's identity, facial structure, clothing, composition, and historical character. Remove only damage and artifacts. Reconstruct missing areas conservatively and keep texture, grain, and lighting consistent with the original era.",
+      "variables": [
+        "DAMAGE_TYPES"
+      ],
+      "tags": [
+        "restoration",
+        "repair",
+        "identity",
+        "historical"
+      ],
+      "source_ids": [
+        "google_nano_prompt"
+      ]
+    },
+    {
+      "id": "gemini-img-010",
+      "provider": "gemini",
+      "model": "Gemini Image / Nano Banana",
+      "modality": "image-edit",
+      "category": "style-transfer",
+      "title": "Photograph to Artistic Medium",
+      "prompt": "Transform the uploaded image into [ART_MEDIUM]. Preserve the subject, composition, pose, and major shapes. Apply the new medium through its characteristic brushwork, line quality, texture, color behavior, and lighting treatment while keeping the original scene recognizable.",
+      "variables": [
+        "ART_MEDIUM"
+      ],
+      "tags": [
+        "style-transfer",
+        "art",
+        "edit",
+        "preservation"
+      ],
+      "source_ids": [
+        "google_nano_prompt"
+      ]
+    },
+    {
+      "id": "gemini-img-011",
+      "provider": "gemini",
+      "model": "Gemini Image / Nano Banana",
+      "modality": "text-to-image",
+      "category": "storyboard",
+      "title": "Multi-Image Story",
+      "prompt": "Create [NUMBER] distinct images that form a continuous visual story about [STORY]. Keep the main character [CHARACTER] visually consistent across every image: same face, hairstyle, outfit, proportions, and color palette. Vary only the action, camera angle, and setting required by each scene.",
+      "variables": [
+        "NUMBER",
+        "STORY",
+        "CHARACTER"
+      ],
+      "tags": [
+        "story",
+        "character-consistency",
+        "multi-image",
+        "sequence"
+      ],
+      "source_ids": [
+        "google_nano_prompt"
+      ]
+    },
+    {
+      "id": "gemini-img-012",
+      "provider": "gemini",
+      "model": "Gemini Image / Nano Banana",
+      "modality": "text-to-image",
+      "category": "social-media",
+      "title": "Vertical Social Creative",
+      "prompt": "Design a polished vertical social-media visual for [CAMPAIGN]. Main subject: [SUBJECT]. Include the exact headline \"[HEADLINE]\" and supporting text \"[SUPPORTING_TEXT]\". Use [STYLE], [COLOR_PALETTE], strong hierarchy, mobile-readable typography, and intentional negative space. Output 9:16.",
+      "variables": [
+        "CAMPAIGN",
+        "SUBJECT",
+        "HEADLINE",
+        "SUPPORTING_TEXT",
+        "STYLE",
+        "COLOR_PALETTE"
+      ],
+      "tags": [
+        "social",
+        "9:16",
+        "typography",
+        "marketing"
+      ],
+      "source_ids": [
+        "google_nano_prompt",
+        "google_gemini_api_image"
+      ]
+    },
+    {
+      "id": "lovable-001",
+      "provider": "lovable",
+      "model": "Lovable App Builder",
+      "modality": "text-to-app",
+      "category": "new-project",
+      "title": "Full-Stack SaaS Foundation",
+      "prompt": "I need a [TYPE] application with: target users [USERS]; core problem [PROBLEM]; pages [PAGES]; frontend [FRONTEND]; styling [STYLE]; authentication [AUTH]; database [DATABASE]; integrations [INTEGRATIONS]. Start with the main page and core user flow. Build the smallest coherent working foundation first, then stop for review.",
+      "variables": [
+        "TYPE",
+        "USERS",
+        "PROBLEM",
+        "PAGES",
+        "FRONTEND",
+        "STYLE",
+        "AUTH",
+        "DATABASE",
+        "INTEGRATIONS"
+      ],
+      "tags": [
+        "saas",
+        "full-stack",
+        "planning",
+        "mvp"
+      ],
+      "source_ids": [
+        "lovable_prompting_bible",
+        "lovable_app_builder"
+      ]
+    },
+    {
+      "id": "lovable-002",
+      "provider": "lovable",
+      "model": "Lovable App Builder",
+      "modality": "text-to-app",
+      "category": "ui",
+      "title": "Page-by-Page UI Build",
+      "prompt": "Build [PAGE_NAME] only. Include these sections: [SECTIONS]. Match this visual direction: [DESIGN_SYSTEM]. Define responsive behavior for mobile, tablet, and desktop. Reuse existing components and tokens. Do not modify unrelated pages or components.",
+      "variables": [
+        "PAGE_NAME",
+        "SECTIONS",
+        "DESIGN_SYSTEM"
+      ],
+      "tags": [
+        "ui",
+        "responsive",
+        "scoped-change"
+      ],
+      "source_ids": [
+        "lovable_prompting_bible"
+      ]
+    },
+    {
+      "id": "lovable-003",
+      "provider": "lovable",
+      "model": "Lovable App Builder",
+      "modality": "text-to-app",
+      "category": "backend",
+      "title": "Supabase Data Flow",
+      "prompt": "Implement the [FEATURE] using Supabase. Create or update the required database schema, relationships, validation, and access policies. Connect the UI to the real data flow. Handle loading, empty, success, and error states. Do not use mock data after the integration is complete.",
+      "variables": [
+        "FEATURE"
+      ],
+      "tags": [
+        "supabase",
+        "database",
+        "backend",
+        "crud"
+      ],
+      "source_ids": [
+        "lovable_prompting_bible",
+        "lovable_app_builder"
+      ]
+    },
+    {
+      "id": "lovable-004",
+      "provider": "lovable",
+      "model": "Lovable App Builder",
+      "modality": "text-to-app",
+      "category": "authentication",
+      "title": "Authentication Flow",
+      "prompt": "Add [AUTH_METHOD] authentication. Implement sign-up, sign-in, sign-out, session persistence, protected routes, and appropriate error states. Preserve the existing UI design. If roles are required, support [ROLES] with authorization enforced at the data-access layer as well as in the UI.",
+      "variables": [
+        "AUTH_METHOD",
+        "ROLES"
+      ],
+      "tags": [
+        "auth",
+        "security",
+        "roles",
+        "sessions"
+      ],
+      "source_ids": [
+        "lovable_prompting_bible",
+        "lovable_app_builder"
+      ]
+    },
+    {
+      "id": "lovable-005",
+      "provider": "lovable",
+      "model": "Lovable App Builder",
+      "modality": "text-to-app",
+      "category": "debugging",
+      "title": "Root-Cause Debugging",
+      "prompt": "The same error persists: [ERROR]. First investigate the likely root cause using the relevant console, network, runtime, and code context. Identify the failing component and why it fails. Then propose the smallest safe fix. After applying it, verify the affected flow and report what changed. Do not rewrite unrelated code.",
+      "variables": [
+        "ERROR"
+      ],
+      "tags": [
+        "debug",
+        "root-cause",
+        "verification"
+      ],
+      "source_ids": [
+        "lovable_prompting_bible"
+      ]
+    },
+    {
+      "id": "lovable-006",
+      "provider": "lovable",
+      "model": "Lovable App Builder",
+      "modality": "text-to-app",
+      "category": "refactoring",
+      "title": "Safe Refactor",
+      "prompt": "Refactor [TARGET] to improve [GOAL]. Preserve all existing behavior and public interfaces unless explicitly listed below. First identify dependencies and regression risks. Make the smallest coherent change, then verify affected flows. Do not modify unrelated files.",
+      "variables": [
+        "TARGET",
+        "GOAL"
+      ],
+      "tags": [
+        "refactor",
+        "regression",
+        "safe-change"
+      ],
+      "source_ids": [
+        "lovable_prompting_bible"
+      ]
+    },
+    {
+      "id": "lovable-007",
+      "provider": "lovable",
+      "model": "Lovable App Builder",
+      "modality": "text-to-app",
+      "category": "testing",
+      "title": "Test Critical Flow",
+      "prompt": "Write and run tests for [FLOW]. Cover the happy path, validation failures, permission failures, empty states, and the most likely regression case. Fix only issues proven by the tests. Summarize test coverage and remaining risks.",
+      "variables": [
+        "FLOW"
+      ],
+      "tags": [
+        "testing",
+        "qa",
+        "regression"
+      ],
+      "source_ids": [
+        "lovable_mcp",
+        "lovable_app_builder"
+      ]
+    },
+    {
+      "id": "lovable-008",
+      "provider": "lovable",
+      "model": "Lovable App Builder",
+      "modality": "text-to-app",
+      "category": "integration",
+      "title": "Third-Party Integration",
+      "prompt": "Integrate [SERVICE] for [PURPOSE]. Configure the required connection, data flow, error handling, loading states, and secure handling of credentials. Use the provider's supported integration path. Add a minimal verification flow and document any required environment configuration.",
+      "variables": [
+        "SERVICE",
+        "PURPOSE"
+      ],
+      "tags": [
+        "integration",
+        "api",
+        "security"
+      ],
+      "source_ids": [
+        "lovable_mcp",
+        "lovable_app_builder"
+      ]
+    },
+    {
+      "id": "lovable-009",
+      "provider": "lovable",
+      "model": "Lovable App Builder",
+      "modality": "text-to-app",
+      "category": "seo",
+      "title": "SEO and Metadata Pass",
+      "prompt": "Optimize [PAGES] for SEO without changing the visual design. Add appropriate titles, descriptions, canonical behavior, structured metadata where useful, semantic headings, and social sharing metadata. Preserve accessibility and avoid keyword stuffing.",
+      "variables": [
+        "PAGES"
+      ],
+      "tags": [
+        "seo",
+        "metadata",
+        "accessibility"
+      ],
+      "source_ids": [
+        "lovable_app_builder"
+      ]
+    },
+    {
+      "id": "lovable-010",
+      "provider": "lovable",
+      "model": "Lovable App Builder",
+      "modality": "text-to-app",
+      "category": "iteration",
+      "title": "Precise UI Change",
+      "prompt": "Change only [ELEMENT] on [PAGE]. Move it to [POSITION] and change [PROPERTY]. Keep typography, spacing system, responsive behavior, interactions, and all unrelated components unchanged. Verify the result at mobile and desktop breakpoints.",
+      "variables": [
+        "ELEMENT",
+        "PAGE",
+        "POSITION",
+        "PROPERTY"
+      ],
+      "tags": [
+        "ui-edit",
+        "precision",
+        "responsive"
+      ],
+      "source_ids": [
+        "lovable_prompting_bible",
+        "lovable_chatgpt"
+      ]
+    },
+    {
+      "id": "deepseek-001",
+      "provider": "deepseek",
+      "model": "DeepSeek",
+      "modality": "text-to-text",
+      "category": "code-generation",
+      "title": "Generate Production Code",
+      "prompt": "Generate [LANGUAGE] code that implements [TASK]. Requirements: [REQUIREMENTS]. Inputs: [INPUTS]. Outputs: [OUTPUTS]. Handle [ERROR_CASES]. Follow [STYLE_OR_FRAMEWORK]. Return only the requested code plus a brief usage example.",
+      "variables": [
+        "LANGUAGE",
+        "TASK",
+        "REQUIREMENTS",
+        "INPUTS",
+        "OUTPUTS",
+        "ERROR_CASES",
+        "STYLE_OR_FRAMEWORK"
+      ],
+      "tags": [
+        "coding",
+        "generation",
+        "production"
+      ],
+      "source_ids": [
+        "deepseek_prompt_library"
+      ]
+    },
+    {
+      "id": "deepseek-002",
+      "provider": "deepseek",
+      "model": "DeepSeek",
+      "modality": "text-to-text",
+      "category": "code-rewrite",
+      "title": "Refactor and Optimize Code",
+      "prompt": "Rewrite the following [LANGUAGE] code to achieve [GOAL]. Preserve behavior and public interfaces. Fix correctness issues, improve readability and performance where justified, and add concise comments only where they clarify non-obvious logic. Explain the important changes after the code.\n\nCODE:\n[CODE]",
+      "variables": [
+        "LANGUAGE",
+        "GOAL",
+        "CODE"
+      ],
+      "tags": [
+        "refactor",
+        "optimization",
+        "code"
+      ],
+      "source_ids": [
+        "deepseek_prompt_library"
+      ]
+    },
+    {
+      "id": "deepseek-003",
+      "provider": "deepseek",
+      "model": "DeepSeek",
+      "modality": "text-to-text",
+      "category": "code-explanation",
+      "title": "Explain Code by Sections",
+      "prompt": "Explain the following [LANGUAGE] code for a [AUDIENCE] audience. First summarize its purpose, then explain each major section, data flow, dependencies, edge cases, and likely failure points. Finish with three concrete improvement opportunities.\n\nCODE:\n[CODE]",
+      "variables": [
+        "LANGUAGE",
+        "AUDIENCE",
+        "CODE"
+      ],
+      "tags": [
+        "explanation",
+        "education",
+        "code-review"
+      ],
+      "source_ids": [
+        "deepseek_prompt_library"
+      ]
+    },
+    {
+      "id": "deepseek-004",
+      "provider": "deepseek",
+      "model": "DeepSeek",
+      "modality": "text-to-text",
+      "category": "classification",
+      "title": "Classify Text",
+      "prompt": "Classify the input into exactly one of these labels: [LABELS]. Use the label definitions below: [DEFINITIONS]. Return the selected label and a one-sentence justification. If the evidence is insufficient, return [FALLBACK_LABEL].\n\nINPUT:\n[INPUT]",
+      "variables": [
+        "LABELS",
+        "DEFINITIONS",
+        "FALLBACK_LABEL",
+        "INPUT"
+      ],
+      "tags": [
+        "classification",
+        "nlp",
+        "structured"
+      ],
+      "source_ids": [
+        "deepseek_prompt_library"
+      ]
+    },
+    {
+      "id": "deepseek-005",
+      "provider": "deepseek",
+      "model": "DeepSeek",
+      "modality": "text-to-text",
+      "category": "structured-output",
+      "title": "Strict JSON Extraction",
+      "prompt": "Extract the requested fields from the input and return valid JSON only. The required schema is: [JSON_SCHEMA]. Do not add Markdown, commentary, or extra keys. If a value is unavailable, use null. Validate that the output is syntactically valid JSON before returning it.\n\nINPUT:\n[INPUT]",
+      "variables": [
+        "JSON_SCHEMA",
+        "INPUT"
+      ],
+      "tags": [
+        "json",
+        "structured-output",
+        "extraction"
+      ],
+      "source_ids": [
+        "deepseek_prompt_library",
+        "deepseek_json"
+      ]
+    },
+    {
+      "id": "deepseek-006",
+      "provider": "deepseek",
+      "model": "DeepSeek",
+      "modality": "text-to-text",
+      "category": "roleplay",
+      "title": "Custom Expert Persona",
+      "prompt": "Act as a [ROLE] assisting a [USER_TYPE]. Your objectives are [OBJECTIVES]. Use this tone: [TONE]. Follow these constraints: [CONSTRAINTS]. When information is missing, state the assumption explicitly instead of inventing facts. For each response, prioritize [PRIORITY].",
+      "variables": [
+        "ROLE",
+        "USER_TYPE",
+        "OBJECTIVES",
+        "TONE",
+        "CONSTRAINTS",
+        "PRIORITY"
+      ],
+      "tags": [
+        "persona",
+        "roleplay",
+        "expert"
+      ],
+      "source_ids": [
+        "deepseek_prompt_library"
+      ]
+    },
+    {
+      "id": "deepseek-007",
+      "provider": "deepseek",
+      "model": "DeepSeek",
+      "modality": "text-to-text",
+      "category": "scenario",
+      "title": "Scenario Simulation",
+      "prompt": "Simulate the following scenario: [SCENARIO]. Participants: [PARTICIPANTS]. Starting conditions: [START]. Goal: [GOAL]. Respond turn-by-turn, keep the scenario internally consistent, and introduce consequences only when justified by prior events.",
+      "variables": [
+        "SCENARIO",
+        "PARTICIPANTS",
+        "START",
+        "GOAL"
+      ],
+      "tags": [
+        "simulation",
+        "scenario",
+        "roleplay"
+      ],
+      "source_ids": [
+        "deepseek_prompt_library"
+      ]
+    },
+    {
+      "id": "deepseek-008",
+      "provider": "deepseek",
+      "model": "DeepSeek",
+      "modality": "text-to-text",
+      "category": "writing",
+      "title": "Essay Generator",
+      "prompt": "Write an essay about [TOPIC] for [AUDIENCE]. Purpose: [PURPOSE]. Structure it with an introduction, [NUMBER] main sections, and a conclusion. Use [TONE], concrete examples, and clear transitions. Avoid unsupported factual claims and distinguish assumptions from established information.",
+      "variables": [
+        "TOPIC",
+        "AUDIENCE",
+        "PURPOSE",
+        "NUMBER",
+        "TONE"
+      ],
+      "tags": [
+        "writing",
+        "essay",
+        "structure"
+      ],
+      "source_ids": [
+        "deepseek_prompt_library"
+      ]
+    },
+    {
+      "id": "deepseek-009",
+      "provider": "deepseek",
+      "model": "DeepSeek",
+      "modality": "text-to-text",
+      "category": "copywriting",
+      "title": "Marketing Outline",
+      "prompt": "Create a marketing-content outline for [PRODUCT] targeting [AUDIENCE]. Goal: [GOAL]. Include the core value proposition, objections, proof points, call to action, and a section-by-section content plan. Keep claims proportional to the evidence supplied.",
+      "variables": [
+        "PRODUCT",
+        "AUDIENCE",
+        "GOAL"
+      ],
+      "tags": [
+        "marketing",
+        "outline",
+        "copywriting"
+      ],
+      "source_ids": [
+        "deepseek_prompt_library"
+      ]
+    },
+    {
+      "id": "deepseek-010",
+      "provider": "deepseek",
+      "model": "DeepSeek",
+      "modality": "text-to-text",
+      "category": "translation",
+      "title": "Bilingual Translation Expert",
+      "prompt": "Translate the following text from [SOURCE_LANGUAGE] to [TARGET_LANGUAGE]. Preserve meaning, tone, formatting, names, numbers, and technical terminology. Do not summarize. If a phrase has multiple plausible translations, choose the one most natural for [AUDIENCE].\n\nTEXT:\n[TEXT]",
+      "variables": [
+        "SOURCE_LANGUAGE",
+        "TARGET_LANGUAGE",
+        "AUDIENCE",
+        "TEXT"
+      ],
+      "tags": [
+        "translation",
+        "localization",
+        "bilingual"
+      ],
+      "source_ids": [
+        "deepseek_prompt_library"
+      ]
+    },
+    {
+      "id": "deepseek-011",
+      "provider": "deepseek",
+      "model": "DeepSeek",
+      "modality": "text-to-text",
+      "category": "prompt-engineering",
+      "title": "Prompt Generator",
+      "prompt": "Create a high-quality prompt for [TASK] using the following context: [CONTEXT]. Target model/workflow: [MODEL]. Required output: [OUTPUT]. Constraints: [CONSTRAINTS]. Produce the final prompt first, then list the variables that should be replaced for reuse.",
+      "variables": [
+        "TASK",
+        "CONTEXT",
+        "MODEL",
+        "OUTPUT",
+        "CONSTRAINTS"
+      ],
+      "tags": [
+        "meta-prompt",
+        "prompt-engineering",
+        "template"
+      ],
+      "source_ids": [
+        "deepseek_prompt_library"
+      ]
+    },
+    {
+      "id": "deepseek-012",
+      "provider": "deepseek",
+      "model": "DeepSeek",
+      "modality": "text-to-text",
+      "category": "analysis",
+      "title": "Evidence-Aware Analysis",
+      "prompt": "Analyze [SUBJECT] using the supplied evidence. Separate observations, inferences, assumptions, and unknowns. Compare the main alternatives using [CRITERIA]. Do not invent missing facts. Finish with a concise conclusion and the most important uncertainty.\n\nEVIDENCE:\n[EVIDENCE]",
+      "variables": [
+        "SUBJECT",
+        "CRITERIA",
+        "EVIDENCE"
+      ],
+      "tags": [
+        "analysis",
+        "reasoning",
+        "evidence"
+      ],
+      "source_ids": [
+        "deepseek_prompt_library"
+      ]
+    },
+    {
+      "id": "midjourney-001",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "text-to-image",
+      "category": "image-generation",
+      "title": "Focused Subject Scene",
+      "prompt": "Create a [MEDIUM] of [SUBJECT] in [ENVIRONMENT], with [LIGHTING], [COLOR_PALETTE], [MOOD], and [COMPOSITION]. Keep the description focused on the visual elements that matter most. [PARAMETERS]",
+      "variables": [
+        "MEDIUM",
+        "SUBJECT",
+        "ENVIRONMENT",
+        "LIGHTING",
+        "COLOR_PALETTE",
+        "MOOD",
+        "COMPOSITION",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "subject",
+        "environment",
+        "lighting",
+        "composition"
+      ],
+      "source_ids": [
+        "midjourney_prompt_basics"
+      ]
+    },
+    {
+      "id": "midjourney-002",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "text-to-image",
+      "category": "photography",
+      "title": "Photographic Portrait",
+      "prompt": "Photorealistic portrait of [SUBJECT], [EXPRESSION], [OUTFIT], in [ENVIRONMENT], [LIGHTING], [CAMERA_COMPOSITION]. Emphasize realistic skin, natural proportions, and the key visual details. [PARAMETERS]",
+      "variables": [
+        "SUBJECT",
+        "EXPRESSION",
+        "OUTFIT",
+        "ENVIRONMENT",
+        "LIGHTING",
+        "CAMERA_COMPOSITION",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "portrait",
+        "photorealistic",
+        "camera",
+        "lighting"
+      ],
+      "source_ids": [
+        "midjourney_prompt_basics"
+      ]
+    },
+    {
+      "id": "midjourney-003",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "text-to-image",
+      "category": "art-style",
+      "title": "Medium and Style",
+      "prompt": "[SUBJECT] rendered as a [MEDIUM] in the style of [STYLE_DIRECTION], using [COLOR_PALETTE] and [LIGHTING], with [MOOD] and [COMPOSITION]. [PARAMETERS]",
+      "variables": [
+        "SUBJECT",
+        "MEDIUM",
+        "STYLE_DIRECTION",
+        "COLOR_PALETTE",
+        "LIGHTING",
+        "MOOD",
+        "COMPOSITION",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "medium",
+        "style",
+        "art"
+      ],
+      "source_ids": [
+        "midjourney_art_prompting"
+      ]
+    },
+    {
+      "id": "midjourney-004",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "text-to-image",
+      "category": "environment",
+      "title": "Environment and Mood",
+      "prompt": "[SUBJECT] in a [ENVIRONMENT], during [TIME_PERIOD], with [WEATHER], [LIGHTING], [COLOR_PALETTE], and a [MOOD] atmosphere. Compose the image as [COMPOSITION]. [PARAMETERS]",
+      "variables": [
+        "SUBJECT",
+        "ENVIRONMENT",
+        "TIME_PERIOD",
+        "WEATHER",
+        "LIGHTING",
+        "COLOR_PALETTE",
+        "MOOD",
+        "COMPOSITION",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "environment",
+        "time",
+        "mood",
+        "lighting"
+      ],
+      "source_ids": [
+        "midjourney_art_prompting"
+      ]
+    },
+    {
+      "id": "midjourney-005",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "text-to-image",
+      "category": "color",
+      "title": "Controlled Color Palette",
+      "prompt": "[SUBJECT], [MEDIUM], with a [COLOR_PALETTE] palette, [LIGHTING], [MOOD], and [COMPOSITION]. Keep the requested colors visually prominent without adding unrelated color themes. [PARAMETERS]",
+      "variables": [
+        "SUBJECT",
+        "MEDIUM",
+        "COLOR_PALETTE",
+        "LIGHTING",
+        "MOOD",
+        "COMPOSITION",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "color",
+        "palette",
+        "composition"
+      ],
+      "source_ids": [
+        "midjourney_art_prompting"
+      ]
+    },
+    {
+      "id": "midjourney-006",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "text-to-image",
+      "category": "time-period",
+      "title": "Historical Era Visual",
+      "prompt": "Illustration of [SUBJECT] set in the [TIME_PERIOD] era, using period-appropriate [CLOTHING_OR_OBJECTS], [ARCHITECTURE_OR_ENVIRONMENT], [MEDIUM], [LIGHTING], and [COLOR_PALETTE]. [PARAMETERS]",
+      "variables": [
+        "SUBJECT",
+        "TIME_PERIOD",
+        "CLOTHING_OR_OBJECTS",
+        "ARCHITECTURE_OR_ENVIRONMENT",
+        "MEDIUM",
+        "LIGHTING",
+        "COLOR_PALETTE",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "history",
+        "period",
+        "environment"
+      ],
+      "source_ids": [
+        "midjourney_art_prompting"
+      ]
+    },
+    {
+      "id": "midjourney-007",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "text-to-image",
+      "category": "image-reference",
+      "title": "Reference-Guided Creation",
+      "prompt": "Use the supplied image as a visual reference for [CONTENT_OR_COMPOSITION]. Create [SUBJECT] with [ADDITIONAL_DETAILS]. Treat the reference as inspiration for visual structure rather than an exact copy. [PARAMETERS]",
+      "variables": [
+        "CONTENT_OR_COMPOSITION",
+        "SUBJECT",
+        "ADDITIONAL_DETAILS",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "image-prompt",
+        "reference",
+        "composition"
+      ],
+      "source_ids": [
+        "midjourney_image_prompts"
+      ]
+    },
+    {
+      "id": "midjourney-008",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "image-to-image",
+      "category": "multi-image",
+      "title": "Multiple Image References",
+      "prompt": "Combine the supplied image references to inspire [SUBJECT_OR_SCENE]. Use reference 1 for [ROLE_1], reference 2 for [ROLE_2], and reference 3 for [ROLE_3]. Add [TEXTUAL_DETAILS] to define what is not clear in the references. [PARAMETERS]",
+      "variables": [
+        "SUBJECT_OR_SCENE",
+        "ROLE_1",
+        "ROLE_2",
+        "ROLE_3",
+        "TEXTUAL_DETAILS",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "multi-image",
+        "references",
+        "blend"
+      ],
+      "source_ids": [
+        "midjourney_image_prompts"
+      ]
+    },
+    {
+      "id": "midjourney-009",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "image-to-image",
+      "category": "style-reference",
+      "title": "Style Reference",
+      "prompt": "Create [SUBJECT_OR_SCENE] using the supplied style reference to guide the overall visual language, while preserving the requested subject and composition. Match the reference's [STYLE_ATTRIBUTES] without copying unrelated content. [PARAMETERS]",
+      "variables": [
+        "SUBJECT_OR_SCENE",
+        "STYLE_ATTRIBUTES",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "style-reference",
+        "style",
+        "image-reference"
+      ],
+      "source_ids": [
+        "midjourney_image_prompts"
+      ]
+    },
+    {
+      "id": "midjourney-010",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "image-to-image",
+      "category": "editing",
+      "title": "Targeted Image Edit",
+      "prompt": "Edit the supplied image by changing only [TARGET_AREA] to [NEW_CONTENT]. Preserve the rest of the image, including [PRESERVE_DETAILS], and keep perspective, lighting, texture, and scale coherent. [PARAMETERS]",
+      "variables": [
+        "TARGET_AREA",
+        "NEW_CONTENT",
+        "PRESERVE_DETAILS",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "edit",
+        "localized-edit",
+        "preservation"
+      ],
+      "source_ids": [
+        "midjourney_image_prompts"
+      ]
+    },
+    {
+      "id": "midjourney-011",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "image-to-image",
+      "category": "outpainting",
+      "title": "Canvas Extension",
+      "prompt": "Extend the supplied image toward [DIRECTION_OR_ASPECT_RATIO]. Keep the original content intact and generate only the missing environment, continuing perspective, lighting, textures, and composition naturally. [PARAMETERS]",
+      "variables": [
+        "DIRECTION_OR_ASPECT_RATIO",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "outpainting",
+        "canvas",
+        "extension"
+      ],
+      "source_ids": [
+        "midjourney_version"
+      ]
+    },
+    {
+      "id": "midjourney-012",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "image-to-image",
+      "category": "character-consistency",
+      "title": "Consistent Subject Reference",
+      "prompt": "Create [SCENE] featuring the same [PERSON_OR_OBJECT] from the supplied reference. Preserve recognizable identity and key visual traits while changing [SCENE_CHANGES]. Keep the result coherent with the requested setting. [PARAMETERS]",
+      "variables": [
+        "SCENE",
+        "PERSON_OR_OBJECT",
+        "SCENE_CHANGES",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "identity",
+        "reference",
+        "consistency"
+      ],
+      "source_ids": [
+        "midjourney_image_prompts"
+      ]
+    },
+    {
+      "id": "midjourney-013",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "text-to-image",
+      "category": "text-in-image",
+      "title": "Readable Text in Image",
+      "prompt": "Create [IMAGE_TYPE] featuring the exact words \"[TEXT]\" as [TEXT_ELEMENT]. Use [TYPOGRAPHY_STYLE], clear hierarchy, and strong legibility. Keep the text short and prominently placed. [PARAMETERS]",
+      "variables": [
+        "IMAGE_TYPE",
+        "TEXT",
+        "TEXT_ELEMENT",
+        "TYPOGRAPHY_STYLE",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "typography",
+        "text",
+        "poster"
+      ],
+      "source_ids": [
+        "midjourney_text_generation"
+      ]
+    },
+    {
+      "id": "midjourney-014",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "image-to-text",
+      "category": "prompt-discovery",
+      "title": "Describe Image for Prompt Ideas",
+      "prompt": "Analyze the supplied image and generate several distinct creative prompt directions describing its important subject, medium, environment, lighting, color, mood, and composition. Do not attempt to reproduce the image verbatim.",
+      "variables": [],
+      "tags": [
+        "describe",
+        "prompt-discovery",
+        "image-analysis"
+      ],
+      "source_ids": [
+        "midjourney_describe"
+      ]
+    },
+    {
+      "id": "midjourney-015",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "text-to-image",
+      "category": "composition",
+      "title": "Precise Composition",
+      "prompt": "[SUBJECT] in [ENVIRONMENT], composed as a [COMPOSITION], viewed from [CAMERA_VIEW], with [LIGHTING] and [MOOD]. Keep [KEY_ELEMENT] as the visual focal point and use [NEGATIVE_SPACE] as intentional breathing room. [PARAMETERS]",
+      "variables": [
+        "SUBJECT",
+        "ENVIRONMENT",
+        "COMPOSITION",
+        "CAMERA_VIEW",
+        "LIGHTING",
+        "MOOD",
+        "KEY_ELEMENT",
+        "NEGATIVE_SPACE",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "composition",
+        "focal-point",
+        "camera"
+      ],
+      "source_ids": [
+        "midjourney_prompt_basics"
+      ]
+    },
+    {
+      "id": "midjourney-016",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "text-to-image",
+      "category": "specificity",
+      "title": "Exact Count of Subjects",
+      "prompt": "A scene containing exactly [NUMBER] [SUBJECTS], arranged as [ARRANGEMENT], in [ENVIRONMENT], with [LIGHTING] and [MOOD]. Keep the count explicit and visually distinguishable. [PARAMETERS]",
+      "variables": [
+        "NUMBER",
+        "SUBJECTS",
+        "ARRANGEMENT",
+        "ENVIRONMENT",
+        "LIGHTING",
+        "MOOD",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "count",
+        "specificity",
+        "composition"
+      ],
+      "source_ids": [
+        "midjourney_prompt_basics"
+      ]
+    },
+    {
+      "id": "midjourney-017",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "text-to-image",
+      "category": "minimal-prompt",
+      "title": "Concise Creative Prompt",
+      "prompt": "[SUBJECT], [MEDIUM], [ENVIRONMENT], [LIGHTING], [MOOD]. [PARAMETERS]",
+      "variables": [
+        "SUBJECT",
+        "MEDIUM",
+        "ENVIRONMENT",
+        "LIGHTING",
+        "MOOD",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "minimal",
+        "concise",
+        "creative"
+      ],
+      "source_ids": [
+        "midjourney_prompt_basics"
+      ]
+    },
+    {
+      "id": "midjourney-018",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "text-to-image",
+      "category": "aspect-ratio",
+      "title": "Aspect Ratio Controlled Scene",
+      "prompt": "[SUBJECT] in [ENVIRONMENT], [MEDIUM], [LIGHTING], [COMPOSITION]. Optimize the composition for the requested output ratio. [PARAMETERS]",
+      "variables": [
+        "SUBJECT",
+        "ENVIRONMENT",
+        "MEDIUM",
+        "LIGHTING",
+        "COMPOSITION",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "aspect-ratio",
+        "composition",
+        "parameters"
+      ],
+      "source_ids": [
+        "midjourney_prompt_basics"
+      ]
+    },
+    {
+      "id": "midjourney-019",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "text-to-image",
+      "category": "version-control",
+      "title": "Version-Specific Prompt",
+      "prompt": "Create [SUBJECT_OR_SCENE] with [STYLE_AND_DETAILS]. Use Midjourney version [VERSION] and apply only the parameters needed for the intended result. [PARAMETERS]",
+      "variables": [
+        "SUBJECT_OR_SCENE",
+        "STYLE_AND_DETAILS",
+        "VERSION",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "version",
+        "parameters",
+        "control"
+      ],
+      "source_ids": [
+        "midjourney_version"
+      ]
+    },
+    {
+      "id": "midjourney-020",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "image-to-image",
+      "category": "image-editing",
+      "title": "Reference Plus Text Direction",
+      "prompt": "Use the supplied image as a reference for [REFERENCE_ROLE]. Create the final image as [FINAL_SCENE], with [TEXT_DIRECTION] controlling details not established by the reference. Preserve the important requested visual structure while allowing the text prompt to define the new result. [PARAMETERS]",
+      "variables": [
+        "REFERENCE_ROLE",
+        "FINAL_SCENE",
+        "TEXT_DIRECTION",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "reference",
+        "editing",
+        "text-guidance"
+      ],
+      "source_ids": [
+        "midjourney_image_prompts"
+      ]
+    },
+    {
+      "id": "openai-001",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "instruction",
+      "title": "Direct Instruction",
+      "prompt": "Perform this task: [TASK]. Context: [CONTEXT]. Required output: [OUTPUT_FORMAT]. Constraints: [CONSTRAINTS]. If required information is missing, state what is missing instead of inventing it.",
+      "variables": [
+        "TASK",
+        "CONTEXT",
+        "OUTPUT_FORMAT",
+        "CONSTRAINTS"
+      ],
+      "tags": [
+        "instruction",
+        "clarity",
+        "constraints"
+      ],
+      "source_ids": [
+        "openai_llm_prompting"
+      ]
+    },
+    {
+      "id": "openai-002",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "structured-output",
+      "title": "Explicit Output Format",
+      "prompt": "[TASK]. Return the result as [FORMAT]. Include exactly these fields or sections: [FIELDS]. Keep the output concise and valid for the specified format.",
+      "variables": [
+        "TASK",
+        "FORMAT",
+        "FIELDS"
+      ],
+      "tags": [
+        "format",
+        "structured-output"
+      ],
+      "source_ids": [
+        "openai_llm_prompting"
+      ]
+    },
+    {
+      "id": "openai-003",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "classification",
+      "title": "Few-Shot Classification",
+      "prompt": "Classify each input using one of these labels: [LABELS]. Follow the pattern shown in the examples. Example 1: [EXAMPLE_1]. Example 2: [EXAMPLE_2]. Now classify: [INPUT]. Return the selected label and nothing else.",
+      "variables": [
+        "LABELS",
+        "EXAMPLE_1",
+        "EXAMPLE_2",
+        "INPUT"
+      ],
+      "tags": [
+        "few-shot",
+        "classification",
+        "examples"
+      ],
+      "source_ids": [
+        "openai_llm_prompting"
+      ]
+    },
+    {
+      "id": "openai-004",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "scenario",
+      "title": "Scenario Simulation",
+      "prompt": "Act within this scenario: [SCENARIO]. Your role is [ROLE]. Starting conditions: [START]. Goal: [GOAL]. Respond as the role would, keeping the scenario consistent with the supplied facts.",
+      "variables": [
+        "SCENARIO",
+        "ROLE",
+        "START",
+        "GOAL"
+      ],
+      "tags": [
+        "scenario",
+        "role",
+        "simulation"
+      ],
+      "source_ids": [
+        "openai_llm_prompting"
+      ]
+    },
+    {
+      "id": "openai-005",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "extraction",
+      "title": "Targeted Information Extraction",
+      "prompt": "Extract [TARGET_FIELDS] from the following text. Preserve names, numbers, and wording where relevant. If a field is absent, return null. Input: [TEXT].",
+      "variables": [
+        "TARGET_FIELDS",
+        "TEXT"
+      ],
+      "tags": [
+        "extraction",
+        "information"
+      ],
+      "source_ids": [
+        "openai_llm_prompting"
+      ]
+    },
+    {
+      "id": "openai-006",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "context",
+      "title": "Context-Grounded Answer",
+      "prompt": "Use the context below to answer [QUESTION]. Context: [CONTEXT]. Base the answer on the supplied context; distinguish unsupported assumptions from facts and say when the context is insufficient.",
+      "variables": [
+        "QUESTION",
+        "CONTEXT"
+      ],
+      "tags": [
+        "context",
+        "grounding",
+        "qa"
+      ],
+      "source_ids": [
+        "openai_llm_prompting"
+      ]
+    },
+    {
+      "id": "openai-007",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "coding",
+      "title": "Code Generation",
+      "prompt": "Implement [TASK] in [LANGUAGE/FRAMEWORK]. Requirements: [REQUIREMENTS]. Inputs: [INPUTS]. Expected outputs: [OUTPUTS]. Handle these errors: [ERROR_CASES]. Return production-oriented code and a concise usage example.",
+      "variables": [
+        "TASK",
+        "LANGUAGE/FRAMEWORK",
+        "REQUIREMENTS",
+        "INPUTS",
+        "OUTPUTS",
+        "ERROR_CASES"
+      ],
+      "tags": [
+        "coding",
+        "generation",
+        "requirements"
+      ],
+      "source_ids": [
+        "openai_llm_prompting"
+      ]
+    },
+    {
+      "id": "openai-008",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "prompt-engineering",
+      "title": "Meta Prompt Improvement",
+      "prompt": "Improve the following prompt for [GOAL]. Make the structure clear, specify the desired output, preserve the original intent, and add only constraints that materially improve reliability. Return only the revised prompt. Original prompt: [PROMPT].",
+      "variables": [
+        "GOAL",
+        "PROMPT"
+      ],
+      "tags": [
+        "meta-prompt",
+        "optimization"
+      ],
+      "source_ids": [
+        "openai_meta_prompting"
+      ]
+    },
+    {
+      "id": "openai-009",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "summarization",
+      "title": "Structured Article Summary",
+      "prompt": "Summarize the following article. Include: 1) topic/category, 2) concise summary, 3) key tags, 4) sentiment when supported by the text. Keep the structure consistent across inputs. Article: [ARTICLE].",
+      "variables": [
+        "ARTICLE"
+      ],
+      "tags": [
+        "summary",
+        "classification",
+        "sentiment"
+      ],
+      "source_ids": [
+        "openai_meta_prompting"
+      ]
+    },
+    {
+      "id": "openai-010",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "evaluation",
+      "title": "LLM Output Evaluation",
+      "prompt": "Evaluate the candidate output against the supplied reference using these criteria: [CRITERIA]. Reference: [REFERENCE]. Candidate: [CANDIDATE]. Score each criterion, explain the most important deficiencies, and provide a concise overall judgment.",
+      "variables": [
+        "CRITERIA",
+        "REFERENCE",
+        "CANDIDATE"
+      ],
+      "tags": [
+        "evaluation",
+        "judge",
+        "quality"
+      ],
+      "source_ids": [
+        "openai_meta_prompting"
+      ]
+    },
+    {
+      "id": "openai-011",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "routine",
+      "title": "Stepwise Routine",
+      "prompt": "Convert this process into a routine an AI assistant can execute: [PROCESS]. Break it into ordered actions. For each action specify the condition, required input, expected result, and what to do if the required information is unavailable.",
+      "variables": [
+        "PROCESS"
+      ],
+      "tags": [
+        "routine",
+        "workflow",
+        "agent"
+      ],
+      "source_ids": [
+        "openai_llm_prompting"
+      ]
+    },
+    {
+      "id": "openai-012",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "reasoning",
+      "title": "Compare Alternatives",
+      "prompt": "Compare [OPTIONS] using [CRITERIA]. For each option summarize strengths, weaknesses, risks, and fit for [GOAL]. Base claims on the supplied evidence: [EVIDENCE]. Finish with a recommendation and its main uncertainty.",
+      "variables": [
+        "OPTIONS",
+        "CRITERIA",
+        "GOAL",
+        "EVIDENCE"
+      ],
+      "tags": [
+        "comparison",
+        "analysis",
+        "decision"
+      ],
+      "source_ids": [
+        "openai_llm_prompting"
+      ]
+    },
+    {
+      "id": "openai-013",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "completion",
+      "title": "Pattern Completion",
+      "prompt": "Continue the following pattern using the same structure and style. Input pattern: [PATTERN]. Complete the missing portion: [MISSING_PORTION]. Return only the completion.",
+      "variables": [
+        "PATTERN",
+        "MISSING_PORTION"
+      ],
+      "tags": [
+        "completion",
+        "pattern"
+      ],
+      "source_ids": [
+        "openai_llm_prompting"
+      ]
+    },
+    {
+      "id": "openai-014",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "translation",
+      "title": "Faithful Translation",
+      "prompt": "Translate from [SOURCE_LANGUAGE] to [TARGET_LANGUAGE]. Preserve meaning, tone, formatting, names, numbers, and technical terms. Do not summarize. Text: [TEXT].",
+      "variables": [
+        "SOURCE_LANGUAGE",
+        "TARGET_LANGUAGE",
+        "TEXT"
+      ],
+      "tags": [
+        "translation",
+        "localization"
+      ],
+      "source_ids": [
+        "openai_llm_prompting"
+      ]
+    },
+    {
+      "id": "openai-015",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "delimiter",
+      "title": "Delimited Input Processing",
+      "prompt": "Process only the content between the delimiters. Task: [TASK]. Input begins below.\\n###\\n[INPUT]\\n###\\nReturn the requested result in [OUTPUT_FORMAT].",
+      "variables": [
+        "TASK",
+        "INPUT",
+        "OUTPUT_FORMAT"
+      ],
+      "tags": [
+        "delimiters",
+        "parsing",
+        "instruction"
+      ],
+      "source_ids": [
+        "openai_llm_prompting"
+      ]
+    },
+    {
+      "id": "claude-001",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "instruction",
+      "title": "Clear Direct Task",
+      "prompt": "Complete this task: [TASK]. Context: [CONTEXT]. Required result: [OUTPUT]. Constraints: [CONSTRAINTS]. Follow the requirements explicitly and state any necessary assumptions.",
+      "variables": [
+        "TASK",
+        "CONTEXT",
+        "OUTPUT",
+        "CONSTRAINTS"
+      ],
+      "tags": [
+        "clarity",
+        "direct",
+        "constraints"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    },
+    {
+      "id": "claude-002",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "few-shot",
+      "title": "Few-Shot Examples",
+      "prompt": "Follow the output pattern demonstrated by these examples. <examples><example>[EXAMPLE_1]</example><example>[EXAMPLE_2]</example></examples><task>[TASK]</task> Return the result using the same structure.",
+      "variables": [
+        "EXAMPLE_1",
+        "EXAMPLE_2",
+        "TASK"
+      ],
+      "tags": [
+        "few-shot",
+        "examples",
+        "format"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    },
+    {
+      "id": "claude-003",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "xml-structure",
+      "title": "XML Structured Prompt",
+      "prompt": "<instructions>[INSTRUCTIONS]</instructions><context>[CONTEXT]</context><input>[INPUT]</input><output_requirements>[OUTPUT_REQUIREMENTS]</output_requirements> Complete the task using the supplied sections.",
+      "variables": [
+        "INSTRUCTIONS",
+        "CONTEXT",
+        "INPUT",
+        "OUTPUT_REQUIREMENTS"
+      ],
+      "tags": [
+        "xml",
+        "structure",
+        "context"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    },
+    {
+      "id": "claude-004",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "role",
+      "title": "Expert Role",
+      "prompt": "You are a [ROLE] helping [USER_TYPE]. Objective: [OBJECTIVE]. Tone: [TONE]. Constraints: [CONSTRAINTS]. Prioritize [PRIORITY] when making decisions.",
+      "variables": [
+        "ROLE",
+        "USER_TYPE",
+        "OBJECTIVE",
+        "TONE",
+        "CONSTRAINTS",
+        "PRIORITY"
+      ],
+      "tags": [
+        "role",
+        "persona",
+        "expert"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    },
+    {
+      "id": "claude-005",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "long-context",
+      "title": "Multi-Document Analysis",
+      "prompt": "Review the supplied documents first. <documents>[DOCUMENTS]</documents><question>[QUESTION]</question> Identify the relevant evidence, then answer the question. Distinguish evidence from inference and cite the document or section when possible.",
+      "variables": [
+        "DOCUMENTS",
+        "QUESTION"
+      ],
+      "tags": [
+        "long-context",
+        "documents",
+        "grounding"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    },
+    {
+      "id": "claude-006",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "quote-extraction",
+      "title": "Ground With Relevant Quotes",
+      "prompt": "From the supplied documents, identify the passages most relevant to [QUESTION]. Quote only the necessary excerpts, then synthesize an answer grounded in those excerpts. Documents: [DOCUMENTS].",
+      "variables": [
+        "QUESTION",
+        "DOCUMENTS"
+      ],
+      "tags": [
+        "quotes",
+        "grounding",
+        "research"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    },
+    {
+      "id": "claude-007",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "formatting",
+      "title": "Controlled Prose Format",
+      "prompt": "Write about [TOPIC] for [AUDIENCE]. Use [FORMAT_RULES]. Match the requested style and level of detail. Avoid formatting that is not explicitly requested.",
+      "variables": [
+        "TOPIC",
+        "AUDIENCE",
+        "FORMAT_RULES"
+      ],
+      "tags": [
+        "format",
+        "writing",
+        "style"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    },
+    {
+      "id": "claude-008",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "document-creation",
+      "title": "Professional Presentation",
+      "prompt": "Create a professional presentation about [TOPIC]. Include a clear narrative, strong visual hierarchy, and appropriate design elements. Audience: [AUDIENCE]. Desired length: [LENGTH].",
+      "variables": [
+        "TOPIC",
+        "AUDIENCE",
+        "LENGTH"
+      ],
+      "tags": [
+        "presentation",
+        "document",
+        "design"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    },
+    {
+      "id": "claude-009",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "tool-use",
+      "title": "Explicit Action",
+      "prompt": "Perform the requested action rather than only suggesting it. Task: [TASK]. Before acting, inspect the relevant context or resources. If information is missing, retrieve or inspect it when possible instead of guessing.",
+      "variables": [
+        "TASK"
+      ],
+      "tags": [
+        "tool-use",
+        "action",
+        "agent"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    },
+    {
+      "id": "claude-010",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "research",
+      "title": "Structured Research",
+      "prompt": "Research [TOPIC] systematically. Define success criteria: [SUCCESS_CRITERIA]. Gather evidence, compare competing explanations, track uncertainty, and finish with a concise synthesis supported by the evidence.",
+      "variables": [
+        "TOPIC",
+        "SUCCESS_CRITERIA"
+      ],
+      "tags": [
+        "research",
+        "evidence",
+        "uncertainty"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    },
+    {
+      "id": "claude-011",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "self-check",
+      "title": "Verification Pass",
+      "prompt": "Complete [TASK]. Before finalizing, verify the result against these criteria: [CHECK_CRITERIA]. Correct any identified errors and then return the final answer.",
+      "variables": [
+        "TASK",
+        "CHECK_CRITERIA"
+      ],
+      "tags": [
+        "verification",
+        "quality",
+        "self-check"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    },
+    {
+      "id": "claude-012",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "coding",
+      "title": "General-Purpose Code",
+      "prompt": "Implement [TASK] in [LANGUAGE]. Requirements: [REQUIREMENTS]. Build a general solution for valid inputs rather than hardcoding the supplied examples. Use standard tools and keep the implementation maintainable.",
+      "variables": [
+        "TASK",
+        "LANGUAGE",
+        "REQUIREMENTS"
+      ],
+      "tags": [
+        "coding",
+        "generalization",
+        "quality"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    },
+    {
+      "id": "claude-013",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "anti-hallucination",
+      "title": "Investigate Before Answering",
+      "prompt": "Before answering questions about [SUBJECT], inspect the relevant supplied files or context. Do not speculate about content you have not inspected. If evidence is insufficient, say so clearly.",
+      "variables": [
+        "SUBJECT"
+      ],
+      "tags": [
+        "grounding",
+        "hallucination",
+        "verification"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    },
+    {
+      "id": "claude-014",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "scope-control",
+      "title": "Avoid Overengineering",
+      "prompt": "Implement only what is required for [TASK]. Do not add unrelated features, abstractions, refactors, or hypothetical flexibility. Keep the solution as simple as possible while meeting the stated requirements.",
+      "variables": [
+        "TASK"
+      ],
+      "tags": [
+        "scope",
+        "minimalism",
+        "engineering"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    },
+    {
+      "id": "claude-015",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "agentic-workflow",
+      "title": "Persistent Multi-Step Workflow",
+      "prompt": "Complete [PROJECT] across multiple steps. First establish the framework and success criteria, then execute the work incrementally. Track remaining tasks, preserve useful state, and continue until the stated completion criteria are met. Avoid destructive actions.",
+      "variables": [
+        "PROJECT"
+      ],
+      "tags": [
+        "agent",
+        "workflow",
+        "state",
+        "safety"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    }
+  ]
+}

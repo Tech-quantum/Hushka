@@ -1,0 +1,676 @@
+{
+  "schema_version": "1.0",
+  "dataset_version": "0.1.0",
+  "collected_at": "2026-10-04",
+  "description": "Public reusable OpenAI and Anthropic prompt templates normalized from official public documentation/cookbooks. These are original/normalized formulations, not private system prompts.",
+  "sources": [
+    {
+      "id": "openai_llm_prompting",
+      "provider": "OpenAI",
+      "type": "official_cookbook",
+      "url": "https://cookbook.openai.com/articles/how_to_work_with_large_language_models"
+    },
+    {
+      "id": "openai_meta_prompting",
+      "provider": "OpenAI",
+      "type": "official_cookbook",
+      "url": "https://cookbook.openai.com/examples/enhance_your_prompts_with_meta_prompting"
+    },
+    {
+      "id": "anthropic_prompting_best_practices",
+      "provider": "Anthropic",
+      "type": "official_docs",
+      "url": "https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/prompt-templates-and-variables"
+    }
+  ],
+  "prompts": [
+    {
+      "id": "openai-001",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "instruction",
+      "title": "Direct Instruction",
+      "prompt": "Perform this task: [TASK]. Context: [CONTEXT]. Required output: [OUTPUT_FORMAT]. Constraints: [CONSTRAINTS]. If required information is missing, state what is missing instead of inventing it.",
+      "variables": [
+        "TASK",
+        "CONTEXT",
+        "OUTPUT_FORMAT",
+        "CONSTRAINTS"
+      ],
+      "tags": [
+        "instruction",
+        "clarity",
+        "constraints"
+      ],
+      "source_ids": [
+        "openai_llm_prompting"
+      ]
+    },
+    {
+      "id": "openai-002",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "structured-output",
+      "title": "Explicit Output Format",
+      "prompt": "[TASK]. Return the result as [FORMAT]. Include exactly these fields or sections: [FIELDS]. Keep the output concise and valid for the specified format.",
+      "variables": [
+        "TASK",
+        "FORMAT",
+        "FIELDS"
+      ],
+      "tags": [
+        "format",
+        "structured-output"
+      ],
+      "source_ids": [
+        "openai_llm_prompting"
+      ]
+    },
+    {
+      "id": "openai-003",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "classification",
+      "title": "Few-Shot Classification",
+      "prompt": "Classify each input using one of these labels: [LABELS]. Follow the pattern shown in the examples. Example 1: [EXAMPLE_1]. Example 2: [EXAMPLE_2]. Now classify: [INPUT]. Return the selected label and nothing else.",
+      "variables": [
+        "LABELS",
+        "EXAMPLE_1",
+        "EXAMPLE_2",
+        "INPUT"
+      ],
+      "tags": [
+        "few-shot",
+        "classification",
+        "examples"
+      ],
+      "source_ids": [
+        "openai_llm_prompting"
+      ]
+    },
+    {
+      "id": "openai-004",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "scenario",
+      "title": "Scenario Simulation",
+      "prompt": "Act within this scenario: [SCENARIO]. Your role is [ROLE]. Starting conditions: [START]. Goal: [GOAL]. Respond as the role would, keeping the scenario consistent with the supplied facts.",
+      "variables": [
+        "SCENARIO",
+        "ROLE",
+        "START",
+        "GOAL"
+      ],
+      "tags": [
+        "scenario",
+        "role",
+        "simulation"
+      ],
+      "source_ids": [
+        "openai_llm_prompting"
+      ]
+    },
+    {
+      "id": "openai-005",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "extraction",
+      "title": "Targeted Information Extraction",
+      "prompt": "Extract [TARGET_FIELDS] from the following text. Preserve names, numbers, and wording where relevant. If a field is absent, return null. Input: [TEXT].",
+      "variables": [
+        "TARGET_FIELDS",
+        "TEXT"
+      ],
+      "tags": [
+        "extraction",
+        "information"
+      ],
+      "source_ids": [
+        "openai_llm_prompting"
+      ]
+    },
+    {
+      "id": "openai-006",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "context",
+      "title": "Context-Grounded Answer",
+      "prompt": "Use the context below to answer [QUESTION]. Context: [CONTEXT]. Base the answer on the supplied context; distinguish unsupported assumptions from facts and say when the context is insufficient.",
+      "variables": [
+        "QUESTION",
+        "CONTEXT"
+      ],
+      "tags": [
+        "context",
+        "grounding",
+        "qa"
+      ],
+      "source_ids": [
+        "openai_llm_prompting"
+      ]
+    },
+    {
+      "id": "openai-007",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "coding",
+      "title": "Code Generation",
+      "prompt": "Implement [TASK] in [LANGUAGE/FRAMEWORK]. Requirements: [REQUIREMENTS]. Inputs: [INPUTS]. Expected outputs: [OUTPUTS]. Handle these errors: [ERROR_CASES]. Return production-oriented code and a concise usage example.",
+      "variables": [
+        "TASK",
+        "LANGUAGE/FRAMEWORK",
+        "REQUIREMENTS",
+        "INPUTS",
+        "OUTPUTS",
+        "ERROR_CASES"
+      ],
+      "tags": [
+        "coding",
+        "generation",
+        "requirements"
+      ],
+      "source_ids": [
+        "openai_llm_prompting"
+      ]
+    },
+    {
+      "id": "openai-008",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "prompt-engineering",
+      "title": "Meta Prompt Improvement",
+      "prompt": "Improve the following prompt for [GOAL]. Make the structure clear, specify the desired output, preserve the original intent, and add only constraints that materially improve reliability. Return only the revised prompt. Original prompt: [PROMPT].",
+      "variables": [
+        "GOAL",
+        "PROMPT"
+      ],
+      "tags": [
+        "meta-prompt",
+        "optimization"
+      ],
+      "source_ids": [
+        "openai_meta_prompting"
+      ]
+    },
+    {
+      "id": "openai-009",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "summarization",
+      "title": "Structured Article Summary",
+      "prompt": "Summarize the following article. Include: 1) topic/category, 2) concise summary, 3) key tags, 4) sentiment when supported by the text. Keep the structure consistent across inputs. Article: [ARTICLE].",
+      "variables": [
+        "ARTICLE"
+      ],
+      "tags": [
+        "summary",
+        "classification",
+        "sentiment"
+      ],
+      "source_ids": [
+        "openai_meta_prompting"
+      ]
+    },
+    {
+      "id": "openai-010",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "evaluation",
+      "title": "LLM Output Evaluation",
+      "prompt": "Evaluate the candidate output against the supplied reference using these criteria: [CRITERIA]. Reference: [REFERENCE]. Candidate: [CANDIDATE]. Score each criterion, explain the most important deficiencies, and provide a concise overall judgment.",
+      "variables": [
+        "CRITERIA",
+        "REFERENCE",
+        "CANDIDATE"
+      ],
+      "tags": [
+        "evaluation",
+        "judge",
+        "quality"
+      ],
+      "source_ids": [
+        "openai_meta_prompting"
+      ]
+    },
+    {
+      "id": "openai-011",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "routine",
+      "title": "Stepwise Routine",
+      "prompt": "Convert this process into a routine an AI assistant can execute: [PROCESS]. Break it into ordered actions. For each action specify the condition, required input, expected result, and what to do if the required information is unavailable.",
+      "variables": [
+        "PROCESS"
+      ],
+      "tags": [
+        "routine",
+        "workflow",
+        "agent"
+      ],
+      "source_ids": [
+        "openai_llm_prompting"
+      ]
+    },
+    {
+      "id": "openai-012",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "reasoning",
+      "title": "Compare Alternatives",
+      "prompt": "Compare [OPTIONS] using [CRITERIA]. For each option summarize strengths, weaknesses, risks, and fit for [GOAL]. Base claims on the supplied evidence: [EVIDENCE]. Finish with a recommendation and its main uncertainty.",
+      "variables": [
+        "OPTIONS",
+        "CRITERIA",
+        "GOAL",
+        "EVIDENCE"
+      ],
+      "tags": [
+        "comparison",
+        "analysis",
+        "decision"
+      ],
+      "source_ids": [
+        "openai_llm_prompting"
+      ]
+    },
+    {
+      "id": "openai-013",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "completion",
+      "title": "Pattern Completion",
+      "prompt": "Continue the following pattern using the same structure and style. Input pattern: [PATTERN]. Complete the missing portion: [MISSING_PORTION]. Return only the completion.",
+      "variables": [
+        "PATTERN",
+        "MISSING_PORTION"
+      ],
+      "tags": [
+        "completion",
+        "pattern"
+      ],
+      "source_ids": [
+        "openai_llm_prompting"
+      ]
+    },
+    {
+      "id": "openai-014",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "translation",
+      "title": "Faithful Translation",
+      "prompt": "Translate from [SOURCE_LANGUAGE] to [TARGET_LANGUAGE]. Preserve meaning, tone, formatting, names, numbers, and technical terms. Do not summarize. Text: [TEXT].",
+      "variables": [
+        "SOURCE_LANGUAGE",
+        "TARGET_LANGUAGE",
+        "TEXT"
+      ],
+      "tags": [
+        "translation",
+        "localization"
+      ],
+      "source_ids": [
+        "openai_llm_prompting"
+      ]
+    },
+    {
+      "id": "openai-015",
+      "provider": "openai",
+      "model": "GPT",
+      "modality": "text-to-text",
+      "category": "delimiter",
+      "title": "Delimited Input Processing",
+      "prompt": "Process only the content between the delimiters. Task: [TASK]. Input begins below.\\n###\\n[INPUT]\\n###\\nReturn the requested result in [OUTPUT_FORMAT].",
+      "variables": [
+        "TASK",
+        "INPUT",
+        "OUTPUT_FORMAT"
+      ],
+      "tags": [
+        "delimiters",
+        "parsing",
+        "instruction"
+      ],
+      "source_ids": [
+        "openai_llm_prompting"
+      ]
+    },
+    {
+      "id": "claude-001",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "instruction",
+      "title": "Clear Direct Task",
+      "prompt": "Complete this task: [TASK]. Context: [CONTEXT]. Required result: [OUTPUT]. Constraints: [CONSTRAINTS]. Follow the requirements explicitly and state any necessary assumptions.",
+      "variables": [
+        "TASK",
+        "CONTEXT",
+        "OUTPUT",
+        "CONSTRAINTS"
+      ],
+      "tags": [
+        "clarity",
+        "direct",
+        "constraints"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    },
+    {
+      "id": "claude-002",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "few-shot",
+      "title": "Few-Shot Examples",
+      "prompt": "Follow the output pattern demonstrated by these examples. <examples><example>[EXAMPLE_1]</example><example>[EXAMPLE_2]</example></examples><task>[TASK]</task> Return the result using the same structure.",
+      "variables": [
+        "EXAMPLE_1",
+        "EXAMPLE_2",
+        "TASK"
+      ],
+      "tags": [
+        "few-shot",
+        "examples",
+        "format"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    },
+    {
+      "id": "claude-003",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "xml-structure",
+      "title": "XML Structured Prompt",
+      "prompt": "<instructions>[INSTRUCTIONS]</instructions><context>[CONTEXT]</context><input>[INPUT]</input><output_requirements>[OUTPUT_REQUIREMENTS]</output_requirements> Complete the task using the supplied sections.",
+      "variables": [
+        "INSTRUCTIONS",
+        "CONTEXT",
+        "INPUT",
+        "OUTPUT_REQUIREMENTS"
+      ],
+      "tags": [
+        "xml",
+        "structure",
+        "context"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    },
+    {
+      "id": "claude-004",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "role",
+      "title": "Expert Role",
+      "prompt": "You are a [ROLE] helping [USER_TYPE]. Objective: [OBJECTIVE]. Tone: [TONE]. Constraints: [CONSTRAINTS]. Prioritize [PRIORITY] when making decisions.",
+      "variables": [
+        "ROLE",
+        "USER_TYPE",
+        "OBJECTIVE",
+        "TONE",
+        "CONSTRAINTS",
+        "PRIORITY"
+      ],
+      "tags": [
+        "role",
+        "persona",
+        "expert"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    },
+    {
+      "id": "claude-005",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "long-context",
+      "title": "Multi-Document Analysis",
+      "prompt": "Review the supplied documents first. <documents>[DOCUMENTS]</documents><question>[QUESTION]</question> Identify the relevant evidence, then answer the question. Distinguish evidence from inference and cite the document or section when possible.",
+      "variables": [
+        "DOCUMENTS",
+        "QUESTION"
+      ],
+      "tags": [
+        "long-context",
+        "documents",
+        "grounding"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    },
+    {
+      "id": "claude-006",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "quote-extraction",
+      "title": "Ground With Relevant Quotes",
+      "prompt": "From the supplied documents, identify the passages most relevant to [QUESTION]. Quote only the necessary excerpts, then synthesize an answer grounded in those excerpts. Documents: [DOCUMENTS].",
+      "variables": [
+        "QUESTION",
+        "DOCUMENTS"
+      ],
+      "tags": [
+        "quotes",
+        "grounding",
+        "research"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    },
+    {
+      "id": "claude-007",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "formatting",
+      "title": "Controlled Prose Format",
+      "prompt": "Write about [TOPIC] for [AUDIENCE]. Use [FORMAT_RULES]. Match the requested style and level of detail. Avoid formatting that is not explicitly requested.",
+      "variables": [
+        "TOPIC",
+        "AUDIENCE",
+        "FORMAT_RULES"
+      ],
+      "tags": [
+        "format",
+        "writing",
+        "style"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    },
+    {
+      "id": "claude-008",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "document-creation",
+      "title": "Professional Presentation",
+      "prompt": "Create a professional presentation about [TOPIC]. Include a clear narrative, strong visual hierarchy, and appropriate design elements. Audience: [AUDIENCE]. Desired length: [LENGTH].",
+      "variables": [
+        "TOPIC",
+        "AUDIENCE",
+        "LENGTH"
+      ],
+      "tags": [
+        "presentation",
+        "document",
+        "design"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    },
+    {
+      "id": "claude-009",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "tool-use",
+      "title": "Explicit Action",
+      "prompt": "Perform the requested action rather than only suggesting it. Task: [TASK]. Before acting, inspect the relevant context or resources. If information is missing, retrieve or inspect it when possible instead of guessing.",
+      "variables": [
+        "TASK"
+      ],
+      "tags": [
+        "tool-use",
+        "action",
+        "agent"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    },
+    {
+      "id": "claude-010",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "research",
+      "title": "Structured Research",
+      "prompt": "Research [TOPIC] systematically. Define success criteria: [SUCCESS_CRITERIA]. Gather evidence, compare competing explanations, track uncertainty, and finish with a concise synthesis supported by the evidence.",
+      "variables": [
+        "TOPIC",
+        "SUCCESS_CRITERIA"
+      ],
+      "tags": [
+        "research",
+        "evidence",
+        "uncertainty"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    },
+    {
+      "id": "claude-011",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "self-check",
+      "title": "Verification Pass",
+      "prompt": "Complete [TASK]. Before finalizing, verify the result against these criteria: [CHECK_CRITERIA]. Correct any identified errors and then return the final answer.",
+      "variables": [
+        "TASK",
+        "CHECK_CRITERIA"
+      ],
+      "tags": [
+        "verification",
+        "quality",
+        "self-check"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    },
+    {
+      "id": "claude-012",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "coding",
+      "title": "General-Purpose Code",
+      "prompt": "Implement [TASK] in [LANGUAGE]. Requirements: [REQUIREMENTS]. Build a general solution for valid inputs rather than hardcoding the supplied examples. Use standard tools and keep the implementation maintainable.",
+      "variables": [
+        "TASK",
+        "LANGUAGE",
+        "REQUIREMENTS"
+      ],
+      "tags": [
+        "coding",
+        "generalization",
+        "quality"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    },
+    {
+      "id": "claude-013",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "anti-hallucination",
+      "title": "Investigate Before Answering",
+      "prompt": "Before answering questions about [SUBJECT], inspect the relevant supplied files or context. Do not speculate about content you have not inspected. If evidence is insufficient, say so clearly.",
+      "variables": [
+        "SUBJECT"
+      ],
+      "tags": [
+        "grounding",
+        "hallucination",
+        "verification"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    },
+    {
+      "id": "claude-014",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "scope-control",
+      "title": "Avoid Overengineering",
+      "prompt": "Implement only what is required for [TASK]. Do not add unrelated features, abstractions, refactors, or hypothetical flexibility. Keep the solution as simple as possible while meeting the stated requirements.",
+      "variables": [
+        "TASK"
+      ],
+      "tags": [
+        "scope",
+        "minimalism",
+        "engineering"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    },
+    {
+      "id": "claude-015",
+      "provider": "anthropic",
+      "model": "Claude",
+      "modality": "text-to-text",
+      "category": "agentic-workflow",
+      "title": "Persistent Multi-Step Workflow",
+      "prompt": "Complete [PROJECT] across multiple steps. First establish the framework and success criteria, then execute the work incrementally. Track remaining tasks, preserve useful state, and continue until the stated completion criteria are met. Avoid destructive actions.",
+      "variables": [
+        "PROJECT"
+      ],
+      "tags": [
+        "agent",
+        "workflow",
+        "state",
+        "safety"
+      ],
+      "source_ids": [
+        "anthropic_prompting_best_practices"
+      ]
+    }
+  ]
+}

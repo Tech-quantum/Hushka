@@ -1,0 +1,511 @@
+{
+  "schema_version": "1.0",
+  "dataset_version": "0.1.0",
+  "collected_at": "2026-10-04",
+  "description": "PromptVault seed dataset for public Lovable and DeepSeek prompt patterns. Templates are normalized/original formulations based on official public documentation; they are not copies of proprietary or private system prompts.",
+  "sources": [
+    {
+      "id": "lovable_prompting_bible",
+      "provider": "Lovable",
+      "url": "https://lovable.dev/blog/2025-01-16-lovable-prompting-handbook",
+      "type": "official_guide"
+    },
+    {
+      "id": "lovable_app_builder",
+      "provider": "Lovable",
+      "url": "https://lovable.dev/build/app-builder",
+      "type": "official_product"
+    },
+    {
+      "id": "lovable_chatgpt",
+      "provider": "Lovable",
+      "url": "https://docs.lovable.dev/tips-tricks/chatgpt-app",
+      "type": "official_docs"
+    },
+    {
+      "id": "lovable_mcp",
+      "provider": "Lovable",
+      "url": "https://lovable.dev/mcp",
+      "type": "official_docs"
+    },
+    {
+      "id": "deepseek_prompt_library",
+      "provider": "DeepSeek",
+      "url": "https://api-docs.deepseek.com/prompt-library/",
+      "type": "official_library"
+    },
+    {
+      "id": "deepseek_json",
+      "provider": "DeepSeek",
+      "url": "https://api-docs.deepseek.com/guides/json_mode/",
+      "type": "official_docs"
+    },
+    {
+      "id": "deepseek_harness_prompt",
+      "provider": "DeepSeek",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/core/system-prompt/README.md",
+      "type": "official_open_source"
+    }
+  ],
+  "prompts": [
+    {
+      "id": "lovable-001",
+      "provider": "lovable",
+      "category": "new-project",
+      "title": "Full-Stack SaaS Foundation",
+      "prompt": "I need a [TYPE] application with: target users [USERS]; core problem [PROBLEM]; pages [PAGES]; frontend [FRONTEND]; styling [STYLE]; authentication [AUTH]; database [DATABASE]; integrations [INTEGRATIONS]. Start with the main page and core user flow. Build the smallest coherent working foundation first, then stop for review.",
+      "variables": [
+        "TYPE",
+        "USERS",
+        "PROBLEM",
+        "PAGES",
+        "FRONTEND",
+        "STYLE",
+        "AUTH",
+        "DATABASE",
+        "INTEGRATIONS"
+      ],
+      "tags": [
+        "saas",
+        "full-stack",
+        "planning",
+        "mvp"
+      ],
+      "source_ids": [
+        "lovable_prompting_bible",
+        "lovable_app_builder"
+      ]
+    },
+    {
+      "id": "lovable-002",
+      "provider": "lovable",
+      "category": "ui",
+      "title": "Page-by-Page UI Build",
+      "prompt": "Build [PAGE_NAME] only. Include these sections: [SECTIONS]. Match this visual direction: [DESIGN_SYSTEM]. Define responsive behavior for mobile, tablet, and desktop. Reuse existing components and tokens. Do not modify unrelated pages or components.",
+      "variables": [
+        "PAGE_NAME",
+        "SECTIONS",
+        "DESIGN_SYSTEM"
+      ],
+      "tags": [
+        "ui",
+        "responsive",
+        "scoped-change"
+      ],
+      "source_ids": [
+        "lovable_prompting_bible"
+      ]
+    },
+    {
+      "id": "lovable-003",
+      "provider": "lovable",
+      "category": "backend",
+      "title": "Supabase Data Flow",
+      "prompt": "Implement the [FEATURE] using Supabase. Create or update the required database schema, relationships, validation, and access policies. Connect the UI to the real data flow. Handle loading, empty, success, and error states. Do not use mock data after the integration is complete.",
+      "variables": [
+        "FEATURE"
+      ],
+      "tags": [
+        "supabase",
+        "database",
+        "backend",
+        "crud"
+      ],
+      "source_ids": [
+        "lovable_prompting_bible",
+        "lovable_app_builder"
+      ]
+    },
+    {
+      "id": "lovable-004",
+      "provider": "lovable",
+      "category": "authentication",
+      "title": "Authentication Flow",
+      "prompt": "Add [AUTH_METHOD] authentication. Implement sign-up, sign-in, sign-out, session persistence, protected routes, and appropriate error states. Preserve the existing UI design. If roles are required, support [ROLES] with authorization enforced at the data-access layer as well as in the UI.",
+      "variables": [
+        "AUTH_METHOD",
+        "ROLES"
+      ],
+      "tags": [
+        "auth",
+        "security",
+        "roles",
+        "sessions"
+      ],
+      "source_ids": [
+        "lovable_prompting_bible",
+        "lovable_app_builder"
+      ]
+    },
+    {
+      "id": "lovable-005",
+      "provider": "lovable",
+      "category": "debugging",
+      "title": "Root-Cause Debugging",
+      "prompt": "The same error persists: [ERROR]. First investigate the likely root cause using the relevant console, network, runtime, and code context. Identify the failing component and why it fails. Then propose the smallest safe fix. After applying it, verify the affected flow and report what changed. Do not rewrite unrelated code.",
+      "variables": [
+        "ERROR"
+      ],
+      "tags": [
+        "debug",
+        "root-cause",
+        "verification"
+      ],
+      "source_ids": [
+        "lovable_prompting_bible"
+      ]
+    },
+    {
+      "id": "lovable-006",
+      "provider": "lovable",
+      "category": "refactoring",
+      "title": "Safe Refactor",
+      "prompt": "Refactor [TARGET] to improve [GOAL]. Preserve all existing behavior and public interfaces unless explicitly listed below. First identify dependencies and regression risks. Make the smallest coherent change, then verify affected flows. Do not modify unrelated files.",
+      "variables": [
+        "TARGET",
+        "GOAL"
+      ],
+      "tags": [
+        "refactor",
+        "regression",
+        "safe-change"
+      ],
+      "source_ids": [
+        "lovable_prompting_bible"
+      ]
+    },
+    {
+      "id": "lovable-007",
+      "provider": "lovable",
+      "category": "testing",
+      "title": "Test Critical Flow",
+      "prompt": "Write and run tests for [FLOW]. Cover the happy path, validation failures, permission failures, empty states, and the most likely regression case. Fix only issues proven by the tests. Summarize test coverage and remaining risks.",
+      "variables": [
+        "FLOW"
+      ],
+      "tags": [
+        "testing",
+        "qa",
+        "regression"
+      ],
+      "source_ids": [
+        "lovable_mcp",
+        "lovable_app_builder"
+      ]
+    },
+    {
+      "id": "lovable-008",
+      "provider": "lovable",
+      "category": "integration",
+      "title": "Third-Party Integration",
+      "prompt": "Integrate [SERVICE] for [PURPOSE]. Configure the required connection, data flow, error handling, loading states, and secure handling of credentials. Use the provider's supported integration path. Add a minimal verification flow and document any required environment configuration.",
+      "variables": [
+        "SERVICE",
+        "PURPOSE"
+      ],
+      "tags": [
+        "integration",
+        "api",
+        "security"
+      ],
+      "source_ids": [
+        "lovable_mcp",
+        "lovable_app_builder"
+      ]
+    },
+    {
+      "id": "lovable-009",
+      "provider": "lovable",
+      "category": "seo",
+      "title": "SEO and Metadata Pass",
+      "prompt": "Optimize [PAGES] for SEO without changing the visual design. Add appropriate titles, descriptions, canonical behavior, structured metadata where useful, semantic headings, and social sharing metadata. Preserve accessibility and avoid keyword stuffing.",
+      "variables": [
+        "PAGES"
+      ],
+      "tags": [
+        "seo",
+        "metadata",
+        "accessibility"
+      ],
+      "source_ids": [
+        "lovable_app_builder"
+      ]
+    },
+    {
+      "id": "lovable-010",
+      "provider": "lovable",
+      "category": "iteration",
+      "title": "Precise UI Change",
+      "prompt": "Change only [ELEMENT] on [PAGE]. Move it to [POSITION] and change [PROPERTY]. Keep typography, spacing system, responsive behavior, interactions, and all unrelated components unchanged. Verify the result at mobile and desktop breakpoints.",
+      "variables": [
+        "ELEMENT",
+        "PAGE",
+        "POSITION",
+        "PROPERTY"
+      ],
+      "tags": [
+        "ui-edit",
+        "precision",
+        "responsive"
+      ],
+      "source_ids": [
+        "lovable_prompting_bible",
+        "lovable_chatgpt"
+      ]
+    },
+    {
+      "id": "deepseek-001",
+      "provider": "deepseek",
+      "category": "code-generation",
+      "title": "Generate Production Code",
+      "prompt": "Generate [LANGUAGE] code that implements [TASK]. Requirements: [REQUIREMENTS]. Inputs: [INPUTS]. Outputs: [OUTPUTS]. Handle [ERROR_CASES]. Follow [STYLE_OR_FRAMEWORK]. Return only the requested code plus a brief usage example.",
+      "variables": [
+        "LANGUAGE",
+        "TASK",
+        "REQUIREMENTS",
+        "INPUTS",
+        "OUTPUTS",
+        "ERROR_CASES",
+        "STYLE_OR_FRAMEWORK"
+      ],
+      "tags": [
+        "coding",
+        "generation",
+        "production"
+      ],
+      "source_ids": [
+        "deepseek_prompt_library"
+      ]
+    },
+    {
+      "id": "deepseek-002",
+      "provider": "deepseek",
+      "category": "code-rewrite",
+      "title": "Refactor and Optimize Code",
+      "prompt": "Rewrite the following [LANGUAGE] code to achieve [GOAL]. Preserve behavior and public interfaces. Fix correctness issues, improve readability and performance where justified, and add concise comments only where they clarify non-obvious logic. Explain the important changes after the code.\n\nCODE:\n[CODE]",
+      "variables": [
+        "LANGUAGE",
+        "GOAL",
+        "CODE"
+      ],
+      "tags": [
+        "refactor",
+        "optimization",
+        "code"
+      ],
+      "source_ids": [
+        "deepseek_prompt_library"
+      ]
+    },
+    {
+      "id": "deepseek-003",
+      "provider": "deepseek",
+      "category": "code-explanation",
+      "title": "Explain Code by Sections",
+      "prompt": "Explain the following [LANGUAGE] code for a [AUDIENCE] audience. First summarize its purpose, then explain each major section, data flow, dependencies, edge cases, and likely failure points. Finish with three concrete improvement opportunities.\n\nCODE:\n[CODE]",
+      "variables": [
+        "LANGUAGE",
+        "AUDIENCE",
+        "CODE"
+      ],
+      "tags": [
+        "explanation",
+        "education",
+        "code-review"
+      ],
+      "source_ids": [
+        "deepseek_prompt_library"
+      ]
+    },
+    {
+      "id": "deepseek-004",
+      "provider": "deepseek",
+      "category": "classification",
+      "title": "Classify Text",
+      "prompt": "Classify the input into exactly one of these labels: [LABELS]. Use the label definitions below: [DEFINITIONS]. Return the selected label and a one-sentence justification. If the evidence is insufficient, return [FALLBACK_LABEL].\n\nINPUT:\n[INPUT]",
+      "variables": [
+        "LABELS",
+        "DEFINITIONS",
+        "FALLBACK_LABEL",
+        "INPUT"
+      ],
+      "tags": [
+        "classification",
+        "nlp",
+        "structured"
+      ],
+      "source_ids": [
+        "deepseek_prompt_library"
+      ]
+    },
+    {
+      "id": "deepseek-005",
+      "provider": "deepseek",
+      "category": "structured-output",
+      "title": "Strict JSON Extraction",
+      "prompt": "Extract the requested fields from the input and return valid JSON only. The required schema is: [JSON_SCHEMA]. Do not add Markdown, commentary, or extra keys. If a value is unavailable, use null. Validate that the output is syntactically valid JSON before returning it.\n\nINPUT:\n[INPUT]",
+      "variables": [
+        "JSON_SCHEMA",
+        "INPUT"
+      ],
+      "tags": [
+        "json",
+        "structured-output",
+        "extraction"
+      ],
+      "source_ids": [
+        "deepseek_prompt_library",
+        "deepseek_json"
+      ]
+    },
+    {
+      "id": "deepseek-006",
+      "provider": "deepseek",
+      "category": "roleplay",
+      "title": "Custom Expert Persona",
+      "prompt": "Act as a [ROLE] assisting a [USER_TYPE]. Your objectives are [OBJECTIVES]. Use this tone: [TONE]. Follow these constraints: [CONSTRAINTS]. When information is missing, state the assumption explicitly instead of inventing facts. For each response, prioritize [PRIORITY].",
+      "variables": [
+        "ROLE",
+        "USER_TYPE",
+        "OBJECTIVES",
+        "TONE",
+        "CONSTRAINTS",
+        "PRIORITY"
+      ],
+      "tags": [
+        "persona",
+        "roleplay",
+        "expert"
+      ],
+      "source_ids": [
+        "deepseek_prompt_library"
+      ]
+    },
+    {
+      "id": "deepseek-007",
+      "provider": "deepseek",
+      "category": "scenario",
+      "title": "Scenario Simulation",
+      "prompt": "Simulate the following scenario: [SCENARIO]. Participants: [PARTICIPANTS]. Starting conditions: [START]. Goal: [GOAL]. Respond turn-by-turn, keep the scenario internally consistent, and introduce consequences only when justified by prior events.",
+      "variables": [
+        "SCENARIO",
+        "PARTICIPANTS",
+        "START",
+        "GOAL"
+      ],
+      "tags": [
+        "simulation",
+        "scenario",
+        "roleplay"
+      ],
+      "source_ids": [
+        "deepseek_prompt_library"
+      ]
+    },
+    {
+      "id": "deepseek-008",
+      "provider": "deepseek",
+      "category": "writing",
+      "title": "Essay Generator",
+      "prompt": "Write an essay about [TOPIC] for [AUDIENCE]. Purpose: [PURPOSE]. Structure it with an introduction, [NUMBER] main sections, and a conclusion. Use [TONE], concrete examples, and clear transitions. Avoid unsupported factual claims and distinguish assumptions from established information.",
+      "variables": [
+        "TOPIC",
+        "AUDIENCE",
+        "PURPOSE",
+        "NUMBER",
+        "TONE"
+      ],
+      "tags": [
+        "writing",
+        "essay",
+        "structure"
+      ],
+      "source_ids": [
+        "deepseek_prompt_library"
+      ]
+    },
+    {
+      "id": "deepseek-009",
+      "provider": "deepseek",
+      "category": "copywriting",
+      "title": "Marketing Outline",
+      "prompt": "Create a marketing-content outline for [PRODUCT] targeting [AUDIENCE]. Goal: [GOAL]. Include the core value proposition, objections, proof points, call to action, and a section-by-section content plan. Keep claims proportional to the evidence supplied.",
+      "variables": [
+        "PRODUCT",
+        "AUDIENCE",
+        "GOAL"
+      ],
+      "tags": [
+        "marketing",
+        "outline",
+        "copywriting"
+      ],
+      "source_ids": [
+        "deepseek_prompt_library"
+      ]
+    },
+    {
+      "id": "deepseek-010",
+      "provider": "deepseek",
+      "category": "translation",
+      "title": "Bilingual Translation Expert",
+      "prompt": "Translate the following text from [SOURCE_LANGUAGE] to [TARGET_LANGUAGE]. Preserve meaning, tone, formatting, names, numbers, and technical terminology. Do not summarize. If a phrase has multiple plausible translations, choose the one most natural for [AUDIENCE].\n\nTEXT:\n[TEXT]",
+      "variables": [
+        "SOURCE_LANGUAGE",
+        "TARGET_LANGUAGE",
+        "AUDIENCE",
+        "TEXT"
+      ],
+      "tags": [
+        "translation",
+        "localization",
+        "bilingual"
+      ],
+      "source_ids": [
+        "deepseek_prompt_library"
+      ]
+    },
+    {
+      "id": "deepseek-011",
+      "provider": "deepseek",
+      "category": "prompt-engineering",
+      "title": "Prompt Generator",
+      "prompt": "Create a high-quality prompt for [TASK] using the following context: [CONTEXT]. Target model/workflow: [MODEL]. Required output: [OUTPUT]. Constraints: [CONSTRAINTS]. Produce the final prompt first, then list the variables that should be replaced for reuse.",
+      "variables": [
+        "TASK",
+        "CONTEXT",
+        "MODEL",
+        "OUTPUT",
+        "CONSTRAINTS"
+      ],
+      "tags": [
+        "meta-prompt",
+        "prompt-engineering",
+        "template"
+      ],
+      "source_ids": [
+        "deepseek_prompt_library"
+      ]
+    },
+    {
+      "id": "deepseek-012",
+      "provider": "deepseek",
+      "category": "analysis",
+      "title": "Evidence-Aware Analysis",
+      "prompt": "Analyze [SUBJECT] using the supplied evidence. Separate observations, inferences, assumptions, and unknowns. Compare the main alternatives using [CRITERIA]. Do not invent missing facts. Finish with a concise conclusion and the most important uncertainty.\n\nEVIDENCE:\n[EVIDENCE]",
+      "variables": [
+        "SUBJECT",
+        "CRITERIA",
+        "EVIDENCE"
+      ],
+      "tags": [
+        "analysis",
+        "reasoning",
+        "evidence"
+      ],
+      "source_ids": [
+        "deepseek_prompt_library"
+      ]
+    }
+  ]
+}
