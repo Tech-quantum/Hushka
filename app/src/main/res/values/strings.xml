@@ -13,4 +13,9 @@
     <string name="light">روشن</string>
     <string name="dark">تاریک</string>
     <string name="system">سیستم</string>
+    <string name="sort_label">مرتب‌سازی</string>
+    <string name="sort_latest">جدیدترین</string>
+    <string name="sort_title">عنوان</string>
+    <string name="sort_category">دسته‌بندی</string>
+    <string name="sort_favorites">علاقه‌مندی‌ها</string>
 </resources>
