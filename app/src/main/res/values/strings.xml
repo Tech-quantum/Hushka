@@ -18,4 +18,8 @@
     <string name="sort_title">عنوان</string>
     <string name="sort_category">دسته‌بندی</string>
     <string name="sort_favorites">علاقه‌مندی‌ها</string>
+    <string name="search_hint">جستجو...</string>
+    <string name="clear">پاک کردن</string>
+    <string name="all">همه</string>
+    <string name="favorites">علاقه‌مندی‌ها</string>
 </resources>
