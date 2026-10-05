@@ -8,4 +8,9 @@
     <string name="arabic">العربية</string>
     <string name="turkish">Türkçe</string>
     <string name="close">بستن</string>
+    <string name="settings">تنظیمات</string>
+    <string name="appearance">ظاهر</string>
+    <string name="light">روشن</string>
+    <string name="dark">تاریک</string>
+    <string name="system">سیستم</string>
 </resources>
