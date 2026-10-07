@@ -11,6 +11,8 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: PromptViewModel by viewModels {
@@ -26,8 +28,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // RecognizerIntent runs in the system speech-recognition app, which holds the
-    // microphone permission itself, so this app does not need RECORD_AUDIO.
     private fun startVoiceSearch() {
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
             putExtra(
@@ -52,6 +52,21 @@ class MainActivity : AppCompatActivity() {
         if (currentLanguage.isNullOrBlank() || currentLanguage != savedLanguage) {
             AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(savedLanguage))
         }
-        setContent { HomeScreen() }
+        setContent {
+            var showSettings by remember { mutableStateOf(false) }
+            HomeScreen(
+                onSettingsClick = { showSettings = true },
+                onStartVoiceSearch = ::startVoiceSearch
+            )
+            if (showSettings) {
+                SettingsDialog(
+                    themeMode = "system",
+                    language = savedLanguage,
+                    onThemeChange = { },
+                    onLanguageChange = { },
+                    onDismiss = { showSettings = false }
+                )
+            }
+        }
     }
 }
