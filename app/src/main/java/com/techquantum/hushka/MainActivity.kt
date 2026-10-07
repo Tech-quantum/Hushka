@@ -57,6 +57,7 @@ class MainActivity : AppCompatActivity() {
         setContent {
             var showSettings by remember { mutableStateOf(false) }
             HomeScreen(
+                viewModel = viewModel,
                 onSettingsClick = { showSettings = true },
                 onStartVoiceSearch = ::startVoiceSearch
             )
