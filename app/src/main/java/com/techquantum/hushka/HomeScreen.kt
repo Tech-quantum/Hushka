@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
@@ -20,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 private val PurplePrimary = Color(0xFF7C7CFF)
 private val PurpleLight = Color(0xFFB8B8FF)
@@ -33,12 +35,14 @@ private val BorderColor = Color(0xFF3A3A4E)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+    viewModel: PromptViewModel,
     onSettingsClick: () -> Unit = {},
     onStartVoiceSearch: () -> Unit = {}
 ) {
-    var searchQuery by remember { mutableStateOf("") }
-    var selectedProvider by remember { mutableStateOf("همه") }
-    var selectedTab by remember { mutableStateOf("اخیر") }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    var showAddDialog by remember { mutableStateOf(false) }
+    var editingPrompt by remember { mutableStateOf<PromptEntity?>(null) }
+    var sortExpanded by remember { mutableStateOf(false) }
 
     Scaffold(
         containerColor = DarkBg,
@@ -72,7 +76,7 @@ fun HomeScreen(
         },
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                onClick = { },
+                onClick = { showAddDialog = true },
                 containerColor = PurplePrimary,
                 contentColor = Color.White,
                 shape = RoundedCornerShape(16.dp)
@@ -89,9 +93,10 @@ fun HomeScreen(
                 .padding(padding)
                 .padding(horizontal = 16.dp)
         ) {
+            // Search Bar
             OutlinedTextField(
-                value = searchQuery,
-                onValueChange = { searchQuery = it },
+                value = uiState.query,
+                onValueChange = { viewModel.onQueryChanged(it) },
                 modifier = Modifier.fillMaxWidth(),
                 placeholder = { Text("جستجو...", fontSize = 12.sp, color = TextGray) },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = TextGray) },
@@ -113,9 +118,10 @@ fun HomeScreen(
 
             Spacer(Modifier.height(16.dp))
 
+            // Categories & Favorites Buttons
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Button(
-                    onClick = { },
+                    onClick = { viewModel.onCategorySelected(ALL_CATEGORY) },
                     modifier = Modifier.weight(1f).height(50.dp),
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(
@@ -129,11 +135,11 @@ fun HomeScreen(
                     Text("دسته بندی ها", fontSize = 14.sp)
                 }
                 Button(
-                    onClick = { },
+                    onClick = { viewModel.onFavoritesToggled() },
                     modifier = Modifier.weight(1f).height(50.dp),
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = PurpleLight.copy(alpha = 0.35f),
+                        containerColor = if (uiState.favoritesOnly) PurplePrimary else PurpleLight.copy(alpha = 0.35f),
                         contentColor = TextLight
                     ),
                     elevation = ButtonDefaults.buttonElevation(0.dp)
@@ -146,18 +152,27 @@ fun HomeScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            val providers = listOf("همه", "anthropic", "deepseek", "gemini", "openai")
+            // Provider Chips
+            val providers = listOf(
+                "همه" to ALL_PROVIDER,
+                "anthropic" to "anthropic",
+                "deepseek" to "deepseek",
+                "gemini" to "gemini",
+                "openai" to "openai"
+            )
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(providers) { provider ->
-                    val isSelected = selectedProvider == provider
+                items(providers) { pair ->
+                    val label = pair.first
+                    val value = pair.second
+                    val isSelected = uiState.selectedProvider == value
                     Surface(
                         shape = RoundedCornerShape(50),
                         color = if (isSelected) PurplePrimary.copy(alpha = 0.25f) else Color.Transparent,
                         border = BorderStroke(1.dp, if (isSelected) PurplePrimary else BorderColor),
-                        onClick = { selectedProvider = provider }
+                        onClick = { viewModel.onProviderSelected(value) }
                     ) {
                         Text(
-                            provider,
+                            label,
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                             fontSize = 12.sp,
                             color = if (isSelected) PurpleLight else TextGray,
@@ -169,15 +184,27 @@ fun HomeScreen(
 
             Spacer(Modifier.height(12.dp))
 
+            // Tab Chips
             val tabs = listOf("اخیر", "پین شده", "علاقه مندی ها")
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(tabs) { tab ->
-                    val isSelected = selectedTab == tab
+                    val isSelected = when (tab) {
+                        "اخیر" -> uiState.recentOnly
+                        "پین شده" -> uiState.pinnedOnly
+                        "علاقه مندی ها" -> uiState.favoritesOnly
+                        else -> false
+                    }
                     Surface(
                         shape = RoundedCornerShape(50),
                         color = if (isSelected) PurplePrimary.copy(alpha = 0.25f) else Color.Transparent,
                         border = BorderStroke(1.dp, if (isSelected) PurplePrimary else BorderColor),
-                        onClick = { selectedTab = tab }
+                        onClick = {
+                            when (tab) {
+                                "اخیر" -> viewModel.onRecentToggled()
+                                "پین شده" -> viewModel.onPinnedToggled()
+                                "علاقه مندی ها" -> viewModel.onFavoritesToggled()
+                            }
+                        }
                     ) {
                         Text(
                             tab,
@@ -190,8 +217,54 @@ fun HomeScreen(
                 }
             }
 
+            Spacer(Modifier.height(12.dp))
+
+            // Sort Dropdown
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                Box {
+                    Surface(
+                        shape = RoundedCornerShape(50),
+                        color = Color.Transparent,
+                        border = BorderStroke(1.dp, BorderColor),
+                        onClick = { sortExpanded = true }
+                    ) {
+                        val sortLabel = when (uiState.sortMode) {
+                            SORT_TITLE -> "عنوان"
+                            SORT_CATEGORY -> "دسته بندی"
+                            SORT_FAVORITES -> "علاقه مندی ها"
+                            else -> "جدیدترین"
+                        }
+                        Row(
+                            modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text("مرتب سازی: $sortLabel", fontSize = 12.sp, color = TextGray)
+                            Spacer(Modifier.width(4.dp))
+                            Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = TextGray, modifier = Modifier.size(18.dp))
+                        }
+                    }
+                    DropdownMenu(expanded = sortExpanded, onDismissRequest = { sortExpanded = false }) {
+                        listOf(
+                            SORT_LATEST to "جدیدترین",
+                            SORT_TITLE to "عنوان",
+                            SORT_CATEGORY to "دسته بندی",
+                            SORT_FAVORITES to "علاقه مندی ها"
+                        ).forEach { pair ->
+                            DropdownMenuItem(
+                                text = { Text(pair.second) },
+                                onClick = {
+                                    viewModel.onSortSelected(pair.first)
+                                    sortExpanded = false
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+
             Spacer(Modifier.height(16.dp))
 
+            // Section Header
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -200,30 +273,88 @@ fun HomeScreen(
                 Column {
                     Text("پرامپت های من", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = TextLight)
                     Spacer(Modifier.height(2.dp))
-                    Text("197 پرامپت ذخیره شده", fontSize = 11.sp, color = TextGray)
+                    Text("${uiState.filteredPrompts.size} پرامپت ذخیره شده", fontSize = 11.sp, color = TextGray)
                 }
-                IconButton(onClick = { }) {
-                    Icon(Icons.Default.Star, contentDescription = null, tint = TextGray, modifier = Modifier.size(24.dp))
+                IconButton(onClick = { viewModel.updateLibrary() }) {
+                    Icon(
+                        Icons.Default.Star,
+                        contentDescription = null,
+                        tint = if (uiState.isUpdating) PurplePrimary else TextGray,
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
             }
 
             Spacer(Modifier.height(8.dp))
 
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(14.dp),
-                contentPadding = PaddingValues(bottom = 100.dp)
-            ) {
-                items(5) { _ ->
-                    PromptCard(
-                        title = "Claude Fable 5.1 & Mythos",
-                        description = "You are Claude Fable 5.1 / Mythos 5.1, the newest model tier from Anthropic...",
-                        mainTag = "agent.agentic-workflow",
-                        tags = listOf("safety#", "mythos#", "claude-5-1#"),
-                        provider = "anthropic"
+            // Prompt List
+            if (uiState.filteredPrompts.isEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxWidth().padding(40.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        if (uiState.query.isNotEmpty()) "چیزی پیدا نشد" else "هنوز پرامپتی اضافه نشده",
+                        color = TextGray,
+                        fontSize = 14.sp
                     )
+                }
+            } else {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(14.dp),
+                    contentPadding = PaddingValues(bottom = 100.dp)
+                ) {
+                    items(uiState.filteredPrompts, key = { it.id }) { prompt ->
+                        PromptCard(
+                            title = prompt.title,
+                            description = prompt.text,
+                            mainTag = prompt.category,
+                            tags = prompt.tags.split(",").map { it.trim() }.filter { it.isNotEmpty() },
+                            provider = prompt.collection.ifBlank { "custom" },
+                            onFavoriteToggle = { viewModel.toggleFavorite(prompt) },
+                            onPinToggle = { viewModel.togglePinned(prompt) },
+                            onCardClick = { editingPrompt = prompt }
+                        )
+                    }
                 }
             }
         }
+    }
+
+    // Add Prompt Dialog
+    if (showAddDialog) {
+        PromptFormDialog(
+            title = "افزودن پرامپت جدید",
+            initialPrompt = null,
+            categories = listOf("عمومی", "تصویر", "ویدئو", "متن", "کد"),
+            onDismiss = { showAddDialog = false },
+            onSave = { title, category, tags, text, collection ->
+                viewModel.addPrompt(title, category, tags, text, collection)
+                showAddDialog = false
+            }
+        )
+    }
+
+    // Edit Prompt Dialog
+    editingPrompt?.let { prompt ->
+        PromptFormDialog(
+            title = "ویرایش پرامپت",
+            initialPrompt = prompt,
+            categories = listOf("عمومی", "تصویر", "ویدئو", "متن", "کد"),
+            onDismiss = { editingPrompt = null },
+            onSave = { title, category, tags, text, collection ->
+                viewModel.updatePrompt(
+                    prompt.copy(
+                        title = title,
+                        category = category,
+                        tags = tags,
+                        text = text,
+                        collection = collection
+                    )
+                )
+                editingPrompt = null
+            }
+        )
     }
 }
 
@@ -233,13 +364,17 @@ fun PromptCard(
     description: String,
     mainTag: String,
     tags: List<String>,
-    provider: String
+    provider: String,
+    onFavoriteToggle: () -> Unit,
+    onPinToggle: () -> Unit,
+    onCardClick: () -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(22.dp),
         colors = CardDefaults.cardColors(containerColor = CardDark),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        onClick = onCardClick
     ) {
         Column(modifier = Modifier.padding(18.dp)) {
             Row(
@@ -248,7 +383,7 @@ fun PromptCard(
                 verticalAlignment = Alignment.Top
             ) {
                 Text(
-                    title,
+                    title.ifBlank { "بدون عنوان" },
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f),
@@ -262,7 +397,7 @@ fun PromptCard(
                         shape = RoundedCornerShape(50),
                         color = CardLight,
                         modifier = Modifier.size(32.dp),
-                        onClick = { }
+                        onClick = onPinToggle
                     ) {
                         Box(contentAlignment = Alignment.Center) {
                             Text("📌", fontSize = 14.sp)
@@ -273,7 +408,7 @@ fun PromptCard(
                         shape = RoundedCornerShape(50),
                         color = CardLight,
                         modifier = Modifier.size(32.dp),
-                        onClick = { }
+                        onClick = onFavoriteToggle
                     ) {
                         Box(contentAlignment = Alignment.Center) {
                             Text("⭐", fontSize = 14.sp)
@@ -284,37 +419,39 @@ fun PromptCard(
 
             Spacer(Modifier.height(12.dp))
 
-            Surface(
-                shape = RoundedCornerShape(8.dp),
-                color = PurplePrimary.copy(alpha = 0.15f)
-            ) {
-                Text(
-                    mainTag,
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                    fontSize = 11.sp,
-                    color = PurpleLight
-                )
+            if (mainTag.isNotBlank()) {
+                Surface(
+                    shape = RoundedCornerShape(8.dp),
+                    color = PurplePrimary.copy(alpha = 0.15f)
+                ) {
+                    Text(
+                        mainTag,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                        fontSize = 11.sp,
+                        color = PurpleLight
+                    )
+                }
+                Spacer(Modifier.height(10.dp))
             }
 
-            Spacer(Modifier.height(10.dp))
-
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                items(tags) { tag ->
-                    Surface(
-                        shape = RoundedCornerShape(8.dp),
-                        color = Color(0xFF3A3A55)
-                    ) {
-                        Text(
-                            tag,
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                            fontSize = 11.sp,
-                            color = TextLight
-                        )
+            if (tags.isNotEmpty()) {
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    items(tags) { tag ->
+                        Surface(
+                            shape = RoundedCornerShape(8.dp),
+                            color = Color(0xFF3A3A55)
+                        ) {
+                            Text(
+                                tag,
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                                fontSize = 11.sp,
+                                color = TextLight
+                            )
+                        }
                     }
                 }
+                Spacer(Modifier.height(14.dp))
             }
-
-            Spacer(Modifier.height(14.dp))
 
             Text(
                 description,
