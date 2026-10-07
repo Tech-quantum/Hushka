@@ -52,6 +52,6 @@ class MainActivity : AppCompatActivity() {
         if (currentLanguage.isNullOrBlank() || currentLanguage != savedLanguage) {
             AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(savedLanguage))
         }
-        setContent { PromptVaultApp(viewModel, ::startVoiceSearch) }
+        setContent { HomeScreen() }
     }
 }
