@@ -3,8 +3,8 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.kapt")
 }
-android { namespace = "com.techquantum.promptvault"; compileSdk = 35
-    defaultConfig { applicationId = "com.techquantum.promptvault"; minSdk = 26; targetSdk = 35; versionCode = 1; versionName = "1.0.0" }
+android { namespace = "com.techquantum.hushka"; compileSdk = 35
+    defaultConfig { applicationId = "com.techquantum.hushka"; minSdk = 26; targetSdk = 35; versionCode = 1; versionName = "1.0.0" }
     buildTypes { release { isMinifyEnabled = false; proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro") } }
     compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
     kotlinOptions { jvmTarget = "17" }
