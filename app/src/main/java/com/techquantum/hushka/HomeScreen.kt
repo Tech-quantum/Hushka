@@ -359,66 +359,71 @@ fun HomeScreen(
     }
 
     // Categories Dialog
-    if (showCategoryDialog) {
-        val uniqueCategories = uiState.prompts
-            .map { it.category }
-            .filter { it.isNotBlank() }
-            .distinct()
-            .sorted()
-        AlertDialog(
-            onDismissRequest = { showCategoryDialog = false },
-            title = { Text("انتخاب دسته‌بندی") },
-            text = {
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth().heightIn(max = 400.dp)
-                ) {
-                    item {
-                        Surface(
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                            shape = RoundedCornerShape(10.dp),
-                            color = if (uiState.selectedCategory == ALL_CATEGORY) PurplePrimary.copy(alpha = 0.3f)
-                            else CardLight,
-                            onClick = {
-                                viewModel.onCategorySelected(ALL_CATEGORY)
-                                showCategoryDialog = false
-                            }
-                        ) {
-                            Text(
-                                "همه دسته‌ها",
-                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                                color = if (uiState.selectedCategory == ALL_CATEGORY) PurpleLight else TextLight,
-                                fontSize = 14.sp
-                            )
+    // Categories Dialog
+if (showCategoryDialog) {
+    val uniqueCategories = uiState.prompts
+        .map { it.category }
+        .filter { it.isNotBlank() }
+        .distinct()
+        .sorted()
+    AlertDialog(
+        onDismissRequest = { showCategoryDialog = false },
+        containerColor = Color(0xFF1E1E2E),
+        titleContentColor = TextLight,
+        textContentColor = TextLight,
+        title = { Text("انتخاب دسته‌بندی", color = TextLight) },
+        text = {
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth().heightIn(max = 400.dp)
+            ) {
+                item {
+                    val isSelected = uiState.selectedCategory == ALL_CATEGORY
+                    Surface(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                        shape = RoundedCornerShape(10.dp),
+                        color = if (isSelected) PurplePrimary else CardLight,
+                        onClick = {
+                            viewModel.onCategorySelected(ALL_CATEGORY)
+                            showCategoryDialog = false
                         }
-                    }
-                    items(uniqueCategories) { category ->
-                        Surface(
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                            shape = RoundedCornerShape(10.dp),
-                            color = if (uiState.selectedCategory == category) PurplePrimary.copy(alpha = 0.3f)
-                            else CardLight,
-                            onClick = {
-                                viewModel.onCategorySelected(category)
-                                showCategoryDialog = false
-                            }
-                        ) {
-                            Text(
-                                category,
-                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                                color = if (uiState.selectedCategory == category) PurpleLight else TextLight,
-                                fontSize = 14.sp
-                            )
-                        }
+                    ) {
+                        Text(
+                            "همه دسته‌ها",
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                            color = Color.White,
+                            fontSize = 14.sp,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                        )
                     }
                 }
-            },
-            confirmButton = {
-                TextButton(onClick = { showCategoryDialog = false }) {
-                    Text("بستن")
+                items(uniqueCategories) { category ->
+                    val isSelected = uiState.selectedCategory == category
+                    Surface(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                        shape = RoundedCornerShape(10.dp),
+                        color = if (isSelected) PurplePrimary else CardLight,
+                        onClick = {
+                            viewModel.onCategorySelected(category)
+                            showCategoryDialog = false
+                        }
+                    ) {
+                        Text(
+                            category,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                            color = Color.White,
+                            fontSize = 14.sp,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                        )
+                    }
                 }
             }
-        )
-    }
+        },
+        confirmButton = {
+            TextButton(onClick = { showCategoryDialog = false }) {
+                Text("بستن", color = PurpleLight)
+            }
+        }
+    )
 }
 
 @Composable
