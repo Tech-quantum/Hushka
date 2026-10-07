@@ -122,11 +122,11 @@ fun HomeScreen(
             // Categories & Favorites Buttons
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Button(
-                    onClick = { viewModel.onCategorySelected(ALL_CATEGORY) },
+                    onClick = { showCategoryDialog = true },
                     modifier = Modifier.weight(1f).height(50.dp),
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = PurpleLight.copy(alpha = 0.35f),
+                        containerColor = if (uiState.selectedCategory != ALL_CATEGORY) PurplePrimary else PurpleLight.copy(alpha = 0.35f),
                         contentColor = TextLight
                     ),
                     elevation = ButtonDefaults.buttonElevation(0.dp)
@@ -357,68 +357,68 @@ fun HomeScreen(
             }
         )
     }
-}
 
-// Categories Dialog
-if (showCategoryDialog) {
-    val uniqueCategories = uiState.prompts
-        .map { it.category }
-        .filter { it.isNotBlank() }
-        .distinct()
-        .sorted()
-    AlertDialog(
-        onDismissRequest = { showCategoryDialog = false },
-        title = { Text("انتخاب دسته‌بندی") },
-        text = {
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth().heightIn(max = 400.dp)
-            ) {
-                item {
-                    Surface(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                        shape = RoundedCornerShape(10.dp),
-                        color = if (uiState.selectedCategory == ALL_CATEGORY) PurplePrimary.copy(alpha = 0.3f)
-                        else CardLight,
-                        onClick = {
-                            viewModel.onCategorySelected(ALL_CATEGORY)
-                            showCategoryDialog = false
+    // Categories Dialog
+    if (showCategoryDialog) {
+        val uniqueCategories = uiState.prompts
+            .map { it.category }
+            .filter { it.isNotBlank() }
+            .distinct()
+            .sorted()
+        AlertDialog(
+            onDismissRequest = { showCategoryDialog = false },
+            title = { Text("انتخاب دسته‌بندی") },
+            text = {
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth().heightIn(max = 400.dp)
+                ) {
+                    item {
+                        Surface(
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            color = if (uiState.selectedCategory == ALL_CATEGORY) PurplePrimary.copy(alpha = 0.3f)
+                            else CardLight,
+                            onClick = {
+                                viewModel.onCategorySelected(ALL_CATEGORY)
+                                showCategoryDialog = false
+                            }
+                        ) {
+                            Text(
+                                "همه دسته‌ها",
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                                color = if (uiState.selectedCategory == ALL_CATEGORY) PurpleLight else TextLight,
+                                fontSize = 14.sp
+                            )
                         }
-                    ) {
-                        Text(
-                            "همه دسته‌ها",
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                            color = if (uiState.selectedCategory == ALL_CATEGORY) PurpleLight else TextLight,
-                            fontSize = 14.sp
-                        )
+                    }
+                    items(uniqueCategories) { category ->
+                        Surface(
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            color = if (uiState.selectedCategory == category) PurplePrimary.copy(alpha = 0.3f)
+                            else CardLight,
+                            onClick = {
+                                viewModel.onCategorySelected(category)
+                                showCategoryDialog = false
+                            }
+                        ) {
+                            Text(
+                                category,
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                                color = if (uiState.selectedCategory == category) PurpleLight else TextLight,
+                                fontSize = 14.sp
+                            )
+                        }
                     }
                 }
-                items(uniqueCategories) { category ->
-                    Surface(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                        shape = RoundedCornerShape(10.dp),
-                        color = if (uiState.selectedCategory == category) PurplePrimary.copy(alpha = 0.3f)
-                        else CardLight,
-                        onClick = {
-                            viewModel.onCategorySelected(category)
-                            showCategoryDialog = false
-                        }
-                    ) {
-                        Text(
-                            category,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                            color = if (uiState.selectedCategory == category) PurpleLight else TextLight,
-                            fontSize = 14.sp
-                        )
-                    }
+            },
+            confirmButton = {
+                TextButton(onClick = { showCategoryDialog = false }) {
+                    Text("بستن")
                 }
             }
-        },
-        confirmButton = {
-            TextButton(onClick = { showCategoryDialog = false }) {
-                Text("بستن")
-            }
-        }
-    )
+        )
+    }
 }
 
 @Composable
