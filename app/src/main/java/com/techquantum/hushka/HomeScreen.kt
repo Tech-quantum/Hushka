@@ -1,119 +1,452 @@
 package com.techquantum.hushka
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.widget.Toast
-import androidx.activity.compose.BackHandler
-import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.core.os.LocaleListCompat
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
+// رنگ‌های اصلی طراحی
+private val PurplePrimary = Color(0xFF7C7CFF)
+private val PurpleLight = Color(0xFFB8B8FF)
+private val DarkBg = Color(0xFF1A1A2E)
+private val CardDark = Color(0xFF252538)
+private val CardLight = Color(0xFF2E2E45)
+private val TextLight = Color(0xFFEAEAEA)
+private val TextGray = Color(0xFF9E9EAE)
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PromptVaultApp(viewModel: PromptViewModel, onVoiceSearch: () -> Unit) {
-    var showAddDialog by rememberSaveable { mutableStateOf(false) }
-    var editingPromptId by rememberSaveable { mutableStateOf<Long?>(null) }
-    var showSettings by rememberSaveable { mutableStateOf(false) }
-    var categoryDirectoryOpen by rememberSaveable { mutableStateOf(false) }
-    var selectedCategoryPage by rememberSaveable { mutableStateOf<String?>(null) }
-    val context = LocalContext.current
-    var themeMode by rememberSaveable { mutableStateOf(AppSettings.getTheme(context)) }
-    var language by rememberSaveable { mutableStateOf(AppSettings.getLanguage(context)) }
-    val uiState by viewModel.uiState.collectAsState()
-    val prompts = uiState.prompts
-    // Look the prompt up fresh so saving an edit never overwrites favorite/pinned/lastUsedAt
-    // changes made while the dialog was open.
-    val editingPrompt = editingPromptId?.let { id -> prompts.firstOrNull { it.id == id } }
-    val filteredPrompts = uiState.filteredPrompts
-    val providers = remember(prompts) { promptProviders(prompts) }
-    val domains = remember(prompts) { promptDomains(prompts) }
-    val collections = remember(prompts) { prompts.map { it.collection }.filter { it.isNotBlank() }.distinct().sorted() }
-    val categories = remember(prompts, uiState.selectedProvider, uiState.selectedDomain) {
-        promptCategories(prompts.filter {
-            (uiState.selectedProvider == ALL_PROVIDER || it.provider == uiState.selectedProvider) &&
-                (uiState.selectedDomain == ALL_DOMAIN || promptDomain(it.category) == uiState.selectedDomain)
-        })
-    }
+fun HomeScreen(
+    onSettingsClick: () -> Unit = {},
+    onPromptClick: (String) -> Unit = {}
+) {
+    var searchQuery by remember { mutableStateOf("") }
+    var selectedProvider by remember { mutableStateOf("همه ارائه‌دهندگان") }
+    var selectedTab by remember { mutableStateOf("اخیر") }
 
-    BackHandler(enabled = selectedCategoryPage != null || categoryDirectoryOpen) {
-        if (selectedCategoryPage != null) {
-            selectedCategoryPage = null
-            categoryDirectoryOpen = true
-        } else {
-            categoryDirectoryOpen = false
-        }
-    }
-
-    PromptVaultTheme(themeMode = themeMode) {
-        when {
-            selectedCategoryPage != null -> {
-                CategoryPromptsScreen(
-                    category = selectedCategoryPage!!,
-                    prompts = prompts,
-                    onBack = { selectedCategoryPage = null; categoryDirectoryOpen = true },
-                    onFavorite = viewModel::toggleFavorite,
-                    onPin = viewModel::togglePinned,
-                    onCopy = { prompt -> viewModel.markUsed(prompt); copyPrompt(context, prompt.text) },
-                    onEdit = { editingPromptId = it.id },
-                    onDelete = viewModel::deletePrompt
-                )
-            }
-            categoryDirectoryOpen -> {
-                CategoryDirectoryScreen(
-                    prompts = prompts,
-                    onBack = { categoryDirectoryOpen = false },
-                    onSelectCategory = {
-                        selectedCategoryPage = it
-                        categoryDirectoryOpen = false
+    Scaffold(
+        containerColor = DarkBg,
+        topBar = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp, vertical = 16.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            "Hushka",
+                            fontSize = 28.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = TextLight
+                        )
+                        Spacer(Modifier.height(4.dp))
+                        Text(
+                            "هوشکا بستری برای کاوش، خلق و مدیریت ایده‌های هوش مصنوعی",
+                            fontSize = 11.sp,
+                            color = TextGray,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
                     }
-                )
+                    IconButton(onClick = onSettingsClick) {
+                        Icon(
+                            Icons.Default.Settings,
+                            contentDescription = "Settings",
+                            tint = TextLight,
+                            modifier = Modifier.size(26.dp)
+                        )
+                    }
+                }
             }
-            else -> {
-                HomeScaffold(
-                    viewModel = viewModel,
-                    onVoiceSearch = onVoiceSearch,
-                    onOpenSettings = { showSettings = true },
-                    onOpenAddPrompt = { showAddDialog = true },
-                    onEditPrompt = { editingPromptId = it.id },
-                    onCopyPrompt = { prompt -> copyPrompt(context, prompt.text) },
-                    onOpenCategories = { categoryDirectoryOpen = true },
-                    categories = categories,
-                    selectedProvider = uiState.selectedProvider,
-                    selectedDomain = uiState.selectedDomain,
-                    prompts = prompts,
-                    filteredPrompts = filteredPrompts,
-                    query = uiState.query,
-                    selectedCategory = uiState.selectedCategory,
-                    selectedCategories = uiState.selectedCategories,
-                    selectedCollection = uiState.selectedCollection,
-                    collections = collections,
-                    pinnedOnly = uiState.pinnedOnly,
-                    recentOnly = uiState.recentOnly,
-                    favoritesOnly = uiState.favoritesOnly,
-                    sortMode = uiState.sortMode,
-                    isUpdating = uiState.isUpdating,
-                    onUpdateLibrary = viewModel::updateLibrary
+        },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = { },
+                containerColor = PurplePrimary,
+                contentColor = Color.White,
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Icon(Icons.Default.Add, contentDescription = null)
+                Spacer(Modifier.width(8.dp))
+                Text("پرامپت جدید", fontWeight = FontWeight.Bold)
+            }
+        }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(horizontal = 16.dp)
+        ) {
+            // Search Bar
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = {
+                    Text("جستجو در عنوان، دسته‌بندی و متن پرامپت‌ها...", fontSize = 12.sp, color = TextGray)
+                },
+                leadingIcon = {
+                    Icon(Icons.Default.Search, contentDescription = null, tint = TextGray)
+                },
+                trailingIcon = {
+                    Icon(Icons.Default.Mic, contentDescription = null, tint = TextGray)
+                },
+                shape = RoundedCornerShape(20.dp),
+                singleLine = true,
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = Color.Transparent,
+                    focusedBorderColor = PurplePrimary,
+                    unfocusedContainerColor = CardDark,
+                    focusedContainerColor = CardDark,
+                    unfocusedTextColor = TextLight,
+                    focusedTextColor = TextLight,
+                    cursorColor = PurplePrimary
                 )
+            )
+
+            Spacer(Modifier.height(16.dp))
+
+            // Categories & Filter Buttons
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Button(
+                    onClick = { },
+                    modifier = Modifier.weight(1f).height(50.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = PurpleLight.copy(alpha = 0.35f),
+                        contentColor = TextLight
+                    ),
+                    elevation = ButtonDefaults.buttonElevation(0.dp)
+                ) {
+                    Icon(Icons.Default.GridView, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.width(8.dp))
+                    Text("دسته‌بندی‌ها", fontSize = 14.sp, fontWeight = FontWeight.Medium)
+                }
+                Button(
+                    onClick = { },
+                    modifier = Modifier.weight(1f).height(50.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = PurpleLight.copy(alpha = 0.35f),
+                        contentColor = TextLight
+                    ),
+                    elevation = ButtonDefaults.buttonElevation(0.dp)
+                ) {
+                    Icon(Icons.Default.FilterList, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.width(8.dp))
+                    Text("فیلتر", fontSize = 14.sp, fontWeight = FontWeight.Medium)
+                }
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            // Provider Chips
+            val providers = listOf("همه ارائه‌دهندگان", "anthropic", "deepseek", "gemini", "openai")
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(providers) { provider ->
+                    val isSelected = selectedProvider == provider
+                    Surface(
+                        shape = RoundedCornerShape(50),
+                        color = if (isSelected) PurplePrimary.copy(alpha = 0.25f) else Color.Transparent,
+                        border = androidx.compose.foundation.BorderStroke(
+                            1.dp,
+                            if (isSelected) PurplePrimary else Color(0xFF3A3A4E)
+                        ),
+                        onClick = { selectedProvider = provider }
+                    ) {
+                        Text(
+                            provider,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                            fontSize = 12.sp,
+                            color = if (isSelected) PurpleLight else TextGray,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                        )
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(12.dp))
+
+            // Tab Chips
+            val tabs = listOf("اخیر", "پین‌شده", "مجموعه‌ها", "علاقه‌مندی‌ها")
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(tabs) { tab ->
+                    val isSelected = selectedTab == tab
+                    Surface(
+                        shape = RoundedCornerShape(50),
+                        color = if (isSelected) PurplePrimary.copy(alpha = 0.25f) else Color.Transparent,
+                        border = androidx.compose.foundation.BorderStroke(
+                            1.dp,
+                            if (isSelected) PurplePrimary else Color(0xFF3A3A4E)
+                        ),
+                        onClick = { selectedTab = tab }
+                    ) {
+                        Text(
+                            tab,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                            fontSize = 12.sp,
+                            color = if (isSelected) PurpleLight else TextGray,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                        )
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(12.dp))
+
+            // Sort Dropdown
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Surface(
+                    shape = RoundedCornerShape(50),
+                    color = Color.Transparent,
+                    border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF3A3A4E)),
+                    onClick = { }
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("مرتب‌سازی: جدیدترین", fontSize = 12.sp, color = TextGray)
+                        Spacer(Modifier.width(4.dp))
+                        Icon(
+                            Icons.Default.KeyboardArrowDown,
+                            contentDescription = null,
+                            tint = TextGray,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+            // Section Header
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column {
+                    Text(
+                        "پرامپت‌های من",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = TextLight
+                    )
+                    Spacer(Modifier.height(2.dp))
+                    Text(
+                        "197 پرامپت ذخیره شده",
+                        fontSize = 11.sp,
+                        color = TextGray
+                    )
+                }
+                IconButton(onClick = { }) {
+                    Icon(
+                        Icons.Default.StarBorder,
+                        contentDescription = null,
+                        tint = TextGray,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(8.dp))
+
+            // Prompt List
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(14.dp),
+                contentPadding = PaddingValues(bottom = 100.dp)
+            ) {
+                items(8) { index ->
+                    PromptCard(
+                        title = "Claude Fable 5.1 & Mythos Dual-Use Safety Protocol",
+                        description = "You are Claude Fable 5.1 / Mythos 5.1, the newest model tier from Anthropic. Your operational domain includes...",
+                        mainTag = "agent.agentic-workflow",
+                        tags = listOf("safety#", "mythos#", "claude-5-1#", "refusal#", "anthropic#"),
+                        footerTags = listOf("anthropic", "text-to-text"),
+                        provider = "grok"
+                    )
+                }
             }
         }
     }
-
-    HomeDialogs(
-        viewModel = viewModel, showSettings = showSettings, themeMode = themeMode, language = language,
-        categories = categories, showAddDialog = showAddDialog, editingPrompt = editingPrompt,
-        onThemeChange = { themeMode = it; AppSettings.setTheme(context, it) },
-        onLanguageChange = { language = it; AppSettings.setLanguage(context, it); AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(it)) },
-        onDismissSettings = { showSettings = false }, onDismissAdd = { showAddDialog = false },
-        onDismissEdit = { editingPromptId = null }
-    )
 }
 
-private fun copyPrompt(context: Context, text: String) {
-    if (text.isBlank()) return
-    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-    clipboard.setPrimaryClip(ClipData.newPlainText("PromptVault prompt", text))
-    Toast.makeText(context, context.getString(R.string.copied), Toast.LENGTH_SHORT).show()
+@Composable
+fun PromptCard(
+    title: String,
+    description: String,
+    mainTag: String,
+    tags: List<String>,
+    footerTags: List<String>,
+    provider: String
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(22.dp),
+        colors = CardDefaults.cardColors(containerColor = CardDark),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+    ) {
+        Column(modifier = Modifier.padding(18.dp)) {
+            // Title Row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
+            ) {
+                Text(
+                    title,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    color = TextLight
+                )
+                Spacer(Modifier.width(8.dp))
+                Row {
+                    Surface(
+                        shape = RoundedCornerShape(50),
+                        color = Color(0xFF2E2E45),
+                        modifier = Modifier.size(32.dp),
+                        onClick = { }
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                Icons.Default.Visibility,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp),
+                                tint = TextGray
+                            )
+                        }
+                    }
+                    Spacer(Modifier.width(8.dp))
+                    Surface(
+                        shape = RoundedCornerShape(50),
+                        color = Color(0xFF2E2E45),
+                        modifier = Modifier.size(32.dp),
+                        onClick = { }
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                Icons.Default.Star,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp),
+                                tint = TextGray
+                            )
+                        }
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(12.dp))
+
+            // Main Tag
+            Surface(
+                shape = RoundedCornerShape(8.dp),
+                color = PurplePrimary.copy(alpha = 0.15f)
+            ) {
+                Text(
+                    mainTag,
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                    fontSize = 11.sp,
+                    color = PurpleLight
+                )
+            }
+
+            Spacer(Modifier.height(10.dp))
+
+            // Tags Row
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                items(tags) { tag ->
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = Color(0xFF3A3A55)
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                tag,
+                                fontSize = 11.sp,
+                                color = TextLight
+                            )
+                        }
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(14.dp))
+
+            // Description
+            Text(
+                description,
+                fontSize = 12.sp,
+                lineHeight = 18.sp,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis,
+                color = TextGray
+            )
+
+            Spacer(Modifier.height(14.dp))
+
+            // Footer Row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    footerTags.forEach { ft ->
+                        Surface(
+                            shape = RoundedCornerShape(8.dp),
+                            color = CardLight
+                        ) {
+                            Text(
+                                ft,
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                                fontSize = 10.sp,
+                                color = TextGray
+                            )
+                        }
+                    }
+                }
+                Surface(
+                    shape = RoundedCornerShape(8.dp),
+                    color = PurplePrimary.copy(alpha = 0.3f),
+                    onClick = { }
+                ) {
+                    Text(
+                        provider,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
+            }
+        }
+    }
 }
