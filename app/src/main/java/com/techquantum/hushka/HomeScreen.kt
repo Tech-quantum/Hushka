@@ -1,12 +1,17 @@
 package com.techquantum.hushka
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,7 +22,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-// رنگ‌های اصلی طراحی
 private val PurplePrimary = Color(0xFF7C7CFF)
 private val PurpleLight = Color(0xFFB8B8FF)
 private val DarkBg = Color(0xFF1A1A2E)
@@ -25,6 +29,7 @@ private val CardDark = Color(0xFF252538)
 private val CardLight = Color(0xFF2E2E45)
 private val TextLight = Color(0xFFEAEAEA)
 private val TextGray = Color(0xFF9E9EAE)
+private val BorderColor = Color(0xFF3A3A4E)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -107,7 +112,7 @@ fun HomeScreen(
                     Icon(Icons.Default.Search, contentDescription = null, tint = TextGray)
                 },
                 trailingIcon = {
-                    Icon(Icons.Default.Mic, contentDescription = null, tint = TextGray)
+                    Text("🎤", fontSize = 18.sp)
                 },
                 shape = RoundedCornerShape(20.dp),
                 singleLine = true,
@@ -136,7 +141,7 @@ fun HomeScreen(
                     ),
                     elevation = ButtonDefaults.buttonElevation(0.dp)
                 ) {
-                    Icon(Icons.Default.GridView, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Text("📁", fontSize = 16.sp)
                     Spacer(Modifier.width(8.dp))
                     Text("دسته‌بندی‌ها", fontSize = 14.sp, fontWeight = FontWeight.Medium)
                 }
@@ -150,7 +155,7 @@ fun HomeScreen(
                     ),
                     elevation = ButtonDefaults.buttonElevation(0.dp)
                 ) {
-                    Icon(Icons.Default.FilterList, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Text("⚙", fontSize = 16.sp)
                     Spacer(Modifier.width(8.dp))
                     Text("فیلتر", fontSize = 14.sp, fontWeight = FontWeight.Medium)
                 }
@@ -166,10 +171,7 @@ fun HomeScreen(
                     Surface(
                         shape = RoundedCornerShape(50),
                         color = if (isSelected) PurplePrimary.copy(alpha = 0.25f) else Color.Transparent,
-                        border = androidx.compose.foundation.BorderStroke(
-                            1.dp,
-                            if (isSelected) PurplePrimary else Color(0xFF3A3A4E)
-                        ),
+                        border = BorderStroke(1.dp, if (isSelected) PurplePrimary else BorderColor),
                         onClick = { selectedProvider = provider }
                     ) {
                         Text(
@@ -193,10 +195,7 @@ fun HomeScreen(
                     Surface(
                         shape = RoundedCornerShape(50),
                         color = if (isSelected) PurplePrimary.copy(alpha = 0.25f) else Color.Transparent,
-                        border = androidx.compose.foundation.BorderStroke(
-                            1.dp,
-                            if (isSelected) PurplePrimary else Color(0xFF3A3A4E)
-                        ),
+                        border = BorderStroke(1.dp, if (isSelected) PurplePrimary else BorderColor),
                         onClick = { selectedTab = tab }
                     ) {
                         Text(
@@ -220,7 +219,7 @@ fun HomeScreen(
                 Surface(
                     shape = RoundedCornerShape(50),
                     color = Color.Transparent,
-                    border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF3A3A4E)),
+                    border = BorderStroke(1.dp, BorderColor),
                     onClick = { }
                 ) {
                     Row(
@@ -230,10 +229,10 @@ fun HomeScreen(
                         Text("مرتب‌سازی: جدیدترین", fontSize = 12.sp, color = TextGray)
                         Spacer(Modifier.width(4.dp))
                         Icon(
-                            Icons.Default.KeyboardArrowDown,
+                            Icons.Default.ArrowDropDown,
                             contentDescription = null,
                             tint = TextGray,
-                            modifier = Modifier.size(16.dp)
+                            modifier = Modifier.size(18.dp)
                         )
                     }
                 }
@@ -263,7 +262,7 @@ fun HomeScreen(
                 }
                 IconButton(onClick = { }) {
                     Icon(
-                        Icons.Default.StarBorder,
+                        Icons.Default.Star,
                         contentDescription = null,
                         tint = TextGray,
                         modifier = Modifier.size(24.dp)
@@ -278,7 +277,7 @@ fun HomeScreen(
                 verticalArrangement = Arrangement.spacedBy(14.dp),
                 contentPadding = PaddingValues(bottom = 100.dp)
             ) {
-                items(8) { index ->
+                items(8) { _ ->
                     PromptCard(
                         title = "Claude Fable 5.1 & Mythos Dual-Use Safety Protocol",
                         description = "You are Claude Fable 5.1 / Mythos 5.1, the newest model tier from Anthropic. Your operational domain includes...",
@@ -309,7 +308,6 @@ fun PromptCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(modifier = Modifier.padding(18.dp)) {
-            // Title Row
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -328,33 +326,23 @@ fun PromptCard(
                 Row {
                     Surface(
                         shape = RoundedCornerShape(50),
-                        color = Color(0xFF2E2E45),
+                        color = CardLight,
                         modifier = Modifier.size(32.dp),
                         onClick = { }
                     ) {
                         Box(contentAlignment = Alignment.Center) {
-                            Icon(
-                                Icons.Default.Visibility,
-                                contentDescription = null,
-                                modifier = Modifier.size(16.dp),
-                                tint = TextGray
-                            )
+                            Text("👁", fontSize = 14.sp)
                         }
                     }
                     Spacer(Modifier.width(8.dp))
                     Surface(
                         shape = RoundedCornerShape(50),
-                        color = Color(0xFF2E2E45),
+                        color = CardLight,
                         modifier = Modifier.size(32.dp),
                         onClick = { }
                     ) {
                         Box(contentAlignment = Alignment.Center) {
-                            Icon(
-                                Icons.Default.Star,
-                                contentDescription = null,
-                                modifier = Modifier.size(16.dp),
-                                tint = TextGray
-                            )
+                            Text("⭐", fontSize = 14.sp)
                         }
                     }
                 }
@@ -362,7 +350,6 @@ fun PromptCard(
 
             Spacer(Modifier.height(12.dp))
 
-            // Main Tag
             Surface(
                 shape = RoundedCornerShape(8.dp),
                 color = PurplePrimary.copy(alpha = 0.15f)
@@ -377,30 +364,24 @@ fun PromptCard(
 
             Spacer(Modifier.height(10.dp))
 
-            // Tags Row
             LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 items(tags) { tag ->
                     Surface(
                         shape = RoundedCornerShape(8.dp),
                         color = Color(0xFF3A3A55)
                     ) {
-                        Row(
+                        Text(
+                            tag,
                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                tag,
-                                fontSize = 11.sp,
-                                color = TextLight
-                            )
-                        }
+                            fontSize = 11.sp,
+                            color = TextLight
+                        )
                     }
                 }
             }
 
             Spacer(Modifier.height(14.dp))
 
-            // Description
             Text(
                 description,
                 fontSize = 12.sp,
@@ -412,7 +393,6 @@ fun PromptCard(
 
             Spacer(Modifier.height(14.dp))
 
-            // Footer Row
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
