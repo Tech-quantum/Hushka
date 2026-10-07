@@ -1,4 +1,4 @@
-name: Build PromptVault APK
+name: Build Hushka APK
 on:
   push:
     branches: [ main ]
