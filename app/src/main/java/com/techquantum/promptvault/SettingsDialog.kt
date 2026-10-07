@@ -70,7 +70,13 @@ fun SettingsDialog(
                             Text(label, modifier = Modifier.weight(1f))
                             RadioButton(selected = language == value, onClick = { onLanguageChange(value) })
                         }
-                    }
+                    }Spacer(modifier = Modifier.height(24.dp))
+Text(
+    text = stringResource(R.string.app_subtitle),
+    style = MaterialTheme.typography.bodyMedium,
+    textAlign = TextAlign.Center,
+    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+)
                 }
             }
         },
