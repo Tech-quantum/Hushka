@@ -43,6 +43,7 @@ fun HomeScreen(
     var showAddDialog by remember { mutableStateOf(false) }
     var editingPrompt by remember { mutableStateOf<PromptEntity?>(null) }
     var sortExpanded by remember { mutableStateOf(false) }
+    var showCategoryDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         containerColor = DarkBg,
@@ -356,6 +357,68 @@ fun HomeScreen(
             }
         )
     }
+}
+
+// Categories Dialog
+if (showCategoryDialog) {
+    val uniqueCategories = uiState.prompts
+        .map { it.category }
+        .filter { it.isNotBlank() }
+        .distinct()
+        .sorted()
+    AlertDialog(
+        onDismissRequest = { showCategoryDialog = false },
+        title = { Text("انتخاب دسته‌بندی") },
+        text = {
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth().heightIn(max = 400.dp)
+            ) {
+                item {
+                    Surface(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                        shape = RoundedCornerShape(10.dp),
+                        color = if (uiState.selectedCategory == ALL_CATEGORY) PurplePrimary.copy(alpha = 0.3f)
+                        else CardLight,
+                        onClick = {
+                            viewModel.onCategorySelected(ALL_CATEGORY)
+                            showCategoryDialog = false
+                        }
+                    ) {
+                        Text(
+                            "همه دسته‌ها",
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                            color = if (uiState.selectedCategory == ALL_CATEGORY) PurpleLight else TextLight,
+                            fontSize = 14.sp
+                        )
+                    }
+                }
+                items(uniqueCategories) { category ->
+                    Surface(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                        shape = RoundedCornerShape(10.dp),
+                        color = if (uiState.selectedCategory == category) PurplePrimary.copy(alpha = 0.3f)
+                        else CardLight,
+                        onClick = {
+                            viewModel.onCategorySelected(category)
+                            showCategoryDialog = false
+                        }
+                    ) {
+                        Text(
+                            category,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                            color = if (uiState.selectedCategory == category) PurpleLight else TextLight,
+                            fontSize = 14.sp
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = { showCategoryDialog = false }) {
+                Text("بستن")
+            }
+        }
+    )
 }
 
 @Composable
