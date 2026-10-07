@@ -359,7 +359,6 @@ fun HomeScreen(
     }
 
     // Categories Dialog
-    // Categories Dialog
 if (showCategoryDialog) {
     val uniqueCategories = uiState.prompts
         .map { it.category }
@@ -425,7 +424,7 @@ if (showCategoryDialog) {
         }
     )
 }
-
+}
 @Composable
 fun PromptCard(
     title: String,
