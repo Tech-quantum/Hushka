@@ -133,4 +133,7 @@
     <string name="pin">پین کردن</string>
     <string name="unpin">برداشتن پین</string>
     <string name="recently_added">به‌تازگی اضافه شده</string>
+    <string name="favorite_count">%1$d مورد علاقه‌مندی</string>
+    <string name="results_count">%1$d نتیجه</string>
+    <string name="saved_count">%1$d ذخیره شده</string>
 </resources>
