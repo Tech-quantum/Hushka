@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- پس‌زمینه گرادیانت -->
+    <path
+        android:pathData="M0,0h108v108h-108z">
+        <aapt:attr xmlns:aapt="http://schemas.android.com/aapt" name="android:fillColor">
+            <gradient
+                android:startX="0"
+                android:startY="0"
+                android:endX="108"
+                android:endY="108"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FF1A1A2E" />
+                <item android:offset="0.5" android:color="#FF2D1B69" />
+                <item android:offset="1.0" android:color="#FF1A1A2E" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- هاله درخشان پشت الماس -->
+    <path
+        android:pathData="M54,24 C67,24 78,35 78,48 C78,61 67,72 54,72 C41,72 30,61 30,48 C30,35 41,24 54,24 Z">
+        <aapt:attr xmlns:aapt="http://schemas.android.com/aapt" name="android:fillColor">
+            <gradient
+                android:startX="30"
+                android:startY="24"
+                android:endX="78"
+                android:endY="72"
+                android:type="radial"
+                android:gradientRadius="30">
+                <item android:offset="0.0" android:color="#807C7CFF" />
+                <item android:offset="1.0" android:color="#007C7CFF" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- الماس اصلی -->
+    <path
+        android:pathData="M54,30 L66,42 L54,66 L42,42 Z">
+        <aapt:attr xmlns:aapt="http://schemas.android.com/aapt" name="android:fillColor">
+            <gradient
+                android:startX="42"
+                android:startY="30"
+                android:endX="66"
+                android:endY="66"
+                android:type="linear">
+                <item android:offset="0.0" android:color="#FFB8B8FF" />
+                <item android:offset="0.5" android:color="#FF7C7CFF" />
+                <item android:offset="1.0" android:color="#FF5B5BFF" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- سطح بالای الماس (درخشش) -->
+    <path
+        android:pathData="M54,30 L66,42 L54,48 L42,42 Z"
+        android:fillColor="#CCEAEAFF" />
+
+    <!-- خط وسط الماس -->
+    <path
+        android:pathData="M42,42 L66,42"
+        android:strokeColor="#FFEAEAFF"
+        android:strokeWidth="0.8" />
+
+    <!-- جرقه ۱ (بالا راست) -->
+    <path
+        android:pathData="M74,30 L75.5,34 L79.5,35.5 L75.5,37 L74,41 L72.5,37 L68.5,35.5 L72.5,34 Z"
+        android:fillColor="#FFEAEAFF" />
+
+    <!-- جرقه ۲ (پایین چپ) -->
+    <path
+        android:pathData="M32,70 L33.2,73 L36.2,74.2 L33.2,75.4 L32,78.4 L30.8,75.4 L27.8,74.2 L30.8,73 Z"
+        android:fillColor="#FFB8B8FF" />
+
+    <!-- جرقه ۳ (بالا چپ، کوچک) -->
+    <path
+        android:pathData="M30,28 L30.8,30 L32.8,30.8 L30.8,31.6 L30,33.6 L29.2,31.6 L27.2,30.8 L29.2,30 Z"
+        android:fillColor="#FFD0D0FF" />
+
+    <!-- نقطه نور بالای الماس -->
+    <path
+        android:pathData="M54,22 m-1.5,0 a1.5,1.5 0 1,0 3,0 a1.5,1.5 0 1,0 -3,0"
+        android:fillColor="#FFEAEAFF" />
+
+</vector>
