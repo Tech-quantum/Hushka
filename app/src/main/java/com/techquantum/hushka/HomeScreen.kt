@@ -529,11 +529,11 @@ fun PromptCard(
                     color = purplePrimary.copy(alpha = 0.15f)
                 ) {
                     Text(
-                        mainTag,
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                        fontSize = 11.sp,
-                        color = purplePrimary
-                    )
+    getLocalizedCategory(mainTag),
+    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+    fontSize = 11.sp,
+    color = purplePrimary
+)
                 }
                 Spacer(Modifier.height(10.dp))
             }
