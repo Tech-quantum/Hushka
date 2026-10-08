@@ -1,7 +1,5 @@
 package com.techquantum.hushka
 
-import androidx.compose.foundation.Image
-import androidx.compose.ui.res.painterResource
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -174,22 +172,20 @@ fun HomeScreen(
                                 }
                             }
                         ) {
-                 Box(contentAlignment = Alignment.Center) {
-                       if (uiState.isUpdating) {
-                       Image(
-                       painter = painterResource(id = R.drawable.refresh_icon),
-                       contentDescription = "Refreshing",
-                       modifier = Modifier
-                       .size(24.dp)
-                       .graphicsLayer(rotationZ = cloudRotation)
-        )
-    } else {
-        Box {
-            Text(
-                "☁",
-                fontSize = 18.sp,
-                color = if (isOnline) textColor else textGrayColor.copy(alpha = 0.5f)
-            )
+                            Box(contentAlignment = Alignment.Center) {
+                                Box {
+                                    Text(
+                                        "☁",
+                                        fontSize = 18.sp,
+                                        color = if (isOnline) textColor else textGrayColor.copy(alpha = 0.5f),
+                                        modifier = if (uiState.isUpdating) {
+                                            Modifier.graphicsLayer(rotationZ = cloudRotation)
+                                        } else {
+                                            Modifier
+                                        }
+                                    )
+                                    // نقطه رنگی فقط وقتی آپدیت نمی‌کنه نمایش داده می‌شه
+                                    if (!uiState.isUpdating) {
                                         Box(
                                             modifier = Modifier
                                                 .align(Alignment.TopEnd)
