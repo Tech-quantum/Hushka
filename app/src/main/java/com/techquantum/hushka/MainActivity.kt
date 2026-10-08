@@ -117,6 +117,7 @@ class MainActivity : AppCompatActivity() {
                             importJsonLauncher.launch(arrayOf("application/json"))
                         },
                         onBrowseWeb = {
+                          showSettings = false
                           viewModel.fetchWebPrompts()
                         },
                             
