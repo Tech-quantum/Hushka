@@ -52,37 +52,82 @@ class MainActivity : AppCompatActivity() {
             AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(savedLanguage))
         }
 
-        setContent {
-            var showSettings by remember { mutableStateOf(false) }
-            var themeMode by remember { mutableStateOf(AppSettings.getTheme(this@MainActivity)) }
-            var language by remember { mutableStateOf(savedLanguage) }
+        val exportJsonLauncher = registerForActivityResult(
+    ActivityResultContracts.CreateDocument("application/json")
+) { uri ->
+    uri?.let {
+        viewModel.exportToJson(this, it, viewModel.uiState.value.prompts)
+        Toast.makeText(this, "پشتیبان JSON ذخیره شد", Toast.LENGTH_SHORT).show()
+    }
+}
 
-            PromptVaultTheme(themeMode = themeMode) {
-                HomeScreen(
-                    viewModel = viewModel,
-                    onSettingsClick = { showSettings = true },
-                    onStartVoiceSearch = ::startVoiceSearch
-                )
+val exportMarkdownLauncher = registerForActivityResult(
+    ActivityResultContracts.CreateDocument("text/markdown")
+) { uri ->
+    uri?.let {
+        viewModel.exportToMarkdown(this, it, viewModel.uiState.value.prompts)
+        Toast.makeText(this, "پشتیبان Markdown ذخیره شد", Toast.LENGTH_SHORT).show()
+    }
+}
 
-                if (showSettings) {
-                    SettingsDialog(
-                        themeMode = themeMode,
-                        language = language,
-                        onThemeChange = { newMode ->
-                            themeMode = newMode
-                            AppSettings.setTheme(this@MainActivity, newMode)
-                        },
-                        onLanguageChange = { newLang ->
-                            language = newLang
-                            AppSettings.setLanguage(this@MainActivity, newLang)
-                            AppCompatDelegate.setApplicationLocales(
-                                LocaleListCompat.forLanguageTags(newLang)
-                            )
-                        },
-                        onDismiss = { showSettings = false }
+val importJsonLauncher = registerForActivityResult(
+    ActivityResultContracts.OpenDocument()
+) { uri ->
+    uri?.let {
+        viewModel.importFromJson(this, it)
+        Toast.makeText(this, "در حال درون‌ریزی...", Toast.LENGTH_SHORT).show()
+    }
+}
+
+setContent {
+    var showSettings by remember { mutableStateOf(false) }
+    var themeMode by remember { mutableStateOf(AppSettings.getTheme(this@MainActivity)) }
+    var language by remember { mutableStateOf(savedLanguage) }
+
+    PromptVaultTheme(themeMode = themeMode) {
+        HomeScreen(
+            viewModel = viewModel,
+            onSettingsClick = { showSettings = true },
+            onStartVoiceSearch = ::startVoiceSearch
+        )
+
+        if (showSettings) {
+            SettingsDialog(
+                themeMode = themeMode,
+                language = language,
+                onThemeChange = { newMode ->
+                    themeMode = newMode
+                    AppSettings.setTheme(this@MainActivity, newMode)
+                },
+                onLanguageChange = { newLang ->
+                    language = newLang
+                    AppSettings.setLanguage(this@MainActivity, newLang)
+                    AppCompatDelegate.setApplicationLocales(
+                        LocaleListCompat.forLanguageTags(newLang)
                     )
-                }
-            }
+                },
+                onExportJson = {
+                    exportJsonLauncher.launch("hushka_backup_${System.currentTimeMillis()}.json")
+                },
+                onExportMarkdown = {
+                    exportMarkdownLauncher.launch("hushka_backup_${System.currentTimeMillis()}.md")
+                },
+                onImportJson = {
+                    importJsonLauncher.launch(arrayOf("application/json"))
+                },
+                onBrowseWeb = {
+                    try {
+                        val intent = Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://github.com/topics/prompt-engineering"))
+                        startActivity(intent)
+                    } catch (e: Exception) {
+                        Toast.makeText(this@MainActivity, "مرورگر پیدا نشد", Toast.LENGTH_SHORT).show()
+                    }
+                },
+                onManageColors = {
+                    Toast.makeText(this@MainActivity, "این ویژگی به‌زودی اضافه می‌شود", Toast.LENGTH_SHORT).show()
+                },
+                onDismiss = { showSettings = false }
+            )
         }
     }
 }
