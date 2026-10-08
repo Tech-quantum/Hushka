@@ -18,7 +18,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
@@ -64,7 +63,7 @@ fun HomeScreen(
     var liveTestPrompt by remember { mutableStateOf<PromptEntity?>(null) }
     var sortExpanded by remember { mutableStateOf(false) }
     var showCategoryDialog by remember { mutableStateOf(false) }
-    val context = LocalContext.current
+    val appcontext = LocalContext.current
 
     // وضعیت اتصال به اینترنت
 var isOnline by remember { mutableStateOf(true) }
