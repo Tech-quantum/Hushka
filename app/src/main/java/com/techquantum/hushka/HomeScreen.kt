@@ -36,32 +36,20 @@ fun HomeScreen(
     var editingPrompt by remember { mutableStateOf<PromptEntity?>(null) }
     var sortExpanded by remember { mutableStateOf(false) }
     var showCategoryDialog by remember { mutableStateOf(false) }
-    val webPrompts by viewModel.webPrompts.collectAsStateWithLifecycle()
-val isFetchingWeb by viewModel.isFetchingWeb.collectAsStateWithLifecycle()
-val webError by viewModel.webError.collectAsStateWithLifecycle()
-var showWebDialog by remember { mutableStateOf(false) }
 
+    // === Web Prompts States ===
+    val webPrompts by viewModel.webPrompts.collectAsStateWithLifecycle()
+    val isFetchingWeb by viewModel.isFetchingWeb.collectAsStateWithLifecycle()
+    val webError by viewModel.webError.collectAsStateWithLifecycle()
+    var showWebDialog by remember { mutableStateOf(false) }
+
+    // === Auto-open Web Dialog when fetch finishes ===
     LaunchedEffect(isFetchingWeb) {
-    if (!isFetchingWeb && (webPrompts.isNotEmpty() || webError != null)) {
-        showWebDialog = true
-    }
-    // Web Prompts Dialog
-if (showWebDialog) {
-    WebPromptsDialog(
-        prompts = webPrompts,
-        isLoading = isFetchingWeb,
-        error = webError,
-        onImport = { selected ->
-            viewModel.importWebPrompts(selected)
-            showWebDialog = false
-        },
-        onDismiss = {
-            showWebDialog = false
-            viewModel.clearWebPrompts()
+        if (!isFetchingWeb && (webPrompts.isNotEmpty() || webError != null)) {
+            showWebDialog = true
         }
-    )
-}
-}
+    }
+
     val bgColor = MaterialTheme.colorScheme.background
     val cardColor = MaterialTheme.colorScheme.surface
     val cardLightColor = MaterialTheme.colorScheme.surfaceVariant
@@ -180,68 +168,68 @@ if (showWebDialog) {
 
             // Provider Chips
             val providerKeys = listOf("all", "anthropic", "deepseek", "gemini", "openai")
-LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-    items(providerKeys) { key ->
-        val value = if (key == "all") ALL_PROVIDER else key
-        val label = if (key == "all") stringResource(R.string.all_providers) else key
-        val isSelected = uiState.selectedProvider == value
-        Surface(
-            shape = RoundedCornerShape(50),
-            color = if (isSelected) purplePrimary.copy(alpha = 0.25f) else Color.Transparent,
-            border = BorderStroke(1.dp, if (isSelected) purplePrimary else borderColor),
-            onClick = { viewModel.onProviderSelected(value) }
-        ) {
-            Text(
-                label,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                fontSize = 12.sp,
-                color = if (isSelected) purplePrimary else textGrayColor,
-                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-            )
-        }
-    }
-}
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(providerKeys) { key ->
+                    val value = if (key == "all") ALL_PROVIDER else key
+                    val label = if (key == "all") stringResource(R.string.all_providers) else key
+                    val isSelected = uiState.selectedProvider == value
+                    Surface(
+                        shape = RoundedCornerShape(50),
+                        color = if (isSelected) purplePrimary.copy(alpha = 0.25f) else Color.Transparent,
+                        border = BorderStroke(1.dp, if (isSelected) purplePrimary else borderColor),
+                        onClick = { viewModel.onProviderSelected(value) }
+                    ) {
+                        Text(
+                            label,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                            fontSize = 12.sp,
+                            color = if (isSelected) purplePrimary else textGrayColor,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                        )
+                    }
+                }
+            }
 
             Spacer(Modifier.height(12.dp))
 
             // Tab Chips
             val tabKeys = listOf("recent", "pinned", "favorites")
-LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-    items(tabKeys) { key ->
-        val label = when (key) {
-            "recent" -> stringResource(R.string.recent_tab)
-            "pinned" -> stringResource(R.string.pinned_tab)
-            "favorites" -> stringResource(R.string.favorites_tab)
-            else -> key
-        }
-        val isSelected = when (key) {
-            "recent" -> uiState.recentOnly
-            "pinned" -> uiState.pinnedOnly
-            "favorites" -> uiState.favoritesOnly
-            else -> false
-        }
-        Surface(
-            shape = RoundedCornerShape(50),
-            color = if (isSelected) purplePrimary.copy(alpha = 0.25f) else Color.Transparent,
-            border = BorderStroke(1.dp, if (isSelected) purplePrimary else borderColor),
-            onClick = {
-                when (key) {
-                    "recent" -> viewModel.onRecentToggled()
-                    "pinned" -> viewModel.onPinnedToggled()
-                    "favorites" -> viewModel.onFavoritesToggled()
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(tabKeys) { key ->
+                    val label = when (key) {
+                        "recent" -> stringResource(R.string.recent_tab)
+                        "pinned" -> stringResource(R.string.pinned_tab)
+                        "favorites" -> stringResource(R.string.favorites_tab)
+                        else -> key
+                    }
+                    val isSelected = when (key) {
+                        "recent" -> uiState.recentOnly
+                        "pinned" -> uiState.pinnedOnly
+                        "favorites" -> uiState.favoritesOnly
+                        else -> false
+                    }
+                    Surface(
+                        shape = RoundedCornerShape(50),
+                        color = if (isSelected) purplePrimary.copy(alpha = 0.25f) else Color.Transparent,
+                        border = BorderStroke(1.dp, if (isSelected) purplePrimary else borderColor),
+                        onClick = {
+                            when (key) {
+                                "recent" -> viewModel.onRecentToggled()
+                                "pinned" -> viewModel.onPinnedToggled()
+                                "favorites" -> viewModel.onFavoritesToggled()
+                            }
+                        }
+                    ) {
+                        Text(
+                            label,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                            fontSize = 12.sp,
+                            color = if (isSelected) purplePrimary else textGrayColor,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                        )
+                    }
                 }
             }
-        ) {
-            Text(
-                label,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                fontSize = 12.sp,
-                color = if (isSelected) purplePrimary else textGrayColor,
-                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-            )
-        }
-    }
-}
 
             Spacer(Modifier.height(12.dp))
 
@@ -446,6 +434,23 @@ LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 TextButton(onClick = { showCategoryDialog = false }) {
                     Text(stringResource(R.string.close), color = purplePrimary)
                 }
+            }
+        )
+    }
+
+    // Web Prompts Dialog
+    if (showWebDialog) {
+        WebPromptsDialog(
+            prompts = webPrompts,
+            isLoading = isFetchingWeb,
+            error = webError,
+            onImport = { selected ->
+                viewModel.importWebPrompts(selected)
+                showWebDialog = false
+            },
+            onDismiss = {
+                showWebDialog = false
+                viewModel.clearWebPrompts()
             }
         )
     }
