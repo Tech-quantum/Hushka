@@ -24,13 +24,18 @@ fun HomeDialogs(
             language = language,
             onThemeChange = onThemeChange,
             onLanguageChange = onLanguageChange,
+            onExportJson = { },
+            onExportMarkdown = { },
+            onImportJson = { },
+            onBrowseWeb = { },
+            onManageColors = { },
             onDismiss = onDismissSettings
         )
     }
 
     if (showAddDialog) {
         PromptFormDialog(
-            title = stringResource(R.string.add_prompt),
+            title = stringResource(R.string.add_prompt_title),
             initialPrompt = null,
             categories = categories,
             onDismiss = onDismissAdd,
@@ -43,7 +48,7 @@ fun HomeDialogs(
 
     editingPrompt?.let { prompt ->
         PromptFormDialog(
-            title = stringResource(R.string.edit_prompt),
+            title = stringResource(R.string.edit_prompt_title),
             initialPrompt = prompt,
             categories = categories,
             onDismiss = onDismissEdit,
