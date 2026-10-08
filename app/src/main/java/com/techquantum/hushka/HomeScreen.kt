@@ -23,15 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
-private val PurplePrimary = Color(0xFF7C7CFF)
-private val PurpleLight = Color(0xFFB8B8FF)
-private val DarkBg = Color(0xFF1A1A2E)
-private val CardDark = Color(0xFF252538)
-private val CardLight = Color(0xFF2E2E45)
-private val TextLight = Color(0xFFEAEAEA)
-private val TextGray = Color(0xFF9E9EAE)
-private val BorderColor = Color(0xFF3A3A4E)
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -45,8 +36,18 @@ fun HomeScreen(
     var sortExpanded by remember { mutableStateOf(false) }
     var showCategoryDialog by remember { mutableStateOf(false) }
 
+    // رنگ‌ها از MaterialTheme
+    val bgColor = MaterialTheme.colorScheme.background
+    val cardColor = MaterialTheme.colorScheme.surface
+    val cardLightColor = MaterialTheme.colorScheme.surfaceVariant
+    val textColor = MaterialTheme.colorScheme.onSurface
+    val textGrayColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val borderColor = MaterialTheme.colorScheme.outline
+    val purplePrimary = MaterialTheme.colorScheme.primary
+    val purpleLight = MaterialTheme.colorScheme.primary
+
     Scaffold(
-        containerColor = DarkBg,
+        containerColor = bgColor,
         topBar = {
             Column(
                 modifier = Modifier
@@ -59,18 +60,18 @@ fun HomeScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
-                        Text("Hushka", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = TextLight)
+                        Text("Hushka", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = textColor)
                         Spacer(Modifier.height(4.dp))
                         Text(
                             "هوشکا بستری برای کاوش، خلق و مدیریت ایده های هوش مصنوعی",
                             fontSize = 11.sp,
-                            color = TextGray,
+                            color = textGrayColor,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
                     }
                     IconButton(onClick = onSettingsClick) {
-                        Icon(Icons.Default.Settings, contentDescription = "Settings", tint = TextLight, modifier = Modifier.size(26.dp))
+                        Icon(Icons.Default.Settings, contentDescription = "Settings", tint = textColor, modifier = Modifier.size(26.dp))
                     }
                 }
             }
@@ -78,7 +79,7 @@ fun HomeScreen(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { showAddDialog = true },
-                containerColor = PurplePrimary,
+                containerColor = purplePrimary,
                 contentColor = Color.White,
                 shape = RoundedCornerShape(16.dp)
             ) {
@@ -94,13 +95,12 @@ fun HomeScreen(
                 .padding(padding)
                 .padding(horizontal = 16.dp)
         ) {
-            // Search Bar
             OutlinedTextField(
                 value = uiState.query,
                 onValueChange = { viewModel.onQueryChanged(it) },
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("جستجو...", fontSize = 12.sp, color = TextGray) },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = TextGray) },
+                placeholder = { Text("جستجو...", fontSize = 12.sp, color = textGrayColor) },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = textGrayColor) },
                 trailingIcon = {
                     IconButton(onClick = onStartVoiceSearch) { Text("🎤", fontSize = 18.sp) }
                 },
@@ -108,26 +108,25 @@ fun HomeScreen(
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = PurplePrimary,
-                    unfocusedContainerColor = CardDark,
-                    focusedContainerColor = CardDark,
-                    unfocusedTextColor = TextLight,
-                    focusedTextColor = TextLight,
-                    cursorColor = PurplePrimary
+                    focusedBorderColor = purplePrimary,
+                    unfocusedContainerColor = cardColor,
+                    focusedContainerColor = cardColor,
+                    unfocusedTextColor = textColor,
+                    focusedTextColor = textColor,
+                    cursorColor = purplePrimary
                 )
             )
 
             Spacer(Modifier.height(16.dp))
 
-            // Categories & Favorites Buttons
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Button(
                     onClick = { showCategoryDialog = true },
                     modifier = Modifier.weight(1f).height(50.dp),
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = if (uiState.selectedCategory != ALL_CATEGORY) PurplePrimary else PurpleLight.copy(alpha = 0.35f),
-                        contentColor = TextLight
+                        containerColor = if (uiState.selectedCategory != ALL_CATEGORY) purplePrimary else cardLightColor,
+                        contentColor = textColor
                     ),
                     elevation = ButtonDefaults.buttonElevation(0.dp)
                 ) {
@@ -140,8 +139,8 @@ fun HomeScreen(
                     modifier = Modifier.weight(1f).height(50.dp),
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = if (uiState.favoritesOnly) PurplePrimary else PurpleLight.copy(alpha = 0.35f),
-                        contentColor = TextLight
+                        containerColor = if (uiState.favoritesOnly) purplePrimary else cardLightColor,
+                        contentColor = textColor
                     ),
                     elevation = ButtonDefaults.buttonElevation(0.dp)
                 ) {
@@ -153,7 +152,6 @@ fun HomeScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            // Provider Chips
             val providers = listOf(
                 "همه" to ALL_PROVIDER,
                 "anthropic" to "anthropic",
@@ -168,15 +166,15 @@ fun HomeScreen(
                     val isSelected = uiState.selectedProvider == value
                     Surface(
                         shape = RoundedCornerShape(50),
-                        color = if (isSelected) PurplePrimary.copy(alpha = 0.25f) else Color.Transparent,
-                        border = BorderStroke(1.dp, if (isSelected) PurplePrimary else BorderColor),
+                        color = if (isSelected) purplePrimary.copy(alpha = 0.25f) else Color.Transparent,
+                        border = BorderStroke(1.dp, if (isSelected) purplePrimary else borderColor),
                         onClick = { viewModel.onProviderSelected(value) }
                     ) {
                         Text(
                             label,
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                             fontSize = 12.sp,
-                            color = if (isSelected) PurpleLight else TextGray,
+                            color = if (isSelected) purpleLight else textGrayColor,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                         )
                     }
@@ -185,7 +183,6 @@ fun HomeScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            // Tab Chips
             val tabs = listOf("اخیر", "پین شده", "علاقه مندی ها")
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(tabs) { tab ->
@@ -197,8 +194,8 @@ fun HomeScreen(
                     }
                     Surface(
                         shape = RoundedCornerShape(50),
-                        color = if (isSelected) PurplePrimary.copy(alpha = 0.25f) else Color.Transparent,
-                        border = BorderStroke(1.dp, if (isSelected) PurplePrimary else BorderColor),
+                        color = if (isSelected) purplePrimary.copy(alpha = 0.25f) else Color.Transparent,
+                        border = BorderStroke(1.dp, if (isSelected) purplePrimary else borderColor),
                         onClick = {
                             when (tab) {
                                 "اخیر" -> viewModel.onRecentToggled()
@@ -211,7 +208,7 @@ fun HomeScreen(
                             tab,
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                             fontSize = 12.sp,
-                            color = if (isSelected) PurpleLight else TextGray,
+                            color = if (isSelected) purpleLight else textGrayColor,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                         )
                     }
@@ -220,13 +217,12 @@ fun HomeScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            // Sort Dropdown
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 Box {
                     Surface(
                         shape = RoundedCornerShape(50),
                         color = Color.Transparent,
-                        border = BorderStroke(1.dp, BorderColor),
+                        border = BorderStroke(1.dp, borderColor),
                         onClick = { sortExpanded = true }
                     ) {
                         val sortLabel = when (uiState.sortMode) {
@@ -239,9 +235,9 @@ fun HomeScreen(
                             modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text("مرتب سازی: $sortLabel", fontSize = 12.sp, color = TextGray)
+                            Text("مرتب سازی: $sortLabel", fontSize = 12.sp, color = textGrayColor)
                             Spacer(Modifier.width(4.dp))
-                            Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = TextGray, modifier = Modifier.size(18.dp))
+                            Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = textGrayColor, modifier = Modifier.size(18.dp))
                         }
                     }
                     DropdownMenu(expanded = sortExpanded, onDismissRequest = { sortExpanded = false }) {
@@ -265,22 +261,21 @@ fun HomeScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            // Section Header
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
-                    Text("پرامپت های من", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = TextLight)
+                    Text("پرامپت های من", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = textColor)
                     Spacer(Modifier.height(2.dp))
-                    Text("${uiState.filteredPrompts.size} پرامپت ذخیره شده", fontSize = 11.sp, color = TextGray)
+                    Text("${uiState.filteredPrompts.size} پرامپت ذخیره شده", fontSize = 11.sp, color = textGrayColor)
                 }
                 IconButton(onClick = { viewModel.updateLibrary() }) {
                     Icon(
                         Icons.Default.Star,
                         contentDescription = null,
-                        tint = if (uiState.isUpdating) PurplePrimary else TextGray,
+                        tint = if (uiState.isUpdating) purplePrimary else textGrayColor,
                         modifier = Modifier.size(24.dp)
                     )
                 }
@@ -288,7 +283,6 @@ fun HomeScreen(
 
             Spacer(Modifier.height(8.dp))
 
-            // Prompt List
             if (uiState.filteredPrompts.isEmpty()) {
                 Box(
                     modifier = Modifier.fillMaxWidth().padding(40.dp),
@@ -296,7 +290,7 @@ fun HomeScreen(
                 ) {
                     Text(
                         if (uiState.query.isNotEmpty()) "چیزی پیدا نشد" else "هنوز پرامپتی اضافه نشده",
-                        color = TextGray,
+                        color = textGrayColor,
                         fontSize = 14.sp
                     )
                 }
@@ -322,7 +316,6 @@ fun HomeScreen(
         }
     }
 
-    // Add Prompt Dialog
     if (showAddDialog) {
         PromptFormDialog(
             title = "افزودن پرامپت جدید",
@@ -336,7 +329,6 @@ fun HomeScreen(
         )
     }
 
-    // Edit Prompt Dialog
     editingPrompt?.let { prompt ->
         PromptFormDialog(
             title = "ویرایش پرامپت",
@@ -358,73 +350,73 @@ fun HomeScreen(
         )
     }
 
-    // Categories Dialog
-if (showCategoryDialog) {
-    val uniqueCategories = uiState.prompts
-        .map { it.category }
-        .filter { it.isNotBlank() }
-        .distinct()
-        .sorted()
-    AlertDialog(
-        onDismissRequest = { showCategoryDialog = false },
-        containerColor = Color(0xFF1E1E2E),
-        titleContentColor = TextLight,
-        textContentColor = TextLight,
-        title = { Text("انتخاب دسته‌بندی", color = TextLight) },
-        text = {
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth().heightIn(max = 400.dp)
-            ) {
-                item {
-                    val isSelected = uiState.selectedCategory == ALL_CATEGORY
-                    Surface(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                        shape = RoundedCornerShape(10.dp),
-                        color = if (isSelected) PurplePrimary else CardLight,
-                        onClick = {
-                            viewModel.onCategorySelected(ALL_CATEGORY)
-                            showCategoryDialog = false
+    if (showCategoryDialog) {
+        val uniqueCategories = uiState.prompts
+            .map { it.category }
+            .filter { it.isNotBlank() }
+            .distinct()
+            .sorted()
+        AlertDialog(
+            onDismissRequest = { showCategoryDialog = false },
+            containerColor = cardColor,
+            titleContentColor = textColor,
+            textContentColor = textColor,
+            title = { Text("انتخاب دسته‌بندی", color = textColor) },
+            text = {
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth().heightIn(max = 400.dp)
+                ) {
+                    item {
+                        val isSelected = uiState.selectedCategory == ALL_CATEGORY
+                        Surface(
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            color = if (isSelected) purplePrimary else cardLightColor,
+                            onClick = {
+                                viewModel.onCategorySelected(ALL_CATEGORY)
+                                showCategoryDialog = false
+                            }
+                        ) {
+                            Text(
+                                "همه دسته‌ها",
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                                color = if (isSelected) Color.White else textColor,
+                                fontSize = 14.sp,
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                            )
                         }
-                    ) {
-                        Text(
-                            "همه دسته‌ها",
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                            color = Color.White,
-                            fontSize = 14.sp,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                        )
+                    }
+                    items(uniqueCategories) { category ->
+                        val isSelected = uiState.selectedCategory == category
+                        Surface(
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            color = if (isSelected) purplePrimary else cardLightColor,
+                            onClick = {
+                                viewModel.onCategorySelected(category)
+                                showCategoryDialog = false
+                            }
+                        ) {
+                            Text(
+                                category,
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                                color = if (isSelected) Color.White else textColor,
+                                fontSize = 14.sp,
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                            )
+                        }
                     }
                 }
-                items(uniqueCategories) { category ->
-                    val isSelected = uiState.selectedCategory == category
-                    Surface(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                        shape = RoundedCornerShape(10.dp),
-                        color = if (isSelected) PurplePrimary else CardLight,
-                        onClick = {
-                            viewModel.onCategorySelected(category)
-                            showCategoryDialog = false
-                        }
-                    ) {
-                        Text(
-                            category,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                            color = Color.White,
-                            fontSize = 14.sp,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                        )
-                    }
+            },
+            confirmButton = {
+                TextButton(onClick = { showCategoryDialog = false }) {
+                    Text("بستن", color = purplePrimary)
                 }
             }
-        },
-        confirmButton = {
-            TextButton(onClick = { showCategoryDialog = false }) {
-                Text("بستن", color = PurpleLight)
-            }
-        }
-    )
+        )
+    }
 }
-}
+
 @Composable
 fun PromptCard(
     title: String,
@@ -436,10 +428,17 @@ fun PromptCard(
     onPinToggle: () -> Unit,
     onCardClick: () -> Unit
 ) {
+    val cardColor = MaterialTheme.colorScheme.surface
+    val cardLightColor = MaterialTheme.colorScheme.surfaceVariant
+    val textColor = MaterialTheme.colorScheme.onSurface
+    val textGrayColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val purplePrimary = MaterialTheme.colorScheme.primary
+    val purpleLight = MaterialTheme.colorScheme.primary
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(22.dp),
-        colors = CardDefaults.cardColors(containerColor = CardDark),
+        colors = CardDefaults.cardColors(containerColor = cardColor),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         onClick = onCardClick
     ) {
@@ -456,13 +455,13 @@ fun PromptCard(
                     modifier = Modifier.weight(1f),
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    color = TextLight
+                    color = textColor
                 )
                 Spacer(Modifier.width(8.dp))
                 Row {
                     Surface(
                         shape = RoundedCornerShape(50),
-                        color = CardLight,
+                        color = cardLightColor,
                         modifier = Modifier.size(32.dp),
                         onClick = onPinToggle
                     ) {
@@ -473,7 +472,7 @@ fun PromptCard(
                     Spacer(Modifier.width(8.dp))
                     Surface(
                         shape = RoundedCornerShape(50),
-                        color = CardLight,
+                        color = cardLightColor,
                         modifier = Modifier.size(32.dp),
                         onClick = onFavoriteToggle
                     ) {
@@ -489,13 +488,13 @@ fun PromptCard(
             if (mainTag.isNotBlank()) {
                 Surface(
                     shape = RoundedCornerShape(8.dp),
-                    color = PurplePrimary.copy(alpha = 0.15f)
+                    color = purplePrimary.copy(alpha = 0.15f)
                 ) {
                     Text(
                         mainTag,
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                         fontSize = 11.sp,
-                        color = PurpleLight
+                        color = purpleLight
                     )
                 }
                 Spacer(Modifier.height(10.dp))
@@ -506,13 +505,13 @@ fun PromptCard(
                     items(tags) { tag ->
                         Surface(
                             shape = RoundedCornerShape(8.dp),
-                            color = Color(0xFF3A3A55)
+                            color = cardLightColor
                         ) {
                             Text(
                                 tag,
                                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                                 fontSize = 11.sp,
-                                color = TextLight
+                                color = textColor
                             )
                         }
                     }
@@ -526,7 +525,7 @@ fun PromptCard(
                 lineHeight = 18.sp,
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis,
-                color = TextGray
+                color = textGrayColor
             )
 
             Spacer(Modifier.height(14.dp))
@@ -538,7 +537,7 @@ fun PromptCard(
             ) {
                 Surface(
                     shape = RoundedCornerShape(8.dp),
-                    color = PurplePrimary.copy(alpha = 0.3f)
+                    color = purplePrimary.copy(alpha = 0.3f)
                 ) {
                     Text(
                         provider,
