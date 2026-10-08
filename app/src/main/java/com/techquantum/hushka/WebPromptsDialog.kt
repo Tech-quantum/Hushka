@@ -175,21 +175,19 @@ fun WebPromptsDialog(
             }
         },
         confirmButton = {
-            if (!isLoading && prompts.isNotEmpty() && error == null) {
-                Button(
-                    onClick = { onImport(selected.toList()) },
-                    enabled = selected.isNotEmpty(),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = purplePrimary,
-                        contentColor = Color.White,
-                        disabledContainerColor = cardLightColor,
-                        disabledContentColor = textGrayColor
-                    )
-                ) {
-                    Text("افزودن ${selected.size} پرامپت")
-                }
-            }
-        },
+    Button(
+        onClick = { onImport(selected.toList()) },
+        enabled = !isLoading && prompts.isNotEmpty() && error == null && selected.isNotEmpty(),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = purplePrimary,
+            contentColor = Color.White,
+            disabledContainerColor = cardLightColor,
+            disabledContentColor = textGrayColor
+        )
+    ) {
+        Text("افزودن ${selected.size} پرامپت")
+    }
+},
         dismissButton = {
             TextButton(onClick = onDismiss) {
                 Text("بستن", color = textGrayColor)
