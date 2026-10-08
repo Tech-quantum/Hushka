@@ -1,5 +1,9 @@
 package com.techquantum.hushka
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,6 +13,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
@@ -17,6 +23,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -34,8 +41,11 @@ fun HomeScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var showAddDialog by remember { mutableStateOf(false) }
     var editingPrompt by remember { mutableStateOf<PromptEntity?>(null) }
+    var previewPrompt by remember { mutableStateOf<PromptEntity?>(null) }
+    var deletePrompt by remember { mutableStateOf<PromptEntity?>(null) }
     var sortExpanded by remember { mutableStateOf(false) }
     var showCategoryDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     // === Web Prompts States ===
     val webPrompts by viewModel.webPrompts.collectAsStateWithLifecycle()
@@ -43,7 +53,6 @@ fun HomeScreen(
     val webError by viewModel.webError.collectAsStateWithLifecycle()
     var showWebDialog by remember { mutableStateOf(false) }
 
-    // === Auto-open Web Dialog when fetch finishes ===
     LaunchedEffect(isFetchingWeb) {
         if (!isFetchingWeb && (webPrompts.isNotEmpty() || webError != null)) {
             showWebDialog = true
@@ -107,7 +116,6 @@ fun HomeScreen(
                 .padding(padding)
                 .padding(horizontal = 16.dp)
         ) {
-            // Search Bar
             OutlinedTextField(
                 value = uiState.query,
                 onValueChange = { viewModel.onQueryChanged(it) },
@@ -132,7 +140,6 @@ fun HomeScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            // Categories & Favorites Buttons
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Button(
                     onClick = { showCategoryDialog = true },
@@ -166,7 +173,6 @@ fun HomeScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            // Provider Chips
             val providerKeys = listOf("all", "anthropic", "deepseek", "gemini", "openai")
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(providerKeys) { key ->
@@ -192,7 +198,6 @@ fun HomeScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            // Tab Chips
             val tabKeys = listOf("recent", "pinned", "favorites")
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(tabKeys) { key ->
@@ -233,7 +238,6 @@ fun HomeScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            // Sort Dropdown
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 Box {
                     val sortLabel = when (uiState.sortMode) {
@@ -278,7 +282,6 @@ fun HomeScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            // Section Header
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -301,7 +304,6 @@ fun HomeScreen(
 
             Spacer(Modifier.height(8.dp))
 
-            // Prompt List
             if (uiState.filteredPrompts.isEmpty()) {
                 Box(
                     modifier = Modifier.fillMaxWidth().padding(40.dp),
@@ -327,7 +329,22 @@ fun HomeScreen(
                             provider = prompt.collection.ifBlank { "custom" },
                             onFavoriteToggle = { viewModel.toggleFavorite(prompt) },
                             onPinToggle = { viewModel.togglePinned(prompt) },
-                            onCardClick = { editingPrompt = prompt }
+                            onCardClick = { editingPrompt = prompt },
+                            onPreviewClick = { previewPrompt = prompt },
+                            onCopyClick = {
+                                val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                clipboard.setPrimaryClip(ClipData.newPlainText("Hushka Prompt", prompt.text))
+                                Toast.makeText(context, "کپی شد!", Toast.LENGTH_SHORT).show()
+                                viewModel.markUsed(prompt)
+                            },
+                            onAnalyzeClick = {
+                                Toast.makeText(context, "✨ ارتقا و آنالیز به‌زودی", Toast.LENGTH_SHORT).show()
+                            },
+                            onLiveTestClick = {
+                                Toast.makeText(context, "▶ تست زنده به‌زودی", Toast.LENGTH_SHORT).show()
+                            },
+                            onEditClick = { editingPrompt = prompt },
+                            onDeleteClick = { deletePrompt = prompt }
                         )
                     }
                 }
@@ -367,6 +384,78 @@ fun HomeScreen(
                     )
                 )
                 editingPrompt = null
+            }
+        )
+    }
+
+    // Preview Dialog
+    previewPrompt?.let { prompt ->
+        AlertDialog(
+            onDismissRequest = { previewPrompt = null },
+            containerColor = cardColor,
+            title = { Text(prompt.title.ifBlank { "بدون عنوان" }, color = textColor, fontWeight = FontWeight.Bold) },
+            text = {
+                Column {
+                    if (prompt.category.isNotBlank()) {
+                        Surface(
+                            shape = RoundedCornerShape(8.dp),
+                            color = purplePrimary.copy(alpha = 0.15f)
+                        ) {
+                            Text(
+                                getLocalizedCategory(prompt.category),
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                                fontSize = 11.sp,
+                                color = purplePrimary
+                            )
+                        }
+                        Spacer(Modifier.height(12.dp))
+                    }
+                    Text(
+                        prompt.text,
+                        color = textColor,
+                        fontSize = 13.sp,
+                        lineHeight = 20.sp
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    clipboard.setPrimaryClip(ClipData.newPlainText("Hushka Prompt", prompt.text))
+                    Toast.makeText(context, "کپی شد!", Toast.LENGTH_SHORT).show()
+                    previewPrompt = null
+                }) {
+                    Text("کپی", color = purplePrimary)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { previewPrompt = null }) {
+                    Text(stringResource(R.string.close), color = textGrayColor)
+                }
+            }
+        )
+    }
+
+    // Delete Confirm Dialog
+    deletePrompt?.let { prompt ->
+        AlertDialog(
+            onDismissRequest = { deletePrompt = null },
+            containerColor = cardColor,
+            title = { Text("حذف پرامپت", color = textColor, fontWeight = FontWeight.Bold) },
+            text = { Text("آیا از حذف «${prompt.title}» مطمئن هستید؟", color = textGrayColor) },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.deletePrompt(prompt)
+                    Toast.makeText(context, "حذف شد", Toast.LENGTH_SHORT).show()
+                    deletePrompt = null
+                }) {
+                    Text("حذف", color = Color(0xFFE57373))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { deletePrompt = null }) {
+                    Text("لغو", color = textGrayColor)
+                }
             }
         )
     }
@@ -420,7 +509,7 @@ fun HomeScreen(
                             }
                         ) {
                             Text(
-                                category,
+                                getLocalizedCategory(category),
                                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
                                 color = if (isSelected) Color.White else textColor,
                                 fontSize = 14.sp,
@@ -465,7 +554,13 @@ fun PromptCard(
     provider: String,
     onFavoriteToggle: () -> Unit,
     onPinToggle: () -> Unit,
-    onCardClick: () -> Unit
+    onCardClick: () -> Unit,
+    onPreviewClick: () -> Unit,
+    onCopyClick: () -> Unit,
+    onAnalyzeClick: () -> Unit,
+    onLiveTestClick: () -> Unit,
+    onEditClick: () -> Unit,
+    onDeleteClick: () -> Unit
 ) {
     val cardColor = MaterialTheme.colorScheme.surface
     val cardLightColor = MaterialTheme.colorScheme.surfaceVariant
@@ -477,10 +572,10 @@ fun PromptCard(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(22.dp),
         colors = CardDefaults.cardColors(containerColor = cardColor),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        onClick = onCardClick
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(modifier = Modifier.padding(18.dp)) {
+            // Title Row
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -497,6 +592,19 @@ fun PromptCard(
                 )
                 Spacer(Modifier.width(8.dp))
                 Row {
+                    // Preview (Eye)
+                    Surface(
+                        shape = RoundedCornerShape(50),
+                        color = cardLightColor,
+                        modifier = Modifier.size(32.dp),
+                        onClick = onPreviewClick
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Text("👁", fontSize = 14.sp)
+                        }
+                    }
+                    Spacer(Modifier.width(6.dp))
+                    // Pin
                     Surface(
                         shape = RoundedCornerShape(50),
                         color = cardLightColor,
@@ -507,7 +615,8 @@ fun PromptCard(
                             Text("📌", fontSize = 14.sp)
                         }
                     }
-                    Spacer(Modifier.width(8.dp))
+                    Spacer(Modifier.width(6.dp))
+                    // Favorite
                     Surface(
                         shape = RoundedCornerShape(50),
                         color = cardLightColor,
@@ -529,11 +638,11 @@ fun PromptCard(
                     color = purplePrimary.copy(alpha = 0.15f)
                 ) {
                     Text(
-    getLocalizedCategory(mainTag),
-    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-    fontSize = 11.sp,
-    color = purplePrimary
-)
+                        getLocalizedCategory(mainTag),
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                        fontSize = 11.sp,
+                        color = purplePrimary
+                    )
                 }
                 Spacer(Modifier.height(10.dp))
             }
@@ -568,10 +677,10 @@ fun PromptCard(
 
             Spacer(Modifier.height(14.dp))
 
+            // Provider
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically
+                horizontalArrangement = Arrangement.Start
             ) {
                 Surface(
                     shape = RoundedCornerShape(8.dp),
@@ -586,6 +695,57 @@ fun PromptCard(
                     )
                 }
             }
+
+            Spacer(Modifier.height(12.dp))
+
+            HorizontalDivider(color = cardLightColor.copy(alpha = 0.5f))
+
+            Spacer(Modifier.height(10.dp))
+
+            // Action Buttons Row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Copy
+                ActionButton(emoji = "📋", label = "کپی", onClick = onCopyClick, color = purplePrimary)
+                // Analyze
+                ActionButton(emoji = "✨", label = "آنالیز", onClick = onAnalyzeClick, color = Color(0xFFFFB74D))
+                // Live Test
+                ActionButton(emoji = "▶", label = "تست", onClick = onLiveTestClick, color = Color(0xFF64B5F6))
+                // Edit
+                ActionButton(emoji = "✏️", label = "ویرایش", onClick = onEditClick, color = textGrayColor)
+                // Delete
+                ActionButton(emoji = "🗑", label = "حذف", onClick = onDeleteClick, color = Color(0xFFE57373))
+            }
         }
+    }
+}
+
+@Composable
+fun ActionButton(
+    emoji: String,
+    label: String,
+    onClick: () -> Unit,
+    color: Color
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(horizontal = 4.dp)
+    ) {
+        IconButton(
+            onClick = onClick,
+            modifier = Modifier.size(40.dp)
+        ) {
+            Text(emoji, fontSize = 18.sp)
+        }
+        Text(
+            label,
+            fontSize = 10.sp,
+            color = color,
+            fontWeight = FontWeight.Medium,
+            maxLines = 1
+        )
     }
 }
