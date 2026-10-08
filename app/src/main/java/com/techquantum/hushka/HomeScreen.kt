@@ -1,36 +1,30 @@
 package com.techquantum.hushka
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
-import androidx.compose.runtime.DisposableEffect
+import android.widget.Toast
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.graphicsLayer
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
@@ -38,7 +32,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -63,60 +59,58 @@ fun HomeScreen(
     var liveTestPrompt by remember { mutableStateOf<PromptEntity?>(null) }
     var sortExpanded by remember { mutableStateOf(false) }
     var showCategoryDialog by remember { mutableStateOf(false) }
-    val appcontext = LocalContext.current
+    val appContext = LocalContext.current
 
     // وضعیت اتصال به اینترنت
-var isOnline by remember { mutableStateOf(true) }
+    var isOnline by remember { mutableStateOf(true) }
 
-DisposableEffect(Unit) {
-    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    DisposableEffect(Unit) {
+        val connectivityManager = appContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-    // بررسی وضعیت فعلی
-    val currentNetwork = connectivityManager.activeNetwork
-    val currentCaps = connectivityManager.getNetworkCapabilities(currentNetwork)
-    isOnline = currentCaps?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
+        val currentNetwork = connectivityManager.activeNetwork
+        val currentCaps = connectivityManager.getNetworkCapabilities(currentNetwork)
+        isOnline = currentCaps?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
 
-    val networkCallback = object : ConnectivityManager.NetworkCallback() {
-        override fun onAvailable(network: Network) {
-            isOnline = true
+        val networkCallback = object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                isOnline = true
+            }
+            override fun onLost(network: Network) {
+                val activeNetwork = connectivityManager.activeNetwork
+                val caps = connectivityManager.getNetworkCapabilities(activeNetwork)
+                isOnline = caps?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
+            }
+            override fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities) {
+                isOnline = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            }
         }
-        override fun onLost(network: Network) {
-            // بررسی دوباره که شاید شبکه دیگه‌ای موجود باشه
-            val activeNetwork = connectivityManager.activeNetwork
-            val caps = connectivityManager.getNetworkCapabilities(activeNetwork)
-            isOnline = caps?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
-        }
-        override fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities) {
-            isOnline = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+
+        val networkRequest = NetworkRequest.Builder()
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .build()
+
+        connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
+
+        onDispose {
+            try {
+                connectivityManager.unregisterNetworkCallback(networkCallback)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
-    val networkRequest = NetworkRequest.Builder()
-        .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-        .build()
-
-    connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
-
-    onDispose {
-        try {
-            connectivityManager.unregisterNetworkCallback(networkCallback)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-}
-    
     // انیمیشن چرخش برای آیکون ابر
-val infiniteTransition = rememberInfiniteTransition(label = "cloud_rotation")
-val cloudRotation by infiniteTransition.animateFloat(
-    initialValue = 0f,
-    targetValue = 360f,
-    animationSpec = infiniteRepeatable(
-        animation = tween(durationMillis = 1200, easing = LinearEasing),
-        repeatMode = RepeatMode.Restart
-    ),
-    label = "rotation"
-)
+    val infiniteTransition = rememberInfiniteTransition(label = "cloud_rotation")
+    val cloudRotation by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1200, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "rotation"
+    )
 
     // === Web Prompts States ===
     val webPrompts by viewModel.webPrompts.collectAsStateWithLifecycle()
@@ -163,63 +157,60 @@ val cloudRotation by infiniteTransition.animateFloat(
                         )
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
-    // دکمه آپدیت با آیکون ابر / چرخش
-    Surface(
-        shape = CircleShape,
-        color = cardLightColor,
-        modifier = Modifier.size(40.dp),
-        onClick = {
-            if (!uiState.isUpdating) {
-                if (isOnline) {
-                    viewModel.updateLibrary()
-                } else {
-                    Toast.makeText(context, "اینترنت متصل نیست!", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    ) {
-        Box(contentAlignment = Alignment.Center) {
-            if (uiState.isUpdating) {
-                // حالت در حال آپدیت: فلش چرخان
-                Text(
-                    "🔄",
-                    fontSize = 18.sp,
-                    modifier = Modifier.graphicsLayer(rotationZ = cloudRotation)
-                )
-            } else {
-                // حالت عادی: ابر با نقطه رنگی (سبز/قرمز)
-                Box {
-                    Text(
-                        "☁",
-                        fontSize = 18.sp,
-                        color = if (isOnline) textColor else textGrayColor.copy(alpha = 0.5f)
-                    )
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .offset(x = 2.dp, y = (-2).dp)
-                            .size(9.dp)
-                            .clip(CircleShape)
-                            .background(
-                                if (isOnline) Color(0xFF4CAF50)
-                                else Color(0xFFE57373)
+                        // دکمه آپدیت با آیکون ابر / چرخش
+                        Surface(
+                            shape = CircleShape,
+                            color = cardLightColor,
+                            modifier = Modifier.size(40.dp),
+                            onClick = {
+                                if (!uiState.isUpdating) {
+                                    if (isOnline) {
+                                        viewModel.updateLibrary()
+                                    } else {
+                                        Toast.makeText(appContext, "اینترنت متصل نیست!", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            }
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                if (uiState.isUpdating) {
+                                    Text(
+                                        "🔄",
+                                        fontSize = 18.sp,
+                                        modifier = Modifier.graphicsLayer(rotationZ = cloudRotation)
+                                    )
+                                } else {
+                                    Box {
+                                        Text(
+                                            "☁",
+                                            fontSize = 18.sp,
+                                            color = if (isOnline) textColor else textGrayColor.copy(alpha = 0.5f)
+                                        )
+                                        Box(
+                                            modifier = Modifier
+                                                .align(Alignment.TopEnd)
+                                                .offset(x = 2.dp, y = (-2).dp)
+                                                .size(9.dp)
+                                                .clip(CircleShape)
+                                                .background(
+                                                    if (isOnline) Color(0xFF4CAF50)
+                                                    else Color(0xFFE57373)
+                                                )
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                        Spacer(Modifier.width(8.dp))
+                        IconButton(onClick = onSettingsClick) {
+                            Icon(
+                                Icons.Default.Settings,
+                                contentDescription = "Settings",
+                                tint = textColor,
+                                modifier = Modifier.size(26.dp)
                             )
-                    )
-                }
-            }
-        }
-    }
-    Spacer(Modifier.width(8.dp))
-    // دکمه تنظیمات
-    IconButton(onClick = onSettingsClick) {
-        Icon(
-            Icons.Default.Settings,
-            contentDescription = "Settings",
-            tint = textColor,
-            modifier = Modifier.size(26.dp)
-        )
-    }
-}
+                        }
+                    }
                 }
             }
         },
@@ -458,9 +449,9 @@ val cloudRotation by infiniteTransition.animateFloat(
                             onCardClick = { editingPrompt = prompt },
                             onPreviewClick = { previewPrompt = prompt },
                             onCopyClick = {
-                                val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                val clipboard = appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                                 clipboard.setPrimaryClip(ClipData.newPlainText("Hushka Prompt", prompt.text))
-                                Toast.makeText(context, "کپی شد!", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(appContext, "کپی شد!", Toast.LENGTH_SHORT).show()
                                 viewModel.markUsed(prompt)
                             },
                             onAnalyzeClick = { analyzePrompt = prompt },
@@ -511,39 +502,36 @@ val cloudRotation by infiniteTransition.animateFloat(
     }
 
     // Analyze Dialog (Advanced)
-analyzePrompt?.let { prompt ->
-    AdvancedAnalyzeDialog(
-        prompt = prompt,
-        onDismiss = { analyzePrompt = null },
-        onReplace = {
-            // جایگزینی متن پرامپت با نسخه ارتقا یافته
-            viewModel.updatePrompt(prompt.copy(text = prompt.text))
-        },
-        onSaveAsNew = {
-            // ذخیره به عنوان پرامپت جدید
-            viewModel.addPrompt(
-                title = "${prompt.title} (نسخه ارتقا یافته)",
-                category = prompt.category,
-                tags = prompt.tags,
-                text = prompt.text,
-                collection = prompt.collection
-            )
-        },
-        onTestInSimulator = {
-            // باز کردن دیالوگ تست زنده
-            analyzePrompt = null
-            liveTestPrompt = prompt
-        }
-    )
-}
+    analyzePrompt?.let { prompt ->
+        AdvancedAnalyzeDialog(
+            prompt = prompt,
+            onDismiss = { analyzePrompt = null },
+            onReplace = {
+                viewModel.updatePrompt(prompt.copy(text = prompt.text))
+            },
+            onSaveAsNew = {
+                viewModel.addPrompt(
+                    title = "${prompt.title} (نسخه ارتقا یافته)",
+                    category = prompt.category,
+                    tags = prompt.tags,
+                    text = prompt.text,
+                    collection = prompt.collection
+                )
+            },
+            onTestInSimulator = {
+                analyzePrompt = null
+                liveTestPrompt = prompt
+            }
+        )
+    }
 
-// Live Test Dialog
+    // Live Test Dialog
     liveTestPrompt?.let { prompt ->
-    LiveTestDialog(
-        prompt = prompt,
-        onDismiss = { liveTestPrompt = null }
-    )
-}
+        LiveTestDialog(
+            prompt = prompt,
+            onDismiss = { liveTestPrompt = null }
+        )
+    }
 
     // Preview Dialog
     previewPrompt?.let { prompt ->
@@ -577,9 +565,9 @@ analyzePrompt?.let { prompt ->
             },
             confirmButton = {
                 TextButton(onClick = {
-                    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val clipboard = appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     clipboard.setPrimaryClip(ClipData.newPlainText("Hushka Prompt", prompt.text))
-                    Toast.makeText(context, "کپی شد!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(appContext, "کپی شد!", Toast.LENGTH_SHORT).show()
                     previewPrompt = null
                 }) {
                     Text("کپی", color = purplePrimary)
@@ -603,7 +591,7 @@ analyzePrompt?.let { prompt ->
             confirmButton = {
                 TextButton(onClick = {
                     viewModel.deletePrompt(prompt)
-                    Toast.makeText(context, "حذف شد", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(appContext, "حذف شد", Toast.LENGTH_SHORT).show()
                     deletePrompt = null
                 }) {
                     Text("حذف", color = Color(0xFFE57373))
@@ -732,7 +720,6 @@ fun PromptCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(modifier = Modifier.padding(18.dp)) {
-            // Title Row
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -749,7 +736,6 @@ fun PromptCard(
                 )
                 Spacer(Modifier.width(8.dp))
                 Row {
-                    // Preview (Eye)
                     Surface(
                         shape = RoundedCornerShape(50),
                         color = cardLightColor,
@@ -761,7 +747,6 @@ fun PromptCard(
                         }
                     }
                     Spacer(Modifier.width(6.dp))
-                    // Pin
                     Surface(
                         shape = RoundedCornerShape(50),
                         color = cardLightColor,
@@ -773,7 +758,6 @@ fun PromptCard(
                         }
                     }
                     Spacer(Modifier.width(6.dp))
-                    // Favorite
                     Surface(
                         shape = RoundedCornerShape(50),
                         color = cardLightColor,
@@ -834,7 +818,6 @@ fun PromptCard(
 
             Spacer(Modifier.height(14.dp))
 
-            // Provider
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Start
@@ -859,21 +842,15 @@ fun PromptCard(
 
             Spacer(Modifier.height(10.dp))
 
-            // Action Buttons Row
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Copy
                 ActionButton(emoji = "📋", label = "کپی", onClick = onCopyClick, color = purplePrimary)
-                // Analyze
                 ActionButton(emoji = "✨", label = "آنالیز", onClick = onAnalyzeClick, color = Color(0xFFFFB74D))
-                // Live Test
                 ActionButton(emoji = "▶", label = "تست", onClick = onLiveTestClick, color = Color(0xFF64B5F6))
-                // Edit
                 ActionButton(emoji = "✏️", label = "ویرایش", onClick = onEditClick, color = textGrayColor)
-                // Delete
                 ActionButton(emoji = "🗑", label = "حذف", onClick = onDeleteClick, color = Color(0xFFE57373))
             }
         }
