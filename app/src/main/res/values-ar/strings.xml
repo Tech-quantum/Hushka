@@ -43,4 +43,14 @@
     <string name="prompt_text">نص المطالبة</string>
     <string name="voice_search_prompt">تحدث استعلامك</string>
     <string name="voice_search_unavailable">البحث الصوتي غير متاح على هذا الجهاز</string>
+    <string name="cat_web">🌐 الويب</string>
+    <string name="cat_github">🐙 جيت هاب</string>
+    <string name="domain_agent">🤖 وكيل</string>
+    <string name="domain_analysis">📊 تحليل</string>
+    <string name="domain_prompting">🎯 الأوامر</string>
+    <string name="domain_text">📝 نص</string>
+    <string name="domain_coding">💻 برمجة</string>
+    <string name="domain_image">🎨 صورة</string>
+    <string name="domain_video">🎬 فيديو</string>
+    <string name="domain_other">📦 أخرى</string>
 </resources>

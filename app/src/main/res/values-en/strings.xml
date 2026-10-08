@@ -43,4 +43,14 @@
     <string name="prompt_text">Prompt Text</string>
     <string name="voice_search_prompt">Speak your query</string>
     <string name="voice_search_unavailable">Voice search is not available on this device</string>
+    <string name="cat_web">🌐 Web</string>
+    <string name="cat_github">🐙 GitHub</string>
+    <string name="domain_agent">🤖 Agent</string>
+    <string name="domain_analysis">📊 Analysis</string>
+    <string name="domain_prompting">🎯 Prompting</string>
+    <string name="domain_text">📝 Text</string>
+    <string name="domain_coding">💻 Coding</string>
+    <string name="domain_image">🎨 Image</string>
+    <string name="domain_video">🎬 Video</string>
+    <string name="domain_other">📦 Other</string>
 </resources>

@@ -43,4 +43,14 @@
     <string name="prompt_text">İstem Metni</string>
     <string name="voice_search_prompt">Sorgunuzu söyleyin</string>
     <string name="voice_search_unavailable">Bu cihazda sesli arama kullanılamıyor</string>
+    <string name="cat_web">🌐 Web</string>
+    <string name="cat_github">🐙 GitHub</string>
+    <string name="domain_agent">🤖 Ajan</string>
+    <string name="domain_analysis">📊 Analiz</string>
+    <string name="domain_prompting">🎯 İpucu</string>
+    <string name="domain_text">📝 Metin</string>
+    <string name="domain_coding">💻 Kodlama</string>
+    <string name="domain_image">🎨 Görsel</string>
+    <string name="domain_video">🎬 Video</string>
+    <string name="domain_other">📦 Diğer</string>
 </resources>
