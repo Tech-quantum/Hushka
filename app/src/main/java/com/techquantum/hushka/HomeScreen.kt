@@ -138,7 +138,8 @@ fun HomeScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 16.dp)
+                    .statusBarsPadding()   // 👈 فاصله از نوار وضعیت گوشی (ساعت، باتری)
+                    .padding(horizontal = 20.dp, vertical = 12.dp)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -157,7 +158,6 @@ fun HomeScreen(
                         )
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        // دکمه آپدیت با آیکون ابر / چرخش
                         Surface(
                             shape = CircleShape,
                             color = cardLightColor,
@@ -184,7 +184,6 @@ fun HomeScreen(
                                             Modifier
                                         }
                                     )
-                                    // نقطه رنگی فقط وقتی آپدیت نمی‌کنه نمایش داده می‌شه
                                     if (!uiState.isUpdating) {
                                         Box(
                                             modifier = Modifier
@@ -227,239 +226,246 @@ fun HomeScreen(
             }
         }
     ) { padding ->
-        Column(
+        // 👇 کل محتوا داخل یک LazyColumn برای اسکرول یکجا
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+            contentPadding = PaddingValues(bottom = 100.dp)
         ) {
-            OutlinedTextField(
-                value = uiState.query,
-                onValueChange = { viewModel.onQueryChanged(it) },
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text(stringResource(R.string.search_hint), fontSize = 12.sp, color = textGrayColor) },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = textGrayColor) },
-                trailingIcon = {
-                    IconButton(onClick = onStartVoiceSearch) { Text("🎤", fontSize = 18.sp) }
-                },
-                shape = RoundedCornerShape(20.dp),
-                singleLine = true,
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = purplePrimary,
-                    unfocusedContainerColor = cardColor,
-                    focusedContainerColor = cardColor,
-                    unfocusedTextColor = textColor,
-                    focusedTextColor = textColor,
-                    cursorColor = purplePrimary
+            // ===== Search Bar =====
+            item {
+                OutlinedTextField(
+                    value = uiState.query,
+                    onValueChange = { viewModel.onQueryChanged(it) },
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = { Text(stringResource(R.string.search_hint), fontSize = 12.sp, color = textGrayColor) },
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = textGrayColor) },
+                    trailingIcon = {
+                        IconButton(onClick = onStartVoiceSearch) { Text("🎤", fontSize = 18.sp) }
+                    },
+                    shape = RoundedCornerShape(20.dp),
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        unfocusedBorderColor = Color.Transparent,
+                        focusedBorderColor = purplePrimary,
+                        unfocusedContainerColor = cardColor,
+                        focusedContainerColor = cardColor,
+                        unfocusedTextColor = textColor,
+                        focusedTextColor = textColor,
+                        cursorColor = purplePrimary
+                    )
                 )
-            )
-
-            Spacer(Modifier.height(16.dp))
-
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                Button(
-                    onClick = { showCategoryDialog = true },
-                    modifier = Modifier.weight(1f).height(50.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (uiState.selectedCategory != ALL_CATEGORY) purplePrimary else cardLightColor,
-                        contentColor = textColor
-                    ),
-                    elevation = ButtonDefaults.buttonElevation(0.dp)
-                ) {
-                    Text("📁", fontSize = 16.sp)
-                    Spacer(Modifier.width(8.dp))
-                    Text(stringResource(R.string.categories_btn), fontSize = 14.sp)
-                }
-                Button(
-                    onClick = { viewModel.onFavoritesToggled() },
-                    modifier = Modifier.weight(1f).height(50.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = if (uiState.favoritesOnly) purplePrimary else cardLightColor,
-                        contentColor = textColor
-                    ),
-                    elevation = ButtonDefaults.buttonElevation(0.dp)
-                ) {
-                    Text("⭐", fontSize = 16.sp)
-                    Spacer(Modifier.width(8.dp))
-                    Text(stringResource(R.string.favorites_btn), fontSize = 14.sp)
-                }
             }
 
-            Spacer(Modifier.height(16.dp))
-
-            val providerKeys = listOf("all", "anthropic", "deepseek", "gemini", "openai")
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(providerKeys) { key ->
-                    val value = if (key == "all") ALL_PROVIDER else key
-                    val label = if (key == "all") stringResource(R.string.all_providers) else key
-                    val isSelected = uiState.selectedProvider == value
-                    Surface(
-                        shape = RoundedCornerShape(50),
-                        color = if (isSelected) purplePrimary.copy(alpha = 0.25f) else Color.Transparent,
-                        border = BorderStroke(1.dp, if (isSelected) purplePrimary else borderColor),
-                        onClick = { viewModel.onProviderSelected(value) }
+            // ===== Categories & Favorites Buttons =====
+            item {
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Button(
+                        onClick = { showCategoryDialog = true },
+                        modifier = Modifier.weight(1f).height(50.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (uiState.selectedCategory != ALL_CATEGORY) purplePrimary else cardLightColor,
+                            contentColor = textColor
+                        ),
+                        elevation = ButtonDefaults.buttonElevation(0.dp)
                     ) {
-                        Text(
-                            label,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                            fontSize = 12.sp,
-                            color = if (isSelected) purplePrimary else textGrayColor,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                        )
+                        Text("📁", fontSize = 16.sp)
+                        Spacer(Modifier.width(8.dp))
+                        Text(stringResource(R.string.categories_btn), fontSize = 14.sp)
+                    }
+                    Button(
+                        onClick = { viewModel.onFavoritesToggled() },
+                        modifier = Modifier.weight(1f).height(50.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (uiState.favoritesOnly) purplePrimary else cardLightColor,
+                            contentColor = textColor
+                        ),
+                        elevation = ButtonDefaults.buttonElevation(0.dp)
+                    ) {
+                        Text("⭐", fontSize = 16.sp)
+                        Spacer(Modifier.width(8.dp))
+                        Text(stringResource(R.string.favorites_btn), fontSize = 14.sp)
                     }
                 }
             }
 
-            Spacer(Modifier.height(12.dp))
-
-            val tabKeys = listOf("recent", "pinned", "favorites")
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(tabKeys) { key ->
-                    val label = when (key) {
-                        "recent" -> stringResource(R.string.recent_tab)
-                        "pinned" -> stringResource(R.string.pinned_tab)
-                        "favorites" -> stringResource(R.string.favorites_tab)
-                        else -> key
-                    }
-                    val isSelected = when (key) {
-                        "recent" -> uiState.recentOnly
-                        "pinned" -> uiState.pinnedOnly
-                        "favorites" -> uiState.favoritesOnly
-                        else -> false
-                    }
-                    Surface(
-                        shape = RoundedCornerShape(50),
-                        color = if (isSelected) purplePrimary.copy(alpha = 0.25f) else Color.Transparent,
-                        border = BorderStroke(1.dp, if (isSelected) purplePrimary else borderColor),
-                        onClick = {
-                            when (key) {
-                                "recent" -> viewModel.onRecentToggled()
-                                "pinned" -> viewModel.onPinnedToggled()
-                                "favorites" -> viewModel.onFavoritesToggled()
-                            }
-                        }
-                    ) {
-                        Text(
-                            label,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                            fontSize = 12.sp,
-                            color = if (isSelected) purplePrimary else textGrayColor,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                        )
-                    }
-                }
-            }
-
-            Spacer(Modifier.height(12.dp))
-
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                Box {
-                    val sortLabel = when (uiState.sortMode) {
-                        SORT_TITLE -> stringResource(R.string.sort_title)
-                        SORT_CATEGORY -> stringResource(R.string.sort_category)
-                        SORT_FAVORITES -> stringResource(R.string.sort_favorites)
-                        else -> stringResource(R.string.sort_latest)
-                    }
-                    Surface(
-                        shape = RoundedCornerShape(50),
-                        color = Color.Transparent,
-                        border = BorderStroke(1.dp, borderColor),
-                        onClick = { sortExpanded = true }
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
-                            verticalAlignment = Alignment.CenterVertically
+            // ===== Provider Chips =====
+            item {
+                val providerKeys = listOf("all", "anthropic", "deepseek", "gemini", "openai")
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    items(providerKeys) { key ->
+                        val value = if (key == "all") ALL_PROVIDER else key
+                        val label = if (key == "all") stringResource(R.string.all_providers) else key
+                        val isSelected = uiState.selectedProvider == value
+                        Surface(
+                            shape = RoundedCornerShape(50),
+                            color = if (isSelected) purplePrimary.copy(alpha = 0.25f) else Color.Transparent,
+                            border = BorderStroke(1.dp, if (isSelected) purplePrimary else borderColor),
+                            onClick = { viewModel.onProviderSelected(value) }
                         ) {
-                            Text(stringResource(R.string.sort_label, sortLabel), fontSize = 12.sp, color = textGrayColor)
-                            Spacer(Modifier.width(4.dp))
-                            Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = textGrayColor, modifier = Modifier.size(18.dp))
-                        }
-                    }
-                    DropdownMenu(expanded = sortExpanded, onDismissRequest = { sortExpanded = false }) {
-                        listOf(
-                            SORT_LATEST to stringResource(R.string.sort_latest),
-                            SORT_TITLE to stringResource(R.string.sort_title),
-                            SORT_CATEGORY to stringResource(R.string.sort_category),
-                            SORT_FAVORITES to stringResource(R.string.sort_favorites)
-                        ).forEach { pair ->
-                            DropdownMenuItem(
-                                text = { Text(pair.second) },
-                                onClick = {
-                                    viewModel.onSortSelected(pair.first)
-                                    sortExpanded = false
-                                }
+                            Text(
+                                label,
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                                fontSize = 12.sp,
+                                color = if (isSelected) purplePrimary else textGrayColor,
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                             )
                         }
                     }
                 }
             }
 
-            Spacer(Modifier.height(16.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column {
-                    Text(stringResource(R.string.my_prompts), fontSize = 20.sp, fontWeight = FontWeight.Bold, color = textColor)
-                    Spacer(Modifier.height(2.dp))
-                    Text(stringResource(R.string.saved_count, uiState.filteredPrompts.size), fontSize = 11.sp, color = textGrayColor)
-                }
-                IconButton(onClick = { viewModel.updateLibrary() }) {
-                    Icon(
-                        Icons.Default.Star,
-                        contentDescription = null,
-                        tint = if (uiState.isUpdating) purplePrimary else textGrayColor,
-                        modifier = Modifier.size(24.dp)
-                    )
+            // ===== Tab Chips =====
+            item {
+                val tabKeys = listOf("recent", "pinned", "favorites")
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    items(tabKeys) { key ->
+                        val label = when (key) {
+                            "recent" -> stringResource(R.string.recent_tab)
+                            "pinned" -> stringResource(R.string.pinned_tab)
+                            "favorites" -> stringResource(R.string.favorites_tab)
+                            else -> key
+                        }
+                        val isSelected = when (key) {
+                            "recent" -> uiState.recentOnly
+                            "pinned" -> uiState.pinnedOnly
+                            "favorites" -> uiState.favoritesOnly
+                            else -> false
+                        }
+                        Surface(
+                            shape = RoundedCornerShape(50),
+                            color = if (isSelected) purplePrimary.copy(alpha = 0.25f) else Color.Transparent,
+                            border = BorderStroke(1.dp, if (isSelected) purplePrimary else borderColor),
+                            onClick = {
+                                when (key) {
+                                    "recent" -> viewModel.onRecentToggled()
+                                    "pinned" -> viewModel.onPinnedToggled()
+                                    "favorites" -> viewModel.onFavoritesToggled()
+                                }
+                            }
+                        ) {
+                            Text(
+                                label,
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                                fontSize = 12.sp,
+                                color = if (isSelected) purplePrimary else textGrayColor,
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                            )
+                        }
+                    }
                 }
             }
 
-            Spacer(Modifier.height(8.dp))
-
-            if (uiState.filteredPrompts.isEmpty()) {
-                Box(
-                    modifier = Modifier.fillMaxWidth().padding(40.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        if (uiState.query.isNotEmpty()) stringResource(R.string.no_results) else stringResource(R.string.no_prompts),
-                        color = textGrayColor,
-                        fontSize = 14.sp
-                    )
+            // ===== Sort Dropdown =====
+            item {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                    Box {
+                        val sortLabel = when (uiState.sortMode) {
+                            SORT_TITLE -> stringResource(R.string.sort_title)
+                            SORT_CATEGORY -> stringResource(R.string.sort_category)
+                            SORT_FAVORITES -> stringResource(R.string.sort_favorites)
+                            else -> stringResource(R.string.sort_latest)
+                        }
+                        Surface(
+                            shape = RoundedCornerShape(50),
+                            color = Color.Transparent,
+                            border = BorderStroke(1.dp, borderColor),
+                            onClick = { sortExpanded = true }
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(stringResource(R.string.sort_label, sortLabel), fontSize = 12.sp, color = textGrayColor)
+                                Spacer(Modifier.width(4.dp))
+                                Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = textGrayColor, modifier = Modifier.size(18.dp))
+                            }
+                        }
+                        DropdownMenu(expanded = sortExpanded, onDismissRequest = { sortExpanded = false }) {
+                            listOf(
+                                SORT_LATEST to stringResource(R.string.sort_latest),
+                                SORT_TITLE to stringResource(R.string.sort_title),
+                                SORT_CATEGORY to stringResource(R.string.sort_category),
+                                SORT_FAVORITES to stringResource(R.string.sort_favorites)
+                            ).forEach { pair ->
+                                DropdownMenuItem(
+                                    text = { Text(pair.second) },
+                                    onClick = {
+                                        viewModel.onSortSelected(pair.first)
+                                        sortExpanded = false
+                                    }
+                                )
+                            }
+                        }
+                    }
                 }
-            } else {
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(14.dp),
-                    contentPadding = PaddingValues(bottom = 100.dp)
+            }
+
+            // ===== Section Header =====
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    items(uiState.filteredPrompts, key = { it.id }) { prompt ->
-                        PromptCard(
-                            title = prompt.title,
-                            description = prompt.text,
-                            mainTag = prompt.category,
-                            tags = prompt.tags.split(",").map { it.trim() }.filter { it.isNotEmpty() },
-                            provider = prompt.collection.ifBlank { "custom" },
-                            onFavoriteToggle = { viewModel.toggleFavorite(prompt) },
-                            onPinToggle = { viewModel.togglePinned(prompt) },
-                            onCardClick = { editingPrompt = prompt },
-                            onPreviewClick = { previewPrompt = prompt },
-                            onCopyClick = {
-                                val clipboard = appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                                clipboard.setPrimaryClip(ClipData.newPlainText("Hushka Prompt", prompt.text))
-                                Toast.makeText(appContext, "کپی شد!", Toast.LENGTH_SHORT).show()
-                                viewModel.markUsed(prompt)
-                            },
-                            onAnalyzeClick = { analyzePrompt = prompt },
-                            onLiveTestClick = { liveTestPrompt = prompt },
-                            onEditClick = { editingPrompt = prompt },
-                            onDeleteClick = { deletePrompt = prompt }
+                    Column {
+                        Text(stringResource(R.string.my_prompts), fontSize = 20.sp, fontWeight = FontWeight.Bold, color = textColor)
+                        Spacer(Modifier.height(2.dp))
+                        Text(stringResource(R.string.saved_count, uiState.filteredPrompts.size), fontSize = 11.sp, color = textGrayColor)
+                    }
+                    IconButton(onClick = { viewModel.updateLibrary() }) {
+                        Icon(
+                            Icons.Default.Star,
+                            contentDescription = null,
+                            tint = if (uiState.isUpdating) purplePrimary else textGrayColor,
+                            modifier = Modifier.size(24.dp)
                         )
                     }
+                }
+            }
+
+            // ===== Prompt List =====
+            if (uiState.filteredPrompts.isEmpty()) {
+                item {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().padding(40.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            if (uiState.query.isNotEmpty()) stringResource(R.string.no_results) else stringResource(R.string.no_prompts),
+                            color = textGrayColor,
+                            fontSize = 14.sp
+                        )
+                    }
+                }
+            } else {
+                items(uiState.filteredPrompts, key = { it.id }) { prompt ->
+                    PromptCard(
+                        title = prompt.title,
+                        description = prompt.text,
+                        mainTag = prompt.category,
+                        tags = prompt.tags.split(",").map { it.trim() }.filter { it.isNotEmpty() },
+                        provider = prompt.collection.ifBlank { "custom" },
+                        onFavoriteToggle = { viewModel.toggleFavorite(prompt) },
+                        onPinToggle = { viewModel.togglePinned(prompt) },
+                        onCardClick = { editingPrompt = prompt },
+                        onPreviewClick = { previewPrompt = prompt },
+                        onCopyClick = {
+                            val clipboard = appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            clipboard.setPrimaryClip(ClipData.newPlainText("Hushka Prompt", prompt.text))
+                            Toast.makeText(appContext, "کپی شد!", Toast.LENGTH_SHORT).show()
+                            viewModel.markUsed(prompt)
+                        },
+                        onAnalyzeClick = { analyzePrompt = prompt },
+                        onLiveTestClick = { liveTestPrompt = prompt },
+                        onEditClick = { editingPrompt = prompt },
+                        onDeleteClick = { deletePrompt = prompt }
+                    )
                 }
             }
         }
@@ -501,7 +507,7 @@ fun HomeScreen(
         )
     }
 
-    // Analyze Dialog (Advanced)
+    // Analyze Dialog
     analyzePrompt?.let { prompt ->
         AdvancedAnalyzeDialog(
             prompt = prompt,
