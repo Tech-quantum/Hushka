@@ -1,5 +1,11 @@
 package com.techquantum.hushka
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -59,6 +65,47 @@ fun HomeScreen(
     var sortExpanded by remember { mutableStateOf(false) }
     var showCategoryDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
+
+    // وضعیت اتصال به اینترنت
+var isOnline by remember { mutableStateOf(true) }
+
+DisposableEffect(Unit) {
+    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+    // بررسی وضعیت فعلی
+    val currentNetwork = connectivityManager.activeNetwork
+    val currentCaps = connectivityManager.getNetworkCapabilities(currentNetwork)
+    isOnline = currentCaps?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
+
+    val networkCallback = object : ConnectivityManager.NetworkCallback() {
+        override fun onAvailable(network: Network) {
+            isOnline = true
+        }
+        override fun onLost(network: Network) {
+            // بررسی دوباره که شاید شبکه دیگه‌ای موجود باشه
+            val activeNetwork = connectivityManager.activeNetwork
+            val caps = connectivityManager.getNetworkCapabilities(activeNetwork)
+            isOnline = caps?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
+        }
+        override fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities) {
+            isOnline = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+        }
+    }
+
+    val networkRequest = NetworkRequest.Builder()
+        .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+        .build()
+
+    connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
+
+    onDispose {
+        try {
+            connectivityManager.unregisterNetworkCallback(networkCallback)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+}
     
     // انیمیشن چرخش برای آیکون ابر
 val infiniteTransition = rememberInfiniteTransition(label = "cloud_rotation")
@@ -124,7 +171,11 @@ val cloudRotation by infiniteTransition.animateFloat(
         modifier = Modifier.size(40.dp),
         onClick = {
             if (!uiState.isUpdating) {
-                viewModel.updateLibrary()
+                if (isOnline) {
+                    viewModel.updateLibrary()
+                } else {
+                    Toast.makeText(context, "اینترنت متصل نیست!", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     ) {
@@ -137,16 +188,23 @@ val cloudRotation by infiniteTransition.animateFloat(
                     modifier = Modifier.graphicsLayer(rotationZ = cloudRotation)
                 )
             } else {
-                // حالت عادی: ابر با نقطه سبز
+                // حالت عادی: ابر با نقطه رنگی (سبز/قرمز)
                 Box {
-                    Text("☁", fontSize = 18.sp)
+                    Text(
+                        "☁",
+                        fontSize = 18.sp,
+                        color = if (isOnline) textColor else textGrayColor.copy(alpha = 0.5f)
+                    )
                     Box(
                         modifier = Modifier
                             .align(Alignment.TopEnd)
                             .offset(x = 2.dp, y = (-2).dp)
-                            .size(8.dp)
+                            .size(9.dp)
                             .clip(CircleShape)
-                            .background(Color(0xFF4CAF50))
+                            .background(
+                                if (isOnline) Color(0xFF4CAF50)
+                                else Color(0xFFE57373)
+                            )
                     )
                 }
             }
@@ -162,7 +220,7 @@ val cloudRotation by infiniteTransition.animateFloat(
             modifier = Modifier.size(26.dp)
         )
     }
-                    }
+}
                 }
             }
         },
