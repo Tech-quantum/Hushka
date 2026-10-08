@@ -1,11 +1,22 @@
 package com.techquantum.hushka
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -48,6 +59,18 @@ fun HomeScreen(
     var sortExpanded by remember { mutableStateOf(false) }
     var showCategoryDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    
+    // انیمیشن چرخش برای آیکون ابر
+val infiniteTransition = rememberInfiniteTransition(label = "cloud_rotation")
+val cloudRotation by infiniteTransition.animateFloat(
+    initialValue = 0f,
+    targetValue = 360f,
+    animationSpec = infiniteRepeatable(
+        animation = tween(durationMillis = 1200, easing = LinearEasing),
+        repeatMode = RepeatMode.Restart
+    ),
+    label = "rotation"
+)
 
     // === Web Prompts States ===
     val webPrompts by viewModel.webPrompts.collectAsStateWithLifecycle()
@@ -93,8 +116,52 @@ fun HomeScreen(
                             overflow = TextOverflow.Ellipsis
                         )
                     }
-                    IconButton(onClick = onSettingsClick) {
-                        Icon(Icons.Default.Settings, contentDescription = "Settings", tint = textColor, modifier = Modifier.size(26.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+    // دکمه آپدیت با آیکون ابر / چرخش
+    Surface(
+        shape = CircleShape,
+        color = cardLightColor,
+        modifier = Modifier.size(40.dp),
+        onClick = {
+            if (!uiState.isUpdating) {
+                viewModel.updateLibrary()
+            }
+        }
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            if (uiState.isUpdating) {
+                // حالت در حال آپدیت: فلش چرخان
+                Text(
+                    "🔄",
+                    fontSize = 18.sp,
+                    modifier = Modifier.graphicsLayer(rotationZ = cloudRotation)
+                )
+            } else {
+                // حالت عادی: ابر با نقطه سبز
+                Box {
+                    Text("☁", fontSize = 18.sp)
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .offset(x = 2.dp, y = (-2).dp)
+                            .size(8.dp)
+                            .clip(CircleShape)
+                            .background(Color(0xFF4CAF50))
+                    )
+                }
+            }
+        }
+    }
+    Spacer(Modifier.width(8.dp))
+    // دکمه تنظیمات
+    IconButton(onClick = onSettingsClick) {
+        Icon(
+            Icons.Default.Settings,
+            contentDescription = "Settings",
+            tint = textColor,
+            modifier = Modifier.size(26.dp)
+        )
+    }
                     }
                 }
             }
