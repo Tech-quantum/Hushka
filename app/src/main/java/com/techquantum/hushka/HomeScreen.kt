@@ -17,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -36,7 +37,6 @@ fun HomeScreen(
     var sortExpanded by remember { mutableStateOf(false) }
     var showCategoryDialog by remember { mutableStateOf(false) }
 
-    // رنگ‌ها از MaterialTheme
     val bgColor = MaterialTheme.colorScheme.background
     val cardColor = MaterialTheme.colorScheme.surface
     val cardLightColor = MaterialTheme.colorScheme.surfaceVariant
@@ -44,7 +44,6 @@ fun HomeScreen(
     val textGrayColor = MaterialTheme.colorScheme.onSurfaceVariant
     val borderColor = MaterialTheme.colorScheme.outline
     val purplePrimary = MaterialTheme.colorScheme.primary
-    val purpleLight = MaterialTheme.colorScheme.primary
 
     Scaffold(
         containerColor = bgColor,
@@ -63,7 +62,7 @@ fun HomeScreen(
                         Text("Hushka", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = textColor)
                         Spacer(Modifier.height(4.dp))
                         Text(
-                            "هوشکا بستری برای کاوش، خلق و مدیریت ایده های هوش مصنوعی",
+                            stringResource(R.string.app_subtitle),
                             fontSize = 11.sp,
                             color = textGrayColor,
                             maxLines = 1,
@@ -85,7 +84,7 @@ fun HomeScreen(
             ) {
                 Icon(Icons.Default.Add, contentDescription = null)
                 Spacer(Modifier.width(8.dp))
-                Text("پرامپت جدید", fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.new_prompt_btn), fontWeight = FontWeight.Bold)
             }
         }
     ) { padding ->
@@ -95,11 +94,12 @@ fun HomeScreen(
                 .padding(padding)
                 .padding(horizontal = 16.dp)
         ) {
+            // Search Bar
             OutlinedTextField(
                 value = uiState.query,
                 onValueChange = { viewModel.onQueryChanged(it) },
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("جستجو...", fontSize = 12.sp, color = textGrayColor) },
+                placeholder = { Text(stringResource(R.string.search_hint), fontSize = 12.sp, color = textGrayColor) },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = textGrayColor) },
                 trailingIcon = {
                     IconButton(onClick = onStartVoiceSearch) { Text("🎤", fontSize = 18.sp) }
@@ -119,6 +119,7 @@ fun HomeScreen(
 
             Spacer(Modifier.height(16.dp))
 
+            // Categories & Favorites Buttons
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 Button(
                     onClick = { showCategoryDialog = true },
@@ -132,7 +133,7 @@ fun HomeScreen(
                 ) {
                     Text("📁", fontSize = 16.sp)
                     Spacer(Modifier.width(8.dp))
-                    Text("دسته بندی ها", fontSize = 14.sp)
+                    Text(stringResource(R.string.categories_btn), fontSize = 14.sp)
                 }
                 Button(
                     onClick = { viewModel.onFavoritesToggled() },
@@ -146,14 +147,15 @@ fun HomeScreen(
                 ) {
                     Text("⭐", fontSize = 16.sp)
                     Spacer(Modifier.width(8.dp))
-                    Text("علاقه مندی ها", fontSize = 14.sp)
+                    Text(stringResource(R.string.favorites_btn), fontSize = 14.sp)
                 }
             }
 
             Spacer(Modifier.height(16.dp))
 
+            // Provider Chips
             val providers = listOf(
-                "همه" to ALL_PROVIDER,
+                stringResource(R.string.all_providers) to ALL_PROVIDER,
                 "anthropic" to "anthropic",
                 "deepseek" to "deepseek",
                 "gemini" to "gemini",
@@ -174,7 +176,7 @@ fun HomeScreen(
                             label,
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                             fontSize = 12.sp,
-                            color = if (isSelected) purpleLight else textGrayColor,
+                            color = if (isSelected) purplePrimary else textGrayColor,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                         )
                     }
@@ -183,13 +185,18 @@ fun HomeScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            val tabs = listOf("اخیر", "پین شده", "علاقه مندی ها")
+            // Tab Chips
+            val tabs = listOf(
+                stringResource(R.string.recent_tab),
+                stringResource(R.string.pinned_tab),
+                stringResource(R.string.favorites_tab)
+            )
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(tabs) { tab ->
                     val isSelected = when (tab) {
-                        "اخیر" -> uiState.recentOnly
-                        "پین شده" -> uiState.pinnedOnly
-                        "علاقه مندی ها" -> uiState.favoritesOnly
+                        stringResource(R.string.recent_tab) -> uiState.recentOnly
+                        stringResource(R.string.pinned_tab) -> uiState.pinnedOnly
+                        stringResource(R.string.favorites_tab) -> uiState.favoritesOnly
                         else -> false
                     }
                     Surface(
@@ -198,9 +205,9 @@ fun HomeScreen(
                         border = BorderStroke(1.dp, if (isSelected) purplePrimary else borderColor),
                         onClick = {
                             when (tab) {
-                                "اخیر" -> viewModel.onRecentToggled()
-                                "پین شده" -> viewModel.onPinnedToggled()
-                                "علاقه مندی ها" -> viewModel.onFavoritesToggled()
+                                stringResource(R.string.recent_tab) -> viewModel.onRecentToggled()
+                                stringResource(R.string.pinned_tab) -> viewModel.onPinnedToggled()
+                                stringResource(R.string.favorites_tab) -> viewModel.onFavoritesToggled()
                             }
                         }
                     ) {
@@ -208,7 +215,7 @@ fun HomeScreen(
                             tab,
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                             fontSize = 12.sp,
-                            color = if (isSelected) purpleLight else textGrayColor,
+                            color = if (isSelected) purplePrimary else textGrayColor,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                         )
                     }
@@ -217,35 +224,36 @@ fun HomeScreen(
 
             Spacer(Modifier.height(12.dp))
 
+            // Sort Dropdown
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 Box {
+                    val sortLabel = when (uiState.sortMode) {
+                        SORT_TITLE -> stringResource(R.string.sort_title)
+                        SORT_CATEGORY -> stringResource(R.string.sort_category)
+                        SORT_FAVORITES -> stringResource(R.string.sort_favorites)
+                        else -> stringResource(R.string.sort_latest)
+                    }
                     Surface(
                         shape = RoundedCornerShape(50),
                         color = Color.Transparent,
                         border = BorderStroke(1.dp, borderColor),
                         onClick = { sortExpanded = true }
                     ) {
-                        val sortLabel = when (uiState.sortMode) {
-                            SORT_TITLE -> "عنوان"
-                            SORT_CATEGORY -> "دسته بندی"
-                            SORT_FAVORITES -> "علاقه مندی ها"
-                            else -> "جدیدترین"
-                        }
                         Row(
                             modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text("مرتب سازی: $sortLabel", fontSize = 12.sp, color = textGrayColor)
+                            Text(stringResource(R.string.sort_label, sortLabel), fontSize = 12.sp, color = textGrayColor)
                             Spacer(Modifier.width(4.dp))
                             Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = textGrayColor, modifier = Modifier.size(18.dp))
                         }
                     }
                     DropdownMenu(expanded = sortExpanded, onDismissRequest = { sortExpanded = false }) {
                         listOf(
-                            SORT_LATEST to "جدیدترین",
-                            SORT_TITLE to "عنوان",
-                            SORT_CATEGORY to "دسته بندی",
-                            SORT_FAVORITES to "علاقه مندی ها"
+                            SORT_LATEST to stringResource(R.string.sort_latest),
+                            SORT_TITLE to stringResource(R.string.sort_title),
+                            SORT_CATEGORY to stringResource(R.string.sort_category),
+                            SORT_FAVORITES to stringResource(R.string.sort_favorites)
                         ).forEach { pair ->
                             DropdownMenuItem(
                                 text = { Text(pair.second) },
@@ -261,15 +269,16 @@ fun HomeScreen(
 
             Spacer(Modifier.height(16.dp))
 
+            // Section Header
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
-                    Text("پرامپت های من", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = textColor)
+                    Text(stringResource(R.string.my_prompts), fontSize = 20.sp, fontWeight = FontWeight.Bold, color = textColor)
                     Spacer(Modifier.height(2.dp))
-                    Text("${uiState.filteredPrompts.size} پرامپت ذخیره شده", fontSize = 11.sp, color = textGrayColor)
+                    Text(stringResource(R.string.saved_count, uiState.filteredPrompts.size), fontSize = 11.sp, color = textGrayColor)
                 }
                 IconButton(onClick = { viewModel.updateLibrary() }) {
                     Icon(
@@ -283,13 +292,14 @@ fun HomeScreen(
 
             Spacer(Modifier.height(8.dp))
 
+            // Prompt List
             if (uiState.filteredPrompts.isEmpty()) {
                 Box(
                     modifier = Modifier.fillMaxWidth().padding(40.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        if (uiState.query.isNotEmpty()) "چیزی پیدا نشد" else "هنوز پرامپتی اضافه نشده",
+                        if (uiState.query.isNotEmpty()) stringResource(R.string.no_results) else stringResource(R.string.no_prompts),
                         color = textGrayColor,
                         fontSize = 14.sp
                     )
@@ -316,9 +326,10 @@ fun HomeScreen(
         }
     }
 
+    // Add Prompt Dialog
     if (showAddDialog) {
         PromptFormDialog(
-            title = "افزودن پرامپت جدید",
+            title = stringResource(R.string.add_prompt_title),
             initialPrompt = null,
             categories = listOf("عمومی", "تصویر", "ویدئو", "متن", "کد"),
             onDismiss = { showAddDialog = false },
@@ -329,9 +340,10 @@ fun HomeScreen(
         )
     }
 
+    // Edit Prompt Dialog
     editingPrompt?.let { prompt ->
         PromptFormDialog(
-            title = "ویرایش پرامپت",
+            title = stringResource(R.string.edit_prompt_title),
             initialPrompt = prompt,
             categories = listOf("عمومی", "تصویر", "ویدئو", "متن", "کد"),
             onDismiss = { editingPrompt = null },
@@ -350,6 +362,7 @@ fun HomeScreen(
         )
     }
 
+    // Categories Dialog
     if (showCategoryDialog) {
         val uniqueCategories = uiState.prompts
             .map { it.category }
@@ -361,7 +374,7 @@ fun HomeScreen(
             containerColor = cardColor,
             titleContentColor = textColor,
             textContentColor = textColor,
-            title = { Text("انتخاب دسته‌بندی", color = textColor) },
+            title = { Text(stringResource(R.string.select_category_title), color = textColor) },
             text = {
                 LazyColumn(
                     modifier = Modifier.fillMaxWidth().heightIn(max = 400.dp)
@@ -378,7 +391,7 @@ fun HomeScreen(
                             }
                         ) {
                             Text(
-                                "همه دسته‌ها",
+                                stringResource(R.string.all_categories),
                                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
                                 color = if (isSelected) Color.White else textColor,
                                 fontSize = 14.sp,
@@ -410,7 +423,7 @@ fun HomeScreen(
             },
             confirmButton = {
                 TextButton(onClick = { showCategoryDialog = false }) {
-                    Text("بستن", color = purplePrimary)
+                    Text(stringResource(R.string.close), color = purplePrimary)
                 }
             }
         )
@@ -433,7 +446,6 @@ fun PromptCard(
     val textColor = MaterialTheme.colorScheme.onSurface
     val textGrayColor = MaterialTheme.colorScheme.onSurfaceVariant
     val purplePrimary = MaterialTheme.colorScheme.primary
-    val purpleLight = MaterialTheme.colorScheme.primary
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -494,7 +506,7 @@ fun PromptCard(
                         mainTag,
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                         fontSize = 11.sp,
-                        color = purpleLight
+                        color = purplePrimary
                     )
                 }
                 Spacer(Modifier.height(10.dp))
