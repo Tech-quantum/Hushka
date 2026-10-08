@@ -36,7 +36,32 @@ fun HomeScreen(
     var editingPrompt by remember { mutableStateOf<PromptEntity?>(null) }
     var sortExpanded by remember { mutableStateOf(false) }
     var showCategoryDialog by remember { mutableStateOf(false) }
+    val webPrompts by viewModel.webPrompts.collectAsStateWithLifecycle()
+val isFetchingWeb by viewModel.isFetchingWeb.collectAsStateWithLifecycle()
+val webError by viewModel.webError.collectAsStateWithLifecycle()
+var showWebDialog by remember { mutableStateOf(false) }
 
+    LaunchedEffect(isFetchingWeb) {
+    if (!isFetchingWeb && (webPrompts.isNotEmpty() || webError != null)) {
+        showWebDialog = true
+    }
+    // Web Prompts Dialog
+if (showWebDialog) {
+    WebPromptsDialog(
+        prompts = webPrompts,
+        isLoading = isFetchingWeb,
+        error = webError,
+        onImport = { selected ->
+            viewModel.importWebPrompts(selected)
+            showWebDialog = false
+        },
+        onDismiss = {
+            showWebDialog = false
+            viewModel.clearWebPrompts()
+        }
+    )
+}
+}
     val bgColor = MaterialTheme.colorScheme.background
     val cardColor = MaterialTheme.colorScheme.surface
     val cardLightColor = MaterialTheme.colorScheme.surfaceVariant
