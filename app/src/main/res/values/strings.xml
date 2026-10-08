@@ -137,25 +137,14 @@
     <string name="results_count">%1$d نتیجه</string>
     <string name="saved_count">%1$d ذخیره شده</string>
     <string name="my_prompts">my_prompts</string>
-    <string name="search_hint">جستجو...</string>
     <string name="categories_btn">دسته بندی ها</string>
     <string name="favorites_btn">علاقه مندی ها</string>
-    <string name="my_prompts">پرامپت های من</string>
-    <string name="saved_count">%1$d پرامپت ذخیره شده</string>
-    <string name="all_providers">همه</string>
     <string name="recent_tab">اخیر</string>
     <string name="pinned_tab">پین شده</string>
     <string name="favorites_tab">علاقه مندی ها</string>
-    <string name="sort_label">مرتب سازی: %1$s</string>
-    <string name="sort_latest">جدیدترین</string>
-    <string name="sort_title">عنوان</string>
-    <string name="sort_category">دسته بندی</string>
-    <string name="sort_favorites">علاقه مندی ها</string>
     <string name="new_prompt_btn">پرامپت جدید</string>
     <string name="add_prompt_title">افزودن پرامپت جدید</string>
     <string name="edit_prompt_title">ویرایش پرامپت</string>
     <string name="select_category_title">انتخاب دسته‌بندی</string>
     <string name="all_categories">همه دسته‌ها</string>
-    <string name="no_results">چیزی پیدا نشد</string>
-    <string name="no_prompts">هنوز پرامپتی اضافه نشده</string>
 </resources>
