@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun SettingsDialog(
@@ -22,18 +21,29 @@ fun SettingsDialog(
     language: String,
     onThemeChange: (String) -> Unit,
     onLanguageChange: (String) -> Unit,
+    onExportJson: () -> Unit,
+    onExportMarkdown: () -> Unit,
+    onImportJson: () -> Unit,
+    onBrowseWeb: () -> Unit,
+    onManageColors: () -> Unit,
     onDismiss: () -> Unit
 ) {
+    val cardColor = MaterialTheme.colorScheme.surfaceVariant
+    val textColor = MaterialTheme.colorScheme.onSurface
+    val textGrayColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val purplePrimary = MaterialTheme.colorScheme.primary
+
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.settings), fontWeight = FontWeight.Bold) },
+        containerColor = MaterialTheme.colorScheme.surface,
+        title = { Text(stringResource(R.string.settings), fontWeight = FontWeight.Bold, color = textColor) },
         text = {
             Column(
                 modifier = Modifier.verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                // Appearance Section
-                Text(stringResource(R.string.appearance), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                // Appearance
+                Text(stringResource(R.string.appearance), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = textColor)
                 listOf(
                     Triple("light", "☀", stringResource(R.string.light)),
                     Triple("dark", "☾", stringResource(R.string.dark)),
@@ -41,18 +51,17 @@ fun SettingsDialog(
                 ).forEach { (value, icon, label) ->
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(14.dp),
-                        color = if (themeMode == value) MaterialTheme.colorScheme.primaryContainer
-                        else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
+                        shape = RoundedCornerShape(12.dp),
+                        color = if (themeMode == value) purplePrimary.copy(alpha = 0.35f) else cardColor,
                         onClick = { onThemeChange(value) }
                     ) {
                         Row(
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(icon, style = MaterialTheme.typography.titleLarge)
-                            Spacer(Modifier.width(12.dp))
-                            Text(label, modifier = Modifier.weight(1f))
+                            Text(icon, fontSize = 18.sp)
+                            Spacer(Modifier.width(10.dp))
+                            Text(label, modifier = Modifier.weight(1f), fontSize = 14.sp, color = textColor)
                             RadioButton(selected = themeMode == value, onClick = { onThemeChange(value) })
                         }
                     }
@@ -60,8 +69,8 @@ fun SettingsDialog(
 
                 Spacer(Modifier.height(8.dp))
 
-                // Language Section
-                Text(stringResource(R.string.language), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                // Language
+                Text(stringResource(R.string.language), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = textColor)
                 listOf(
                     Triple("fa", "🇮🇷", stringResource(R.string.persian)),
                     Triple("en", "🇬🇧", stringResource(R.string.english)),
@@ -70,105 +79,129 @@ fun SettingsDialog(
                 ).forEach { (value, flag, label) ->
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(14.dp),
-                        color = if (language == value) MaterialTheme.colorScheme.primaryContainer
-                        else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
+                        shape = RoundedCornerShape(12.dp),
+                        color = if (language == value) purplePrimary.copy(alpha = 0.35f) else cardColor,
                         onClick = { onLanguageChange(value) }
                     ) {
                         Row(
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text(flag, style = MaterialTheme.typography.titleMedium)
-                            Spacer(Modifier.width(12.dp))
-                            Text(label, modifier = Modifier.weight(1f))
+                            Text(flag, fontSize = 16.sp)
+                            Spacer(Modifier.width(10.dp))
+                            Text(label, modifier = Modifier.weight(1f), fontSize = 14.sp, color = textColor)
                             RadioButton(selected = language == value, onClick = { onLanguageChange(value) })
                         }
                     }
                 }
 
-                Spacer(Modifier.height(24.dp))
+                Spacer(Modifier.height(16.dp))
 
-                // Local Backup & Data Independence (Based on Image 5)
+                // Backup Card
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                    shape = RoundedCornerShape(14.dp),
+                    colors = CardDefaults.cardColors(containerColor = cardColor)
                 ) {
-                    Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.Storage, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                            Spacer(Modifier.width(8.dp))
-                            Text("پشتیبان‌گیری و استقلال داده‌های محلی", fontWeight = FontWeight.Bold)
-                        }
-                        Text("استخراج کل آرشیو پرامپت‌ها در قالب یک فایل استاندارد JSON و امکان بازیابی آن در هر زمان، بدون نیاز به سرور ابری.", style = MaterialTheme.typography.bodySmall)
+                    Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text("📦  پشتیبان‌گیری و استقلال داده‌های محلی", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = textColor)
+                        Text(
+                            "استخراج کل آرشیو پرامپت‌ها در قالب JSON یا Markdown",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = textGrayColor,
+                            fontSize = 11.sp
+                        )
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            OutlinedButton(onClick = { /* TODO */ }, modifier = Modifier.weight(1f)) {
-                                Text("خروجی Markdown")
+                            Button(
+                                onClick = onExportJson,
+                                modifier = Modifier.weight(1f),
+                                shape = RoundedCornerShape(10.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = purplePrimary)
+                            ) {
+                                Text("خروجی JSON", fontSize = 11.sp, color = Color.White)
                             }
-                            Button(onClick = { /* TODO */ }, modifier = Modifier.weight(1f)) {
-                                Text("خروجی کامل JSON")
+                            OutlinedButton(
+                                onClick = onExportMarkdown,
+                                modifier = Modifier.weight(1f),
+                                shape = RoundedCornerShape(10.dp)
+                            ) {
+                                Text("خروجی Markdown", fontSize = 11.sp)
                             }
                         }
-                        OutlinedButton(onClick = { /* TODO */ }, modifier = Modifier.fillMaxWidth()) {
-                            Text("درون‌ریزی فایل پشتیبان (JSON)")
+                        OutlinedButton(
+                            onClick = onImportJson,
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(10.dp)
+                        ) {
+                            Text("درون‌ریزی فایل پشتیبان (JSON)", fontSize = 11.sp)
                         }
                     }
                 }
 
-                // Cloud Update (Based on Image 5)
+                // Cloud Card
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                    shape = RoundedCornerShape(14.dp),
+                    colors = CardDefaults.cardColors(containerColor = cardColor)
                 ) {
-                    Row(
-                        modifier = Modifier.padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(Icons.Default.Cloud, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                        Spacer(Modifier.width(12.dp))
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text("بروزرسانی ابری از اینترنت", fontWeight = FontWeight.Bold)
-                            Text("کاوش آنلاین مخازن هوش مصنوعی، پرامپت‌ها و گیت‌هاب", style = MaterialTheme.typography.bodySmall)
-                        }
-                        Button(onClick = { /* TODO */ }) {
-                            Text("کاوش در وب")
+                    Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text("☁  بروزرسانی ابری از اینترنت", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = textColor)
+                        Text(
+                            "کاوش آنلاین مخازن هوش مصنوعی، پرامپت‌ها و گیت‌هاب",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = textGrayColor,
+                            fontSize = 11.sp
+                        )
+                        Button(
+                            onClick = onBrowseWeb,
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(10.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = purplePrimary)
+                        ) {
+                            Text("کاوش در وب", fontSize = 12.sp, color = Color.White)
                         }
                     }
                 }
 
-                // Tag Coloring (Based on Image 5)
+                // Tag Coloring Card
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+                    shape = RoundedCornerShape(14.dp),
+                    colors = CardDefaults.cardColors(containerColor = cardColor)
                 ) {
-                    Row(
-                        modifier = Modifier.padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(Icons.Default.Palette, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                        Spacer(Modifier.width(12.dp))
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text("رنگ‌بندی تگ‌ها", fontWeight = FontWeight.Bold)
-                            Text("مدیریت و شخصی‌سازی رنگ موضوعات و برچسب‌ها", style = MaterialTheme.typography.bodySmall)
-                        }
-                        Button(onClick = { /* TODO */ }) {
-                            Text("مدیریت رنگ‌ها")
+                    Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text("🎨  رنگ‌بندی تگ‌ها", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = textColor)
+                        Text(
+                            "مدیریت و شخصی‌سازی رنگ موضوعات و برچسب‌ها",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = textGrayColor,
+                            fontSize = 11.sp
+                        )
+                        Button(
+                            onClick = onManageColors,
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(10.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = purplePrimary)
+                        ) {
+                            Text("مدیریت رنگ‌ها", fontSize = 12.sp, color = Color.White)
                         }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(Modifier.height(12.dp))
                 Text(
                     text = stringResource(R.string.app_subtitle),
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    modifier = Modifier.fillMaxWidth(),
+                    color = textGrayColor
                 )
             }
         },
         confirmButton = {
-            TextButton(onClick = onDismiss) { Text(stringResource(R.string.close)) }
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.close), color = purplePrimary)
+            }
         }
     )
 }
