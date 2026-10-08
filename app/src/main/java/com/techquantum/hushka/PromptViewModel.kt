@@ -1,5 +1,8 @@
 package com.techquantum.hushka
-
+import android.content.Context
+import android.net.Uri
+import org.json.JSONArray
+import org.json.JSONObject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -76,4 +79,74 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
             recentOnly = state.recentOnly
         )
     )
+    fun exportToJson(context: Context, uri: Uri, prompts: List<PromptEntity>) {
+    viewModelScope.launch(Dispatchers.IO) {
+        try {
+            val jsonArray = JSONArray()
+            prompts.forEach { p ->
+                val obj = JSONObject().apply {
+                    put("id", p.id)
+                    put("title", p.title)
+                    put("category", p.category)
+                    put("tags", p.tags)
+                    put("text", p.text)
+                    put("collection", p.collection)
+                }
+                jsonArray.put(obj)
+            }
+            context.contentResolver.openOutputStream(uri)?.use { out ->
+                out.write(jsonArray.toString(2).toByteArray())
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+}
+
+fun exportToMarkdown(context: Context, uri: Uri, prompts: List<PromptEntity>) {
+    viewModelScope.launch(Dispatchers.IO) {
+        try {
+            val sb = StringBuilder()
+            sb.append("# Hushka Prompts Backup\n\n")
+            sb.append("Total: ${prompts.size} prompts\n\n---\n\n")
+            prompts.forEach { p ->
+                sb.append("## ${p.title}\n\n")
+                if (p.category.isNotBlank()) sb.append("**Category:** ${p.category}\n\n")
+                if (p.tags.isNotBlank()) sb.append("**Tags:** ${p.tags}\n\n")
+                if (p.collection.isNotBlank()) sb.append("**Collection:** ${p.collection}\n\n")
+                sb.append("```\n${p.text}\n```\n\n---\n\n")
+            }
+            context.contentResolver.openOutputStream(uri)?.use { out ->
+                out.write(sb.toString().toByteArray())
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+}
+
+fun importFromJson(context: Context, uri: Uri) {
+    viewModelScope.launch(Dispatchers.IO) {
+        try {
+            val content = context.contentResolver.openInputStream(uri)?.bufferedReader()?.use { it.readText() } ?: return@launch
+            val jsonArray = JSONArray(content)
+            for (i in 0 until jsonArray.length()) {
+                val obj = jsonArray.getJSONObject(i)
+                val title = obj.optString("title", "")
+                if (title.isBlank()) continue
+                repository.addPrompt(
+                    PromptEntity(
+                        title = title,
+                        category = obj.optString("category", ""),
+                        tags = obj.optString("tags", ""),
+                        text = obj.optString("text", ""),
+                        collection = obj.optString("collection", "")
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+}
 }
