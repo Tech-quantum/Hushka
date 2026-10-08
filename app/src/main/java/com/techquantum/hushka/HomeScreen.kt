@@ -43,6 +43,8 @@ fun HomeScreen(
     var editingPrompt by remember { mutableStateOf<PromptEntity?>(null) }
     var previewPrompt by remember { mutableStateOf<PromptEntity?>(null) }
     var deletePrompt by remember { mutableStateOf<PromptEntity?>(null) }
+    var analyzePrompt by remember { mutableStateOf<PromptEntity?>(null) }
+    var liveTestPrompt by remember { mutableStateOf<PromptEntity?>(null) }
     var sortExpanded by remember { mutableStateOf(false) }
     var showCategoryDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -337,12 +339,8 @@ fun HomeScreen(
                                 Toast.makeText(context, "کپی شد!", Toast.LENGTH_SHORT).show()
                                 viewModel.markUsed(prompt)
                             },
-                            onAnalyzeClick = {
-                                Toast.makeText(context, "✨ ارتقا و آنالیز به‌زودی", Toast.LENGTH_SHORT).show()
-                            },
-                            onLiveTestClick = {
-                                Toast.makeText(context, "▶ تست زنده به‌زودی", Toast.LENGTH_SHORT).show()
-                            },
+                            onAnalyzeClick = { analyzePrompt = prompt },
+                            onLiveTestClick = { liveTestPrompt = prompt },
                             onEditClick = { editingPrompt = prompt },
                             onDeleteClick = { deletePrompt = prompt }
                         )
@@ -387,6 +385,22 @@ fun HomeScreen(
             }
         )
     }
+
+    // Analyze Dialog
+    analyzePrompt?.let { prompt ->
+    AnalyzeDialog(
+        prompt = prompt,
+        onDismiss = { analyzePrompt = null }
+    )
+}
+
+// Live Test Dialog
+    liveTestPrompt?.let { prompt ->
+    LiveTestDialog(
+        prompt = prompt,
+        onDismiss = { liveTestPrompt = null }
+    )
+}
 
     // Preview Dialog
     previewPrompt?.let { prompt ->
