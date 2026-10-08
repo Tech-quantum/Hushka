@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Hushka</string>
-    <string name="app_subtitle">هوشکا جای برای کاوش، خلق و مدیریت ایده های هوش مصنوعی</string>
+    <string name="app_subtitle">هوشکا بستری برای کاوش، خلق و مدیریت ایده های هوش مصنوعی</string>
     <string name="cat_image">تصویر</string>
     <string name="cat_video">ویدئو</string>
     <string name="cat_audio">صوت</string>
