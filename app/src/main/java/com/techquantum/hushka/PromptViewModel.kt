@@ -1,8 +1,7 @@
 package com.techquantum.hushka
+
 import android.content.Context
 import android.net.Uri
-import org.json.JSONArray
-import org.json.JSONObject
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -12,6 +11,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONArray
+import org.json.JSONObject
+import java.net.URL
 
 class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -79,74 +81,202 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
             recentOnly = state.recentOnly
         )
     )
+
+    // ==================== Export / Import ====================
+
     fun exportToJson(context: Context, uri: Uri, prompts: List<PromptEntity>) {
-    viewModelScope.launch(Dispatchers.IO) {
-        try {
-            val jsonArray = JSONArray()
-            prompts.forEach { p ->
-                val obj = JSONObject().apply {
-                    put("id", p.id)
-                    put("title", p.title)
-                    put("category", p.category)
-                    put("tags", p.tags)
-                    put("text", p.text)
-                    put("collection", p.collection)
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val jsonArray = JSONArray()
+                prompts.forEach { p ->
+                    val obj = JSONObject().apply {
+                        put("id", p.id)
+                        put("title", p.title)
+                        put("category", p.category)
+                        put("tags", p.tags)
+                        put("text", p.text)
+                        put("collection", p.collection)
+                    }
+                    jsonArray.put(obj)
                 }
-                jsonArray.put(obj)
+                context.contentResolver.openOutputStream(uri)?.use { out ->
+                    out.write(jsonArray.toString(2).toByteArray())
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-            context.contentResolver.openOutputStream(uri)?.use { out ->
-                out.write(jsonArray.toString(2).toByteArray())
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
-}
 
-fun exportToMarkdown(context: Context, uri: Uri, prompts: List<PromptEntity>) {
-    viewModelScope.launch(Dispatchers.IO) {
-        try {
-            val sb = StringBuilder()
-            sb.append("# Hushka Prompts Backup\n\n")
-            sb.append("Total: ${prompts.size} prompts\n\n---\n\n")
-            prompts.forEach { p ->
-                sb.append("## ${p.title}\n\n")
-                if (p.category.isNotBlank()) sb.append("**Category:** ${p.category}\n\n")
-                if (p.tags.isNotBlank()) sb.append("**Tags:** ${p.tags}\n\n")
-                if (p.collection.isNotBlank()) sb.append("**Collection:** ${p.collection}\n\n")
-                sb.append("```\n${p.text}\n```\n\n---\n\n")
+    fun exportToMarkdown(context: Context, uri: Uri, prompts: List<PromptEntity>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val sb = StringBuilder()
+                sb.append("# Hushka Prompts Backup\n\n")
+                sb.append("Total: ${prompts.size} prompts\n\n---\n\n")
+                prompts.forEach { p ->
+                    sb.append("## ${p.title}\n\n")
+                    if (p.category.isNotBlank()) sb.append("**Category:** ${p.category}\n\n")
+                    if (p.tags.isNotBlank()) sb.append("**Tags:** ${p.tags}\n\n")
+                    if (p.collection.isNotBlank()) sb.append("**Collection:** ${p.collection}\n\n")
+                    sb.append("```\n${p.text}\n```\n\n---\n\n")
+                }
+                context.contentResolver.openOutputStream(uri)?.use { out ->
+                    out.write(sb.toString().toByteArray())
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-            context.contentResolver.openOutputStream(uri)?.use { out ->
-                out.write(sb.toString().toByteArray())
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
-}
 
-fun importFromJson(context: Context, uri: Uri) {
-    viewModelScope.launch(Dispatchers.IO) {
-        try {
-            val content = context.contentResolver.openInputStream(uri)?.bufferedReader()?.use { it.readText() } ?: return@launch
-            val jsonArray = JSONArray(content)
-            for (i in 0 until jsonArray.length()) {
-                val obj = jsonArray.getJSONObject(i)
-                val title = obj.optString("title", "")
-                if (title.isBlank()) continue
-                repository.addPrompt(
-                    PromptEntity(
-                        title = title,
-                        category = obj.optString("category", ""),
-                        tags = obj.optString("tags", ""),
-                        text = obj.optString("text", ""),
-                        collection = obj.optString("collection", "")
+    fun importFromJson(context: Context, uri: Uri) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val content = context.contentResolver.openInputStream(uri)?.bufferedReader()?.use { it.readText() } ?: return@launch
+                val jsonArray = JSONArray(content)
+                for (i in 0 until jsonArray.length()) {
+                    val obj = jsonArray.getJSONObject(i)
+                    val title = obj.optString("title", "")
+                    if (title.isBlank()) continue
+                    repository.addPrompt(
+                        PromptEntity(
+                            title = title,
+                            category = obj.optString("category", ""),
+                            tags = obj.optString("tags", ""),
+                            text = obj.optString("text", ""),
+                            collection = obj.optString("collection", "")
+                        )
                     )
-                )
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
-}
+
+    // ==================== Web Prompts Fetch ====================
+
+    private val _webPrompts = MutableStateFlow<List<PromptEntity>>(emptyList())
+    val webPrompts: StateFlow<List<PromptEntity>> = _webPrompts.asStateFlow()
+
+    private val _isFetchingWeb = MutableStateFlow(false)
+    val isFetchingWeb: StateFlow<Boolean> = _isFetchingWeb.asStateFlow()
+
+    private val _webError = MutableStateFlow<String?>(null)
+    val webError: StateFlow<String?> = _webError.asStateFlow()
+
+    fun fetchWebPrompts() {
+        if (_isFetchingWeb.value) return
+        _isFetchingWeb.value = true
+        _webError.value = null
+        _webPrompts.value = emptyList()
+        viewModelScope.launch {
+            try {
+                val result = withContext(Dispatchers.IO) {
+                    val url = URL("https://raw.githubusercontent.com/f/awesome-chatgpt-prompts/main/prompts.csv")
+                    val csv = url.readText()
+                    parseCsv(csv)
+                }
+                _webPrompts.value = result
+                if (result.isEmpty()) {
+                    _webError.value = "no_prompts_found"
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _webError.value = e.message ?: "unknown_error"
+                _webPrompts.value = emptyList()
+            } finally {
+                _isFetchingWeb.value = false
+            }
+        }
+    }
+
+    private fun parseCsv(csv: String): List<PromptEntity> {
+        val prompts = mutableListOf<PromptEntity>()
+        val lines = csv.split("\n")
+        var i = 1 // skip header
+
+        while (i < lines.size) {
+            val line = lines[i]
+            if (line.isBlank()) {
+                i++
+                continue
+            }
+            val parsed = parseCsvLine(lines, i)
+            if (parsed != null && parsed.values.size >= 2) {
+                val act = parsed.values[0].trim()
+                val prompt = parsed.values[1].trim()
+                if (act.isNotBlank() && prompt.isNotBlank()) {
+                    prompts.add(
+                        PromptEntity(
+                            title = act.take(100),
+                            category = "web",
+                            tags = "awesome-chatgpt-prompts",
+                            text = prompt,
+                            collection = "github"
+                        )
+                    )
+                }
+                i = parsed.lastLineIndex + 1
+            } else {
+                i++
+            }
+        }
+        return prompts
+    }
+
+    private data class CsvParseResult(val values: List<String>, val lastLineIndex: Int)
+
+    private fun parseCsvLine(allLines: List<String>, startIndex: Int): CsvParseResult? {
+        val values = mutableListOf<String>()
+        val sb = StringBuilder()
+        var inQuotes = false
+        var currentIndex = startIndex
+        var charIndex = 0
+        var text = allLines[currentIndex]
+
+        while (charIndex < text.length || inQuotes) {
+            if (charIndex >= text.length) {
+                currentIndex++
+                if (currentIndex >= allLines.size) break
+                text += "\n" + allLines[currentIndex]
+                continue
+            }
+            val ch = text[charIndex]
+            when {
+                ch == '"' -> {
+                    if (inQuotes && charIndex + 1 < text.length && text[charIndex + 1] == '"') {
+                        sb.append('"')
+                        charIndex++
+                    } else {
+                        inQuotes = !inQuotes
+                    }
+                }
+                ch == ',' && !inQuotes -> {
+                    values.add(sb.toString())
+                    sb.clear()
+                }
+                else -> sb.append(ch)
+            }
+            charIndex++
+        }
+        values.add(sb.toString())
+        return CsvParseResult(values, currentIndex)
+    }
+
+    fun importWebPrompts(selected: List<PromptEntity>) {
+        if (selected.isEmpty()) return
+        viewModelScope.launch(Dispatchers.IO) {
+            selected.forEach { p ->
+                repository.addPrompt(p)
+            }
+            _webPrompts.value = emptyList()
+        }
+    }
+
+    fun clearWebPrompts() {
+        _webPrompts.value = emptyList()
+        _webError.value = null
+    }
 }
