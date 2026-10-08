@@ -10,11 +10,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.runtime.*
 import androidx.core.os.LocaleListCompat
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: PromptViewModel by viewModels {
@@ -54,21 +51,37 @@ class MainActivity : AppCompatActivity() {
         if (currentLanguage.isNullOrBlank() || currentLanguage != savedLanguage) {
             AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(savedLanguage))
         }
+
         setContent {
             var showSettings by remember { mutableStateOf(false) }
-            HomeScreen(
-                viewModel = viewModel,
-                onSettingsClick = { showSettings = true },
-                onStartVoiceSearch = ::startVoiceSearch
-            )
-            if (showSettings) {
-                SettingsDialog(
-                    themeMode = "system",
-                    language = savedLanguage,
-                    onThemeChange = { },
-                    onLanguageChange = { },
-                    onDismiss = { showSettings = false }
+            var themeMode by remember { mutableStateOf(AppSettings.getTheme(this@MainActivity)) }
+            var language by remember { mutableStateOf(savedLanguage) }
+
+            PromptVaultTheme(themeMode = themeMode) {
+                HomeScreen(
+                    viewModel = viewModel,
+                    onSettingsClick = { showSettings = true },
+                    onStartVoiceSearch = ::startVoiceSearch
                 )
+
+                if (showSettings) {
+                    SettingsDialog(
+                        themeMode = themeMode,
+                        language = language,
+                        onThemeChange = { newMode ->
+                            themeMode = newMode
+                            AppSettings.setTheme(this@MainActivity, newMode)
+                        },
+                        onLanguageChange = { newLang ->
+                            language = newLang
+                            AppSettings.setLanguage(this@MainActivity, newLang)
+                            AppCompatDelegate.setApplicationLocales(
+                                LocaleListCompat.forLanguageTags(newLang)
+                            )
+                        },
+                        onDismiss = { showSettings = false }
+                    )
+                }
             }
         }
     }
