@@ -154,73 +154,69 @@ fun HomeScreen(
             Spacer(Modifier.height(16.dp))
 
             // Provider Chips
-            val providers = listOf(
-                stringResource(R.string.all_providers) to ALL_PROVIDER,
-                "anthropic" to "anthropic",
-                "deepseek" to "deepseek",
-                "gemini" to "gemini",
-                "openai" to "openai"
+            val providerKeys = listOf("all", "anthropic", "deepseek", "gemini", "openai")
+LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    items(providerKeys) { key ->
+        val value = if (key == "all") ALL_PROVIDER else key
+        val label = if (key == "all") stringResource(R.string.all_providers) else key
+        val isSelected = uiState.selectedProvider == value
+        Surface(
+            shape = RoundedCornerShape(50),
+            color = if (isSelected) purplePrimary.copy(alpha = 0.25f) else Color.Transparent,
+            border = BorderStroke(1.dp, if (isSelected) purplePrimary else borderColor),
+            onClick = { viewModel.onProviderSelected(value) }
+        ) {
+            Text(
+                label,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                fontSize = 12.sp,
+                color = if (isSelected) purplePrimary else textGrayColor,
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
             )
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(providers) { pair ->
-                    val label = pair.first
-                    val value = pair.second
-                    val isSelected = uiState.selectedProvider == value
-                    Surface(
-                        shape = RoundedCornerShape(50),
-                        color = if (isSelected) purplePrimary.copy(alpha = 0.25f) else Color.Transparent,
-                        border = BorderStroke(1.dp, if (isSelected) purplePrimary else borderColor),
-                        onClick = { viewModel.onProviderSelected(value) }
-                    ) {
-                        Text(
-                            label,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                            fontSize = 12.sp,
-                            color = if (isSelected) purplePrimary else textGrayColor,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                        )
-                    }
-                }
-            }
+        }
+    }
+}
 
             Spacer(Modifier.height(12.dp))
 
             // Tab Chips
-            val tabs = listOf(
-                stringResource(R.string.recent_tab),
-                stringResource(R.string.pinned_tab),
-                stringResource(R.string.favorites_tab)
-            )
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(tabs) { tab ->
-                    val isSelected = when (tab) {
-                        stringResource(R.string.recent_tab) -> uiState.recentOnly
-                        stringResource(R.string.pinned_tab) -> uiState.pinnedOnly
-                        stringResource(R.string.favorites_tab) -> uiState.favoritesOnly
-                        else -> false
-                    }
-                    Surface(
-                        shape = RoundedCornerShape(50),
-                        color = if (isSelected) purplePrimary.copy(alpha = 0.25f) else Color.Transparent,
-                        border = BorderStroke(1.dp, if (isSelected) purplePrimary else borderColor),
-                        onClick = {
-                            when (tab) {
-                                stringResource(R.string.recent_tab) -> viewModel.onRecentToggled()
-                                stringResource(R.string.pinned_tab) -> viewModel.onPinnedToggled()
-                                stringResource(R.string.favorites_tab) -> viewModel.onFavoritesToggled()
-                            }
-                        }
-                    ) {
-                        Text(
-                            tab,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                            fontSize = 12.sp,
-                            color = if (isSelected) purplePrimary else textGrayColor,
-                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                        )
-                    }
+            val tabKeys = listOf("recent", "pinned", "favorites")
+LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    items(tabKeys) { key ->
+        val label = when (key) {
+            "recent" -> stringResource(R.string.recent_tab)
+            "pinned" -> stringResource(R.string.pinned_tab)
+            "favorites" -> stringResource(R.string.favorites_tab)
+            else -> key
+        }
+        val isSelected = when (key) {
+            "recent" -> uiState.recentOnly
+            "pinned" -> uiState.pinnedOnly
+            "favorites" -> uiState.favoritesOnly
+            else -> false
+        }
+        Surface(
+            shape = RoundedCornerShape(50),
+            color = if (isSelected) purplePrimary.copy(alpha = 0.25f) else Color.Transparent,
+            border = BorderStroke(1.dp, if (isSelected) purplePrimary else borderColor),
+            onClick = {
+                when (key) {
+                    "recent" -> viewModel.onRecentToggled()
+                    "pinned" -> viewModel.onPinnedToggled()
+                    "favorites" -> viewModel.onFavoritesToggled()
                 }
             }
+        ) {
+            Text(
+                label,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                fontSize = 12.sp,
+                color = if (isSelected) purplePrimary else textGrayColor,
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+            )
+        }
+    }
+}
 
             Spacer(Modifier.height(12.dp))
 
