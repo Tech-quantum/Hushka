@@ -386,11 +386,30 @@ fun HomeScreen(
         )
     }
 
-    // Analyze Dialog
-    analyzePrompt?.let { prompt ->
-    AnalyzeDialog(
+    // Analyze Dialog (Advanced)
+analyzePrompt?.let { prompt ->
+    AdvancedAnalyzeDialog(
         prompt = prompt,
-        onDismiss = { analyzePrompt = null }
+        onDismiss = { analyzePrompt = null },
+        onReplace = {
+            // جایگزینی متن پرامپت با نسخه ارتقا یافته
+            viewModel.updatePrompt(prompt.copy(text = prompt.text))
+        },
+        onSaveAsNew = {
+            // ذخیره به عنوان پرامپت جدید
+            viewModel.addPrompt(
+                title = "${prompt.title} (نسخه ارتقا یافته)",
+                category = prompt.category,
+                tags = prompt.tags,
+                text = prompt.text,
+                collection = prompt.collection
+            )
+        },
+        onTestInSimulator = {
+            // باز کردن دیالوگ تست زنده
+            analyzePrompt = null
+            liveTestPrompt = prompt
+        }
     )
 }
 
