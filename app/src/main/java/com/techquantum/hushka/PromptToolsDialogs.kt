@@ -279,41 +279,43 @@ fun LiveTestDialog(
             }
         },
         confirmButton = {
-            Button(
-                onClick = {
-                    val finalText = buildFinalText()
-                    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    clipboard.setPrimaryClip(ClipData.newPlainText("Hushka Prompt", finalText))
-                    Toast.makeText(context, "کپی شد! آماده اجرا", Toast.LENGTH_SHORT).show()
-                    onDismiss()
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = purplePrimary,
-                    contentColor = Color.White
-                ),
-                shape = RoundedCornerShape(10.dp)
-            ) {
-                Text("📋 کپی متن نهایی", fontSize = 12.sp)
-            }
+    Button(
+        onClick = {
+            val finalText = buildFinalText()
+            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            clipboard.setPrimaryClip(ClipData.newPlainText("Hushka Prompt", finalText))
+            Toast.makeText(context, "📋 کپی شد! حالا در ChatGPT پیست کن", Toast.LENGTH_LONG).show()
         },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = purplePrimary,
+            contentColor = Color.White
+        ),
+        shape = RoundedCornerShape(10.dp)
+    ) {
+        Text("📋 کپی متن نهایی", fontSize = 12.sp)
+    }
+},
         dismissButton = {
             Row {
                 TextButton(onClick = {
-                    val finalText = buildFinalText()
-                    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    clipboard.setPrimaryClip(ClipData.newPlainText("Hushka Prompt", finalText))
-                    try {
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://chat.openai.com"))
-                        context.startActivity(intent)
-                    } catch (e: Exception) {
-                        Toast.makeText(context, "مرورگر پیدا نشد", Toast.LENGTH_SHORT).show()
-                    }
-                }) {
-                    Text("🌐 ChatGPT", color = textGrayColor, fontSize = 11.sp)
-                }
-                TextButton(onClick = onDismiss) {
-                    Text("بستن", color = textGrayColor, fontSize = 12.sp)
-                }
+    val finalText = buildFinalText()
+    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    clipboard.setPrimaryClip(ClipData.newPlainText("Hushka Prompt", finalText))
+    try {
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, finalText)
+            putExtra(Intent.EXTRA_SUBJECT, prompt.title)
+        }
+        context.startActivity(
+            Intent.createChooser(shareIntent, "ارسال پرامپت به...")
+        )
+    } catch (e: Exception) {
+        Toast.makeText(context, "برنامه‌ای پیدا نشد", Toast.LENGTH_SHORT).show()
+    }
+}) {
+    Text("📤 اشتراک‌گذاری", color = textGrayColor, fontSize = 11.sp)
+}
             }
         }
     )
