@@ -117,16 +117,9 @@ class MainActivity : AppCompatActivity() {
                             importJsonLauncher.launch(arrayOf("application/json"))
                         },
                         onBrowseWeb = {
-                            try {
-                                val intent = Intent(
-                                    Intent.ACTION_VIEW,
-                                    Uri.parse("https://github.com/topics/prompt-engineering")
-                                )
-                                startActivity(intent)
-                            } catch (e: Exception) {
-                                Toast.makeText(this@MainActivity, "مرورگر پیدا نشد", Toast.LENGTH_SHORT).show()
-                            }
+                          viewModel.fetchWebPrompts()
                         },
+                            
                         onManageColors = {
                             Toast.makeText(this@MainActivity, "این ویژگی به‌زودی اضافه می‌شود", Toast.LENGTH_SHORT).show()
                         },
