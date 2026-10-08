@@ -21,14 +21,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-private val PurplePrimary = Color(0xFF7C7CFF)
-private val PurpleLight = Color(0xFFB8B8FF)
-private val DarkBg = Color(0xFF1A1A2E)
-private val CardDark = Color(0xFF252538)
-private val CardLight = Color(0xFF2E2E45)
-private val TextLight = Color(0xFFEAEAEA)
-private val TextGray = Color(0xFF9E9EAE)
-private val BorderColor = Color(0xFF3A3A4E)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,7 +33,7 @@ fun HomeScreen(
     var selectedTab by remember { mutableStateOf("اخیر") }
 
     Scaffold(
-        containerColor = DarkBg,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             Column(
                 modifier = Modifier
@@ -54,18 +46,18 @@ fun HomeScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
-                        Text("Hushka", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = TextLight)
+                        Text("Hushka", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                         Spacer(Modifier.height(4.dp))
                         Text(
                             "هوشکا بستری برای کاوش، خلق و مدیریت ایده های هوش مصنوعی",
                             fontSize = 11.sp,
-                            color = TextGray,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
                     }
                     IconButton(onClick = onSettingsClick) {
-                        Icon(Icons.Default.Settings, contentDescription = "Settings", tint = TextLight, modifier = Modifier.size(26.dp))
+                        Icon(Icons.Default.Settings, contentDescription = "Settings", tint = MaterialTheme.colorScheme.onSurface, modifier = Modifier.size(26.dp))
                     }
                 }
             }
@@ -73,7 +65,7 @@ fun HomeScreen(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { },
-                containerColor = PurplePrimary,
+                containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = Color.White,
                 shape = RoundedCornerShape(16.dp)
             ) {
@@ -93,8 +85,8 @@ fun HomeScreen(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("جستجو...", fontSize = 12.sp, color = TextGray) },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = TextGray) },
+                placeholder = { Text("جستجو...", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant) },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant) },
                 trailingIcon = {
                     IconButton(onClick = onStartVoiceSearch) { Text("🎤", fontSize = 18.sp) }
                 },
@@ -102,12 +94,12 @@ fun HomeScreen(
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = PurplePrimary,
-                    unfocusedContainerColor = CardDark,
-                    focusedContainerColor = CardDark,
-                    unfocusedTextColor = TextLight,
-                    focusedTextColor = TextLight,
-                    cursorColor = PurplePrimary
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    cursorColor = MaterialTheme.colorScheme.primary
                 )
             )
 
@@ -119,8 +111,8 @@ fun HomeScreen(
                     modifier = Modifier.weight(1f).height(50.dp),
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = PurpleLight.copy(alpha = 0.35f),
-                        contentColor = TextLight
+                        containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.35f),
+                        contentColor = MaterialTheme.colorScheme.onSurface
                     ),
                     elevation = ButtonDefaults.buttonElevation(0.dp)
                 ) {
@@ -133,8 +125,8 @@ fun HomeScreen(
                     modifier = Modifier.weight(1f).height(50.dp),
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = PurpleLight.copy(alpha = 0.35f),
-                        contentColor = TextLight
+                        containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.35f),
+                        contentColor = MaterialTheme.colorScheme.onSurface
                     ),
                     elevation = ButtonDefaults.buttonElevation(0.dp)
                 ) {
@@ -152,15 +144,15 @@ fun HomeScreen(
                     val isSelected = selectedProvider == provider
                     Surface(
                         shape = RoundedCornerShape(50),
-                        color = if (isSelected) PurplePrimary.copy(alpha = 0.25f) else Color.Transparent,
-                        border = BorderStroke(1.dp, if (isSelected) PurplePrimary else BorderColor),
+                        color = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.25f) else Color.Transparent,
+                        border = BorderStroke(1.dp, if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline),
                         onClick = { selectedProvider = provider }
                     ) {
                         Text(
                             provider,
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                             fontSize = 12.sp,
-                            color = if (isSelected) PurpleLight else TextGray,
+                            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                         )
                     }
@@ -175,15 +167,15 @@ fun HomeScreen(
                     val isSelected = selectedTab == tab
                     Surface(
                         shape = RoundedCornerShape(50),
-                        color = if (isSelected) PurplePrimary.copy(alpha = 0.25f) else Color.Transparent,
-                        border = BorderStroke(1.dp, if (isSelected) PurplePrimary else BorderColor),
+                        color = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.25f) else Color.Transparent,
+                        border = BorderStroke(1.dp, if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline),
                         onClick = { selectedTab = tab }
                     ) {
                         Text(
                             tab,
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                             fontSize = 12.sp,
-                            color = if (isSelected) PurpleLight else TextGray,
+                            color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                         )
                     }
@@ -198,12 +190,12 @@ fun HomeScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
-                    Text("پرامپت های من", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = TextLight)
+                    Text("پرامپت های من", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
                     Spacer(Modifier.height(2.dp))
-                    Text("197 پرامپت ذخیره شده", fontSize = 11.sp, color = TextGray)
+                    Text("197 پرامپت ذخیره شده", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 IconButton(onClick = { }) {
-                    Icon(Icons.Default.Star, contentDescription = null, tint = TextGray, modifier = Modifier.size(24.dp))
+                    Icon(Icons.Default.Star, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(24.dp))
                 }
             }
 
@@ -238,7 +230,7 @@ fun PromptCard(
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(22.dp),
-        colors = CardDefaults.cardColors(containerColor = CardDark),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(modifier = Modifier.padding(18.dp)) {
@@ -254,13 +246,13 @@ fun PromptCard(
                     modifier = Modifier.weight(1f),
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    color = TextLight
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(Modifier.width(8.dp))
                 Row {
                     Surface(
                         shape = RoundedCornerShape(50),
-                        color = CardLight,
+                        color = MaterialTheme.colorScheme.surfaceVariant,
                         modifier = Modifier.size(32.dp),
                         onClick = { }
                     ) {
@@ -271,7 +263,7 @@ fun PromptCard(
                     Spacer(Modifier.width(8.dp))
                     Surface(
                         shape = RoundedCornerShape(50),
-                        color = CardLight,
+                        color = MaterialTheme.colorScheme.surfaceVariant,
                         modifier = Modifier.size(32.dp),
                         onClick = { }
                     ) {
@@ -286,13 +278,13 @@ fun PromptCard(
 
             Surface(
                 shape = RoundedCornerShape(8.dp),
-                color = PurplePrimary.copy(alpha = 0.15f)
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
             ) {
                 Text(
                     mainTag,
                     modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                     fontSize = 11.sp,
-                    color = PurpleLight
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
 
@@ -308,7 +300,7 @@ fun PromptCard(
                             tag,
                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                             fontSize = 11.sp,
-                            color = TextLight
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
@@ -322,7 +314,7 @@ fun PromptCard(
                 lineHeight = 18.sp,
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis,
-                color = TextGray
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             Spacer(Modifier.height(14.dp))
@@ -334,7 +326,7 @@ fun PromptCard(
             ) {
                 Surface(
                     shape = RoundedCornerShape(8.dp),
-                    color = PurplePrimary.copy(alpha = 0.3f)
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
                 ) {
                     Text(
                         provider,
