@@ -53,4 +53,10 @@
     <string name="domain_image">🎨 صورة</string>
     <string name="domain_video">🎬 فيديو</string>
     <string name="domain_other">📦 أخرى</string>
+    <string name="color_theme">لون التطبيق</string>
+    <string name="color_purple">بنفسجي</string>
+    <string name="color_red">أحمر</string>
+    <string name="color_green">أخضر</string>
+    <string name="color_blue">أزرق</string>
+    <string name="color_orange">برتقالي</string>
 </resources>

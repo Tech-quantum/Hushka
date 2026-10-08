@@ -157,4 +157,10 @@
     <string name="domain_image">🎨 تصویر</string>
     <string name="domain_video">🎬 ویدئو</string>
     <string name="domain_other">📦 سایر</string>
+    <string name="color_theme">رنگ برنامه</string>
+    <string name="color_purple">بنفش</string>
+    <string name="color_red">قرمز</string>
+    <string name="color_green">سبز</string>
+    <string name="color_blue">آبی</string>
+    <string name="color_orange">نارنجی</string>
 </resources>

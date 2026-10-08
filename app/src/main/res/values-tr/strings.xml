@@ -53,4 +53,10 @@
     <string name="domain_image">🎨 Görsel</string>
     <string name="domain_video">🎬 Video</string>
     <string name="domain_other">📦 Diğer</string>
+    <string name="color_theme">Uygulama Rengi</string>
+    <string name="color_purple">Mor</string>
+    <string name="color_red">Kırmızı</string>
+    <string name="color_green">Yeşil</string>
+    <string name="color_blue">Mavi</string>
+    <string name="color_orange">Turuncu</string>
 </resources>

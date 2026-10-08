@@ -53,4 +53,10 @@
     <string name="domain_image">🎨 Image</string>
     <string name="domain_video">🎬 Video</string>
     <string name="domain_other">📦 Other</string>
+    <string name="color_theme">App Color</string>
+    <string name="color_purple">Purple</string>
+    <string name="color_red">Red</string>
+    <string name="color_green">Green</string>
+    <string name="color_blue">Blue</string>
+    <string name="color_orange">Orange</string>
 </resources>
