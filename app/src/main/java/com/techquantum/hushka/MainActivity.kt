@@ -101,10 +101,10 @@ class MainActivity : AppCompatActivity() {
                         onThemeChange = { newMode ->
                             themeMode = newMode
                             AppSettings.setTheme(this@MainActivity, newMode)
-                            onColorThemeChange = { newColor ->
+                        },
+                        onColorThemeChange = { newColor ->
                             colorTheme = newColor
                             AppSettings.setColorTheme(this@MainActivity, newColor)
-},
                         },
                         onLanguageChange = { newLang ->
                             language = newLang
@@ -123,10 +123,9 @@ class MainActivity : AppCompatActivity() {
                             importJsonLauncher.launch(arrayOf("application/json"))
                         },
                         onBrowseWeb = {
-                          showSettings = false
-                          viewModel.fetchWebPrompts()
+                            showSettings = false
+                            viewModel.fetchWebPrompts()
                         },
-                            
                         onManageColors = {
                             Toast.makeText(this@MainActivity, "این ویژگی به‌زودی اضافه می‌شود", Toast.LENGTH_SHORT).show()
                         },
