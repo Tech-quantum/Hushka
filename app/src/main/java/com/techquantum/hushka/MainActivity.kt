@@ -10,6 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.runtime.*
 import androidx.core.os.LocaleListCompat
 
 class MainActivity : AppCompatActivity() {
@@ -26,8 +27,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // RecognizerIntent runs in the system speech-recognition app, which holds the
-    // microphone permission itself, so this app does not need RECORD_AUDIO.
     private fun startVoiceSearch() {
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
             putExtra(
@@ -52,6 +51,38 @@ class MainActivity : AppCompatActivity() {
         if (currentLanguage.isNullOrBlank() || currentLanguage != savedLanguage) {
             AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(savedLanguage))
         }
-        setContent { HomeScreen() }
+
+        setContent {
+            var showSettings by remember { mutableStateOf(false) }
+            var themeMode by remember { mutableStateOf(AppSettings.getTheme(this@MainActivity)) }
+            var language by remember { mutableStateOf(savedLanguage) }
+
+            PromptVaultTheme(themeMode = themeMode) {
+                HomeScreen(
+                    viewModel = viewModel,
+                    onSettingsClick = { showSettings = true },
+                    onStartVoiceSearch = ::startVoiceSearch
+                )
+
+                if (showSettings) {
+                    SettingsDialog(
+                        themeMode = themeMode,
+                        language = language,
+                        onThemeChange = { newMode ->
+                            themeMode = newMode
+                            AppSettings.setTheme(this@MainActivity, newMode)
+                        },
+                        onLanguageChange = { newLang ->
+                            language = newLang
+                            AppSettings.setLanguage(this@MainActivity, newLang)
+                            AppCompatDelegate.setApplicationLocales(
+                                LocaleListCompat.forLanguageTags(newLang)
+                            )
+                        },
+                        onDismiss = { showSettings = false }
+                    )
+                }
+            }
+        }
     }
 }
