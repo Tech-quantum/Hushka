@@ -84,8 +84,9 @@ class MainActivity : AppCompatActivity() {
             var showSettings by remember { mutableStateOf(false) }
             var themeMode by remember { mutableStateOf(AppSettings.getTheme(this@MainActivity)) }
             var language by remember { mutableStateOf(savedLanguage) }
+            var colorTheme by remember { mutableStateOf(AppSettings.getColorTheme(this@MainActivity)) }
 
-            PromptVaultTheme(themeMode = themeMode) {
+            PromptVaultTheme(themeMode = themeMode, colorTheme = colorTheme) {
                 HomeScreen(
                     viewModel = viewModel,
                     onSettingsClick = { showSettings = true },
@@ -95,10 +96,15 @@ class MainActivity : AppCompatActivity() {
                 if (showSettings) {
                     SettingsDialog(
                         themeMode = themeMode,
+                        colorTheme = colorTheme,
                         language = language,
                         onThemeChange = { newMode ->
                             themeMode = newMode
                             AppSettings.setTheme(this@MainActivity, newMode)
+                        },
+                        onColorThemeChange = { newColor ->
+                            colorTheme = newColor
+                            AppSettings.setColorTheme(this@MainActivity, newColor)
                         },
                         onLanguageChange = { newLang ->
                             language = newLang
@@ -117,10 +123,9 @@ class MainActivity : AppCompatActivity() {
                             importJsonLauncher.launch(arrayOf("application/json"))
                         },
                         onBrowseWeb = {
-                          showSettings = false
-                          viewModel.fetchWebPrompts()
+                            showSettings = false
+                            viewModel.fetchWebPrompts()
                         },
-                            
                         onManageColors = {
                             Toast.makeText(this@MainActivity, "این ویژگی به‌زودی اضافه می‌شود", Toast.LENGTH_SHORT).show()
                         },

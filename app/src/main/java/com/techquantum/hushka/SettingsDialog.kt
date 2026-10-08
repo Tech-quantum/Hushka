@@ -1,7 +1,9 @@
 package com.techquantum.hushka
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -18,8 +20,10 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun SettingsDialog(
     themeMode: String,
+    colorTheme: String,
     language: String,
     onThemeChange: (String) -> Unit,
+    onColorThemeChange: (String) -> Unit,
     onLanguageChange: (String) -> Unit,
     onExportJson: () -> Unit,
     onExportMarkdown: () -> Unit,
@@ -42,7 +46,7 @@ fun SettingsDialog(
                 modifier = Modifier.verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                // Appearance
+                // ===== Appearance =====
                 Text(stringResource(R.string.appearance), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = textColor)
                 listOf(
                     Triple("light", "☀", stringResource(R.string.light)),
@@ -69,7 +73,61 @@ fun SettingsDialog(
 
                 Spacer(Modifier.height(8.dp))
 
-                // Language
+                // ===== Color Theme =====
+                Text(stringResource(R.string.color_theme), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = textColor)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.Top
+                ) {
+                    val colorOptions = listOf(
+                        "purple" to Color(0xFF7C7CFF),
+                        "red" to Color(0xFFFF5252),
+                        "green" to Color(0xFF4CAF50),
+                        "blue" to Color(0xFF42A5F5),
+                        "orange" to Color(0xFFFF9800)
+                    )
+                    colorOptions.forEach { (key, color) ->
+                        val isSelected = colorTheme == key
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Surface(
+                                shape = CircleShape,
+                                color = color,
+                                modifier = Modifier
+                                    .size(44.dp)
+                                    .border(
+                                        width = if (isSelected) 3.dp else 0.dp,
+                                        color = if (isSelected) textColor else Color.Transparent,
+                                        shape = CircleShape
+                                    ),
+                                onClick = { onColorThemeChange(key) }
+                            ) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    if (isSelected) {
+                                        Text("✓", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                                    }
+                                }
+                            }
+                            Spacer(Modifier.height(4.dp))
+                            Text(
+                                text = when (key) {
+                                    "purple" -> stringResource(R.string.color_purple)
+                                    "red" -> stringResource(R.string.color_red)
+                                    "green" -> stringResource(R.string.color_green)
+                                    "blue" -> stringResource(R.string.color_blue)
+                                    else -> stringResource(R.string.color_orange)
+                                },
+                                fontSize = 10.sp,
+                                color = if (isSelected) purplePrimary else textGrayColor,
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                            )
+                        }
+                    }
+                }
+
+                Spacer(Modifier.height(8.dp))
+
+                // ===== Language =====
                 Text(stringResource(R.string.language), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = textColor)
                 listOf(
                     Triple("fa", "🇮🇷", stringResource(R.string.persian)),
@@ -97,7 +155,7 @@ fun SettingsDialog(
 
                 Spacer(Modifier.height(16.dp))
 
-                // Backup Card
+                // ===== Backup Card =====
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(14.dp),
@@ -138,7 +196,7 @@ fun SettingsDialog(
                     }
                 }
 
-                // Cloud Card
+                // ===== Cloud Card =====
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(14.dp),
@@ -163,7 +221,7 @@ fun SettingsDialog(
                     }
                 }
 
-                // Tag Coloring Card
+                // ===== Manage Colors Card =====
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(14.dp),

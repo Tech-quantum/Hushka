@@ -6,6 +6,7 @@ object AppSettings {
     private const val PREFS = "promptvault_settings"
     private const val THEME = "theme_mode"
     private const val LANGUAGE = "language"
+    private const val COLOR_THEME = "color_theme"
     private const val IMPORTED_CATALOG_IDS = "imported_catalog_ids"
     private const val DELETED_LIBRARY_KEYS = "deleted_library_keys"
 
@@ -47,5 +48,14 @@ object AppSettings {
     fun setLanguage(context: Context, value: String) {
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
             .edit().putString(LANGUAGE, value).apply()
+        
+    }
+    fun getColorTheme(context: Context): String =
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .getString(COLOR_THEME, "purple") ?: "purple"
+
+    fun setColorTheme(context: Context, value: String) {
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .edit().putString(COLOR_THEME, value).apply()
     }
 }
