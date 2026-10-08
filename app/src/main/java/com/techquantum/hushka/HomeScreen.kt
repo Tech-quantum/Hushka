@@ -1,5 +1,7 @@
 package com.techquantum.hushka
 
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
