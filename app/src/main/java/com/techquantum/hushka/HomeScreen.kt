@@ -491,8 +491,8 @@ fun HomeScreen(
             initialPrompt = null,
             categories = listOf("عمومی", "تصویر", "ویدئو", "متن", "کد"),
             onDismiss = { showAddDialog = false },
-            onSave = { title, category, tags, text, collection ->
-                viewModel.addPrompt(title, category, tags, text, collection)
+            onSave = { title, category, tags, text, collection, role ->
+                viewModel.addPromptWithRole(title, category, tags, text, collection, role)
                 showAddDialog = false
             }
         )
@@ -505,14 +505,15 @@ fun HomeScreen(
             initialPrompt = prompt,
             categories = listOf("عمومی", "تصویر", "ویدئو", "متن", "کد"),
             onDismiss = { editingPrompt = null },
-            onSave = { title, category, tags, text, collection ->
+            onSave = { title, category, tags, text, collection, role ->
                 viewModel.updatePrompt(
                     prompt.copy(
                         title = title,
                         category = category,
                         tags = tags,
                         text = text,
-                        collection = collection
+                        collection = collection,
+                        role = role
                     )
                 )
                 editingPrompt = null
