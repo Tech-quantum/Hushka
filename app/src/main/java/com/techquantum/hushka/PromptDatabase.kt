@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [PromptEntity::class], version = 5, exportSchema = false)
+@Database(entities = [PromptEntity::class], version = 6, exportSchema = false)
 abstract class PromptDatabase : RoomDatabase() {
     abstract fun promptDao(): PromptDao
 
@@ -25,6 +25,14 @@ abstract class PromptDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE prompts ADD COLUMN catalogId TEXT NOT NULL DEFAULT ''")
+                database.execSQL("ALTER TABLE prompts ADD COLUMN provider TEXT NOT NULL DEFAULT ''")
+                database.execSQL("ALTER TABLE prompts ADD COLUMN modality TEXT NOT NULL DEFAULT ''")
+            }
+        }
+
         private val MIGRATION_4_5 = object : Migration(4, 5) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("ALTER TABLE prompts ADD COLUMN collection TEXT NOT NULL DEFAULT ''")
@@ -33,11 +41,9 @@ abstract class PromptDatabase : RoomDatabase() {
             }
         }
 
-        private val MIGRATION_3_4 = object : Migration(3, 4) {
+        private val MIGRATION_5_6 = object : Migration(5, 6) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("ALTER TABLE prompts ADD COLUMN catalogId TEXT NOT NULL DEFAULT ''")
-                database.execSQL("ALTER TABLE prompts ADD COLUMN provider TEXT NOT NULL DEFAULT ''")
-                database.execSQL("ALTER TABLE prompts ADD COLUMN modality TEXT NOT NULL DEFAULT ''")
+                database.execSQL("ALTER TABLE prompts ADD COLUMN role TEXT NOT NULL DEFAULT ''")
             }
         }
 
@@ -51,7 +57,13 @@ abstract class PromptDatabase : RoomDatabase() {
                     PromptDatabase::class.java,
                     "promptvault.db"
                 )
-                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
+                    .addMigrations(
+                        MIGRATION_1_2,
+                        MIGRATION_2_3,
+                        MIGRATION_3_4,
+                        MIGRATION_4_5,
+                        MIGRATION_5_6
+                    )
                     .build()
                     .also { INSTANCE = it }
             }
