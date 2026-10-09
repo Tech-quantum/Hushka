@@ -58,6 +58,22 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
     fun addPrompt(title: String, category: String, tags: String, text: String, collection: String = "") {
         viewModelScope.launch(Dispatchers.IO) { repository.addPrompt(PromptEntity(title = title, category = category, tags = tags, text = text, collection = collection)) }
     }
+
+    fun addPromptWithRole(title: String, category: String, tags: String, text: String, collection: String, role: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.addPrompt(
+                PromptEntity(
+                    title = title,
+                    category = category,
+                    tags = tags,
+                    text = text,
+                    collection = collection,
+                    role = role
+                )
+            )
+        }
+    }
+
     fun updatePrompt(prompt: PromptEntity) { viewModelScope.launch(Dispatchers.IO) { repository.updatePrompt(prompt) } }
     fun deletePrompt(prompt: PromptEntity) { viewModelScope.launch(Dispatchers.IO) { repository.deletePrompt(prompt) } }
     fun toggleFavorite(prompt: PromptEntity) { viewModelScope.launch(Dispatchers.IO) { repository.toggleFavorite(prompt) } }
@@ -96,6 +112,7 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
                         put("tags", p.tags)
                         put("text", p.text)
                         put("collection", p.collection)
+                        put("role", p.role)
                     }
                     jsonArray.put(obj)
                 }
@@ -117,6 +134,7 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
                 prompts.forEach { p ->
                     sb.append("## ${p.title}\n\n")
                     if (p.category.isNotBlank()) sb.append("**Category:** ${p.category}\n\n")
+                    if (p.role.isNotBlank()) sb.append("**Role:** ${p.role}\n\n")
                     if (p.tags.isNotBlank()) sb.append("**Tags:** ${p.tags}\n\n")
                     if (p.collection.isNotBlank()) sb.append("**Collection:** ${p.collection}\n\n")
                     sb.append("```\n${p.text}\n```\n\n---\n\n")
@@ -145,7 +163,8 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
                             category = obj.optString("category", ""),
                             tags = obj.optString("tags", ""),
                             text = obj.optString("text", ""),
-                            collection = obj.optString("collection", "")
+                            collection = obj.optString("collection", ""),
+                            role = obj.optString("role", "")
                         )
                     )
                 }
@@ -195,7 +214,7 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
     private fun parseCsv(csv: String): List<PromptEntity> {
         val prompts = mutableListOf<PromptEntity>()
         val lines = csv.split("\n")
-        var i = 1 // skip header
+        var i = 1
 
         while (i < lines.size) {
             val line = lines[i]
