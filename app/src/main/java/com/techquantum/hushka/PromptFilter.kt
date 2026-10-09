@@ -27,7 +27,7 @@ object PromptFilter {
         }
 
         if (selectedProvider != ALL_PROVIDER && selectedProvider.isNotBlank()) {
-            result = result.filter { it.collection.equals(selectedProvider, true) }
+            result = result.filter { it.provider.equals(selectedProvider, true) }
         }
 
         if (selectedCollection.isNotBlank() && selectedCollection != ALL_COLLECTION) {
@@ -43,11 +43,11 @@ object PromptFilter {
         }
 
         if (favoritesOnly) {
-            result = result.filter { it.isFavorite }
+            result = result.filter { it.favorite }
         }
 
         if (pinnedOnly) {
-            result = result.filter { it.isPinned }
+            result = result.filter { it.pinned }
         }
 
         // مرتب‌سازی
@@ -66,9 +66,9 @@ object PromptFilter {
                     result.sortedByDescending { it.id }
                 }
             }
-            SORT_MOST_VIEWED -> result.sortedByDescending { it.lastUsedAt ?: 0L }
+            SORT_MOST_VIEWED -> result.sortedByDescending { it.lastUsedAt }
             SORT_LATEST -> result.sortedByDescending { it.id }
-            SORT_FAVORITES -> result.sortedByDescending { if (it.isFavorite) 1 else 0 }
+            SORT_FAVORITES -> result.sortedByDescending { if (it.favorite) 1 else 0 }
             SORT_TITLE -> result.sortedBy { it.title }
             SORT_CATEGORY -> result.sortedBy { it.category }
             SORT_FASTEST -> result.sortedBy { it.title.length }
@@ -77,11 +77,12 @@ object PromptFilter {
             }
             SORT_RECOMMENDED -> result.sortedByDescending {
                 var score = 0
-                if (it.isFavorite) score += 5
-                if (it.isPinned) score += 4
-                score + (it.lastUsedAt?.let { 1 } ?: 0)
+                if (it.favorite) score += 5
+                if (it.pinned) score += 4
+                if (it.lastUsedAt > 0) score += 1
+                score
             }
-            SORT_FEATURED -> result.sortedByDescending { if (it.isPinned) 1 else 0 }
+            SORT_FEATURED -> result.sortedByDescending { if (it.pinned) 1 else 0 }
             else -> result.sortedByDescending { it.id }
         }
 
