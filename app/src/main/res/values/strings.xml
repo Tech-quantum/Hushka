@@ -136,7 +136,7 @@
     <string name="favorite_count">%1$d مورد علاقه‌مندی</string>
     <string name="results_count">%1$d نتیجه</string>
     <string name="saved_count">%1$d ذخیره شده</string>
-    <string name="my_prompts">my_prompts</string>
+    <string name="my_prompts">پرامپت‌های من</string>
     <string name="categories_btn">دسته بندی ها</string>
     <string name="favorites_btn">علاقه مندی ها</string>
     <string name="recent_tab">اخیر</string>
