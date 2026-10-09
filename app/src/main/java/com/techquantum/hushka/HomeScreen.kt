@@ -138,7 +138,7 @@ fun HomeScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .statusBarsPadding()   // 👈 فاصله از نوار وضعیت گوشی (ساعت، باتری)
+                    .statusBarsPadding()
                     .padding(horizontal = 20.dp, vertical = 12.dp)
             ) {
                 Row(
@@ -158,6 +158,7 @@ fun HomeScreen(
                         )
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
+                        // دکمه آپدیت با آیکون ابر / چرخش
                         Surface(
                             shape = CircleShape,
                             color = cardLightColor,
@@ -226,7 +227,6 @@ fun HomeScreen(
             }
         }
     ) { padding ->
-        // 👇 کل محتوا داخل یک LazyColumn برای اسکرول یکجا
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
@@ -366,9 +366,15 @@ fun HomeScreen(
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                     Box {
                         val sortLabel = when (uiState.sortMode) {
+                            SORT_RELEVANT -> stringResource(R.string.sort_relevant)
+                            SORT_MOST_VIEWED -> stringResource(R.string.sort_most_viewed)
                             SORT_TITLE -> stringResource(R.string.sort_title)
                             SORT_CATEGORY -> stringResource(R.string.sort_category)
                             SORT_FAVORITES -> stringResource(R.string.sort_favorites)
+                            SORT_FASTEST -> stringResource(R.string.sort_fastest)
+                            SORT_HIGHEST_SCORE -> stringResource(R.string.sort_highest_score)
+                            SORT_RECOMMENDED -> stringResource(R.string.sort_recommended)
+                            SORT_FEATURED -> stringResource(R.string.sort_featured)
                             else -> stringResource(R.string.sort_latest)
                         }
                         Surface(
@@ -388,10 +394,16 @@ fun HomeScreen(
                         }
                         DropdownMenu(expanded = sortExpanded, onDismissRequest = { sortExpanded = false }) {
                             listOf(
+                                SORT_RELEVANT to stringResource(R.string.sort_relevant),
+                                SORT_MOST_VIEWED to stringResource(R.string.sort_most_viewed),
                                 SORT_LATEST to stringResource(R.string.sort_latest),
+                                SORT_FAVORITES to stringResource(R.string.sort_favorites),
                                 SORT_TITLE to stringResource(R.string.sort_title),
                                 SORT_CATEGORY to stringResource(R.string.sort_category),
-                                SORT_FAVORITES to stringResource(R.string.sort_favorites)
+                                SORT_FASTEST to stringResource(R.string.sort_fastest),
+                                SORT_HIGHEST_SCORE to stringResource(R.string.sort_highest_score),
+                                SORT_RECOMMENDED to stringResource(R.string.sort_recommended),
+                                SORT_FEATURED to stringResource(R.string.sort_featured)
                             ).forEach { pair ->
                                 DropdownMenuItem(
                                     text = { Text(pair.second) },
