@@ -35,14 +35,17 @@ fun HomeContent(
 ) {
     val listState = rememberLazyListState()
     val updateState by viewModel.uiState.collectAsState()
+
     Column(modifier.fillMaxSize().padding(horizontal = 16.dp)) {
         Spacer(Modifier.height(8.dp))
         PromptSearchFilterSection(
             query, selectedProvider, selectedDomain, selectedCategory, favoritesOnly, sortMode,
             providers, domains, categories,
-            viewModel::onQueryChanged, onVoiceSearch, viewModel::onProviderSelected,
+            viewModel::onQueryChanged, onVoiceSearch,
+            viewModel::onProviderSelected,
             viewModel::onDomainSelected, viewModel::onCategorySelected, onOpenCategories,
-            selectedCategories, viewModel::onCategoriesSelected, selectedCollection, collections, pinnedOnly, recentOnly, viewModel::onCollectionSelected, viewModel::onPinnedToggled, viewModel::onRecentToggled, viewModel::onFavoritesToggled, viewModel::onSortSelected
+            selectedCategories, viewModel::onCategoriesSelected, selectedCollection, collections, pinnedOnly,
+            recentOnly, viewModel::onCollectionSelected, viewModel::onPinnedToggled, viewModel::onRecentToggled, viewModel::onFavoritesToggled, viewModel::onSortSelected
         )
         Spacer(Modifier.height(12.dp))
         PromptListHeaderSection(
@@ -56,9 +59,25 @@ fun HomeContent(
         )
         Spacer(Modifier.height(12.dp))
         PromptListSection(
-            prompts = filteredPrompts, query = query, listState = listState,
-            onFavorite = viewModel::toggleFavorite, onPin = viewModel::togglePinned, onCopy = { prompt -> viewModel.markUsed(prompt); onCopyPrompt(prompt) },
-            onEdit = onEditPrompt, onDelete = viewModel::deletePrompt,
+            prompts = filteredPrompts,
+            query = query,
+            listState = listState,
+            onFavoriteToggle = viewModel::toggleFavorite,
+            onPinToggle = viewModel::togglePinned,
+            onCopyClick = { prompt ->
+                viewModel.markUsed(prompt)
+                onCopyPrompt(prompt)
+            },
+            onShareClick = { prompt ->
+                viewModel.markUsed(prompt)
+                // اشتراک‌گذاری از داخل HomeScreen انجام میشه
+            },
+            onAnalyzeClick = { /* از HomeScreen مدیریت میشه */ },
+            onLiveTestClick = { /* از HomeScreen مدیریت میشه */ },
+            onEditClick = onEditPrompt,
+            onDeleteClick = viewModel::deletePrompt,
+            onPreviewClick = { /* از HomeScreen مدیریت میشه */ },
+            onCardClick = onEditPrompt,
             modifier = Modifier.weight(1f)
         )
     }
