@@ -169,7 +169,6 @@
     <string name="sort_highest_score">بیشترین امتیاز</string>
     <string name="sort_recommended">پیشنهاد کاربران</string>
     <string name="sort_featured">منتخب</string>
-<<<<<<< HEAD
     <string name="statistics">آمار و اطلاعات</string>
     <string name="stat_total_prompts">کل پرامپت‌ها</string>
     <string name="stat_favorites">علاقه‌مندی‌ها</string>
@@ -183,7 +182,6 @@
     <string name="stat_no_data">هنوز داده‌ای برای نمایش وجود ندارد</string>
     <string name="stat_no_usage">هنوز پرامپتی استفاده نشده</string>
     <string name="stat_used_times">%1$d بار</string>
-=======
     
     <!-- رشته‌های مربوط به صفحه آمار -->
 <string name="stat_categorized">دسته‌بندی شده</string>
@@ -192,5 +190,4 @@
 <string name="stat_top_used">پراستفاده‌ترین پرامپت‌ها</string>
 <string name="stat_no_usage">هنوز استفاده‌ای ثبت نشده است</string>
 <string name="stat_used_times">تعداد دفعات استفاده</string>
->>>>>>> 233a87cd0d98a7841c0ca4e703cce8bdeebc56e8
 </resources>
