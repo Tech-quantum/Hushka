@@ -24,10 +24,16 @@ const val ALL_PROVIDER = "__all_provider__"
 const val ALL_DOMAIN = "__all_domain__"
 const val ALL_CATEGORY = "__all__"
 const val ALL_COLLECTION = "__all_collection__"
+const val SORT_RELEVANT = "relevant"
+const val SORT_MOST_VIEWED = "most_viewed"
 const val SORT_LATEST = "latest"
+const val SORT_FAVORITES = "favorites"
 const val SORT_TITLE = "title"
 const val SORT_CATEGORY = "category"
-const val SORT_FAVORITES = "favorites"
+const val SORT_FASTEST = "fastest"
+const val SORT_HIGHEST_SCORE = "highest_score"
+const val SORT_RECOMMENDED = "recommended"
+const val SORT_FEATURED = "featured"
 
 fun promptDomain(category: String): String =
     category.substringBefore('.', category).ifBlank { "other" }
