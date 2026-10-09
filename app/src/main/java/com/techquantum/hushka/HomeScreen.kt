@@ -1,5 +1,6 @@
 package com.techquantum.hushka
 
+import android.content.Intent
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
