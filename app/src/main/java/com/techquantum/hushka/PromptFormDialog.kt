@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -21,7 +22,7 @@ fun PromptFormDialog(
     initialPrompt: PromptEntity?,
     categories: List<String>,
     onDismiss: () -> Unit,
-    onSave: (String, String, String, String, String) -> Unit
+    onSave: (String, String, String, String, String, String) -> Unit
 ) {
     var promptTitle by rememberSaveable(initialPrompt?.id) { mutableStateOf(initialPrompt?.title.orEmpty()) }
     var category by rememberSaveable(initialPrompt?.id) { mutableStateOf(initialPrompt?.category.orEmpty()) }
@@ -38,9 +39,9 @@ fun PromptFormDialog(
     val textGrayColor = MaterialTheme.colorScheme.onSurfaceVariant
     val purplePrimary = MaterialTheme.colorScheme.primary
 
-    // پیشنهاد نقش بر اساس دسته‌بندی
+    // پیشنهاد خودکار نقش بر اساس دسته‌بندی
     LaunchedEffect(category) {
-        if (role.isBlank() && category.isNotBlank()) {
+        if (role.isBlank() && category.isNotBlank() && initialPrompt == null) {
             val suggestedId = RoleTemplates.suggestForCategory(category)
             if (suggestedId != "custom") {
                 role = suggestedId
@@ -250,14 +251,15 @@ fun PromptFormDialog(
                         category.trim(),
                         tags.trim(),
                         text.trim(),
-                        collection.trim()
+                        collection.trim(),
+                        role.trim()
                     )
                 },
                 enabled = promptTitle.isNotBlank() && text.isNotBlank(),
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = purplePrimary,
-                    contentColor = androidx.compose.ui.graphics.Color.White
+                    contentColor = Color.White
                 )
             ) {
                 Text(stringResource(R.string.save), fontSize = 13.sp)
