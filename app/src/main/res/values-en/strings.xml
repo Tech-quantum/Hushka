@@ -59,4 +59,10 @@
     <string name="color_green">Green</string>
     <string name="color_blue">Blue</string>
     <string name="color_orange">Orange</string>
+    <string name="sort_relevant">Most Relevant</string>
+    <string name="sort_most_viewed">Most Viewed</string>
+    <string name="sort_fastest">Fastest Response</string>
+    <string name="sort_highest_score">Highest Score</string>
+    <string name="sort_recommended">Recommended</string>
+    <string name="sort_featured">Featured</string>
 </resources>

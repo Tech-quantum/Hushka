@@ -59,4 +59,10 @@
     <string name="color_green">Yeşil</string>
     <string name="color_blue">Mavi</string>
     <string name="color_orange">Turuncu</string>
+    <string name="sort_relevant">En İlgili</string>
+    <string name="sort_most_viewed">En Çok Görüntülenen</string>
+    <string name="sort_fastest">En Hızlı Yanıt</string>
+    <string name="sort_highest_score">En Yüksek Puan</string>
+    <string name="sort_recommended">Önerilen</string>
+    <string name="sort_featured">Öne Çıkan</string>
 </resources>

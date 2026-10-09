@@ -59,4 +59,10 @@
     <string name="color_green">أخضر</string>
     <string name="color_blue">أزرق</string>
     <string name="color_orange">برتقالي</string>
+    <string name="sort_relevant">الأكثر صلة</string>
+    <string name="sort_most_viewed">الأكثر مشاهدة</string>
+    <string name="sort_fastest">أسرع استجابة</string>
+    <string name="sort_highest_score">أعلى تقييم</string>
+    <string name="sort_recommended">موصى به</string>
+    <string name="sort_featured">مميز</string>
 </resources>

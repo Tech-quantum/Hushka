@@ -163,4 +163,10 @@
     <string name="color_green">سبز</string>
     <string name="color_blue">آبی</string>
     <string name="color_orange">نارنجی</string>
+    <string name="sort_relevant">مرتبط‌ترین</string>
+    <string name="sort_most_viewed">پربازدیدترین</string>
+    <string name="sort_fastest">سریع‌ترین پاسخ</string>
+    <string name="sort_highest_score">بیشترین امتیاز</string>
+    <string name="sort_recommended">پیشنهاد کاربران</string>
+    <string name="sort_featured">منتخب</string>
 </resources>
