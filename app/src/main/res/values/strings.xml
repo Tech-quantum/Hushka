@@ -169,4 +169,17 @@
     <string name="sort_highest_score">بیشترین امتیاز</string>
     <string name="sort_recommended">پیشنهاد کاربران</string>
     <string name="sort_featured">منتخب</string>
+    <string name="statistics">آمار و اطلاعات</string>
+    <string name="stat_total_prompts">کل پرامپت‌ها</string>
+    <string name="stat_favorites">علاقه‌مندی‌ها</string>
+    <string name="stat_pinned">پین‌شده‌ها</string>
+    <string name="stat_categorized">دسته‌بندی‌شده</string>
+    <string name="stat_with_role">دارای نقش</string>
+    <string name="stat_with_tags">دارای برچسب</string>
+    <string name="stat_by_category">پرامپت به تفکیک دسته</string>
+    <string name="stat_top_used">پرکاربردترین پرامپت‌ها</string>
+    <string name="stat_quality">کیفیت داده</string>
+    <string name="stat_no_data">هنوز داده‌ای برای نمایش وجود ندارد</string>
+    <string name="stat_no_usage">هنوز پرامپتی استفاده نشده</string>
+    <string name="stat_used_times">%1$d بار</string>
 </resources>
