@@ -475,6 +475,19 @@ fun HomeScreen(
                             Toast.makeText(appContext, "کپی شد!", Toast.LENGTH_SHORT).show()
                             viewModel.markUsed(prompt)
                         },
+                        onShareClick = {
+                            try {
+                                val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                    type = "text/plain"
+                                    putExtra(Intent.EXTRA_TEXT, prompt.text)
+                                    putExtra(Intent.EXTRA_SUBJECT, prompt.title)
+                                }
+                                appContext.startActivity(Intent.createChooser(shareIntent, "اشتراک‌گذاری پرامپت"))
+                                viewModel.markUsed(prompt)
+                            } catch (e: Exception) {
+                                Toast.makeText(appContext, "برنامه‌ای پیدا نشد", Toast.LENGTH_SHORT).show()
+                            }
+                        },
                         onAnalyzeClick = { analyzePrompt = prompt },
                         onLiveTestClick = { liveTestPrompt = prompt },
                         onEditClick = { editingPrompt = prompt },
@@ -707,225 +720,6 @@ fun HomeScreen(
                 showWebDialog = false
                 viewModel.clearWebPrompts()
             }
-        )
-    }
-}
-
-@Composable
-fun PromptCard(
-    title: String,
-    description: String,
-    mainTag: String,
-    tags: List<String>,
-    provider: String,
-    roleId: String = "",
-    onFavoriteToggle: () -> Unit,
-    onPinToggle: () -> Unit,
-    onCardClick: () -> Unit,
-    onPreviewClick: () -> Unit,
-    onCopyClick: () -> Unit,
-    onAnalyzeClick: () -> Unit,
-    onLiveTestClick: () -> Unit,
-    onEditClick: () -> Unit,
-    onDeleteClick: () -> Unit
-) {
-    val cardColor = MaterialTheme.colorScheme.surface
-    val cardLightColor = MaterialTheme.colorScheme.surfaceVariant
-    val textColor = MaterialTheme.colorScheme.onSurface
-    val textGrayColor = MaterialTheme.colorScheme.onSurfaceVariant
-    val purplePrimary = MaterialTheme.colorScheme.primary
-
-    val roleTemplate = if (roleId.isNotBlank()) RoleTemplates.findById(roleId) else null
-
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(22.dp),
-        colors = CardDefaults.cardColors(containerColor = cardColor),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
-    ) {
-        Column(modifier = Modifier.padding(18.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top
-            ) {
-                Text(
-                    title.ifBlank { "بدون عنوان" },
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.weight(1f),
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    color = textColor
-                )
-                Spacer(Modifier.width(8.dp))
-                Row {
-                    Surface(
-                        shape = RoundedCornerShape(50),
-                        color = cardLightColor,
-                        modifier = Modifier.size(32.dp),
-                        onClick = onPreviewClick
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Text("👁", fontSize = 14.sp)
-                        }
-                    }
-                    Spacer(Modifier.width(6.dp))
-                    Surface(
-                        shape = RoundedCornerShape(50),
-                        color = cardLightColor,
-                        modifier = Modifier.size(32.dp),
-                        onClick = onPinToggle
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Text("📌", fontSize = 14.sp)
-                        }
-                    }
-                    Spacer(Modifier.width(6.dp))
-                    Surface(
-                        shape = RoundedCornerShape(50),
-                        color = cardLightColor,
-                        modifier = Modifier.size(32.dp),
-                        onClick = onFavoriteToggle
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Text("⭐", fontSize = 14.sp)
-                        }
-                    }
-                }
-            }
-
-            Spacer(Modifier.height(12.dp))
-
-            // برچسب دسته‌بندی + نقش
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                if (mainTag.isNotBlank()) {
-                    Surface(
-                        shape = RoundedCornerShape(8.dp),
-                        color = purplePrimary.copy(alpha = 0.15f)
-                    ) {
-                        Text(
-                            getLocalizedCategory(mainTag),
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                            fontSize = 11.sp,
-                            color = purplePrimary
-                        )
-                    }
-                }
-                if (roleTemplate != null) {
-                    Surface(
-                        shape = RoundedCornerShape(8.dp),
-                        color = Color(0xFFFFB74D).copy(alpha = 0.15f)
-                    ) {
-                        Text(
-                            "${roleTemplate.emoji} ${roleTemplate.nameFa}",
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                            fontSize = 11.sp,
-                            color = Color(0xFFFFB74D)
-                        )
-                    }
-                }
-            }
-
-            if (mainTag.isNotBlank() || roleTemplate != null) {
-                Spacer(Modifier.height(10.dp))
-            }
-
-            if (tags.isNotEmpty()) {
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    items(tags) { tag ->
-                        Surface(
-                            shape = RoundedCornerShape(8.dp),
-                            color = cardLightColor
-                        ) {
-                            Text(
-                                tag,
-                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                                fontSize = 11.sp,
-                                color = textColor
-                            )
-                        }
-                    }
-                }
-                Spacer(Modifier.height(14.dp))
-            }
-
-            Text(
-                description,
-                fontSize = 12.sp,
-                lineHeight = 18.sp,
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis,
-                color = textGrayColor
-            )
-
-            Spacer(Modifier.height(14.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Surface(
-                    shape = RoundedCornerShape(8.dp),
-                    color = purplePrimary.copy(alpha = 0.3f)
-                ) {
-                    Text(
-                        provider,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-                }
-            }
-
-            Spacer(Modifier.height(12.dp))
-
-            HorizontalDivider(color = cardLightColor.copy(alpha = 0.5f))
-
-            Spacer(Modifier.height(10.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                ActionButton(emoji = "📋", label = "کپی", onClick = onCopyClick, color = purplePrimary)
-                ActionButton(emoji = "✨", label = "آنالیز", onClick = onAnalyzeClick, color = Color(0xFFFFB74D))
-                ActionButton(emoji = "▶", label = "تست", onClick = onLiveTestClick, color = Color(0xFF64B5F6))
-                ActionButton(emoji = "✏️", label = "ویرایش", onClick = onEditClick, color = textGrayColor)
-                ActionButton(emoji = "🗑", label = "حذف", onClick = onDeleteClick, color = Color(0xFFE57373))
-            }
-        }
-    }
-}
-
-@Composable
-fun ActionButton(
-    emoji: String,
-    label: String,
-    onClick: () -> Unit,
-    color: Color
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(horizontal = 4.dp)
-    ) {
-        IconButton(
-            onClick = onClick,
-            modifier = Modifier.size(40.dp)
-        ) {
-            Text(emoji, fontSize = 18.sp)
-        }
-        Text(
-            label,
-            fontSize = 10.sp,
-            color = color,
-            fontWeight = FontWeight.Medium,
-            maxLines = 1
         )
     }
 }
