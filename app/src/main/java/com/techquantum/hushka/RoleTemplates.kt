@@ -48,11 +48,11 @@ object RoleTemplates {
             "You are a cybersecurity expert. Identify vulnerabilities, recommend secure practices, and explain risks."),
         RoleTemplate("product", "📱", "مدیر محصول", "Product Manager",
             "You are a product manager. Focus on user needs, business value, and prioritization frameworks."),
-        RoleTemplate("custom", "✏️", "سفارشی", "Custom",
-            "") // کاربر خودش متن رو وارد می‌کنه
+        RoleTemplate("custom", "✏️", "سفارشی", "Custom", "")
     )
 
-    // پیشنهاد نقش بر اساس دسته‌بندی
+    fun findById(id: String): RoleTemplate? = all.find { it.id == id }
+
     fun suggestForCategory(category: String): String {
         return when {
             category.contains("coding", true) || category.contains("programming", true) -> "developer"
