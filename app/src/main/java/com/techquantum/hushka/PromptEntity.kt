@@ -18,7 +18,6 @@ data class PromptEntity(
     val license: String = "",
     val collection: String = "",
     val role: String = "",
-    val role: String = "",
     val pinned: Boolean = false,
     val lastUsedAt: Long = 0L
 )
