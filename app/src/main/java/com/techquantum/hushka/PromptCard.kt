@@ -1,136 +1,245 @@
 package com.techquantum.hushka
 
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun PromptCard(
-    prompt: PromptEntity,
-    onFavorite: () -> Unit,
-    onPin: () -> Unit,
-    onCopy: () -> Unit,
-    onEdit: () -> Unit,
-    onDelete: () -> Unit
+    title: String,
+    description: String,
+    mainTag: String,
+    tags: List<String>,
+    provider: String,
+    roleId: String = "",
+    onFavoriteToggle: () -> Unit,
+    onPinToggle: () -> Unit,
+    onCardClick: () -> Unit,
+    onPreviewClick: () -> Unit,
+    onCopyClick: () -> Unit,
+    onShareClick: () -> Unit,
+    onAnalyzeClick: () -> Unit,
+    onLiveTestClick: () -> Unit,
+    onEditClick: () -> Unit,
+    onDeleteClick: () -> Unit
 ) {
-    ElevatedCard(
+    val cardColor = MaterialTheme.colorScheme.surface
+    val cardLightColor = MaterialTheme.colorScheme.surfaceVariant
+    val textColor = MaterialTheme.colorScheme.onSurface
+    val textGrayColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val purplePrimary = MaterialTheme.colorScheme.primary
+
+    val roleTemplate = if (roleId.isNotBlank()) RoleTemplates.findById(roleId) else null
+
+    Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(26.dp),
-        colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 3.dp)
+        shape = RoundedCornerShape(22.dp),
+        colors = CardDefaults.cardColors(containerColor = cardColor),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        onClick = onCardClick
     ) {
-        Column(Modifier.padding(18.dp)) {
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
-                Column(Modifier.weight(1f)) {
-                    Text(prompt.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                    Spacer(Modifier.height(7.dp))
-                    Surface(shape = RoundedCornerShape(8.dp), color = MaterialTheme.colorScheme.primaryContainer) {
-                        Text(
-                            prompt.category,
-                            modifier = Modifier.padding(horizontal = 9.dp, vertical = 4.dp),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
+        Column(modifier = Modifier.padding(18.dp)) {
+            // ===== عنوان + دکمه‌های بالا =====
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
+            ) {
+                Text(
+                    title.ifBlank { "بدون عنوان" },
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f),
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    color = textColor
+                )
+                Spacer(Modifier.width(8.dp))
+                Row {
+                    // چشم (پیش‌نمایش)
+                    Surface(
+                        shape = RoundedCornerShape(50),
+                        color = cardLightColor,
+                        modifier = Modifier.size(32.dp),
+                        onClick = onPreviewClick
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Text("👁", fontSize = 14.sp)
+                        }
                     }
-                    val tagList = prompt.tags.split(",").map { it.trim() }.filter { it.isNotBlank() }
-                    if (tagList.isNotEmpty()) {
-                        Spacer(Modifier.height(7.dp))
-                        Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
-                            tagList.take(4).forEach { tag ->
-                                Surface(shape = RoundedCornerShape(8.dp), color = MaterialTheme.colorScheme.surfaceVariant) {
-                                    Text("#$tag", modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp), style = MaterialTheme.typography.labelSmall.copy(textDirection = TextDirection.Content))
-                                }
-                            }
+                    Spacer(Modifier.width(6.dp))
+                    // پین
+                    Surface(
+                        shape = RoundedCornerShape(50),
+                        color = cardLightColor,
+                        modifier = Modifier.size(32.dp),
+                        onClick = onPinToggle
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Text("📌", fontSize = 14.sp)
+                        }
+                    }
+                    Spacer(Modifier.width(6.dp))
+                    // ستاره
+                    Surface(
+                        shape = RoundedCornerShape(50),
+                        color = cardLightColor,
+                        modifier = Modifier.size(32.dp),
+                        onClick = onFavoriteToggle
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Text("⭐", fontSize = 14.sp)
                         }
                     }
                 }
-                Row {
-                    FilledTonalIconButton(onClick = onPin) {
-                        Text("📌", style = MaterialTheme.typography.titleLarge, modifier = Modifier.alpha(if (prompt.pinned) 1f else 0.35f))
-                    }
-                    FilledTonalIconButton(onClick = onFavorite) {
-                        Text(
-                            if (prompt.favorite) "★" else "☆",
-                            style = MaterialTheme.typography.headlineSmall,
-                            color = if (prompt.favorite) MaterialTheme.colorScheme.primary
-                            else MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-            }
-
-            if (prompt.collection.isNotBlank()) {
-                Spacer(Modifier.height(6.dp))
-                Text("📁 " + prompt.collection, style = MaterialTheme.typography.labelMedium)
             }
 
             Spacer(Modifier.height(12.dp))
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(14.dp),
-                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.55f)
-            ) {
-                Text(
-                    if (prompt.text.isBlank()) stringResource(R.string.no_text) else prompt.text,
-                    modifier = Modifier.padding(12.dp),
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.bodyMedium.copy(textDirection = TextDirection.Content)
-                )
-            }
 
-            Spacer(Modifier.height(8.dp))
+            // ===== برچسب دسته‌بندی + نقش =====
             Row(
-                modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(7.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                ProviderBadge(prompt.provider)
-                if (prompt.modality.isNotBlank()) {
-                    Surface(shape = RoundedCornerShape(10.dp), color = MaterialTheme.colorScheme.surfaceVariant) {
+                if (mainTag.isNotBlank()) {
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = purplePrimary.copy(alpha = 0.15f)
+                    ) {
                         Text(
-                            prompt.modality,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 5.dp),
-                            style = MaterialTheme.typography.labelSmall
+                            getLocalizedCategory(mainTag),
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                            fontSize = 11.sp,
+                            color = purplePrimary
+                        )
+                    }
+                }
+                if (roleTemplate != null) {
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = Color(0xFFFFB74D).copy(alpha = 0.15f)
+                    ) {
+                        Text(
+                            "${roleTemplate.emoji} ${roleTemplate.nameFa}",
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                            fontSize = 11.sp,
+                            color = Color(0xFFFFB74D)
                         )
                     }
                 }
             }
 
-            Spacer(Modifier.height(8.dp))
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                FilledTonalButton(onClick = onCopy, shape = RoundedCornerShape(12.dp)) { Text(stringResource(R.string.copy)) }
-                TextButton(onClick = onEdit) { Text(stringResource(R.string.edit)) }
-                TextButton(onClick = onDelete) { Text(stringResource(R.string.delete)) }
+            if (mainTag.isNotBlank() || roleTemplate != null) {
+                Spacer(Modifier.height(10.dp))
+            }
+
+            // ===== تگ‌ها =====
+            if (tags.isNotEmpty()) {
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    items(tags) { tag ->
+                        Surface(
+                            shape = RoundedCornerShape(8.dp),
+                            color = cardLightColor
+                        ) {
+                            Text(
+                                tag,
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                                fontSize = 11.sp,
+                                color = textColor
+                            )
+                        }
+                    }
+                }
+                Spacer(Modifier.height(14.dp))
+            }
+
+            // ===== توضیحات =====
+            Text(
+                description,
+                fontSize = 12.sp,
+                lineHeight = 18.sp,
+                maxLines = 3,
+                overflow = TextOverflow.Ellipsis,
+                color = textGrayColor
+            )
+
+            Spacer(Modifier.height(14.dp))
+
+            // ===== ارائه‌دهنده =====
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Surface(
+                    shape = RoundedCornerShape(8.dp),
+                    color = purplePrimary.copy(alpha = 0.3f)
+                ) {
+                    Text(
+                        provider,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(12.dp))
+
+            HorizontalDivider(color = cardLightColor.copy(alpha = 0.5f))
+
+            Spacer(Modifier.height(10.dp))
+
+            // ===== ردیف دکمه‌های عملیات =====
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                ActionButton(emoji = "📋", label = "کپی", onClick = onCopyClick, color = purplePrimary)
+                ActionButton(emoji = "📤", label = "اشتراک", onClick = onShareClick, color = Color(0xFF4CAF50))
+                ActionButton(emoji = "✨", label = "آنالیز", onClick = onAnalyzeClick, color = Color(0xFFFFB74D))
+                ActionButton(emoji = "▶", label = "تست", onClick = onLiveTestClick, color = Color(0xFF64B5F6))
+                ActionButton(emoji = "✏️", label = "ویرایش", onClick = onEditClick, color = textGrayColor)
+                ActionButton(emoji = "🗑", label = "حذف", onClick = onDeleteClick, color = Color(0xFFE57373))
             }
         }
     }
 }
 
 @Composable
-private fun ProviderBadge(provider: String) {
-    val label = provider.trim().ifBlank { "Local" }
-    Surface(
-        shape = RoundedCornerShape(10.dp),
-        color = MaterialTheme.colorScheme.primaryContainer,
-        tonalElevation = 1.dp
+fun ActionButton(
+    emoji: String,
+    label: String,
+    onClick: () -> Unit,
+    color: Color
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(horizontal = 2.dp)
     ) {
+        IconButton(
+            onClick = onClick,
+            modifier = Modifier.size(38.dp)
+        ) {
+            Text(emoji, fontSize = 16.sp)
+        }
         Text(
             label,
-            modifier = Modifier.padding(horizontal = 9.dp, vertical = 5.dp),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onPrimaryContainer
+            fontSize = 9.sp,
+            color = color,
+            fontWeight = FontWeight.Medium,
+            maxLines = 1
         )
     }
 }
