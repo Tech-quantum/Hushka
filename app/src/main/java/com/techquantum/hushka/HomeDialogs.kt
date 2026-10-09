@@ -43,8 +43,8 @@ fun HomeDialogs(
             initialPrompt = null,
             categories = categories,
             onDismiss = onDismissAdd,
-            onSave = { title, category, tags, text, collection ->
-                viewModel.addPrompt(title, category, tags, text, collection)
+            onSave = { title, category, tags, text, collection, role ->
+                viewModel.addPromptWithRole(title, category, tags, text, collection, role)
                 onDismissAdd()
             }
         )
@@ -56,14 +56,15 @@ fun HomeDialogs(
             initialPrompt = prompt,
             categories = categories,
             onDismiss = onDismissEdit,
-            onSave = { title, category, tags, text, collection ->
+            onSave = { title, category, tags, text, collection, role ->
                 viewModel.updatePrompt(
                     prompt.copy(
                         title = title,
                         category = category,
                         tags = tags,
                         text = text,
-                        collection = collection
+                        collection = collection,
+                        role = role
                     )
                 )
                 onDismissEdit()
