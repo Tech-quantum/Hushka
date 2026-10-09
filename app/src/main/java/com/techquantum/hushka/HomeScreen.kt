@@ -60,7 +60,17 @@ fun HomeScreen(
     var liveTestPrompt by remember { mutableStateOf<PromptEntity?>(null) }
     var sortExpanded by remember { mutableStateOf(false) }
     var showCategoryDialog by remember { mutableStateOf(false) }
+    var showStats by remember { mutableStateOf(false) }
     val appContext = LocalContext.current
+
+    // ============ Statistics Screen ============
+    if (showStats) {
+        StatisticsScreen(
+            prompts = uiState.prompts,
+            onBack = { showStats = false }
+        )
+        return
+    }
 
     // وضعیت اتصال به اینترنت
     var isOnline by remember { mutableStateOf(true) }
@@ -159,6 +169,18 @@ fun HomeScreen(
                         )
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
+                        // دکمه آمار
+                        Surface(
+                            shape = CircleShape,
+                            color = cardLightColor,
+                            modifier = Modifier.size(40.dp),
+                            onClick = { showStats = true }
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Text("📊", fontSize = 18.sp)
+                            }
+                        }
+                        Spacer(Modifier.width(8.dp))
                         // دکمه آپدیت با آیکون ابر / چرخش
                         Surface(
                             shape = CircleShape,
