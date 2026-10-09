@@ -1,20 +1,13 @@
 package com.techquantum.hushka
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,12 +19,17 @@ import androidx.compose.ui.unit.dp
 fun PromptListSection(
     prompts: List<PromptEntity>,
     query: String,
-    listState: androidx.compose.foundation.lazy.LazyListState,
-    onFavorite: (PromptEntity) -> Unit,
-    onPin: (PromptEntity) -> Unit,
-    onCopy: (PromptEntity) -> Unit,
-    onEdit: (PromptEntity) -> Unit,
-    onDelete: (PromptEntity) -> Unit,
+    listState: LazyListState,
+    onFavoriteToggle: (PromptEntity) -> Unit,
+    onPinToggle: (PromptEntity) -> Unit,
+    onCopyClick: (PromptEntity) -> Unit,
+    onShareClick: (PromptEntity) -> Unit,
+    onAnalyzeClick: (PromptEntity) -> Unit,
+    onLiveTestClick: (PromptEntity) -> Unit,
+    onEditClick: (PromptEntity) -> Unit,
+    onDeleteClick: (PromptEntity) -> Unit,
+    onPreviewClick: (PromptEntity) -> Unit,
+    onCardClick: (PromptEntity) -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (prompts.isEmpty()) {
@@ -49,12 +47,22 @@ fun PromptListSection(
         ) {
             items(prompts, key = { it.id }) { prompt ->
                 PromptCard(
-                    prompt = prompt,
-                    onFavorite = { onFavorite(prompt) },
-                    onPin = { onPin(prompt) },
-                    onCopy = { onCopy(prompt) },
-                    onEdit = { onEdit(prompt) },
-                    onDelete = { onDelete(prompt) }
+                    title = prompt.title,
+                    description = prompt.text,
+                    mainTag = prompt.category,
+                    tags = prompt.tags.split(",").map { it.trim() }.filter { it.isNotEmpty() },
+                    provider = prompt.collection.ifBlank { "custom" },
+                    roleId = prompt.role,
+                    onFavoriteToggle = { onFavoriteToggle(prompt) },
+                    onPinToggle = { onPinToggle(prompt) },
+                    onCardClick = { onCardClick(prompt) },
+                    onPreviewClick = { onPreviewClick(prompt) },
+                    onCopyClick = { onCopyClick(prompt) },
+                    onShareClick = { onShareClick(prompt) },
+                    onAnalyzeClick = { onAnalyzeClick(prompt) },
+                    onLiveTestClick = { onLiveTestClick(prompt) },
+                    onEditClick = { onEditClick(prompt) },
+                    onDeleteClick = { onDeleteClick(prompt) }
                 )
             }
         }
@@ -62,7 +70,7 @@ fun PromptListSection(
 }
 
 @Composable
-private fun EmptyPromptState(query: String) {
+fun EmptyPromptState(query: String) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -74,19 +82,19 @@ private fun EmptyPromptState(query: String) {
             modifier = Modifier.padding(28.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            androidx.compose.material3.Text(
-                "✦",
+            Text(
+                "✨",
                 style = MaterialTheme.typography.displaySmall,
                 color = MaterialTheme.colorScheme.primary
             )
             Spacer(Modifier.height(8.dp))
-            androidx.compose.material3.Text(
+            Text(
                 if (query.isBlank()) stringResource(R.string.no_prompts) else stringResource(R.string.no_results),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
             Spacer(Modifier.height(4.dp))
-            androidx.compose.material3.Text(
+            Text(
                 if (query.isBlank()) stringResource(R.string.empty_hint) else stringResource(R.string.empty_search_hint),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
