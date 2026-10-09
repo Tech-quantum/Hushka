@@ -169,4 +169,12 @@
     <string name="sort_highest_score">بیشترین امتیاز</string>
     <string name="sort_recommended">پیشنهاد کاربران</string>
     <string name="sort_featured">منتخب</string>
+    
+    <!-- رشته‌های مربوط به صفحه آمار -->
+<string name="stat_categorized">دسته‌بندی شده</string>
+<string name="stat_by_category">بر اساس دسته‌بندی</string>
+<string name="stat_no_data">داده‌ای برای نمایش وجود ندارد</string>
+<string name="stat_top_used">پراستفاده‌ترین پرامپت‌ها</string>
+<string name="stat_no_usage">هنوز استفاده‌ای ثبت نشده است</string>
+<string name="stat_used_times">تعداد دفعات استفاده</string>
 </resources>
