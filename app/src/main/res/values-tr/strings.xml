@@ -65,4 +65,17 @@
     <string name="sort_highest_score">En Yüksek Puan</string>
     <string name="sort_recommended">Önerilen</string>
     <string name="sort_featured">Öne Çıkan</string>
+    <string name="statistics">İstatistikler</string>
+    <string name="stat_total_prompts">Toplam İstem</string>
+    <string name="stat_favorites">Favoriler</string>
+    <string name="stat_pinned">Sabitlenmiş</string>
+    <string name="stat_categorized">Kategorize</string>
+    <string name="stat_with_role">Rollü</string>
+    <string name="stat_with_tags">Etiketli</string>
+    <string name="stat_by_category">Kategoriye Göre</string>
+    <string name="stat_top_used">En Çok Kullanılan</string>
+    <string name="stat_quality">Veri Kalitesi</string>
+    <string name="stat_no_data">Henüz veri yok</string>
+    <string name="stat_no_usage">Henüz istem kullanılmadı</string>
+    <string name="stat_used_times">%1$d kez</string>
 </resources>

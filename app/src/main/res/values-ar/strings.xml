@@ -65,4 +65,17 @@
     <string name="sort_highest_score">أعلى تقييم</string>
     <string name="sort_recommended">موصى به</string>
     <string name="sort_featured">مميز</string>
+    <string name="statistics">الإحصائيات</string>
+    <string name="stat_total_prompts">إجمالي الأوامر</string>
+    <string name="stat_favorites">المفضلة</string>
+    <string name="stat_pinned">المثبتة</string>
+    <string name="stat_categorized">مصنفة</string>
+    <string name="stat_with_role">مع الدور</string>
+    <string name="stat_with_tags">مع الوسوم</string>
+    <string name="stat_by_category">الأوامر حسب الفئة</string>
+    <string name="stat_top_used">الأكثر استخداماً</string>
+    <string name="stat_quality">جودة البيانات</string>
+    <string name="stat_no_data">لا توجد بيانات</string>
+    <string name="stat_no_usage">لم يتم استخدام أي أمر بعد</string>
+    <string name="stat_used_times">%1$d مرة</string>
 </resources>

@@ -65,4 +65,17 @@
     <string name="sort_highest_score">Highest Score</string>
     <string name="sort_recommended">Recommended</string>
     <string name="sort_featured">Featured</string>
+    <string name="statistics">Statistics</string>
+    <string name="stat_total_prompts">Total Prompts</string>
+    <string name="stat_favorites">Favorites</string>
+    <string name="stat_pinned">Pinned</string>
+    <string name="stat_categorized">Categorized</string>
+    <string name="stat_with_role">With Role</string>
+    <string name="stat_with_tags">With Tags</string>
+    <string name="stat_by_category">Prompts by Category</string>
+    <string name="stat_top_used">Most Used Prompts</string>
+    <string name="stat_quality">Data Quality</string>
+    <string name="stat_no_data">No data to display yet</string>
+    <string name="stat_no_usage">No prompts used yet</string>
+    <string name="stat_used_times">%1$d times</string>
 </resources>
