@@ -463,6 +463,7 @@ fun HomeScreen(
                         mainTag = prompt.category,
                         tags = prompt.tags.split(",").map { it.trim() }.filter { it.isNotEmpty() },
                         provider = prompt.collection.ifBlank { "custom" },
+                        roleId = prompt.role,
                         onFavoriteToggle = { viewModel.toggleFavorite(prompt) },
                         onPinToggle = { viewModel.togglePinned(prompt) },
                         onCardClick = { editingPrompt = prompt },
@@ -483,7 +484,7 @@ fun HomeScreen(
         }
     }
 
-    // Add Prompt Dialog
+    // ============ Add Prompt Dialog ============
     if (showAddDialog) {
         PromptFormDialog(
             title = stringResource(R.string.add_prompt_title),
@@ -497,7 +498,7 @@ fun HomeScreen(
         )
     }
 
-    // Edit Prompt Dialog
+    // ============ Edit Prompt Dialog ============
     editingPrompt?.let { prompt ->
         PromptFormDialog(
             title = stringResource(R.string.edit_prompt_title),
@@ -519,7 +520,7 @@ fun HomeScreen(
         )
     }
 
-    // Analyze Dialog
+    // ============ Analyze Dialog ============
     analyzePrompt?.let { prompt ->
         AdvancedAnalyzeDialog(
             prompt = prompt,
@@ -543,7 +544,7 @@ fun HomeScreen(
         )
     }
 
-    // Live Test Dialog
+    // ============ Live Test Dialog ============
     liveTestPrompt?.let { prompt ->
         LiveTestDialog(
             prompt = prompt,
@@ -551,7 +552,7 @@ fun HomeScreen(
         )
     }
 
-    // Preview Dialog
+    // ============ Preview Dialog ============
     previewPrompt?.let { prompt ->
         AlertDialog(
             onDismissRequest = { previewPrompt = null },
@@ -599,7 +600,7 @@ fun HomeScreen(
         )
     }
 
-    // Delete Confirm Dialog
+    // ============ Delete Confirm Dialog ============
     deletePrompt?.let { prompt ->
         AlertDialog(
             onDismissRequest = { deletePrompt = null },
@@ -623,7 +624,7 @@ fun HomeScreen(
         )
     }
 
-    // Categories Dialog
+    // ============ Categories Dialog ============
     if (showCategoryDialog) {
         val uniqueCategories = uiState.prompts
             .map { it.category }
@@ -690,7 +691,7 @@ fun HomeScreen(
         )
     }
 
-    // Web Prompts Dialog
+    // ============ Web Prompts Dialog ============
     if (showWebDialog) {
         WebPromptsDialog(
             prompts = webPrompts,
@@ -715,6 +716,7 @@ fun PromptCard(
     mainTag: String,
     tags: List<String>,
     provider: String,
+    roleId: String = "",
     onFavoriteToggle: () -> Unit,
     onPinToggle: () -> Unit,
     onCardClick: () -> Unit,
@@ -730,6 +732,8 @@ fun PromptCard(
     val textColor = MaterialTheme.colorScheme.onSurface
     val textGrayColor = MaterialTheme.colorScheme.onSurfaceVariant
     val purplePrimary = MaterialTheme.colorScheme.primary
+
+    val roleTemplate = if (roleId.isNotBlank()) RoleTemplates.findById(roleId) else null
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -791,18 +795,40 @@ fun PromptCard(
 
             Spacer(Modifier.height(12.dp))
 
-            if (mainTag.isNotBlank()) {
-                Surface(
-                    shape = RoundedCornerShape(8.dp),
-                    color = purplePrimary.copy(alpha = 0.15f)
-                ) {
-                    Text(
-                        getLocalizedCategory(mainTag),
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                        fontSize = 11.sp,
-                        color = purplePrimary
-                    )
+            // برچسب دسته‌بندی + نقش
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (mainTag.isNotBlank()) {
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = purplePrimary.copy(alpha = 0.15f)
+                    ) {
+                        Text(
+                            getLocalizedCategory(mainTag),
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                            fontSize = 11.sp,
+                            color = purplePrimary
+                        )
+                    }
                 }
+                if (roleTemplate != null) {
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = Color(0xFFFFB74D).copy(alpha = 0.15f)
+                    ) {
+                        Text(
+                            "${roleTemplate.emoji} ${roleTemplate.nameFa}",
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                            fontSize = 11.sp,
+                            color = Color(0xFFFFB74D)
+                        )
+                    }
+                }
+            }
+
+            if (mainTag.isNotBlank() || roleTemplate != null) {
                 Spacer(Modifier.height(10.dp))
             }
 
