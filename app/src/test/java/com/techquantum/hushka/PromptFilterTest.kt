@@ -1,4 +1,4 @@
-package com.techquantum.promptvault
+package com.techquantum.hushka
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
