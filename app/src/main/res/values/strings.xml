@@ -184,4 +184,6 @@
     <string name="stat_no_data">هنوز داده‌ای برای نمایش وجود ندارد</string>
     <string name="stat_no_usage">هنوز پرامپتی استفاده نشده</string>
     <string name="stat_used_times">%1$d بار</string>
+    <string name="nav_stats">آمار</string>
+    <string name="nav_update">به‌روزرسانی</string>
 </resources>
