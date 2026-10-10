@@ -183,4 +183,6 @@
     <string name="recently_added">Yeni eklenenler</string>
     <string name="favorite_count">%1$d favori</string>
     <string name="results_count">%1$d sonuç</string>
+        <string name="nav_stats">İstatistik</string>
+    <string name="nav_update">Güncelle</string>
 </resources>
