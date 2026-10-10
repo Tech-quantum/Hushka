@@ -183,4 +183,6 @@
     <string name="recently_added">أُضيف حديثاً</string>
     <string name="favorite_count">%1$d في المفضلة</string>
     <string name="results_count">%1$d نتيجة</string>
+        <string name="nav_stats">الإحصاءات</string>
+    <string name="nav_update">تحديث</string>
 </resources>
