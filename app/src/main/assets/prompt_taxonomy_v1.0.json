@@ -1,0 +1,139 @@
+{
+  "schema_version": "1.0",
+  "description": "Controlled top-level taxonomy for PromptVault. Existing provider-specific categories can remain as display subcategories while this taxonomy provides stable filtering and search facets.",
+  "domains": [
+    {
+      "id": "image",
+      "label": "Image & Visual",
+      "subcategories": [
+        "image-generation",
+        "image-editing",
+        "portrait",
+        "product",
+        "photography",
+        "cinematic",
+        "art-style",
+        "style-transfer",
+        "background",
+        "identity-preservation",
+        "multi-image",
+        "image-reference",
+        "style-reference",
+        "outpainting",
+        "canvas-extension",
+        "text-in-image",
+        "typography",
+        "composition",
+        "color",
+        "environment",
+        "time-period",
+        "aspect-ratio",
+        "character-consistency",
+        "prompt-discovery",
+        "editing",
+        "targeted-edit",
+        "product-normalization"
+      ]
+    },
+    {
+      "id": "coding",
+      "label": "Coding & Software",
+      "subcategories": [
+        "coding",
+        "code-generation",
+        "code-rewrite",
+        "code-explanation",
+        "debugging",
+        "refactoring",
+        "testing",
+        "backend",
+        "authentication",
+        "integration",
+        "ui",
+        "seo",
+        "new-project",
+        "iteration"
+      ]
+    },
+    {
+      "id": "text",
+      "label": "Text & Writing",
+      "subcategories": [
+        "writing",
+        "translation",
+        "localization",
+        "copywriting",
+        "summarization",
+        "completion"
+      ]
+    },
+    {
+      "id": "analysis",
+      "label": "Analysis & Reasoning",
+      "subcategories": [
+        "analysis",
+        "reasoning",
+        "comparison",
+        "evaluation",
+        "classification",
+        "extraction",
+        "structured-output",
+        "research",
+        "self-check",
+        "anti-hallucination"
+      ]
+    },
+    {
+      "id": "prompting",
+      "label": "Prompt Engineering",
+      "subcategories": [
+        "prompt-engineering",
+        "few-shot",
+        "instruction",
+        "context",
+        "delimiter",
+        "xml-structure",
+        "meta-prompt",
+        "specificity",
+        "formatting"
+      ]
+    },
+    {
+      "id": "agent",
+      "label": "Agents & Workflows",
+      "subcategories": [
+        "role",
+        "roleplay",
+        "scenario",
+        "routine",
+        "tool-use",
+        "agentic-workflow",
+        "scope-control"
+      ]
+    },
+    {
+      "id": "marketing",
+      "label": "Marketing & Content",
+      "subcategories": [
+        "social-media",
+        "marketing",
+        "campaign",
+        "product"
+      ]
+    },
+    {
+      "id": "other",
+      "label": "Other",
+      "subcategories": [
+        "background",
+        "iteration"
+      ]
+    }
+  ],
+  "rules": {
+    "primary_domain": "Choose one stable top-level domain for filtering.",
+    "subcategory": "Keep provider-specific category when useful; map it to one domain.",
+    "schema_policy": "Do not add fields to prompt records solely for taxonomy. The app can resolve category -> domain using this file.",
+    "deduplication": "Keep provider-specific variants when their prompting behavior or syntax differs materially; merge only near-identical normalized templates."
+  }
+}

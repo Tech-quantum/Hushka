@@ -1,0 +1,590 @@
+{
+  "schema_version": "1.0",
+  "dataset_version": "0.1.0",
+  "collected_at": "2026-10-04",
+  "description": "PromptVault seed dataset for public, reusable Grok and Gemini image-generation/editing prompt templates. Templates are normalized/original formulations derived from public documentation and guides; source metadata is retained for provenance.",
+  "sources": [
+    {
+      "id": "xai_imagine_generation",
+      "provider": "xAI",
+      "url": "https://x.ai/grok/use-cases/image-generation",
+      "note": "Official Grok image generation use cases and prompting guidance."
+    },
+    {
+      "id": "xai_imagine_editing",
+      "provider": "xAI",
+      "url": "https://x.ai/grok/use-cases/image-editing",
+      "note": "Official Grok image editing/restyling/compositing guidance."
+    },
+    {
+      "id": "xai_imagine_docs",
+      "provider": "xAI",
+      "url": "https://docs.x.ai/developers/model-capabilities/imagine",
+      "note": "Official Imagine generation/editing documentation."
+    },
+    {
+      "id": "xai_imagine_20",
+      "provider": "xAI",
+      "url": "https://x.ai/news/grok-imagine-image-2",
+      "note": "Official Imagine Image 2.0 announcement and capabilities."
+    },
+    {
+      "id": "google_nano_prompt",
+      "provider": "Google DeepMind",
+      "url": "https://deepmind.google/models/gemini-image/prompt-guide/",
+      "note": "Official Gemini Image/Nano Banana prompt construction and editing guidance."
+    },
+    {
+      "id": "google_nano_cloud",
+      "provider": "Google Cloud",
+      "url": "https://cloud.google.com/blog/products/ai-machine-learning/ultimate-prompting-guide-for-nano-banana",
+      "note": "Official Google Cloud Nano Banana prompting guide."
+    },
+    {
+      "id": "google_gemini_api_image",
+      "provider": "Google",
+      "url": "https://ai.google.dev/gemini-api/docs/image-generation",
+      "note": "Official Gemini API image-generation examples and capabilities."
+    },
+    {
+      "id": "xai_grok_public_prompts",
+      "provider": "xAI",
+      "url": "https://github.com/xai-org/grok-prompts",
+      "note": "Official public repository containing Grok system/product prompts."
+    }
+  ],
+  "prompts": [
+    {
+      "id": "grok-img-001",
+      "provider": "grok",
+      "model_family": "Grok Imagine",
+      "modality": "text-to-image",
+      "category": "portrait",
+      "title": "Editorial Photorealistic Portrait",
+      "prompt": "Create a photorealistic editorial portrait of [SUBJECT], wearing [OUTFIT], in [LOCATION]. Frame as a [SHOT_TYPE] from a [CAMERA_ANGLE] perspective. Use [LIGHTING] with natural skin texture, realistic fabric detail, controlled depth of field, and a refined magazine-photography finish. Aspect ratio: [ASPECT_RATIO].",
+      "variables": [
+        "SUBJECT",
+        "OUTFIT",
+        "LOCATION",
+        "SHOT_TYPE",
+        "CAMERA_ANGLE",
+        "LIGHTING",
+        "ASPECT_RATIO"
+      ],
+      "tags": [
+        "portrait",
+        "photorealistic",
+        "editorial",
+        "camera",
+        "lighting"
+      ],
+      "source_ids": [
+        "xai_imagine_generation"
+      ]
+    },
+    {
+      "id": "grok-img-002",
+      "provider": "grok",
+      "model_family": "Grok Imagine",
+      "modality": "text-to-image",
+      "category": "product",
+      "title": "Premium Product Hero",
+      "prompt": "Generate a premium commercial hero image of [PRODUCT] centered on [SURFACE], against [BACKGROUND]. Use [LIGHTING] to create controlled reflections and realistic material texture. Camera: [LENS] at [ANGLE]. Minimal composition, generous negative space, luxury advertising aesthetic. Add no unintended text or objects. Output [ASPECT_RATIO].",
+      "variables": [
+        "PRODUCT",
+        "SURFACE",
+        "BACKGROUND",
+        "LIGHTING",
+        "LENS",
+        "ANGLE",
+        "ASPECT_RATIO"
+      ],
+      "tags": [
+        "product",
+        "advertising",
+        "commercial",
+        "minimal",
+        "photorealistic"
+      ],
+      "source_ids": [
+        "xai_imagine_generation"
+      ]
+    },
+    {
+      "id": "grok-img-003",
+      "provider": "grok",
+      "model_family": "Grok Imagine",
+      "modality": "image-edit",
+      "category": "identity-preservation",
+      "title": "Background Replacement — Preserve Subject",
+      "prompt": "Edit the uploaded image. Replace only the background with [NEW_BACKGROUND]. Keep the person's identity, face, hairstyle, pose, clothing, proportions, and accessories unchanged. Match the new background's perspective, lighting direction, shadows, and color temperature to the subject. Preserve all important foreground details.",
+      "variables": [
+        "NEW_BACKGROUND"
+      ],
+      "tags": [
+        "edit",
+        "background",
+        "identity",
+        "preservation"
+      ],
+      "source_ids": [
+        "xai_imagine_editing"
+      ]
+    },
+    {
+      "id": "grok-img-004",
+      "provider": "grok",
+      "model_family": "Grok Imagine",
+      "modality": "image-edit",
+      "category": "style-transfer",
+      "title": "Controlled Style Transformation",
+      "prompt": "Transform the uploaded image into [STYLE]. Preserve the original subject, composition, pose, silhouette, and key visual details. Change the rendering language, materials, color treatment, and surface texture to match [STYLE], while keeping the scene recognizable and coherent.",
+      "variables": [
+        "STYLE"
+      ],
+      "tags": [
+        "edit",
+        "style-transfer",
+        "preservation"
+      ],
+      "source_ids": [
+        "xai_imagine_editing",
+        "xai_imagine_docs"
+      ]
+    },
+    {
+      "id": "grok-img-005",
+      "provider": "grok",
+      "model_family": "Grok Imagine",
+      "modality": "image-edit",
+      "category": "multi-image",
+      "title": "Combine Reference Images",
+      "prompt": "Combine the supplied reference images into one coherent scene. Use [SUBJECT_FROM_IMAGE_1] from image 1, [ELEMENT_FROM_IMAGE_2] from image 2, and [ELEMENT_FROM_IMAGE_3] from image 3. Match perspective, scale, lighting, shadows, color grading, and depth of field so the final result looks like one photograph. Keep each selected element recognizable.",
+      "variables": [
+        "SUBJECT_FROM_IMAGE_1",
+        "ELEMENT_FROM_IMAGE_2",
+        "ELEMENT_FROM_IMAGE_3"
+      ],
+      "tags": [
+        "multi-image",
+        "composition",
+        "references",
+        "photorealistic"
+      ],
+      "source_ids": [
+        "xai_imagine_docs"
+      ]
+    },
+    {
+      "id": "grok-img-006",
+      "provider": "grok",
+      "model_family": "Grok Imagine",
+      "modality": "image-edit",
+      "category": "canvas-extension",
+      "title": "Seamless Canvas Extension",
+      "prompt": "Extend the uploaded image to [ASPECT_RATIO]. Keep the existing subject and composition unchanged. Generate only the missing surrounding environment, continuing the original perspective, textures, lighting direction, shadows, and color palette seamlessly. Do not alter the original subject.",
+      "variables": [
+        "ASPECT_RATIO"
+      ],
+      "tags": [
+        "outpaint",
+        "canvas",
+        "composition",
+        "preservation"
+      ],
+      "source_ids": [
+        "xai_imagine_editing",
+        "xai_imagine_20"
+      ]
+    },
+    {
+      "id": "grok-img-007",
+      "provider": "grok",
+      "model_family": "Grok Imagine",
+      "modality": "text-to-image",
+      "category": "cinematic",
+      "title": "Cinematic Night Scene",
+      "prompt": "Create a cinematic [SHOT_TYPE] of [SUBJECT] in [LOCATION] at night. Use [LIGHT_SOURCES] as motivated practical lighting, atmospheric depth, subtle volumetric haze, realistic reflections, and controlled contrast. Camera perspective: [CAMERA_ANGLE], lens look: [LENS_LOOK]. Mood: [MOOD]. Composition should feel like a frame from a high-budget feature film.",
+      "variables": [
+        "SHOT_TYPE",
+        "SUBJECT",
+        "LOCATION",
+        "LIGHT_SOURCES",
+        "CAMERA_ANGLE",
+        "LENS_LOOK",
+        "MOOD"
+      ],
+      "tags": [
+        "cinematic",
+        "night",
+        "lighting",
+        "film"
+      ],
+      "source_ids": [
+        "xai_imagine_generation"
+      ]
+    },
+    {
+      "id": "grok-img-008",
+      "provider": "grok",
+      "model_family": "Grok Imagine",
+      "modality": "text-to-image",
+      "category": "typography",
+      "title": "Text-Accurate Poster",
+      "prompt": "Design a polished [POSTER_TYPE] with the exact headline \"[HEADLINE]\" placed [TEXT_POSITION]. Use [TYPOGRAPHY_STYLE], strong visual hierarchy, and [COLOR_PALETTE]. Main visual: [SUBJECT]. Keep text spelling exact and legible. Composition should be balanced for [USE_CASE]. Aspect ratio: [ASPECT_RATIO].",
+      "variables": [
+        "POSTER_TYPE",
+        "HEADLINE",
+        "TEXT_POSITION",
+        "TYPOGRAPHY_STYLE",
+        "COLOR_PALETTE",
+        "SUBJECT",
+        "USE_CASE",
+        "ASPECT_RATIO"
+      ],
+      "tags": [
+        "poster",
+        "typography",
+        "text",
+        "design"
+      ],
+      "source_ids": [
+        "xai_imagine_20",
+        "xai_imagine_generation"
+      ]
+    },
+    {
+      "id": "grok-img-009",
+      "provider": "grok",
+      "model_family": "Grok Imagine",
+      "modality": "image-edit",
+      "category": "product-normalization",
+      "title": "E-commerce Photo Normalization",
+      "prompt": "Normalize all supplied product photos into one consistent e-commerce style: [BACKGROUND], [LIGHTING], neutral color balance, consistent camera height, matching scale, and subtle natural shadow. Preserve the exact product shape, branding, colors, and proportions. Output all images with the same [ASPECT_RATIO] and visual treatment.",
+      "variables": [
+        "BACKGROUND",
+        "LIGHTING",
+        "ASPECT_RATIO"
+      ],
+      "tags": [
+        "ecommerce",
+        "batch",
+        "normalization",
+        "product"
+      ],
+      "source_ids": [
+        "xai_imagine_editing"
+      ]
+    },
+    {
+      "id": "grok-img-010",
+      "provider": "grok",
+      "model_family": "Grok Imagine",
+      "modality": "image-edit",
+      "category": "targeted-edit",
+      "title": "Change One Element Only",
+      "prompt": "Edit only [TARGET_ELEMENT] in the uploaded image. Change it to [NEW_VALUE]. Keep every other visible element unchanged, including subject identity, pose, framing, background, lighting, camera perspective, and texture. Make the modification physically consistent with the original scene.",
+      "variables": [
+        "TARGET_ELEMENT",
+        "NEW_VALUE"
+      ],
+      "tags": [
+        "edit",
+        "localized",
+        "preservation",
+        "precision"
+      ],
+      "source_ids": [
+        "xai_imagine_editing",
+        "xai_imagine_20"
+      ]
+    },
+    {
+      "id": "gemini-img-001",
+      "provider": "gemini",
+      "model_family": "Gemini Image / Nano Banana",
+      "modality": "text-to-image",
+      "category": "portrait",
+      "title": "Detailed Character Portrait",
+      "prompt": "Create a detailed [STYLE] portrait of [SUBJECT]. Describe the subject's appearance, [OUTFIT], expression, and pose. Place them in [SETTING] with [LIGHTING]. Use [COMPOSITION] and a [CAMERA_LOOK] perspective. Prioritize natural anatomy, believable materials, coherent shadows, and the requested visual style. Aspect ratio: [ASPECT_RATIO].",
+      "variables": [
+        "STYLE",
+        "SUBJECT",
+        "OUTFIT",
+        "SETTING",
+        "LIGHTING",
+        "COMPOSITION",
+        "CAMERA_LOOK",
+        "ASPECT_RATIO"
+      ],
+      "tags": [
+        "portrait",
+        "subject",
+        "setting",
+        "style",
+        "camera"
+      ],
+      "source_ids": [
+        "google_nano_prompt"
+      ]
+    },
+    {
+      "id": "gemini-img-002",
+      "provider": "gemini",
+      "model_family": "Gemini Image / Nano Banana",
+      "modality": "image-edit",
+      "category": "identity-preservation",
+      "title": "Edit While Keeping Identity",
+      "prompt": "Use the uploaded image as the identity reference. Change only [EDIT]. Preserve the person's facial identity, recognizable features, hairstyle, body proportions, pose, and expression unless explicitly required by the edit. Keep the original visual details that are unrelated to the requested change.",
+      "variables": [
+        "EDIT"
+      ],
+      "tags": [
+        "edit",
+        "identity",
+        "reference",
+        "preservation"
+      ],
+      "source_ids": [
+        "google_nano_prompt"
+      ]
+    },
+    {
+      "id": "gemini-img-003",
+      "provider": "gemini",
+      "model_family": "Gemini Image / Nano Banana",
+      "modality": "image-edit",
+      "category": "outfit",
+      "title": "Outfit Replacement",
+      "prompt": "Replace the subject's clothing with [NEW_OUTFIT]. Keep the person's face, hair, pose, body proportions, hands, and background unchanged. Make the new clothing fit naturally with correct folds, seams, shadows, and lighting consistent with the original photograph.",
+      "variables": [
+        "NEW_OUTFIT"
+      ],
+      "tags": [
+        "outfit",
+        "fashion",
+        "edit",
+        "preservation"
+      ],
+      "source_ids": [
+        "google_nano_prompt"
+      ]
+    },
+    {
+      "id": "gemini-img-004",
+      "provider": "gemini",
+      "model_family": "Gemini Image / Nano Banana",
+      "modality": "image-edit",
+      "category": "background",
+      "title": "Environment Swap",
+      "prompt": "Replace the current environment with [NEW_SETTING]. Preserve the subject exactly as provided. Rebuild perspective, depth, ambient light, contact shadows, reflections, and color temperature so the subject naturally belongs in the new environment. Keep the subject's original pose and framing.",
+      "variables": [
+        "NEW_SETTING"
+      ],
+      "tags": [
+        "background",
+        "environment",
+        "lighting",
+        "edit"
+      ],
+      "source_ids": [
+        "google_nano_prompt"
+      ]
+    },
+    {
+      "id": "gemini-img-005",
+      "provider": "gemini",
+      "model_family": "Gemini Image / Nano Banana",
+      "modality": "image-edit",
+      "category": "multi-image",
+      "title": "Reference Image Composition",
+      "prompt": "Create one coherent image using the uploaded references. Treat reference 1 as [ROLE_1], reference 2 as [ROLE_2], and reference 3 as [ROLE_3]. Preserve the important visual identity of each referenced element. Combine them with consistent scale, perspective, lighting, shadows, depth, and color grading.",
+      "variables": [
+        "ROLE_1",
+        "ROLE_2",
+        "ROLE_3"
+      ],
+      "tags": [
+        "multi-image",
+        "references",
+        "composition",
+        "consistency"
+      ],
+      "source_ids": [
+        "google_nano_prompt",
+        "google_nano_cloud"
+      ]
+    },
+    {
+      "id": "gemini-img-006",
+      "provider": "gemini",
+      "model_family": "Gemini Image / Nano Banana",
+      "modality": "text-to-image",
+      "category": "product",
+      "title": "Studio Product Photograph",
+      "prompt": "Create a professional studio photograph of [PRODUCT]. Show [PRODUCT_DETAILS] clearly. Place it on [SURFACE] with [BACKGROUND]. Use [LIGHTING] and a [CAMERA_VIEW] composition. Materials should look physically accurate, with realistic reflections and shadows. Intended use: [USE_CASE]. Aspect ratio: [ASPECT_RATIO].",
+      "variables": [
+        "PRODUCT",
+        "PRODUCT_DETAILS",
+        "SURFACE",
+        "BACKGROUND",
+        "LIGHTING",
+        "CAMERA_VIEW",
+        "USE_CASE",
+        "ASPECT_RATIO"
+      ],
+      "tags": [
+        "product",
+        "studio",
+        "commercial",
+        "photography"
+      ],
+      "source_ids": [
+        "google_nano_prompt",
+        "google_gemini_api_image"
+      ]
+    },
+    {
+      "id": "gemini-img-007",
+      "provider": "gemini",
+      "model_family": "Gemini Image / Nano Banana",
+      "modality": "text-to-image",
+      "category": "infographic",
+      "title": "Information-Rich Diagram",
+      "prompt": "Create a clear infographic explaining [TOPIC]. Use a [LAYOUT] structure with sections for [SECTIONS]. Include exact text in quotes: \"[TEXT]\". Use [VISUAL_STYLE], readable typography, clear hierarchy, simple icons, and accurate relationships between elements. Keep the design uncluttered and suitable for [AUDIENCE].",
+      "variables": [
+        "TOPIC",
+        "LAYOUT",
+        "SECTIONS",
+        "TEXT",
+        "VISUAL_STYLE",
+        "AUDIENCE"
+      ],
+      "tags": [
+        "infographic",
+        "diagram",
+        "text",
+        "education"
+      ],
+      "source_ids": [
+        "google_nano_prompt"
+      ]
+    },
+    {
+      "id": "gemini-img-008",
+      "provider": "gemini",
+      "model_family": "Gemini Image / Nano Banana",
+      "modality": "text-to-image",
+      "category": "localization",
+      "title": "Localized Sign or Poster",
+      "prompt": "Create a [DESIGN_TYPE] for [REGION/CULTURE]. Render the exact phrase \"[TEXT]\" in [LANGUAGE], using culturally appropriate visual cues, typography, colors, and environmental details associated with [REGION/CULTURE]. Keep the text legible and compositionally integrated.",
+      "variables": [
+        "DESIGN_TYPE",
+        "REGION/CULTURE",
+        "TEXT",
+        "LANGUAGE"
+      ],
+      "tags": [
+        "localization",
+        "language",
+        "typography",
+        "culture"
+      ],
+      "source_ids": [
+        "google_nano_prompt"
+      ]
+    },
+    {
+      "id": "gemini-img-009",
+      "provider": "gemini",
+      "model_family": "Gemini Image / Nano Banana",
+      "modality": "image-edit",
+      "category": "restoration",
+      "title": "Photo Restoration",
+      "prompt": "Restore the uploaded photograph. Repair [DAMAGE_TYPES] while preserving the original person's identity, facial structure, clothing, composition, and historical character. Remove only damage and artifacts. Reconstruct missing areas conservatively and keep texture, grain, and lighting consistent with the original era.",
+      "variables": [
+        "DAMAGE_TYPES"
+      ],
+      "tags": [
+        "restoration",
+        "repair",
+        "identity",
+        "historical"
+      ],
+      "source_ids": [
+        "google_nano_prompt"
+      ]
+    },
+    {
+      "id": "gemini-img-010",
+      "provider": "gemini",
+      "model_family": "Gemini Image / Nano Banana",
+      "modality": "image-edit",
+      "category": "style-transfer",
+      "title": "Photograph to Artistic Medium",
+      "prompt": "Transform the uploaded image into [ART_MEDIUM]. Preserve the subject, composition, pose, and major shapes. Apply the new medium through its characteristic brushwork, line quality, texture, color behavior, and lighting treatment while keeping the original scene recognizable.",
+      "variables": [
+        "ART_MEDIUM"
+      ],
+      "tags": [
+        "style-transfer",
+        "art",
+        "edit",
+        "preservation"
+      ],
+      "source_ids": [
+        "google_nano_prompt"
+      ]
+    },
+    {
+      "id": "gemini-img-011",
+      "provider": "gemini",
+      "model_family": "Gemini Image / Nano Banana",
+      "modality": "text-to-image",
+      "category": "storyboard",
+      "title": "Multi-Image Story",
+      "prompt": "Create [NUMBER] distinct images that form a continuous visual story about [STORY]. Keep the main character [CHARACTER] visually consistent across every image: same face, hairstyle, outfit, proportions, and color palette. Vary only the action, camera angle, and setting required by each scene.",
+      "variables": [
+        "NUMBER",
+        "STORY",
+        "CHARACTER"
+      ],
+      "tags": [
+        "story",
+        "character-consistency",
+        "multi-image",
+        "sequence"
+      ],
+      "source_ids": [
+        "google_nano_prompt"
+      ]
+    },
+    {
+      "id": "gemini-img-012",
+      "provider": "gemini",
+      "model_family": "Gemini Image / Nano Banana",
+      "modality": "text-to-image",
+      "category": "social-media",
+      "title": "Vertical Social Creative",
+      "prompt": "Design a polished vertical social-media visual for [CAMPAIGN]. Main subject: [SUBJECT]. Include the exact headline \"[HEADLINE]\" and supporting text \"[SUPPORTING_TEXT]\". Use [STYLE], [COLOR_PALETTE], strong hierarchy, mobile-readable typography, and intentional negative space. Output 9:16.",
+      "variables": [
+        "CAMPAIGN",
+        "SUBJECT",
+        "HEADLINE",
+        "SUPPORTING_TEXT",
+        "STYLE",
+        "COLOR_PALETTE"
+      ],
+      "tags": [
+        "social",
+        "9:16",
+        "typography",
+        "marketing"
+      ],
+      "source_ids": [
+        "google_nano_prompt",
+        "google_gemini_api_image"
+      ]
+    }
+  ]
+}

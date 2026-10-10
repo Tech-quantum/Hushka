@@ -1,0 +1,509 @@
+{
+  "schema_version": "1.0",
+  "dataset_version": "0.1.0",
+  "collected_at": "2026-10-04",
+  "description": "Public reusable Midjourney prompt templates normalized from official documentation. These are original/normalized formulations, not private system prompts.",
+  "source_ids": [
+    "midjourney_prompt_basics",
+    "midjourney_image_prompts",
+    "midjourney_art_prompting",
+    "midjourney_text_generation",
+    "midjourney_describe",
+    "midjourney_version"
+  ],
+  "prompts": [
+    {
+      "id": "midjourney-001",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "text-to-image",
+      "category": "image-generation",
+      "title": "Focused Subject Scene",
+      "prompt": "Create a [MEDIUM] of [SUBJECT] in [ENVIRONMENT], with [LIGHTING], [COLOR_PALETTE], [MOOD], and [COMPOSITION]. Keep the description focused on the visual elements that matter most. [PARAMETERS]",
+      "variables": [
+        "MEDIUM",
+        "SUBJECT",
+        "ENVIRONMENT",
+        "LIGHTING",
+        "COLOR_PALETTE",
+        "MOOD",
+        "COMPOSITION",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "subject",
+        "environment",
+        "lighting",
+        "composition"
+      ],
+      "source_ids": [
+        "midjourney_prompt_basics"
+      ]
+    },
+    {
+      "id": "midjourney-002",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "text-to-image",
+      "category": "photography",
+      "title": "Photographic Portrait",
+      "prompt": "Photorealistic portrait of [SUBJECT], [EXPRESSION], [OUTFIT], in [ENVIRONMENT], [LIGHTING], [CAMERA_COMPOSITION]. Emphasize realistic skin, natural proportions, and the key visual details. [PARAMETERS]",
+      "variables": [
+        "SUBJECT",
+        "EXPRESSION",
+        "OUTFIT",
+        "ENVIRONMENT",
+        "LIGHTING",
+        "CAMERA_COMPOSITION",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "portrait",
+        "photorealistic",
+        "camera",
+        "lighting"
+      ],
+      "source_ids": [
+        "midjourney_prompt_basics"
+      ]
+    },
+    {
+      "id": "midjourney-003",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "text-to-image",
+      "category": "art-style",
+      "title": "Medium and Style",
+      "prompt": "[SUBJECT] rendered as a [MEDIUM] in the style of [STYLE_DIRECTION], using [COLOR_PALETTE] and [LIGHTING], with [MOOD] and [COMPOSITION]. [PARAMETERS]",
+      "variables": [
+        "SUBJECT",
+        "MEDIUM",
+        "STYLE_DIRECTION",
+        "COLOR_PALETTE",
+        "LIGHTING",
+        "MOOD",
+        "COMPOSITION",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "medium",
+        "style",
+        "art"
+      ],
+      "source_ids": [
+        "midjourney_art_prompting"
+      ]
+    },
+    {
+      "id": "midjourney-004",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "text-to-image",
+      "category": "environment",
+      "title": "Environment and Mood",
+      "prompt": "[SUBJECT] in a [ENVIRONMENT], during [TIME_PERIOD], with [WEATHER], [LIGHTING], [COLOR_PALETTE], and a [MOOD] atmosphere. Compose the image as [COMPOSITION]. [PARAMETERS]",
+      "variables": [
+        "SUBJECT",
+        "ENVIRONMENT",
+        "TIME_PERIOD",
+        "WEATHER",
+        "LIGHTING",
+        "COLOR_PALETTE",
+        "MOOD",
+        "COMPOSITION",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "environment",
+        "time",
+        "mood",
+        "lighting"
+      ],
+      "source_ids": [
+        "midjourney_art_prompting"
+      ]
+    },
+    {
+      "id": "midjourney-005",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "text-to-image",
+      "category": "color",
+      "title": "Controlled Color Palette",
+      "prompt": "[SUBJECT], [MEDIUM], with a [COLOR_PALETTE] palette, [LIGHTING], [MOOD], and [COMPOSITION]. Keep the requested colors visually prominent without adding unrelated color themes. [PARAMETERS]",
+      "variables": [
+        "SUBJECT",
+        "MEDIUM",
+        "COLOR_PALETTE",
+        "LIGHTING",
+        "MOOD",
+        "COMPOSITION",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "color",
+        "palette",
+        "composition"
+      ],
+      "source_ids": [
+        "midjourney_art_prompting"
+      ]
+    },
+    {
+      "id": "midjourney-006",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "text-to-image",
+      "category": "time-period",
+      "title": "Historical Era Visual",
+      "prompt": "Illustration of [SUBJECT] set in the [TIME_PERIOD] era, using period-appropriate [CLOTHING_OR_OBJECTS], [ARCHITECTURE_OR_ENVIRONMENT], [MEDIUM], [LIGHTING], and [COLOR_PALETTE]. [PARAMETERS]",
+      "variables": [
+        "SUBJECT",
+        "TIME_PERIOD",
+        "CLOTHING_OR_OBJECTS",
+        "ARCHITECTURE_OR_ENVIRONMENT",
+        "MEDIUM",
+        "LIGHTING",
+        "COLOR_PALETTE",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "history",
+        "period",
+        "environment"
+      ],
+      "source_ids": [
+        "midjourney_art_prompting"
+      ]
+    },
+    {
+      "id": "midjourney-007",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "text-to-image",
+      "category": "image-reference",
+      "title": "Reference-Guided Creation",
+      "prompt": "Use the supplied image as a visual reference for [CONTENT_OR_COMPOSITION]. Create [SUBJECT] with [ADDITIONAL_DETAILS]. Treat the reference as inspiration for visual structure rather than an exact copy. [PARAMETERS]",
+      "variables": [
+        "CONTENT_OR_COMPOSITION",
+        "SUBJECT",
+        "ADDITIONAL_DETAILS",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "image-prompt",
+        "reference",
+        "composition"
+      ],
+      "source_ids": [
+        "midjourney_image_prompts"
+      ]
+    },
+    {
+      "id": "midjourney-008",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "image-to-image",
+      "category": "multi-image",
+      "title": "Multiple Image References",
+      "prompt": "Combine the supplied image references to inspire [SUBJECT_OR_SCENE]. Use reference 1 for [ROLE_1], reference 2 for [ROLE_2], and reference 3 for [ROLE_3]. Add [TEXTUAL_DETAILS] to define what is not clear in the references. [PARAMETERS]",
+      "variables": [
+        "SUBJECT_OR_SCENE",
+        "ROLE_1",
+        "ROLE_2",
+        "ROLE_3",
+        "TEXTUAL_DETAILS",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "multi-image",
+        "references",
+        "blend"
+      ],
+      "source_ids": [
+        "midjourney_image_prompts"
+      ]
+    },
+    {
+      "id": "midjourney-009",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "image-to-image",
+      "category": "style-reference",
+      "title": "Style Reference",
+      "prompt": "Create [SUBJECT_OR_SCENE] using the supplied style reference to guide the overall visual language, while preserving the requested subject and composition. Match the reference's [STYLE_ATTRIBUTES] without copying unrelated content. [PARAMETERS]",
+      "variables": [
+        "SUBJECT_OR_SCENE",
+        "STYLE_ATTRIBUTES",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "style-reference",
+        "style",
+        "image-reference"
+      ],
+      "source_ids": [
+        "midjourney_image_prompts"
+      ]
+    },
+    {
+      "id": "midjourney-010",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "image-to-image",
+      "category": "editing",
+      "title": "Targeted Image Edit",
+      "prompt": "Edit the supplied image by changing only [TARGET_AREA] to [NEW_CONTENT]. Preserve the rest of the image, including [PRESERVE_DETAILS], and keep perspective, lighting, texture, and scale coherent. [PARAMETERS]",
+      "variables": [
+        "TARGET_AREA",
+        "NEW_CONTENT",
+        "PRESERVE_DETAILS",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "edit",
+        "localized-edit",
+        "preservation"
+      ],
+      "source_ids": [
+        "midjourney_image_prompts"
+      ]
+    },
+    {
+      "id": "midjourney-011",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "image-to-image",
+      "category": "outpainting",
+      "title": "Canvas Extension",
+      "prompt": "Extend the supplied image toward [DIRECTION_OR_ASPECT_RATIO]. Keep the original content intact and generate only the missing environment, continuing perspective, lighting, textures, and composition naturally. [PARAMETERS]",
+      "variables": [
+        "DIRECTION_OR_ASPECT_RATIO",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "outpainting",
+        "canvas",
+        "extension"
+      ],
+      "source_ids": [
+        "midjourney_version"
+      ]
+    },
+    {
+      "id": "midjourney-012",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "image-to-image",
+      "category": "character-consistency",
+      "title": "Consistent Subject Reference",
+      "prompt": "Create [SCENE] featuring the same [PERSON_OR_OBJECT] from the supplied reference. Preserve recognizable identity and key visual traits while changing [SCENE_CHANGES]. Keep the result coherent with the requested setting. [PARAMETERS]",
+      "variables": [
+        "SCENE",
+        "PERSON_OR_OBJECT",
+        "SCENE_CHANGES",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "identity",
+        "reference",
+        "consistency"
+      ],
+      "source_ids": [
+        "midjourney_image_prompts"
+      ]
+    },
+    {
+      "id": "midjourney-013",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "text-to-image",
+      "category": "text-in-image",
+      "title": "Readable Text in Image",
+      "prompt": "Create [IMAGE_TYPE] featuring the exact words \"[TEXT]\" as [TEXT_ELEMENT]. Use [TYPOGRAPHY_STYLE], clear hierarchy, and strong legibility. Keep the text short and prominently placed. [PARAMETERS]",
+      "variables": [
+        "IMAGE_TYPE",
+        "TEXT",
+        "TEXT_ELEMENT",
+        "TYPOGRAPHY_STYLE",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "typography",
+        "text",
+        "poster"
+      ],
+      "source_ids": [
+        "midjourney_text_generation"
+      ]
+    },
+    {
+      "id": "midjourney-014",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "image-to-text",
+      "category": "prompt-discovery",
+      "title": "Describe Image for Prompt Ideas",
+      "prompt": "Analyze the supplied image and generate several distinct creative prompt directions describing its important subject, medium, environment, lighting, color, mood, and composition. Do not attempt to reproduce the image verbatim.",
+      "variables": [],
+      "tags": [
+        "describe",
+        "prompt-discovery",
+        "image-analysis"
+      ],
+      "source_ids": [
+        "midjourney_describe"
+      ]
+    },
+    {
+      "id": "midjourney-015",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "text-to-image",
+      "category": "composition",
+      "title": "Precise Composition",
+      "prompt": "[SUBJECT] in [ENVIRONMENT], composed as a [COMPOSITION], viewed from [CAMERA_VIEW], with [LIGHTING] and [MOOD]. Keep [KEY_ELEMENT] as the visual focal point and use [NEGATIVE_SPACE] as intentional breathing room. [PARAMETERS]",
+      "variables": [
+        "SUBJECT",
+        "ENVIRONMENT",
+        "COMPOSITION",
+        "CAMERA_VIEW",
+        "LIGHTING",
+        "MOOD",
+        "KEY_ELEMENT",
+        "NEGATIVE_SPACE",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "composition",
+        "focal-point",
+        "camera"
+      ],
+      "source_ids": [
+        "midjourney_prompt_basics"
+      ]
+    },
+    {
+      "id": "midjourney-016",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "text-to-image",
+      "category": "specificity",
+      "title": "Exact Count of Subjects",
+      "prompt": "A scene containing exactly [NUMBER] [SUBJECTS], arranged as [ARRANGEMENT], in [ENVIRONMENT], with [LIGHTING] and [MOOD]. Keep the count explicit and visually distinguishable. [PARAMETERS]",
+      "variables": [
+        "NUMBER",
+        "SUBJECTS",
+        "ARRANGEMENT",
+        "ENVIRONMENT",
+        "LIGHTING",
+        "MOOD",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "count",
+        "specificity",
+        "composition"
+      ],
+      "source_ids": [
+        "midjourney_prompt_basics"
+      ]
+    },
+    {
+      "id": "midjourney-017",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "text-to-image",
+      "category": "minimal-prompt",
+      "title": "Concise Creative Prompt",
+      "prompt": "[SUBJECT], [MEDIUM], [ENVIRONMENT], [LIGHTING], [MOOD]. [PARAMETERS]",
+      "variables": [
+        "SUBJECT",
+        "MEDIUM",
+        "ENVIRONMENT",
+        "LIGHTING",
+        "MOOD",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "minimal",
+        "concise",
+        "creative"
+      ],
+      "source_ids": [
+        "midjourney_prompt_basics"
+      ]
+    },
+    {
+      "id": "midjourney-018",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "text-to-image",
+      "category": "aspect-ratio",
+      "title": "Aspect Ratio Controlled Scene",
+      "prompt": "[SUBJECT] in [ENVIRONMENT], [MEDIUM], [LIGHTING], [COMPOSITION]. Optimize the composition for the requested output ratio. [PARAMETERS]",
+      "variables": [
+        "SUBJECT",
+        "ENVIRONMENT",
+        "MEDIUM",
+        "LIGHTING",
+        "COMPOSITION",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "aspect-ratio",
+        "composition",
+        "parameters"
+      ],
+      "source_ids": [
+        "midjourney_prompt_basics"
+      ]
+    },
+    {
+      "id": "midjourney-019",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "text-to-image",
+      "category": "version-control",
+      "title": "Version-Specific Prompt",
+      "prompt": "Create [SUBJECT_OR_SCENE] with [STYLE_AND_DETAILS]. Use Midjourney version [VERSION] and apply only the parameters needed for the intended result. [PARAMETERS]",
+      "variables": [
+        "SUBJECT_OR_SCENE",
+        "STYLE_AND_DETAILS",
+        "VERSION",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "version",
+        "parameters",
+        "control"
+      ],
+      "source_ids": [
+        "midjourney_version"
+      ]
+    },
+    {
+      "id": "midjourney-020",
+      "provider": "midjourney",
+      "model": "Midjourney V8.2",
+      "modality": "image-to-image",
+      "category": "image-editing",
+      "title": "Reference Plus Text Direction",
+      "prompt": "Use the supplied image as a reference for [REFERENCE_ROLE]. Create the final image as [FINAL_SCENE], with [TEXT_DIRECTION] controlling details not established by the reference. Preserve the important requested visual structure while allowing the text prompt to define the new result. [PARAMETERS]",
+      "variables": [
+        "REFERENCE_ROLE",
+        "FINAL_SCENE",
+        "TEXT_DIRECTION",
+        "PARAMETERS"
+      ],
+      "tags": [
+        "reference",
+        "editing",
+        "text-guidance"
+      ],
+      "source_ids": [
+        "midjourney_image_prompts"
+      ]
+    }
+  ]
+}
