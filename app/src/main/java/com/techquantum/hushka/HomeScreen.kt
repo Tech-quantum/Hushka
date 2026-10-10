@@ -115,3 +115,516 @@ fun HomeScreen(
             showWebDialog = true
         }
     }
+
+    val bgColor = MaterialTheme.colorScheme.background
+    val cardColor = MaterialTheme.colorScheme.surface
+    val cardLightColor = MaterialTheme.colorScheme.surfaceVariant
+    val textColor = MaterialTheme.colorScheme.onSurface
+    val textGrayColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val borderColor = MaterialTheme.colorScheme.outline
+    val purplePrimary = MaterialTheme.colorScheme.primary
+
+    Scaffold(
+        containerColor = bgColor,
+        topBar = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .statusBarsPadding()
+                    .padding(horizontal = 20.dp, vertical = 12.dp)
+            ) {
+                Text("Hushka", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = textColor)
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    stringResource(R.string.app_subtitle),
+                    fontSize = 12.sp,
+                    color = textGrayColor,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        },
+        bottomBar = {
+            HomeBottomBar(
+                categoriesActive = uiState.selectedCategory != ALL_CATEGORY,
+                favoritesActive = uiState.favoritesOnly,
+                isOnline = isOnline,
+                isUpdating = uiState.isUpdating,
+                onCategories = { showCategoryDialog = true },
+                onFavorites = { viewModel.onFavoritesToggled() },
+                onAdd = { showAddDialog = true },
+                onUpdate = {
+                    if (!uiState.isUpdating) {
+                        if (isOnline) {
+                            viewModel.updateLibrary()
+                        } else {
+                            Toast.makeText(appContext, "اینترنت متصل نیست!", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                },
+                onStats = { showStats = true },
+                onSettings = onSettingsClick
+            )
+        }
+    ) { padding ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+            contentPadding = PaddingValues(bottom = 16.dp)
+        ) {
+            // ===== Search Bar =====
+            item {
+                OutlinedTextField(
+                    value = uiState.query,
+                    onValueChange = { viewModel.onQueryChanged(it) },
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = { Text(stringResource(R.string.search_hint), fontSize = 12.sp, color = textGrayColor) },
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = textGrayColor) },
+                    trailingIcon = {
+                        IconButton(onClick = onStartVoiceSearch) { Text("🎤", fontSize = 18.sp) }
+                    },
+                    shape = RoundedCornerShape(20.dp),
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        unfocusedBorderColor = Color.Transparent,
+                        focusedBorderColor = purplePrimary,
+                        unfocusedContainerColor = cardColor,
+                        focusedContainerColor = cardColor,
+                        unfocusedTextColor = textColor,
+                        focusedTextColor = textColor,
+                        cursorColor = purplePrimary
+                    )
+                )
+            }
+
+            // ===== Provider Chips =====
+            item {
+                val providerKeys = listOf("all", "anthropic", "deepseek", "gemini", "openai")
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    items(providerKeys) { key ->
+                        val value = if (key == "all") ALL_PROVIDER else key
+                        val label = if (key == "all") stringResource(R.string.all_providers) else key
+                        val isSelected = uiState.selectedProvider == value
+                        Surface(
+                            shape = RoundedCornerShape(50),
+                            color = if (isSelected) purplePrimary.copy(alpha = 0.25f) else Color.Transparent,
+                            border = BorderStroke(1.dp, if (isSelected) purplePrimary else borderColor),
+                            onClick = { viewModel.onProviderSelected(value) }
+                        ) {
+                            Text(
+                                label,
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                                fontSize = 12.sp,
+                                color = if (isSelected) purplePrimary else textGrayColor,
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                            )
+                        }
+                    }
+                }
+            }
+
+            // ===== Tab Chips =====
+            item {
+                val tabKeys = listOf("recent", "pinned", "favorites")
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    items(tabKeys) { key ->
+                        val label = when (key) {
+                            "recent" -> stringResource(R.string.recent_tab)
+                            "pinned" -> stringResource(R.string.pinned_tab)
+                            "favorites" -> stringResource(R.string.favorites_tab)
+                            else -> key
+                        }
+                        val isSelected = when (key) {
+                            "recent" -> uiState.recentOnly
+                            "pinned" -> uiState.pinnedOnly
+                            "favorites" -> uiState.favoritesOnly
+                            else -> false
+                        }
+                        Surface(
+                            shape = RoundedCornerShape(50),
+                            color = if (isSelected) purplePrimary.copy(alpha = 0.25f) else Color.Transparent,
+                            border = BorderStroke(1.dp, if (isSelected) purplePrimary else borderColor),
+                            onClick = {
+                                when (key) {
+                                    "recent" -> viewModel.onRecentToggled()
+                                    "pinned" -> viewModel.onPinnedToggled()
+                                    "favorites" -> viewModel.onFavoritesToggled()
+                                }
+                            }
+                        ) {
+                            Text(
+                                label,
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                                fontSize = 12.sp,
+                                color = if (isSelected) purplePrimary else textGrayColor,
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                            )
+                        }
+                    }
+                }
+            }
+
+            // ===== Sort Dropdown =====
+            item {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                    Box {
+                        val sortLabel = when (uiState.sortMode) {
+                            SORT_RELEVANT -> stringResource(R.string.sort_relevant)
+                            SORT_MOST_VIEWED -> stringResource(R.string.sort_most_viewed)
+                            SORT_TITLE -> stringResource(R.string.sort_title)
+                            SORT_CATEGORY -> stringResource(R.string.sort_category)
+                            SORT_FAVORITES -> stringResource(R.string.sort_favorites)
+                            SORT_FASTEST -> stringResource(R.string.sort_fastest)
+                            SORT_HIGHEST_SCORE -> stringResource(R.string.sort_highest_score)
+                            SORT_RECOMMENDED -> stringResource(R.string.sort_recommended)
+                            SORT_FEATURED -> stringResource(R.string.sort_featured)
+                            else -> stringResource(R.string.sort_latest)
+                        }
+                        Surface(
+                            shape = RoundedCornerShape(50),
+                            color = Color.Transparent,
+                            border = BorderStroke(1.dp, borderColor),
+                            onClick = { sortExpanded = true }
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(stringResource(R.string.sort_label, sortLabel), fontSize = 12.sp, color = textGrayColor)
+                                Spacer(Modifier.width(4.dp))
+                                Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = textGrayColor, modifier = Modifier.size(18.dp))
+                            }
+                        }
+                        DropdownMenu(expanded = sortExpanded, onDismissRequest = { sortExpanded = false }) {
+                            listOf(
+                                SORT_RELEVANT to stringResource(R.string.sort_relevant),
+                                SORT_MOST_VIEWED to stringResource(R.string.sort_most_viewed),
+                                SORT_LATEST to stringResource(R.string.sort_latest),
+                                SORT_FAVORITES to stringResource(R.string.sort_favorites),
+                                SORT_TITLE to stringResource(R.string.sort_title),
+                                SORT_CATEGORY to stringResource(R.string.sort_category),
+                                SORT_FASTEST to stringResource(R.string.sort_fastest),
+                                SORT_HIGHEST_SCORE to stringResource(R.string.sort_highest_score),
+                                SORT_RECOMMENDED to stringResource(R.string.sort_recommended),
+                                SORT_FEATURED to stringResource(R.string.sort_featured)
+                            ).forEach { pair ->
+                                DropdownMenuItem(
+                                    text = { Text(pair.second) },
+                                    onClick = {
+                                        viewModel.onSortSelected(pair.first)
+                                        sortExpanded = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            // ===== Section Header =====
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column {
+                        Text(stringResource(R.string.my_prompts), fontSize = 20.sp, fontWeight = FontWeight.Bold, color = textColor)
+                        Spacer(Modifier.height(2.dp))
+                        Text(stringResource(R.string.saved_count, uiState.filteredPrompts.size), fontSize = 11.sp, color = textGrayColor)
+                    }
+                    IconButton(onClick = { viewModel.updateLibrary() }) {
+                        Icon(
+                            Icons.Default.Star,
+                            contentDescription = null,
+                            tint = if (uiState.isUpdating) purplePrimary else textGrayColor,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                }
+            }
+
+            // ===== Prompt List =====
+            if (uiState.filteredPrompts.isEmpty()) {
+                item {
+                    Box(
+                        modifier = Modifier.fillMaxWidth().padding(40.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            if (uiState.query.isNotEmpty()) stringResource(R.string.no_results) else stringResource(R.string.no_prompts),
+                            color = textGrayColor,
+                            fontSize = 14.sp
+                        )
+                    }
+                }
+            } else {
+                items(uiState.filteredPrompts, key = { it.id }) { prompt ->
+                    PromptCard(
+                        title = prompt.title,
+                        description = prompt.text,
+                        mainTag = prompt.category,
+                        tags = prompt.tags.split(",").map { it.trim() }.filter { it.isNotEmpty() },
+                        provider = prompt.collection.ifBlank { "custom" },
+                        roleId = prompt.role,
+                        onFavoriteToggle = { viewModel.toggleFavorite(prompt) },
+                        onPinToggle = { viewModel.togglePinned(prompt) },
+                        onCardClick = { editingPrompt = prompt },
+                        onPreviewClick = { previewPrompt = prompt },
+                        onCopyClick = {
+                            val clipboard = appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            clipboard.setPrimaryClip(ClipData.newPlainText("Hushka Prompt", prompt.text))
+                            Toast.makeText(appContext, "کپی شد!", Toast.LENGTH_SHORT).show()
+                            viewModel.markUsed(prompt)
+                        },
+                        onShareClick = {
+                            try {
+                                val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                    type = "text/plain"
+                                    putExtra(Intent.EXTRA_TEXT, prompt.text)
+                                    putExtra(Intent.EXTRA_SUBJECT, prompt.title)
+                                }
+                                appContext.startActivity(Intent.createChooser(shareIntent, "اشتراک‌گذاری پرامپت"))
+                                viewModel.markUsed(prompt)
+                            } catch (e: Exception) {
+                                Toast.makeText(appContext, "برنامه‌ای پیدا نشد", Toast.LENGTH_SHORT).show()
+                            }
+                        },
+                        onAnalyzeClick = { analyzePrompt = prompt },
+                        onLiveTestClick = { liveTestPrompt = prompt },
+                        onEditClick = { editingPrompt = prompt },
+                        onDeleteClick = { deletePrompt = prompt }
+                    )
+                }
+            }
+        }
+    }
+
+    // ============ Add Prompt Dialog ============
+    if (showAddDialog) {
+        PromptFormDialog(
+            title = stringResource(R.string.add_prompt_title),
+            initialPrompt = null,
+            categories = listOf("عمومی", "تصویر", "ویدئو", "متن", "کد"),
+            onDismiss = { showAddDialog = false },
+            onSave = { title, category, tags, text, collection, role ->
+                viewModel.addPromptWithRole(title, category, tags, text, collection, role)
+                showAddDialog = false
+            }
+        )
+    }
+
+    // ============ Edit Prompt Dialog ============
+    editingPrompt?.let { prompt ->
+        PromptFormDialog(
+            title = stringResource(R.string.edit_prompt_title),
+            initialPrompt = prompt,
+            categories = listOf("عمومی", "تصویر", "ویدئو", "متن", "کد"),
+            onDismiss = { editingPrompt = null },
+            onSave = { title, category, tags, text, collection, role ->
+                viewModel.updatePrompt(
+                    prompt.copy(
+                        title = title,
+                        category = category,
+                        tags = tags,
+                        text = text,
+                        collection = collection,
+                        role = role
+                    )
+                )
+                editingPrompt = null
+            }
+        )
+    }
+
+    // ============ Analyze Dialog ============
+    analyzePrompt?.let { prompt ->
+        AdvancedAnalyzeDialog(
+            prompt = prompt,
+            onDismiss = { analyzePrompt = null },
+            onReplace = {
+                viewModel.updatePrompt(prompt.copy(text = prompt.text))
+            },
+            onSaveAsNew = {
+                viewModel.addPrompt(
+                    title = "${prompt.title} (نسخه ارتقا یافته)",
+                    category = prompt.category,
+                    tags = prompt.tags,
+                    text = prompt.text,
+                    collection = prompt.collection
+                )
+            },
+            onTestInSimulator = {
+                analyzePrompt = null
+                liveTestPrompt = prompt
+            }
+        )
+    }
+
+    // ============ Live Test Dialog ============
+    liveTestPrompt?.let { prompt ->
+        LiveTestDialog(
+            prompt = prompt,
+            onDismiss = { liveTestPrompt = null }
+        )
+    }
+
+    // ============ Preview Dialog ============
+    previewPrompt?.let { prompt ->
+        AlertDialog(
+            onDismissRequest = { previewPrompt = null },
+            containerColor = cardColor,
+            title = { Text(prompt.title.ifBlank { "بدون عنوان" }, color = textColor, fontWeight = FontWeight.Bold) },
+            text = {
+                Column {
+                    if (prompt.category.isNotBlank()) {
+                        Surface(
+                            shape = RoundedCornerShape(8.dp),
+                            color = purplePrimary.copy(alpha = 0.15f)
+                        ) {
+                            Text(
+                                getLocalizedCategory(prompt.category),
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                                fontSize = 11.sp,
+                                color = purplePrimary
+                            )
+                        }
+                        Spacer(Modifier.height(12.dp))
+                    }
+                    Text(
+                        prompt.text,
+                        color = textColor,
+                        fontSize = 13.sp,
+                        lineHeight = 20.sp
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    val clipboard = appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    clipboard.setPrimaryClip(ClipData.newPlainText("Hushka Prompt", prompt.text))
+                    Toast.makeText(appContext, "کپی شد!", Toast.LENGTH_SHORT).show()
+                    previewPrompt = null
+                }) {
+                    Text("کپی", color = purplePrimary)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { previewPrompt = null }) {
+                    Text(stringResource(R.string.close), color = textGrayColor)
+                }
+            }
+        )
+    }
+
+    // ============ Delete Confirm Dialog ============
+    deletePrompt?.let { prompt ->
+        AlertDialog(
+            onDismissRequest = { deletePrompt = null },
+            containerColor = cardColor,
+            title = { Text("حذف پرامپت", color = textColor, fontWeight = FontWeight.Bold) },
+            text = { Text("آیا از حذف «${prompt.title}» مطمئن هستید؟", color = textGrayColor) },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.deletePrompt(prompt)
+                    Toast.makeText(appContext, "حذف شد", Toast.LENGTH_SHORT).show()
+                    deletePrompt = null
+                }) {
+                    Text("حذف", color = Color(0xFFE57373))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { deletePrompt = null }) {
+                    Text("لغو", color = textGrayColor)
+                }
+            }
+        )
+    }
+
+    // ============ Categories Dialog ============
+    if (showCategoryDialog) {
+        val uniqueCategories = uiState.prompts
+            .map { it.category }
+            .filter { it.isNotBlank() }
+            .distinct()
+            .sorted()
+        AlertDialog(
+            onDismissRequest = { showCategoryDialog = false },
+            containerColor = cardColor,
+            titleContentColor = textColor,
+            textContentColor = textColor,
+            title = { Text(stringResource(R.string.select_category_title), color = textColor) },
+            text = {
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth().heightIn(max = 400.dp)
+                ) {
+                    item {
+                        val isSelected = uiState.selectedCategory == ALL_CATEGORY
+                        Surface(
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            color = if (isSelected) purplePrimary else cardLightColor,
+                            onClick = {
+                                viewModel.onCategorySelected(ALL_CATEGORY)
+                                showCategoryDialog = false
+                            }
+                        ) {
+                            Text(
+                                stringResource(R.string.all_categories),
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                                color = if (isSelected) Color.White else textColor,
+                                fontSize = 14.sp,
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                            )
+                        }
+                    }
+                    items(uniqueCategories) { category ->
+                        val isSelected = uiState.selectedCategory == category
+                        Surface(
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                            shape = RoundedCornerShape(10.dp),
+                            color = if (isSelected) purplePrimary else cardLightColor,
+                            onClick = {
+                                viewModel.onCategorySelected(category)
+                                showCategoryDialog = false
+                            }
+                        ) {
+                            Text(
+                                getLocalizedCategory(category),
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                                color = if (isSelected) Color.White else textColor,
+                                fontSize = 14.sp,
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                            )
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showCategoryDialog = false }) {
+                    Text(stringResource(R.string.close), color = purplePrimary)
+                }
+            }
+        )
+    }
+
+    // ============ Web Prompts Dialog ============
+    if (showWebDialog) {
+        WebPromptsDialog(
+            prompts = webPrompts,
+            isLoading = isFetchingWeb,
+            error = webError,
+            onImport = { selected ->
+                viewModel.importWebPrompts(selected)
+                showWebDialog = false
+            },
+            onDismiss = {
+                showWebDialog = false
+                viewModel.clearWebPrompts()
+            }
+        )
+    }
+}
