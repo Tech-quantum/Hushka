@@ -183,4 +183,6 @@
     <string name="recently_added">Recently added</string>
     <string name="favorite_count">%1$d favorites</string>
     <string name="results_count">%1$d results</string>
+        <string name="nav_stats">Stats</string>
+    <string name="nav_update">Update</string>
 </resources>
