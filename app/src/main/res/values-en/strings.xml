@@ -281,4 +281,7 @@
     <string name="tool_copy_final">📋 Copy final text</string>
     <string name="tool_send_to">Send prompt to...</string>
     <string name="tool_share">📤 Share</string>
+    <string name="an_rec_role_suggest">Hushka guardrail tip: the role “%1$s” fits this prompt. You can add it to the start of the prompt.</string>
+    <string name="an_apply_role">➕ Add role to the start of the prompt</string>
+    <string name="an_role_applied">Role added to the prompt</string>
 </resources>
