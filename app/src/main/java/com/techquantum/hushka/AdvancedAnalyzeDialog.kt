@@ -36,18 +36,36 @@ data class PromptAnalysis(
     val recommendationRes: Int,
     val hasRole: Boolean
 )
+// الگوها یک بار ساخته می‌شوند (ساختن Regex در هر بار آنالیز هزینه‌ی زیادی دارد)
+private val BRACKET_VAR_REGEX = Regex("\\[([A-Z_]+)\\]")
+private val CURLY_VAR_REGEX = Regex("\\{([^}]+)\\}")
+
+private fun countWords(text: String): Int {
+    var count = 0
+    var inWord = false
+    for (c in text) {
+        if (c.isWhitespace()) {
+            inWord = false
+        } else if (!inWord) {
+            inWord = true
+            count++
+        }
+    }
+    return count
+}
 
 fun analyzePromptAdvanced(text: String): PromptAnalysis {
-    val words = text.split(Regex("\\s+")).filter { it.isNotBlank() }
-    val varCount = Regex("\\[([A-Z_]+)\\]").findAll(text).count() +
-        Regex("\\{([^}]+)\\}").findAll(text).count()
+    val wordCount = countWords(text)
+    val varCount = BRACKET_VAR_REGEX.findAll(text).count() +
+        CURLY_VAR_REGEX.findAll(text).count()
 
     val clarity = when {
-        words.size in 30..200 -> 19
-        words.size in 15..29 -> 15
-        words.size > 200 -> 14
+        wordCount in 30..200 -> 19
+        wordCount in 15..29 -> 15
+        wordCount > 200 -> 14
         else -> 10
     }
+
 
     val hasRole = RoleSuggester.hasRoleDefinition(text)
     val role = when {
