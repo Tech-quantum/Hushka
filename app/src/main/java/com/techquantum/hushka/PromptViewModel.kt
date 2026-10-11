@@ -86,24 +86,55 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
         _uiState.value = applyFilters(transform(_uiState.value))
     }
 
-    private fun applyFilters(state: HomeUiState): HomeUiState = state.copy(
-        filteredPrompts = PromptFilter.apply(
-            prompts = state.prompts,
-            query = state.query,
-            selectedProvider = state.selectedProvider,
-            selectedDomain = state.selectedDomain,
-            selectedCategory = state.selectedCategory,
-            selectedCategories = state.selectedCategories,
-            selectedCollection = state.selectedCollection,
-            favoritesOnly = state.favoritesOnly,
-            sortMode = state.sortMode,
-            pinnedOnly = state.pinnedOnly,
-            recentOnly = state.recentOnly
-        )
+        private var filterJob: Job? = null
+
+    private fun updateState(transform: (HomeUiState) -> HomeUiState) {
+        _uiState.update(transform)
+        scheduleFiltering()
+    }
+
+    /**
+     * فیلتر و مرتب‌سازی روی ترد پس‌زمینه انجام می‌شود تا رابط کاربری قفل نکند.
+     * اگر تغییر جدیدی بیاید، کار قبلی لغو می‌شود و فقط آخرین نتیجه اعمال می‌شود.
+     */
+    private fun scheduleFiltering() {
+        filterJob?.cancel()
+        val snapshot = _uiState.value
+        filterJob = viewModelScope.launch {
+            try {
+                val startedAt = System.currentTimeMillis()
+                val filtered = withContext(Dispatchers.Default) { filterWith(snapshot) }
+                val elapsed = System.currentTimeMillis() - startedAt
+                if (elapsed > 150) {
+                    Log.w(TAG, "Slow filtering: ${elapsed}ms, sort=${snapshot.sortMode}, items=${snapshot.prompts.size}")
+                }
+                _uiState.update { it.copy(filteredPrompts = filtered) }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.e(TAG, "Filtering failed (sort=${snapshot.sortMode})", e)
+            }
+        }
+    }
+
+    private fun filterWith(state: HomeUiState): List<PromptEntity> = PromptFilter.apply(
+        prompts = state.prompts,
+        query = state.query,
+        selectedProvider = state.selectedProvider,
+        selectedDomain = state.selectedDomain,
+        selectedCategory = state.selectedCategory,
+        selectedCategories = state.selectedCategories,
+        selectedCollection = state.selectedCollection,
+        favoritesOnly = state.favoritesOnly,
+        sortMode = state.sortMode,
+        pinnedOnly = state.pinnedOnly,
+        recentOnly = state.recentOnly
     )
 
-    // ==================== Export / Import ====================
-
+    private companion object {
+        const val TAG = "HushkaViewModel"
+    }
+    
     fun exportToJson(context: Context, uri: Uri, prompts: List<PromptEntity>) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
