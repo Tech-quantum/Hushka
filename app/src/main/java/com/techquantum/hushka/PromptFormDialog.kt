@@ -126,7 +126,7 @@ fun PromptFormDialog(
                 // ===== انتخاب شخصیت/نقش =====
                 Box {
                     OutlinedTextField(
-                        value = currentRole?.let { "${it.emoji} ${it.nameFa}" } ?: "",
+                        value = currentRole?.let { "${it.emoji} ${it.displayName()}"} ?: "",
                         onValueChange = { },
                         modifier = Modifier.fillMaxWidth(),
                         label = { Text(stringResource(R.string.role_label), fontSize = 12.sp) },
@@ -156,7 +156,7 @@ fun PromptFormDialog(
                         RoleTemplates.all.forEach { template ->
                             DropdownMenuItem(
                                 text = {
-                                    Text("${template.emoji}  ${template.nameFa}", fontSize = 13.sp)
+                                    Text("${template.emoji}  ${template.displayName()}", fontSize = 13.sp)
                                 },
                                 onClick = {
                                     role = template.id
