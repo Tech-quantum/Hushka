@@ -33,7 +33,8 @@ data class PromptAnalysis(
     val safety: Int,
     val riskLevelRes: Int,
     val riskColor: Color,
-    val recommendationRes: Int
+    val recommendationRes: Int,
+    val hasRole: Boolean
 )
 
 fun analyzePromptAdvanced(text: String): PromptAnalysis {
@@ -48,9 +49,10 @@ fun analyzePromptAdvanced(text: String): PromptAnalysis {
         else -> 10
     }
 
+    val hasRole = RoleSuggester.hasRoleDefinition(text)
     val role = when {
-        text.contains("You are", true) && text.contains("act as", true) -> 20
-        text.contains("You are", true) || text.contains("act as", true) -> 18
+        hasRole && text.contains("You are", true) && text.contains("act as", true) -> 20
+        hasRole -> 18
         else -> 10
     }
 
@@ -99,7 +101,7 @@ fun analyzePromptAdvanced(text: String): PromptAnalysis {
         else -> Color(0xFFE57373)
     }
     val recommendationRes = when {
-        !text.contains("You are", true) -> R.string.an_rec_role
+        !hasRole -> R.string.an_rec_role
         varCount == 0 -> R.string.an_rec_vars
         !text.contains("format", true) -> R.string.an_rec_format
         else -> R.string.an_rec_refusal
@@ -109,7 +111,8 @@ fun analyzePromptAdvanced(text: String): PromptAnalysis {
         score = total, grade = grade, gradeLabelRes = gradeLabelRes,
         clarity = clarity, role = role, outputContract = outputContract,
         variables = variables, safety = safety,
-        riskLevelRes = riskLevelRes, riskColor = riskColor, recommendationRes = recommendationRes
+        riskLevelRes = riskLevelRes, riskColor = riskColor, recommendationRes = recommendationRes,
+        hasRole = hasRole
     )
 }
 
@@ -119,10 +122,14 @@ fun AdvancedAnalyzeDialog(
     onDismiss: () -> Unit,
     onReplace: () -> Unit,
     onSaveAsNew: () -> Unit,
-    onTestInSimulator: () -> Unit
+    onTestInSimulator: () -> Unit,
+    onApplyRole: (String) -> Unit = {}
 ) {
     val context = LocalContext.current
     val analysis = remember(prompt.text) { analyzePromptAdvanced(prompt.text) }
+    val suggestedRole = remember(prompt.id, prompt.text) {
+        if (analysis.hasRole) null else RoleSuggester.suggest(prompt)
+    }
     val bgColor = Color(0xFF0F0F1E)
     val cardColor = Color(0xFF1A1A2E)
     val cardLight = Color(0xFF252538)
@@ -332,18 +339,53 @@ fun AdvancedAnalyzeDialog(
                         color = purplePrimary.copy(alpha = 0.15f),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Row(
-                            modifier = Modifier.padding(16.dp),
-                            verticalAlignment = Alignment.Top
-                        ) {
-                            Text("✨", fontSize = 18.sp)
-                            Spacer(Modifier.width(10.dp))
-                            Text(
-                                stringResource(analysis.recommendationRes),
-                                fontSize = 12.sp,
-                                color = textColor,
-                                lineHeight = 18.sp
-                            )
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Row(verticalAlignment = Alignment.Top) {
+                                Text("✨", fontSize = 18.sp)
+                                Spacer(Modifier.width(10.dp))
+                                Text(
+                                    if (suggestedRole != null) {
+                                        stringResource(R.string.an_rec_role_suggest, suggestedRole.displayName())
+                                    } else {
+                                        stringResource(analysis.recommendationRes)
+                                    },
+                                    fontSize = 12.sp,
+                                    color = textColor,
+                                    lineHeight = 18.sp
+                                )
+                            }
+
+                            if (suggestedRole != null) {
+                                Spacer(Modifier.height(12.dp))
+                                Surface(
+                                    shape = RoundedCornerShape(10.dp),
+                                    color = cardLight,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text(
+                                        "${suggestedRole.emoji}  ${suggestedRole.promptPrefix}",
+                                        modifier = Modifier.padding(12.dp),
+                                        fontSize = 11.sp,
+                                        color = textGray,
+                                        lineHeight = 16.sp
+                                    )
+                                }
+                                Spacer(Modifier.height(12.dp))
+                                Button(
+                                    onClick = {
+                                        onApplyRole(RoleSuggester.applyRole(prompt.text, suggestedRole))
+                                        Toast.makeText(context, context.getString(R.string.an_role_applied), Toast.LENGTH_SHORT).show()
+                                    },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    shape = RoundedCornerShape(12.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = purplePrimary,
+                                        contentColor = Color.White
+                                    )
+                                ) {
+                                    Text(stringResource(R.string.an_apply_role), fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                }
+                            }
                         }
                     }
 
