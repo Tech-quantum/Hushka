@@ -131,7 +131,7 @@ fun PromptCard(
                         color = Color(0xFFFFB74D).copy(alpha = 0.15f)
                     ) {
                         Text(
-                            "${roleTemplate.emoji} ${roleTemplate.displayName()}"
+                            "${roleTemplate.emoji} ${roleTemplate.displayName()}",
                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                             fontSize = 11.sp,
                             color = Color(0xFFFFB74D)
