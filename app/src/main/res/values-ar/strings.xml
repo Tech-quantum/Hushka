@@ -281,4 +281,7 @@
     <string name="tool_copy_final">📋 نسخ النص النهائي</string>
     <string name="tool_send_to">إرسال الموجّه إلى...</string>
     <string name="tool_share">📤 مشاركة</string>
+    <string name="an_rec_role_suggest">نصيحة هوشكا: الدور «%1$s» مناسب لهذا الموجّه. يمكنك إضافته في بداية الموجّه.</string>
+    <string name="an_apply_role">➕ إضافة الدور في بداية الموجّه</string>
+    <string name="an_role_applied">تمت إضافة الدور إلى الموجّه</string>
 </resources>
