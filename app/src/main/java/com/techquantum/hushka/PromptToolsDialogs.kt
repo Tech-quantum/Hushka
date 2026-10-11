@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,7 +49,7 @@ fun AnalyzeDialog(
         onDismissRequest = onDismiss,
         containerColor = cardColor,
         title = {
-            Text("✨ آنالیز پرامپت", color = textColor, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.tool_analyze_title), color = textColor, fontWeight = FontWeight.Bold)
         },
         text = {
             Column(
@@ -71,25 +72,25 @@ fun AnalyzeDialog(
                             color = purplePrimary
                         )
                         Text(
-                            "امتیاز کیفیت از ۱۰۰",
+                            stringResource(R.string.tool_score_of),
                             fontSize = 11.sp,
                             color = textGrayColor
                         )
                     }
                 }
 
-                StatRow("📝 تعداد کلمات", "${words.size}", textColor, textGrayColor)
-                StatRow("🔤 تعداد کاراکتر", "$chars", textColor, textGrayColor)
-                StatRow("📄 تعداد خطوط", "$lines", textColor, textGrayColor)
+                StatRow(stringResource(R.string.tool_words), "${words.size}", textColor, textGrayColor)
+                StatRow(stringResource(R.string.tool_chars), "$chars", textColor, textGrayColor)
+                StatRow(stringResource(R.string.tool_lines), "$lines", textColor, textGrayColor)
                 if (prompt.category.isNotBlank())
-                    StatRow("📁 دسته‌بندی", getLocalizedCategory(prompt.category), textColor, textGrayColor)
+                    StatRow(stringResource(R.string.tool_category), getLocalizedCategory(prompt.category), textColor, textGrayColor)
                 if (prompt.collection.isNotBlank())
-                    StatRow("🏷 ارائه‌دهنده", prompt.collection, textColor, textGrayColor)
+                    StatRow(stringResource(R.string.tool_provider), prompt.collection, textColor, textGrayColor)
 
                 if (allVars.isNotEmpty()) {
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        "🔧 متغیرهای شناسایی شده (${allVars.size})",
+                        stringResource(R.string.tool_vars_found, allVars.size),
                         color = textColor,
                         fontWeight = FontWeight.Bold,
                         fontSize = 13.sp
@@ -112,21 +113,29 @@ fun AnalyzeDialog(
 
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    "💡 توصیه‌ها",
+                    stringResource(R.string.tool_tips_title),
                     color = textColor,
                     fontWeight = FontWeight.Bold,
                     fontSize = 13.sp
                 )
 
+                val tipShort = stringResource(R.string.tool_tip_short)
+                val tipLong = stringResource(R.string.tool_tip_long)
+                val tipVars = stringResource(R.string.tool_tip_vars)
+                val tipCategory = stringResource(R.string.tool_tip_category)
+                val tipTags = stringResource(R.string.tool_tip_tags)
+                val okRole = stringResource(R.string.tool_ok_role)
+                val okFormat = stringResource(R.string.tool_ok_format)
+                val okGood = stringResource(R.string.tool_ok_good)
                 val tips = buildList {
-                    if (words.size < 20) add("• پرامپت کوتاهه، جزئیات بیشتری اضافه کن")
-                    if (words.size > 500) add("• پرامپت خیلی طولانیه، سعی کن خلاصه‌تر کنی")
-                    if (allVars.isEmpty() && !text.contains("You are", true)) add("• از متغیرهایی مثل [SUBJECT] استفاده کن")
-                    if (prompt.category.isBlank()) add("• دسته‌بندی رو تنظیم کن")
-                    if (prompt.tags.isBlank()) add("• برچسب‌های مرتبط اضافه کن")
-                    if (text.contains("You are", true)) add("✅ نقش (Role) تعریف شده")
-                    if (text.contains("step", true) || text.contains("format", true)) add("✅ ساختار خروجی مشخصه")
-                    if (isEmpty()) add("✅ پرامپت ساختار خوبی داره!")
+                    if (words.size < 20) add(tipShort)
+                    if (words.size > 500) add(tipLong)
+                    if (allVars.isEmpty() && !text.contains("You are", true)) add(tipVars)
+                    if (prompt.category.isBlank()) add(tipCategory)
+                    if (prompt.tags.isBlank()) add(tipTags)
+                    if (text.contains("You are", true)) add(okRole)
+                    if (text.contains("step", true) || text.contains("format", true)) add(okFormat)
+                    if (isEmpty()) add(okGood)
                 }
 
                 tips.forEach { tip ->
@@ -136,7 +145,7 @@ fun AnalyzeDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text("بستن", color = purplePrimary)
+                Text(stringResource(R.string.close), color = purplePrimary)
             }
         }
     )
@@ -202,9 +211,9 @@ fun LiveTestDialog(
         containerColor = cardColor,
         title = {
             Column {
-                Text("▶ تست زنده", color = textColor, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.tool_live_title), color = textColor, fontWeight = FontWeight.Bold)
                 Text(
-                    "متغیرها را پر کن و اجرا بگیر",
+                    stringResource(R.string.tool_live_sub),
                     color = textGrayColor,
                     fontSize = 11.sp
                 )
@@ -222,7 +231,7 @@ fun LiveTestDialog(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            "این پرامپت متغیری نداره. متن آماده اجراست.",
+                            stringResource(R.string.tool_no_vars),
                             modifier = Modifier.padding(12.dp),
                             color = textGrayColor,
                             fontSize = 12.sp
@@ -230,7 +239,7 @@ fun LiveTestDialog(
                     }
                 } else {
                     Text(
-                        "🔧 ${allVars.size} متغیر پیدا شد. مقادیر رو پر کن:",
+                        stringResource(R.string.tool_vars_fill, allVars.size),
                         color = textColor,
                         fontWeight = FontWeight.Bold,
                         fontSize = 12.sp
@@ -241,7 +250,7 @@ fun LiveTestDialog(
                             onValueChange = { values[v] = it },
                             modifier = Modifier.fillMaxWidth(),
                             label = { Text("[$v]", fontSize = 11.sp) },
-                            placeholder = { Text("مقدار $v", fontSize = 11.sp, color = textGrayColor) },
+                            placeholder = { Text(stringResource(R.string.tool_value_of, v), fontSize = 11.sp, color = textGrayColor) },
                             singleLine = true,
                             shape = RoundedCornerShape(10.dp),
                             colors = OutlinedTextFieldDefaults.colors(
@@ -258,7 +267,7 @@ fun LiveTestDialog(
 
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    "📄 پیش‌نمایش نهایی:",
+                    stringResource(R.string.tool_preview),
                     color = textColor,
                     fontWeight = FontWeight.Bold,
                     fontSize = 12.sp
@@ -284,7 +293,7 @@ fun LiveTestDialog(
             val finalText = buildFinalText()
             val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             clipboard.setPrimaryClip(ClipData.newPlainText("Hushka Prompt", finalText))
-            Toast.makeText(context, "📋 کپی شد! حالا در ChatGPT پیست کن", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, context.getString(R.string.tool_copied_chatgpt), Toast.LENGTH_LONG).show()
         },
         colors = ButtonDefaults.buttonColors(
             containerColor = purplePrimary,
@@ -292,7 +301,7 @@ fun LiveTestDialog(
         ),
         shape = RoundedCornerShape(10.dp)
     ) {
-        Text("📋 کپی متن نهایی", fontSize = 12.sp)
+        Text(stringResource(R.string.tool_copy_final), fontSize = 12.sp)
     }
 },
         dismissButton = {
@@ -308,13 +317,13 @@ fun LiveTestDialog(
             putExtra(Intent.EXTRA_SUBJECT, prompt.title)
         }
         context.startActivity(
-            Intent.createChooser(shareIntent, "ارسال پرامپت به...")
+            Intent.createChooser(shareIntent, context.getString(R.string.tool_send_to))
         )
     } catch (e: Exception) {
-        Toast.makeText(context, "برنامه‌ای پیدا نشد", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, context.getString(R.string.no_app_found), Toast.LENGTH_SHORT).show()
     }
 }) {
-    Text("📤 اشتراک‌گذاری", color = textGrayColor, fontSize = 11.sp)
+    Text(stringResource(R.string.tool_share), color = textGrayColor, fontSize = 11.sp)
 }
             }
         }
