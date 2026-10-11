@@ -267,7 +267,7 @@ fun StatisticsScreen(
                                     }
                                     Spacer(Modifier.width(10.dp))
                                     Text(
-                                        prompt.title.ifBlank { "بدون عنوان" },
+                                        prompt.title.ifBlank { stringResource(R.string.untitled) },
                                         fontSize = 13.sp,
                                         color = textColor,
                                         modifier = Modifier.weight(1f),
