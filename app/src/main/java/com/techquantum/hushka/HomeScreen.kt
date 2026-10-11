@@ -460,6 +460,11 @@ fun HomeScreen(
             onTestInSimulator = {
                 analyzePrompt = null
                 liveTestPrompt = prompt
+            },
+            onApplyRole = { newText ->
+                val updated = prompt.copy(text = newText)
+                viewModel.updatePrompt(updated)
+                analyzePrompt = updated
             }
         )
     }
