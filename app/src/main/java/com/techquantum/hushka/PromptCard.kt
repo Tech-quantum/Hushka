@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -56,7 +57,7 @@ fun PromptCard(
                 verticalAlignment = Alignment.Top
             ) {
                 Text(
-                    title.ifBlank { "بدون عنوان" },
+                    title.ifBlank { stringResource(R.string.untitled) },
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f),
@@ -206,12 +207,12 @@ fun PromptCard(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                ActionButton(emoji = "📋", label = "کپی", onClick = onCopyClick, color = purplePrimary)
-                ActionButton(emoji = "📤", label = "اشتراک", onClick = onShareClick, color = Color(0xFF4CAF50))
-                ActionButton(emoji = "✨", label = "آنالیز", onClick = onAnalyzeClick, color = Color(0xFFFFB74D))
-                ActionButton(emoji = "▶", label = "تست", onClick = onLiveTestClick, color = Color(0xFF64B5F6))
-                ActionButton(emoji = "✏️", label = "ویرایش", onClick = onEditClick, color = textGrayColor)
-                ActionButton(emoji = "🗑", label = "حذف", onClick = onDeleteClick, color = Color(0xFFE57373))
+                ActionButton(emoji = "📋", label = stringResource(R.string.copy), onClick = onCopyClick, color = purplePrimary)
+                ActionButton(emoji = "📤", label = stringResource(R.string.card_share), onClick = onShareClick, color = Color(0xFF4CAF50))
+                ActionButton(emoji = "✨", label = stringResource(R.string.card_analyze), onClick = onAnalyzeClick, color = Color(0xFFFFB74D))
+                ActionButton(emoji = "▶", label = stringResource(R.string.card_test), onClick = onLiveTestClick, color = Color(0xFF64B5F6))
+                ActionButton(emoji = "✏️", label = stringResource(R.string.edit), onClick = onEditClick, color = textGrayColor)
+                ActionButton(emoji = "🗑", label = stringResource(R.string.delete), onClick = onDeleteClick, color = Color(0xFFE57373))
             }
         }
     }
