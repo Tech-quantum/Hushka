@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -35,9 +36,9 @@ fun WebPromptsDialog(
         containerColor = cardColor,
         title = {
             Column {
-                Text("واکشی پرامپت از وب", color = textColor, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.web_title), color = textColor, fontWeight = FontWeight.Bold)
                 Text(
-                    "مخزن awesome-chatgpt-prompts",
+                    stringResource(R.string.web_repo),
                     color = textGrayColor,
                     fontSize = 11.sp
                 )
@@ -56,7 +57,7 @@ fun WebPromptsDialog(
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 CircularProgressIndicator(color = purplePrimary)
                                 Spacer(Modifier.height(16.dp))
-                                Text("در حال دانلود از GitHub...", color = textGrayColor, fontSize = 13.sp)
+                                Text(stringResource(R.string.web_downloading), color = textGrayColor, fontSize = 13.sp)
                             }
                         }
                     }
@@ -68,7 +69,7 @@ fun WebPromptsDialog(
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text("⚠️", fontSize = 40.sp)
                                 Spacer(Modifier.height(12.dp))
-                                Text("خطا در دانلود پرامپت‌ها", color = textColor, fontWeight = FontWeight.Bold)
+                                Text(stringResource(R.string.web_error_title), color = textColor, fontWeight = FontWeight.Bold)
                                 Spacer(Modifier.height(4.dp))
                                 Text(error, color = textGrayColor, fontSize = 11.sp)
                             }
@@ -79,7 +80,7 @@ fun WebPromptsDialog(
                             modifier = Modifier.fillMaxWidth().padding(24.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("پرامپتی پیدا نشد", color = textGrayColor)
+                            Text(stringResource(R.string.web_none), color = textGrayColor)
                         }
                     }
                     else -> {
@@ -89,7 +90,7 @@ fun WebPromptsDialog(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                "${prompts.size} پرامپت • ${selected.size} انتخاب شده",
+                                stringResource(R.string.web_counts, prompts.size, selected.size),
                                 color = textGrayColor,
                                 fontSize = 12.sp
                             )
@@ -104,7 +105,7 @@ fun WebPromptsDialog(
                                 }
                             ) {
                                 Text(
-                                    if (selected.size == prompts.size) "لغو همه" else "انتخاب همه",
+                                    if (selected.size == prompts.size) stringResource(R.string.web_unselect_all) else stringResource(R.string.web_select_all),
                                     color = purplePrimary,
                                     fontSize = 12.sp
                                 )
@@ -184,12 +185,12 @@ fun WebPromptsDialog(
                     disabledContentColor = textGrayColor
                 )
             ) {
-                Text("افزودن ${selected.size} پرامپت")
+                Text(stringResource(R.string.web_add_n, selected.size))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("بستن", color = textGrayColor)
+                Text(stringResource(R.string.close), color = textGrayColor)
             }
         }
     )
