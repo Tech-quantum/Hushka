@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,15 +25,15 @@ import androidx.compose.ui.window.DialogProperties
 data class PromptAnalysis(
     val score: Int,
     val grade: String,
-    val gradeLabel: String,
+    val gradeLabelRes: Int,
     val clarity: Int,
     val role: Int,
     val outputContract: Int,
     val variables: Int,
     val safety: Int,
-    val riskLevel: String,
+    val riskLevelRes: Int,
     val riskColor: Color,
-    val recommendation: String
+    val recommendationRes: Int
 )
 
 fun analyzePromptAdvanced(text: String): PromptAnalysis {
@@ -81,38 +82,34 @@ fun analyzePromptAdvanced(text: String): PromptAnalysis {
         total >= 60 -> "C"
         else -> "D"
     }
-    val gradeLabel = when {
-        total >= 85 -> "بسیار قوی"
-        total >= 75 -> "قوی"
-        total >= 60 -> "متوسط"
-        else -> "ضعیف"
+    val gradeLabelRes = when {
+        total >= 85 -> R.string.an_grade_vstrong
+        total >= 75 -> R.string.an_grade_strong
+        total >= 60 -> R.string.an_grade_medium
+        else -> R.string.an_grade_weak
     }
-    val riskLevel = when {
-        total >= 80 -> "سطح پایین"
-        total >= 60 -> "سطح متوسط"
-        else -> "سطح بالا"
+    val riskLevelRes = when {
+        total >= 80 -> R.string.an_risk_low
+        total >= 60 -> R.string.an_risk_mid
+        else -> R.string.an_risk_high
     }
     val riskColor = when {
         total >= 80 -> Color(0xFF4CAF50)
         total >= 60 -> Color(0xFFFFB74D)
         else -> Color(0xFFE57373)
     }
-    val recommendation = when {
-        !text.contains("You are", true) ->
-            "توصیه گاردریل هوشکا: از عبارت «You are a...» برای تعریف نقش استفاده کن."
-        varCount == 0 ->
-            "توصیه گاردریل هوشکا: از متغیرهای [NAME] برای شخصی‌سازی استفاده کن."
-        !text.contains("format", true) ->
-            "توصیه گاردریل هوشکا: ساختار خروجی (Output Format) رو مشخص کن."
-        else ->
-            "توصیه گاردریل هوشکا: استفاده از سیستم «Refusal Trigger» برای جلوگیری از خروج از نقش در صورت درخواست‌های نامناسب."
+    val recommendationRes = when {
+        !text.contains("You are", true) -> R.string.an_rec_role
+        varCount == 0 -> R.string.an_rec_vars
+        !text.contains("format", true) -> R.string.an_rec_format
+        else -> R.string.an_rec_refusal
     }
 
     return PromptAnalysis(
-        score = total, grade = grade, gradeLabel = gradeLabel,
+        score = total, grade = grade, gradeLabelRes = gradeLabelRes,
         clarity = clarity, role = role, outputContract = outputContract,
         variables = variables, safety = safety,
-        riskLevel = riskLevel, riskColor = riskColor, recommendation = recommendation
+        riskLevelRes = riskLevelRes, riskColor = riskColor, recommendationRes = recommendationRes
     )
 }
 
@@ -159,13 +156,13 @@ fun AdvancedAnalyzeDialog(
                     Spacer(Modifier.weight(1f))
                     Column(horizontalAlignment = Alignment.End) {
                         Text(
-                            "ارتقا و آنالیز هوشمند پرامپت",
+                            stringResource(R.string.an_title),
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold,
                             color = textColor
                         )
                         Text(
-                            "تحلیل کیفی، عیب‌یابی امنیتی و بازنویسی حرفه‌ای",
+                            stringResource(R.string.an_subtitle),
                             fontSize = 10.sp,
                             color = textGray
                         )
@@ -218,7 +215,7 @@ fun AdvancedAnalyzeDialog(
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Column(modifier = Modifier.weight(1f)) {
                                     Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Text("درجه کیفی:", fontSize = 13.sp, color = textGray)
+                                        Text(stringResource(R.string.an_grade_label), fontSize = 13.sp, color = textGray)
                                         Spacer(Modifier.width(6.dp))
                                         Text(analysis.grade, fontSize = 22.sp, fontWeight = FontWeight.Bold, color = textColor)
                                     }
@@ -228,7 +225,7 @@ fun AdvancedAnalyzeDialog(
                                         color = Color(0xFF4CAF50).copy(alpha = 0.2f)
                                     ) {
                                         Text(
-                                            analysis.gradeLabel,
+                                            stringResource(analysis.gradeLabelRes),
                                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
                                             fontSize = 11.sp,
                                             color = Color(0xFF4CAF50),
@@ -237,7 +234,7 @@ fun AdvancedAnalyzeDialog(
                                     }
                                     Spacer(Modifier.height(10.dp))
                                     Text(
-                                        "نمره‌دهی بر پایه استانداردهای Anthropic & Google AI Prompt Engineering",
+                                        stringResource(R.string.an_standards),
                                         fontSize = 10.sp,
                                         color = textGray,
                                         lineHeight = 14.sp
@@ -265,7 +262,7 @@ fun AdvancedAnalyzeDialog(
                                             fontWeight = FontWeight.Bold,
                                             color = Color(0xFF4CAF50)
                                         )
-                                        Text("از ۱۰۰", fontSize = 9.sp, color = textGray)
+                                        Text(stringResource(R.string.an_out_of), fontSize = 9.sp, color = textGray)
                                     }
                                 }
                             }
@@ -285,9 +282,9 @@ fun AdvancedAnalyzeDialog(
                                     Text("⚠️", fontSize = 14.sp)
                                     Spacer(Modifier.width(8.dp))
                                     Column(modifier = Modifier.weight(1f)) {
-                                        Text("ریسک انحراف / نفوذ:", fontSize = 10.sp, color = textGray)
+                                        Text(stringResource(R.string.an_risk_label), fontSize = 10.sp, color = textGray)
                                         Text(
-                                            analysis.riskLevel,
+                                            stringResource(analysis.riskLevelRes),
                                             fontSize = 13.sp,
                                             fontWeight = FontWeight.Bold,
                                             color = analysis.riskColor
@@ -319,11 +316,11 @@ fun AdvancedAnalyzeDialog(
                             modifier = Modifier.padding(20.dp),
                             verticalArrangement = Arrangement.spacedBy(14.dp)
                         ) {
-                            DetailBar("شفافیت و وضوح", "(Clarity)", analysis.clarity, 20, Color(0xFF7C7CFF), textColor, textGray)
-                            DetailBar("تعریف نقش و هویت", "(Role)", analysis.role, 20, Color(0xFFB87CFF), textColor, textGray)
-                            DetailBar("قرارداد و ساختار خروجی", "(Output Contract)", analysis.outputContract, 20, Color(0xFF4CAF50), textColor, textGray)
-                            DetailBar("متغیرها و ورودی‌ها", "(Variables)", analysis.variables, 20, Color(0xFFFFB74D), textColor, textGray)
-                            DetailBar("گاردریل‌های امنیتی و مقاومت در برابر خطا", "(Safety & Guardrails)", analysis.safety, 20, Color(0xFFE57373), textColor, textGray)
+                            DetailBar(stringResource(R.string.an_clarity), "(Clarity)", analysis.clarity, 20, Color(0xFF7C7CFF), textColor, textGray)
+                            DetailBar(stringResource(R.string.an_role), "(Role)", analysis.role, 20, Color(0xFFB87CFF), textColor, textGray)
+                            DetailBar(stringResource(R.string.an_output), "(Output Contract)", analysis.outputContract, 20, Color(0xFF4CAF50), textColor, textGray)
+                            DetailBar(stringResource(R.string.an_vars), "(Variables)", analysis.variables, 20, Color(0xFFFFB74D), textColor, textGray)
+                            DetailBar(stringResource(R.string.an_safety), "(Safety & Guardrails)", analysis.safety, 20, Color(0xFFE57373), textColor, textGray)
                         }
                     }
 
@@ -342,7 +339,7 @@ fun AdvancedAnalyzeDialog(
                             Text("✨", fontSize = 18.sp)
                             Spacer(Modifier.width(10.dp))
                             Text(
-                                analysis.recommendation,
+                                stringResource(analysis.recommendationRes),
                                 fontSize = 12.sp,
                                 color = textColor,
                                 lineHeight = 18.sp
@@ -368,7 +365,7 @@ fun AdvancedAnalyzeDialog(
                         Button(
                             onClick = {
                                 onReplace()
-                                Toast.makeText(context, "پرامپت به‌روزرسانی شد", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, context.getString(R.string.an_toast_updated), Toast.LENGTH_SHORT).show()
                                 onDismiss()
                             },
                             modifier = Modifier.weight(1.2f).height(56.dp),
@@ -379,15 +376,15 @@ fun AdvancedAnalyzeDialog(
                             )
                         ) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text("✓ جایگزینی و", fontSize = 10.sp, fontWeight = FontWeight.Bold)
-                                Text("به‌روزرسانی پرامپت", fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                                Text(stringResource(R.string.an_replace_a), fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                                Text(stringResource(R.string.an_replace_b), fontSize = 10.sp, fontWeight = FontWeight.Bold)
                             }
                         }
 
                         Button(
                             onClick = {
                                 onSaveAsNew()
-                                Toast.makeText(context, "پرامپت جدید ذخیره شد", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, context.getString(R.string.an_toast_saved), Toast.LENGTH_SHORT).show()
                                 onDismiss()
                             },
                             modifier = Modifier.weight(1.1f).height(56.dp),
@@ -398,8 +395,8 @@ fun AdvancedAnalyzeDialog(
                             )
                         ) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text("💾 ذخیره به", fontSize = 10.sp, fontWeight = FontWeight.Bold)
-                                Text("عنوان پرامپت جدید", fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                                Text(stringResource(R.string.an_save_a), fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                                Text(stringResource(R.string.an_save_b), fontSize = 10.sp, fontWeight = FontWeight.Bold)
                             }
                         }
 
@@ -413,14 +410,14 @@ fun AdvancedAnalyzeDialog(
                             )
                         ) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text("▶ تست در", fontSize = 10.sp, fontWeight = FontWeight.Bold)
-                                Text("شبیه‌ساز", fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                                Text(stringResource(R.string.an_test_a), fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                                Text(stringResource(R.string.an_test_b), fontSize = 10.sp, fontWeight = FontWeight.Bold)
                             }
                         }
 
                         IconButton(
                             onClick = {
-                                Toast.makeText(context, "تاریخچه به‌زودی", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, context.getString(R.string.an_toast_history), Toast.LENGTH_SHORT).show()
                             },
                             modifier = Modifier.size(40.dp)
                         ) {
