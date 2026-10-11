@@ -297,4 +297,7 @@
     <string name="tool_copy_final">📋 کپی متن نهایی</string>
     <string name="tool_send_to">ارسال پرامپت به...</string>
     <string name="tool_share">📤 اشتراک‌گذاری</string>
+        <string name="an_rec_role_suggest">توصیه گاردریل هوشکا: نقش «%1$s» برای این پرامپت مناسب است. می‌تونی آن را به ابتدای پرامپت اضافه کنی.</string>
+    <string name="an_apply_role">➕ افزودن نقش به ابتدای پرامپت</string>
+    <string name="an_role_applied">نقش به پرامپت اضافه شد</string>
 </resources>
