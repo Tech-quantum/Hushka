@@ -1,5 +1,8 @@
 package com.techquantum.hushka
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalConfiguration
+
 data class RoleTemplate(
     val id: String,
     val emoji: String,
@@ -70,5 +73,34 @@ object RoleTemplates {
             category.contains("devops", true) -> "devops"
             else -> "custom"
         }
+    }
+}
+
+private val roleNamesAr = mapOf(
+    "developer" to "مطوّر برمجيات خبير", "writer" to "كاتب محترف", "designer" to "مصمم UI/UX",
+    "analyst" to "محلل بيانات", "teacher" to "معلم", "doctor" to "طبيب", "lawyer" to "محامٍ",
+    "translator" to "مترجم محترف", "marketer" to "خبير تسويق", "seo" to "خبير SEO",
+    "editor" to "محرر", "chef" to "طاهٍ", "coach" to "مدرب", "financial" to "مستشار مالي",
+    "researcher" to "باحث", "architect" to "مهندس معماري للبرمجيات", "devops" to "خبير DevOps",
+    "security" to "خبير أمن", "product" to "مدير منتج", "custom" to "مخصص"
+)
+
+private val roleNamesTr = mapOf(
+    "developer" to "Kıdemli Yazılımcı", "writer" to "Profesyonel Yazar", "designer" to "UI/UX Tasarımcısı",
+    "analyst" to "Veri Analisti", "teacher" to "Öğretmen", "doctor" to "Doktor", "lawyer" to "Avukat",
+    "translator" to "Profesyonel Çevirmen", "marketer" to "Pazarlama Uzmanı", "seo" to "SEO Uzmanı",
+    "editor" to "Editör", "chef" to "Şef", "coach" to "Koç", "financial" to "Mali Danışman",
+    "researcher" to "Araştırmacı", "architect" to "Yazılım Mimarı", "devops" to "DevOps Uzmanı",
+    "security" to "Güvenlik Uzmanı", "product" to "Ürün Yöneticisi", "custom" to "Özel"
+)
+
+/** نام نقش بر اساس زبان فعلی برنامه */
+@Composable
+fun RoleTemplate.displayName(): String {
+    return when (LocalConfiguration.current.locales[0].language) {
+        "fa" -> nameFa
+        "ar" -> roleNamesAr[id] ?: nameEn
+        "tr" -> roleNamesTr[id] ?: nameEn
+        else -> nameEn
     }
 }
