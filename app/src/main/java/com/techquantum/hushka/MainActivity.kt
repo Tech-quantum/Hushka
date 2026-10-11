@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
     ) { uri: Uri? ->
         uri?.let {
             viewModel.exportToJson(this, it, viewModel.uiState.value.prompts)
-            Toast.makeText(this, "پشتیبان JSON ذخیره شد", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.toast_json_saved), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     ) { uri: Uri? ->
         uri?.let {
             viewModel.exportToMarkdown(this, it, viewModel.uiState.value.prompts)
-            Toast.makeText(this, "پشتیبان Markdown ذخیره شد", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.toast_md_saved), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
     ) { uri: Uri? ->
         uri?.let {
             viewModel.importFromJson(this, it)
-            Toast.makeText(this, "در حال درون‌ریزی...", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.toast_importing), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -127,7 +127,7 @@ class MainActivity : AppCompatActivity() {
                             viewModel.fetchWebPrompts()
                         },
                         onManageColors = {
-                            Toast.makeText(this@MainActivity, "این ویژگی به‌زودی اضافه می‌شود", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@MainActivity, this@MainActivity.getString(R.string.toast_coming_soon), Toast.LENGTH_SHORT).show()
                         },
                         onDismiss = { showSettings = false }
                     )
