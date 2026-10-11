@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "role_patterns": [
+    "you are", "act as", "your role", "you will act",
+    "تو یک", "تو یه", "شما یک", "نقش تو", "نقش شما", "به عنوان یک", "به‌عنوان یک",
+    "أنت ", "تصرف ك", "دورك",
+    "sen bir", "rolün", "olarak davran"
+  ],
+  "roles": [
+    { "id": "developer", "keywords": ["code", "function", "bug", "debug", "api", "python", "javascript", "kotlin", "java", "sql", "script", "refactor", "کد", "برنامه", "تابع", "باگ", "برنامه‌نویس", "برمجة", "كود", "kod", "yazılım"] },
+    { "id": "writer", "keywords": ["story", "essay", "article", "blog", "write", "novel", "داستان", "مقاله", "بنویس", "نوشتن", "قصة", "مقال", "hikaye", "makale", "yaz"] },
+    { "id": "designer", "keywords": ["design", "ui", "ux", "logo", "layout", "wireframe", "mockup", "طراحی", "رابط کاربری", "لوگو", "تصميم", "tasarım"] },
+    { "id": "analyst", "keywords": ["data", "analysis", "analyze", "dataset", "statistics", "chart", "داده", "تحلیل", "آمار", "نمودار", "بيانات", "تحليل", "veri", "analiz"] },
+    { "id": "teacher", "keywords": ["teach", "explain", "lesson", "learn", "student", "quiz", "آموزش", "توضیح بده", "درس", "دانش‌آموز", "تعليم", "شرح", "öğret", "ders"] },
+    { "id": "doctor", "keywords": ["symptom", "medical", "disease", "health", "diagnosis", "treatment", "علائم", "پزشکی", "بیماری", "سلامت", "درمان", "أعراض", "طبي", "belirti", "hastalık"] },
+    { "id": "lawyer", "keywords": ["legal", "contract", "law", "lawsuit", "clause", "حقوقی", "قرارداد", "قانون", "دادگاه", "قانوني", "عقد", "hukuk", "sözleşme"] },
+    { "id": "translator", "keywords": ["translate", "translation", "language", "ترجمه", "مترجم", "ترجم", "çevir"] },
+    { "id": "marketer", "keywords": ["marketing", "campaign", "audience", "brand", "advertis", "بازاریابی", "کمپین", "تبلیغ", "برند", "تسويق", "pazarlama", "reklam"] },
+    { "id": "seo", "keywords": ["seo", "keyword", "ranking", "backlink", "serp", "سئو", "کلمه کلیدی", "رتبه"] },
+    { "id": "editor", "keywords": ["proofread", "edit", "grammar", "rewrite", "polish", "ویرایش", "ویراستار", "نگارش", "تحرير", "düzenle"] },
+    { "id": "chef", "keywords": ["recipe", "cook", "ingredient", "dish", "meal", "دستور پخت", "آشپزی", "غذا", "وصفة", "طبخ", "yemek", "tarif"] },
+    { "id": "coach", "keywords": ["motivat", "habit", "goal", "fitness", "workout", "انگیزه", "عادت", "هدف", "ورزش", "تمرين", "alışkanlık", "antrenman"] },
+    { "id": "financial", "keywords": ["invest", "budget", "stock", "finance", "portfolio", "سرمایه", "بودجه", "سهام", "مالی", "استثمار", "yatırım", "bütçe"] },
+    { "id": "researcher", "keywords": ["research", "study", "paper", "literature", "hypothesis", "پژوهش", "تحقیق", "مقاله علمی", "بحث", "araştırma"] },
+    { "id": "architect", "keywords": ["architecture", "microservice", "scalab", "system design", "معماری", "مقیاس", "هندسة", "mimari"] },
+    { "id": "devops", "keywords": ["docker", "kubernetes", "ci/cd", "pipeline", "deploy", "terraform", "دیپلوی", "کانتینر", "نشر", "dağıtım"] },
+    { "id": "security", "keywords": ["security", "vulnerab", "exploit", "penetration", "encryption", "امنیت", "آسیب‌پذیری", "رمزنگاری", "أمن", "güvenlik", "şifreleme"] },
+    { "id": "product", "keywords": ["product", "roadmap", "feature", "user story", "mvp", "محصول", "نقشه راه", "قابلیت", "منتج", "ürün"] }
+  ]
+}
