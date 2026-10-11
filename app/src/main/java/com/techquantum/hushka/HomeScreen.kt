@@ -158,7 +158,7 @@ fun HomeScreen(
                         if (isOnline) {
                             viewModel.updateLibrary()
                         } else {
-                            Toast.makeText(appContext, "اینترنت متصل نیست!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(appContext, appContext.getString(R.string.toast_offline), Toast.LENGTH_SHORT).show()
                         }
                     }
                 },
@@ -377,7 +377,7 @@ fun HomeScreen(
                         onCopyClick = {
                             val clipboard = appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                             clipboard.setPrimaryClip(ClipData.newPlainText("Hushka Prompt", prompt.text))
-                            Toast.makeText(appContext, "کپی شد!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(appContext, appContext.getString(R.string.toast_copied), Toast.LENGTH_SHORT).show()
                             viewModel.markUsed(prompt)
                         },
                         onShareClick = {
@@ -387,10 +387,10 @@ fun HomeScreen(
                                     putExtra(Intent.EXTRA_TEXT, prompt.text)
                                     putExtra(Intent.EXTRA_SUBJECT, prompt.title)
                                 }
-                                appContext.startActivity(Intent.createChooser(shareIntent, "اشتراک‌گذاری پرامپت"))
+                                appContext.startActivity(Intent.createChooser(shareIntent, appContext.getString(R.string.share_chooser)))
                                 viewModel.markUsed(prompt)
                             } catch (e: Exception) {
-                                Toast.makeText(appContext, "برنامه‌ای پیدا نشد", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(appContext, appContext.getString(R.string.no_app_found), Toast.LENGTH_SHORT).show()
                             }
                         },
                         onAnalyzeClick = { analyzePrompt = prompt },
@@ -450,7 +450,7 @@ fun HomeScreen(
             },
             onSaveAsNew = {
                 viewModel.addPrompt(
-                    title = "${prompt.title} (نسخه ارتقا یافته)",
+                    title = appContext.getString(R.string.upgraded_suffix, prompt.title),
                     category = prompt.category,
                     tags = prompt.tags,
                     text = prompt.text,
@@ -477,7 +477,7 @@ fun HomeScreen(
         AlertDialog(
             onDismissRequest = { previewPrompt = null },
             containerColor = cardColor,
-            title = { Text(prompt.title.ifBlank { "بدون عنوان" }, color = textColor, fontWeight = FontWeight.Bold) },
+            title = { Text(prompt.title.ifBlank { stringResource(R.string.untitled) }, color = textColor, fontWeight = FontWeight.Bold) },
             text = {
                 Column {
                     if (prompt.category.isNotBlank()) {
@@ -506,10 +506,10 @@ fun HomeScreen(
                 TextButton(onClick = {
                     val clipboard = appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     clipboard.setPrimaryClip(ClipData.newPlainText("Hushka Prompt", prompt.text))
-                    Toast.makeText(appContext, "کپی شد!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(appContext, appContext.getString(R.string.toast_copied), Toast.LENGTH_SHORT).show()
                     previewPrompt = null
                 }) {
-                    Text("کپی", color = purplePrimary)
+                    Text(stringResource(R.string.copy), color = purplePrimary)
                 }
             },
             dismissButton = {
@@ -525,20 +525,20 @@ fun HomeScreen(
         AlertDialog(
             onDismissRequest = { deletePrompt = null },
             containerColor = cardColor,
-            title = { Text("حذف پرامپت", color = textColor, fontWeight = FontWeight.Bold) },
-            text = { Text("آیا از حذف «${prompt.title}» مطمئن هستید؟", color = textGrayColor) },
+            title = { Text(stringResource(R.string.delete_prompt_title), color = textColor, fontWeight = FontWeight.Bold) },
+            text = { Text(stringResource(R.string.delete_prompt_message, prompt.title), color = textGrayColor) },
             confirmButton = {
                 TextButton(onClick = {
                     viewModel.deletePrompt(prompt)
-                    Toast.makeText(appContext, "حذف شد", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(appContext, appContext.getString(R.string.toast_deleted), Toast.LENGTH_SHORT).show()
                     deletePrompt = null
                 }) {
-                    Text("حذف", color = Color(0xFFE57373))
+                    Text(stringResource(R.string.delete), color = Color(0xFFE57373))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { deletePrompt = null }) {
-                    Text("لغو", color = textGrayColor)
+                    Text(stringResource(R.string.cancel), color = textGrayColor)
                 }
             }
         )
