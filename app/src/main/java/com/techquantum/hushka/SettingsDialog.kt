@@ -162,9 +162,9 @@ fun SettingsDialog(
                     colors = CardDefaults.cardColors(containerColor = cardColor)
                 ) {
                     Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text("📦  پشتیبان‌گیری و استقلال داده‌های محلی", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = textColor)
+                        Text("📦  " + stringResource(R.string.backup_title), fontWeight = FontWeight.Bold, fontSize = 14.sp, color = textColor)
                         Text(
-                            "استخراج کل آرشیو پرامپت‌ها در قالب JSON یا Markdown",
+                            stringResource(R.string.backup_desc),
                             style = MaterialTheme.typography.bodySmall,
                             color = textGrayColor,
                             fontSize = 11.sp
@@ -176,14 +176,14 @@ fun SettingsDialog(
                                 shape = RoundedCornerShape(10.dp),
                                 colors = ButtonDefaults.buttonColors(containerColor = purplePrimary)
                             ) {
-                                Text("خروجی JSON", fontSize = 11.sp, color = Color.White)
+                                Text(stringResource(R.string.export_json), fontSize = 11.sp, color = Color.White)
                             }
                             OutlinedButton(
                                 onClick = onExportMarkdown,
                                 modifier = Modifier.weight(1f),
                                 shape = RoundedCornerShape(10.dp)
                             ) {
-                                Text("خروجی Markdown", fontSize = 11.sp)
+                                Text(stringResource(R.string.export_markdown), fontSize = 11.sp)
                             }
                         }
                         OutlinedButton(
@@ -191,7 +191,7 @@ fun SettingsDialog(
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(10.dp)
                         ) {
-                            Text("درون‌ریزی فایل پشتیبان (JSON)", fontSize = 11.sp)
+                            Text(stringResource(R.string.import_json), fontSize = 11.sp)
                         }
                     }
                 }
@@ -203,9 +203,9 @@ fun SettingsDialog(
                     colors = CardDefaults.cardColors(containerColor = cardColor)
                 ) {
                     Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text("☁  بروزرسانی ابری از اینترنت", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = textColor)
+                        Text("☁  " + stringResource(R.string.cloud_title), fontWeight = FontWeight.Bold, fontSize = 14.sp, color = textColor)
                         Text(
-                            "کاوش آنلاین مخازن هوش مصنوعی، پرامپت‌ها و گیت‌هاب",
+                            stringResource(R.string.cloud_desc),
                             style = MaterialTheme.typography.bodySmall,
                             color = textGrayColor,
                             fontSize = 11.sp
@@ -216,7 +216,7 @@ fun SettingsDialog(
                             shape = RoundedCornerShape(10.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = purplePrimary)
                         ) {
-                            Text("کاوش در وب", fontSize = 12.sp, color = Color.White)
+                            Text(stringResource(R.string.browse_web), fontSize = 12.sp, color = Color.White)
                         }
                     }
                 }
@@ -228,9 +228,9 @@ fun SettingsDialog(
                     colors = CardDefaults.cardColors(containerColor = cardColor)
                 ) {
                     Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text("🎨  رنگ‌بندی تگ‌ها", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = textColor)
+                        Text("🎨  " + stringResource(R.string.colors_title), fontWeight = FontWeight.Bold, fontSize = 14.sp, color = textColor)
                         Text(
-                            "مدیریت و شخصی‌سازی رنگ موضوعات و برچسب‌ها",
+                            stringResource(R.string.colors_desc),
                             style = MaterialTheme.typography.bodySmall,
                             color = textGrayColor,
                             fontSize = 11.sp
@@ -241,7 +241,7 @@ fun SettingsDialog(
                             shape = RoundedCornerShape(10.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = purplePrimary)
                         ) {
-                            Text("مدیریت رنگ‌ها", fontSize = 12.sp, color = Color.White)
+                            Text(stringResource(R.string.manage_colors), fontSize = 12.sp, color = Color.White)
                         }
                     }
                 }
