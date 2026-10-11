@@ -281,4 +281,7 @@
     <string name="tool_copy_final">📋 Son metni kopyala</string>
     <string name="tool_send_to">Prompt\'u şuraya gönder...</string>
     <string name="tool_share">📤 Paylaş</string>
+    <string name="an_rec_role_suggest">Hushka önerisi: “%1$s” rolü bu prompt için uygun. Bunu promptun başına ekleyebilirsin.</string>
+    <string name="an_apply_role">➕ Rolü promptun başına ekle</string>
+    <string name="an_role_applied">Rol prompta eklendi</string>
 </resources>
