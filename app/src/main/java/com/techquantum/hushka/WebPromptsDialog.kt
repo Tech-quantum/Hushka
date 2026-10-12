@@ -20,6 +20,8 @@ fun WebPromptsDialog(
     prompts: List<PromptEntity>,
     isLoading: Boolean,
     error: String?,
+    isTranslating: Boolean = false,
+    onTranslate: (List<PromptEntity>) -> Unit,
     onImport: (List<PromptEntity>) -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -175,19 +177,33 @@ fun WebPromptsDialog(
             }
         },
         confirmButton = {
+    Row {
+        if (!isLoading && prompts.isNotEmpty() && error == null) {
             Button(
-                onClick = { onImport(selected.toList()) },
-                enabled = !isLoading && prompts.isNotEmpty() && error == null && selected.isNotEmpty(),
+                onClick = {
+                    onTranslate(selected.toList())
+                },
+                enabled = selected.isNotEmpty() && !isTranslating,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = purplePrimary,
-                    contentColor = Color.White,
-                    disabledContainerColor = cardLightColor,
-                    disabledContentColor = textGrayColor
+                    containerColor = MaterialTheme.colorScheme.secondary
                 )
             ) {
-                Text(stringResource(R.string.web_add_n, selected.size))
+                if (isTranslating) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(16.dp),
+                        color = MaterialTheme.colorScheme.onSecondary
+                    )
+                } else {
+                    Text("🌐 ترجمه", fontSize = 12.sp)
+                }
             }
-        },
+        }
+        Spacer(Modifier.width(8.dp))
+        TextButton(onClick = onDismiss) {
+            Text(stringResource(R.string.close), color = textGrayColor)
+        }
+    }
+}
         dismissButton = {
             TextButton(onClick = onDismiss) {
                 Text(stringResource(R.string.close), color = textGrayColor)
