@@ -48,9 +48,6 @@ object HuggingFaceService {
             .create(TranslationApi::class.java)
     }
 
-    /**
-     * ترجمه متن از انگلیسی به فارسی با MyMemory API (بدون نیاز به توکن)
-     */
     suspend fun translateText(text: String): String? = withContext(Dispatchers.IO) {
         if (text.isBlank()) return@withContext null
 
