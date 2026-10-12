@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="role_auto_name">متخصص %1$s</string>
+    <string name="role_auto_generic">دستیار متخصص عمومی</string>
     <string name="app_name">Hushka</string>
     <string name="app_subtitle">هوشکا بستری برای کاوش، خلق و مدیریت ایده‌های هوش مصنوعی</string>
     <string name="cat_image">تصویر</string>
