@@ -3,10 +3,11 @@ package com.techquantum.hushka
 import android.content.Context
 
 object AppSettings {
-    private const val PREFS = "hushka_settings"
+    private const val PREFS = "promptvault_settings"
     private const val THEME = "theme_mode"
     private const val LANGUAGE = "language"
     private const val COLOR_THEME = "color_theme"
+    private const val HF_TOKEN = "hf_token"
     private const val IMPORTED_CATALOG_IDS = "imported_catalog_ids"
     private const val DELETED_LIBRARY_KEYS = "deleted_library_keys"
 
@@ -33,29 +34,31 @@ object AppSettings {
     }
 
     fun getTheme(context: Context): String =
-        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-            .getString(THEME, "system") ?: "system"
+        prefs(context).getString(THEME, "system") ?: "system"
 
     fun setTheme(context: Context, value: String) {
-        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-            .edit().putString(THEME, value).apply()
+        prefs(context).edit().putString(THEME, value).apply()
     }
 
     fun getLanguage(context: Context): String =
-        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-            .getString(LANGUAGE, "fa") ?: "fa"
+        prefs(context).getString(LANGUAGE, "fa") ?: "fa"
 
     fun setLanguage(context: Context, value: String) {
-        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-            .edit().putString(LANGUAGE, value).apply()
-        
+        prefs(context).edit().putString(LANGUAGE, value).apply()
     }
+
     fun getColorTheme(context: Context): String =
-        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-            .getString(COLOR_THEME, "purple") ?: "purple"
+        prefs(context).getString(COLOR_THEME, "purple") ?: "purple"
 
     fun setColorTheme(context: Context, value: String) {
-        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-            .edit().putString(COLOR_THEME, value).apply()
+        prefs(context).edit().putString(COLOR_THEME, value).apply()
+    }
+
+    // Hugging Face API Token برای ترجمه
+    fun getHuggingFaceToken(context: Context): String =
+        prefs(context).getString(HF_TOKEN, "") ?: ""
+
+    fun setHuggingFaceToken(context: Context, value: String) {
+        prefs(context).edit().putString(HF_TOKEN, value).apply()
     }
 }
