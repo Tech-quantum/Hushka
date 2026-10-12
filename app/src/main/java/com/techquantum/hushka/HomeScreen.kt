@@ -107,6 +107,7 @@ fun HomeScreen(
     // === Web Prompts States ===
     val webPrompts by viewModel.webPrompts.collectAsStateWithLifecycle()
     val isFetchingWeb by viewModel.isFetchingWeb.collectAsStateWithLifecycle()
+    val isTranslating by viewModel.isTranslating.collectAsStateWithLifecycle()
     val webError by viewModel.webError.collectAsStateWithLifecycle()
     var showWebDialog by remember { mutableStateOf(false) }
 
@@ -622,6 +623,19 @@ fun HomeScreen(
             prompts = webPrompts,
             isLoading = isFetchingWeb,
             error = webError,
+            isTranslating = isTranslating,
+            onTranslate = { selected ->
+                val token = AppSettings.getHuggingFaceToken(appContext)
+                if (token.isNotBlank()) {
+                    viewModel.translateWebPrompts(selected, token)
+                } else {
+                    Toast.makeText(
+                        appContext,
+                        "لطفاً توکن Hugging Face را در تنظیمات وارد کنید",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            },
             onImport = { selected ->
                 viewModel.importWebPrompts(selected)
                 showWebDialog = false
