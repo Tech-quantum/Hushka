@@ -177,33 +177,51 @@ fun WebPromptsDialog(
             }
         },
         confirmButton = {
-    Row {
-        if (!isLoading && prompts.isNotEmpty() && error == null) {
-            Button(
-                onClick = {
-                    onTranslate(selected.toList())
-                },
-                enabled = selected.isNotEmpty() && !isTranslating,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.secondary
-                )
-            ) {
-                if (isTranslating) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(16.dp),
-                        color = MaterialTheme.colorScheme.onSecondary
-                    )
-                } else {
-                    Text("🌐 ترجمه", fontSize = 12.sp)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                // دکمه ترجمه
+                if (!isLoading && prompts.isNotEmpty() && error == null && onTranslate != null) {
+                    Button(
+                        onClick = {
+                            onTranslate(selected.toList())
+                        },
+                        enabled = selected.isNotEmpty() && !isTranslating,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondary,
+                            contentColor = MaterialTheme.colorScheme.onSecondary
+                        ),
+                        shape = RoundedCornerShape(10.dp)
+                    ) {
+                        if (isTranslating) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(16.dp),
+                                color = MaterialTheme.colorScheme.onSecondary,
+                                strokeWidth = 2.dp
+                            )
+                        } else {
+                            Text("🌐 ترجمه", fontSize = 12.sp)
+                        }
+                    }
+                    Spacer(Modifier.width(8.dp))
+                }
+
+                // دکمه افزودن
+                if (!isLoading && prompts.isNotEmpty() && error == null) {
+                    Button(
+                        onClick = {
+                            onImport(selected.toList())
+                        },
+                        enabled = selected.isNotEmpty() && !isTranslating,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = purplePrimary,
+                            contentColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(10.dp)
+                    ) {
+                        Text("افزودن ${selected.size}", fontSize = 12.sp)
+                    }
                 }
             }
-        }
-        Spacer(Modifier.width(8.dp))
-        TextButton(onClick = onDismiss) {
-            Text(stringResource(R.string.close), color = textGrayColor)
-        }
-    }
-}
+        },
         dismissButton = {
             TextButton(onClick = onDismiss) {
                 Text(stringResource(R.string.close), color = textGrayColor)
