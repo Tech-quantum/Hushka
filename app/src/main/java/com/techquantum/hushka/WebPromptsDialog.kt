@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.sp
 fun WebPromptsDialog(
     prompts: List<PromptEntity>,
     isLoading: Boolean,
+    loadingMessage: String = "در حال اتصال...",
     error: String?,
     isTranslating: Boolean = false,
     onTranslate: (List<PromptEntity>) -> Unit,
@@ -52,15 +53,38 @@ fun WebPromptsDialog(
             ) {
                 when {
                     isLoading -> {
-                        Box(
-                            modifier = Modifier.fillMaxWidth().padding(40.dp),
-                            contentAlignment = Alignment.Center
+                        // ============ Loading UI ============
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 32.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
                         ) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                CircularProgressIndicator(color = purplePrimary)
-                                Spacer(Modifier.height(16.dp))
-                                Text(stringResource(R.string.web_downloading), color = textGrayColor, fontSize = 13.sp)
-                            }
+                            CircularProgressIndicator(
+                                color = purplePrimary,
+                                strokeWidth = 3.dp,
+                                modifier = Modifier.size(48.dp)
+                            )
+
+                            Spacer(Modifier.height(24.dp))
+
+                            // متن پویا بر اساس زمان
+                            Text(
+                                text = loadingMessage,
+                                color = textColor,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+
+                            Spacer(Modifier.height(10.dp))
+
+                            // منبع
+                            Text(
+                                text = "منبع: awesome-chatgpt-prompts",
+                                color = textGrayColor,
+                                fontSize = 11.sp
+                            )
                         }
                     }
                     error != null -> {
@@ -224,7 +248,10 @@ fun WebPromptsDialog(
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.close), color = textGrayColor)
+                Text(
+                    text = if (isLoading) "لغو" else stringResource(R.string.close),
+                    color = textGrayColor
+                )
             }
         }
     )
