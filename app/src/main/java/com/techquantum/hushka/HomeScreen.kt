@@ -109,6 +109,7 @@ fun HomeScreen(
     val isFetchingWeb by viewModel.isFetchingWeb.collectAsStateWithLifecycle()
     val isTranslating by viewModel.isTranslating.collectAsStateWithLifecycle()
     val webError by viewModel.webError.collectAsStateWithLifecycle()
+    val loadingMessage by viewModel.loadingMessage.collectAsStateWithLifecycle()
     var showWebDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(isFetchingWeb) {
@@ -622,6 +623,7 @@ fun HomeScreen(
         WebPromptsDialog(
             prompts = webPrompts,
             isLoading = isFetchingWeb,
+            loadingMessage = loadingMessage,
             error = webError,
             isTranslating = isTranslating,
             onTranslate = { selected ->
