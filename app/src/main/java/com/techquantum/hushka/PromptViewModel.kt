@@ -91,6 +91,9 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
         scheduleFiltering()
     }
 
+    private val _isTranslating = MutableStateFlow(false)
+val isTranslating: StateFlow<Boolean> = _isTranslating.asStateFlow()
+
     /**
      * فیلتر و مرتب‌سازی روی ترد پس‌زمینه انجام می‌شود تا رابط کاربری قفل نکند.
      * اگر تغییر جدیدی بیاید، کار قبلی لغو می‌شود و فقط آخرین نتیجه اعمال می‌شود.
