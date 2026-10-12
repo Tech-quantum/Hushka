@@ -65,8 +65,21 @@ object RoleSuggester {
         return rules.patterns.any { lower.contains(it) }
     }
 
-    /** مناسب‌ترین نقش را از روی عنوان، متن، برچسب‌ها و دسته‌بندی پیدا می‌کند. */
-    fun suggest(prompt: PromptEntity): RoleTemplate? {
+    /** پیشنهاد نقش: همیشه یک نتیجه برمی‌گرداند (برای همه‌ی پرامپت‌ها). */
+    data class RoleSuggestion(
+        val template: RoleTemplate?,   // اگر null باشد، نقش از روی عنوان و برچسب‌ها ساخته شده
+        val topic: String,             // موضوع نقش خودکار (فقط وقتی template == null)
+        val emoji: String,
+        val prefix: String             // متنی که به ابتدای پرامپت اضافه می‌شود
+    )
+
+    private val GENERIC_TAGS = setOf("awesome-chatgpt-prompts", "custom", "web", "github", "general", "عمومی")
+
+    /**
+     * ۱) اگر کلیدواژه‌ها یا دسته‌بندی به یکی از نقش‌های آماده بخورد، همان را پیشنهاد می‌دهد.
+     * ۲) در غیر این صورت نقشی از روی عنوان و برچسب‌های خود پرامپت می‌سازد.
+     */
+    fun suggest(prompt: PromptEntity): RoleSuggestion {
         val haystack = "${prompt.title} ${prompt.text} ${prompt.tags} ${prompt.category}".lowercase()
 
         var bestId: String? = null
@@ -82,14 +95,39 @@ object RoleSuggester {
         val id = bestId
             ?: RoleTemplates.suggestForCategory(prompt.category).takeIf { it != "custom" }
 
-        return id
+        val template = id
             ?.let { RoleTemplates.findById(it) }
             ?.takeIf { it.promptPrefix.isNotBlank() }
+
+        if (template != null) {
+            return RoleSuggestion(template, "", template.emoji, template.promptPrefix)
+        }
+
+        // نقش خودکار از روی عنوان + برچسب‌ها
+        val title = prompt.title.trim().take(60)
+        val tagList = prompt.tags.split(",")
+            .map { it.trim() }
+            .filter { it.isNotBlank() && it.lowercase() !in GENERIC_TAGS }
+            .take(2)
+
+        val topic = when {
+            title.isNotBlank() && tagList.isNotEmpty() -> "$title (${tagList.joinToString(", ")})"
+            title.isNotBlank() -> title
+            tagList.isNotEmpty() -> tagList.joinToString(", ")
+            else -> ""
+        }
+
+        val prefix = if (topic.isNotBlank()) {
+            "You are an expert in $topic. Give accurate, well-structured and actionable answers, and ask for missing details when needed."
+        } else {
+            "You are a knowledgeable and helpful expert assistant. Give accurate, well-structured and actionable answers."
+        }
+        return RoleSuggestion(null, topic.take(40), "🎯", prefix)
     }
 
     /** نقش را به ابتدای پرامپت اضافه می‌کند. */
-    fun applyRole(text: String, role: RoleTemplate): String {
-        return role.promptPrefix.trim() + "\n\n" + text.trimStart()
+    fun applyRole(text: String, rolePrefix: String): String {
+        return rolePrefix.trim() + "\n\n" + text.trimStart()
     }
 
     // کلیدواژه‌ی لاتین باید کلمه‌ی مستقل باشد (مثلاً "api" داخل "capital" حساب نشود)
