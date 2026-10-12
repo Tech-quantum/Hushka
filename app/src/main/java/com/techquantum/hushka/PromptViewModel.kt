@@ -23,6 +23,9 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
+    private val _isTranslating = MutableStateFlow(false)
+    val isTranslating: StateFlow<Boolean> = _isTranslating.asStateFlow()
+
     private var filterJob: Job? = null
 
     init {
@@ -90,9 +93,6 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
         _uiState.update(transform)
         scheduleFiltering()
     }
-
-    private val _isTranslating = MutableStateFlow(false)
-val isTranslating: StateFlow<Boolean> = _isTranslating.asStateFlow()
 
     /**
      * فیلتر و مرتب‌سازی روی ترد پس‌زمینه انجام می‌شود تا رابط کاربری قفل نکند.
@@ -326,7 +326,6 @@ val isTranslating: StateFlow<Boolean> = _isTranslating.asStateFlow()
             }
             _webPrompts.value = emptyList()
         }
-    
     }
 
     fun clearWebPrompts() {
@@ -334,22 +333,33 @@ val isTranslating: StateFlow<Boolean> = _isTranslating.asStateFlow()
         _webError.value = null
     }
 
-    private companion object {
-        const val TAG = "HushkaViewModel"
-    }
+    // ==================== Translation ====================
+
     fun translateWebPrompts(prompts: List<PromptEntity>, token: String) {
-    viewModelScope.launch {
+        if (_isTranslating.value) return
         _isTranslating.value = true
-        val translated = prompts.map { prompt ->
-            val translatedText = HuggingFaceService.translateText(prompt.text, token)
-            if (translatedText != null) {
-                prompt.copy(text = translatedText)
-            } else {
-                prompt
+        viewModelScope.launch {
+            try {
+                val translated = withContext(Dispatchers.IO) {
+                    prompts.map { prompt ->
+                        val translatedText = HuggingFaceService.translateText(prompt.text, token)
+                        if (translatedText != null) {
+                            prompt.copy(text = translatedText)
+                        } else {
+                            prompt
+                        }
+                    }
+                }
+                _webPrompts.value = translated
+            } catch (e: Exception) {
+                Log.e(TAG, "Translation failed", e)
+            } finally {
+                _isTranslating.value = false
             }
         }
-        _webPrompts.value = translated
-        _isTranslating.value = false
     }
+
+    private companion object {
+        const val TAG = "HushkaViewModel"
     }
 }
