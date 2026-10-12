@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="role_auto_name">خبير في %1$s</string>
+    <string name="role_auto_generic">مساعد خبير عام</string>
     <string name="app_name">Hushka</string>
     <string name="app_subtitle">هوشكا منصة لاستكشاف وإنشاء وإدارة أفكار الذكاء الاصطناعي</string>
     <string name="search_hint">بحث...</string>
