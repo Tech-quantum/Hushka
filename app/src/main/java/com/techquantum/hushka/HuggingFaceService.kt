@@ -1,64 +1,81 @@
 package com.techquantum.hushka
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.Header
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.GET
+import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
-data class TranslationRequest(
-    val inputs: String,
-    val options: TranslationOptions? = null
-)
-
-data class TranslationOptions(
-    val wait_for_model: Boolean = true
-)
-
-data class TranslationResponse(
-    val translation_text: String?
-)
-
-interface HuggingFaceApi {
-    @POST("models/{model}")
+interface TranslationApi {
+    @GET("get")
     suspend fun translate(
-        @Path("model") model: String,
-        @Header("Authorization") token: String,
-        @Body request: TranslationRequest
-    ): List<TranslationResponse>
+        @Query("q") text: String,
+        @Query("langpair") langPair: String = "en|fa"
+    ): MyMemoryResponse
 }
 
+data class MyMemoryResponse(
+    val responseData: MyMemoryData?,
+    val responseStatus: Int?,
+    val responseDetails: String?
+)
+
+data class MyMemoryData(
+    val translatedText: String?,
+    val match: Double?
+)
+
 object HuggingFaceService {
-    private const val BASE_URL = "https://api-inference.huggingface.co/"
-    private const val MODEL = "Helsinki-NLP/opus-mt-en-fa" // مدل ترجمه انگلیسی به فارسی
 
-    private val client = OkHttpClient.Builder()
-        .connectTimeout(60, TimeUnit.SECONDS)
-        .readTimeout(60, TimeUnit.SECONDS)
-        .addInterceptor(HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BASIC
-        })
-        .build()
+    private const val BASE_URL = "https://api.mymemory.translated.net/"
+    private const val MAX_CHARS = 480
 
-    private val api: HuggingFaceApi = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .client(client)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-        .create(HuggingFaceApi::class.java)
+    private val api: TranslationApi by lazy {
+        val client = OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .build()
 
-    suspend fun translateText(text: String, token: String): String? {
-        return try {
-            val response = api.translate(
-                model = MODEL,
-                token = "Bearer $token",
-                request = TranslationRequest(inputs = text)
-            )
-            response.firstOrNull()?.translation_text
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(TranslationApi::class.java)
+    }
+
+    /**
+     * ترجمه متن از انگلیسی به فارسی با MyMemory API (بدون نیاز به توکن)
+     */
+    suspend fun translateText(text: String): String? = withContext(Dispatchers.IO) {
+        if (text.isBlank()) return@withContext null
+
+        try {
+            val chunks = text.chunked(MAX_CHARS)
+            val translatedParts = mutableListOf<String>()
+
+            for ((index, chunk) in chunks.withIndex()) {
+                val response = api.translate(chunk, "en|fa")
+                val translated = response.responseData?.translatedText
+
+                if (translated.isNullOrBlank() ||
+                    translated.equals(chunk, ignoreCase = true)
+                ) {
+                    translatedParts.add(chunk)
+                } else {
+                    translatedParts.add(translated)
+                }
+
+                if (index < chunks.size - 1) {
+                    delay(300)
+                }
+            }
+
+            translatedParts.joinToString(" ")
         } catch (e: Exception) {
             e.printStackTrace()
             null
