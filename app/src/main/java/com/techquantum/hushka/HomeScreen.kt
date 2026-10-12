@@ -113,7 +113,9 @@ fun HomeScreen(
     var showWebDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(isFetchingWeb) {
-        if (!isFetchingWeb && (webPrompts.isNotEmpty() || webError != null)) {
+        if (isFetchingWeb) {
+            showWebDialog = true
+        } else if (webPrompts.isNotEmpty() || webError != null) {
             showWebDialog = true
         }
     }
