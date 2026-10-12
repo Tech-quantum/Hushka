@@ -342,7 +342,7 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
             try {
                 val translated = withContext(Dispatchers.IO) {
                     prompts.map { prompt ->
-                        val translatedText = HuggingFaceService.translateText(prompt.text, token)
+                        val translatedText = HuggingFaceService.translateText(prompt.text)
                         if (translatedText != null) {
                             prompt.copy(text = translatedText)
                         } else {
