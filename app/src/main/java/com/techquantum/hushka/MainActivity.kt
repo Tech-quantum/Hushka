@@ -85,6 +85,7 @@ class MainActivity : AppCompatActivity() {
             var themeMode by remember { mutableStateOf(AppSettings.getTheme(this@MainActivity)) }
             var language by remember { mutableStateOf(savedLanguage) }
             var colorTheme by remember { mutableStateOf(AppSettings.getColorTheme(this@MainActivity)) }
+            var huggingFaceToken by remember { mutableStateOf(AppSettings.getHuggingFaceToken(this@MainActivity)) }
 
             HushkaTheme(themeMode = themeMode, colorTheme = colorTheme) {
                 HomeScreen(
@@ -98,6 +99,7 @@ class MainActivity : AppCompatActivity() {
                         themeMode = themeMode,
                         colorTheme = colorTheme,
                         language = language,
+                        huggingFaceToken = huggingFaceToken,
                         onThemeChange = { newMode ->
                             themeMode = newMode
                             AppSettings.setTheme(this@MainActivity, newMode)
@@ -112,6 +114,23 @@ class MainActivity : AppCompatActivity() {
                             AppCompatDelegate.setApplicationLocales(
                                 LocaleListCompat.forLanguageTags(newLang)
                             )
+                        },
+                        onHuggingFaceTokenChange = { newToken ->
+                            huggingFaceToken = newToken
+                            AppSettings.setHuggingFaceToken(this@MainActivity, newToken)
+                            if (newToken.isNotBlank()) {
+                                Toast.makeText(
+                                    this@MainActivity,
+                                    "توکن Hugging Face ذخیره شد ✅",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                Toast.makeText(
+                                    this@MainActivity,
+                                    "توکن پاک شد",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         },
                         onExportJson = {
                             exportJsonLauncher.launch("hushka_backup_${System.currentTimeMillis()}.json")
