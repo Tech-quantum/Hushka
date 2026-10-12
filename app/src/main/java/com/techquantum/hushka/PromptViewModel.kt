@@ -323,6 +323,7 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
             }
             _webPrompts.value = emptyList()
         }
+    
     }
 
     fun clearWebPrompts() {
@@ -332,5 +333,20 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
 
     private companion object {
         const val TAG = "HushkaViewModel"
+    }
+    fun translateWebPrompts(prompts: List<PromptEntity>, token: String) {
+    viewModelScope.launch {
+        _isTranslating.value = true
+        val translated = prompts.map { prompt ->
+            val translatedText = HuggingFaceService.translateText(prompt.text, token)
+            if (translatedText != null) {
+                prompt.copy(text = translatedText)
+            } else {
+                prompt
+            }
+        }
+        _webPrompts.value = translated
+        _isTranslating.value = false
+    }
     }
 }
