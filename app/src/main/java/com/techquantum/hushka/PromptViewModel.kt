@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -219,12 +220,28 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
     private val _webError = MutableStateFlow<String?>(null)
     val webError: StateFlow<String?> = _webError.asStateFlow()
 
+    // 🆕 پیام پویا برای نمایش به کاربر هنگام لودینگ
+    private val _loadingMessage = MutableStateFlow("در حال اتصال...")
+    val loadingMessage: StateFlow<String> = _loadingMessage.asStateFlow()
+
     fun fetchWebPrompts() {
         if (_isFetchingWeb.value) return
         _isFetchingWeb.value = true
         _webError.value = null
         _webPrompts.value = emptyList()
+        _loadingMessage.value = "در حال اتصال..."
+
         viewModelScope.launch {
+            // 🎬 تایمر پیام‌های پویا — با پیشرفت زمان، متن عوض می‌شود
+            val messageJob = launch {
+                delay(3_000)
+                _loadingMessage.value = "در حال دانلود پرامپت‌ها..."
+                delay(4_000)
+                _loadingMessage.value = "تقریباً آماده..."
+                delay(5_000)
+                _loadingMessage.value = "اینترنت کند است، لطفاً صبر کنید..."
+            }
+
             try {
                 val result = withContext(Dispatchers.IO) {
                     val url = URL("https://raw.githubusercontent.com/f/awesome-chatgpt-prompts/main/prompts.csv")
@@ -240,6 +257,8 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
                 _webError.value = e.message ?: "unknown_error"
                 _webPrompts.value = emptyList()
             } finally {
+                messageJob.cancel()
+                _loadingMessage.value = "در حال اتصال..."
                 _isFetchingWeb.value = false
             }
         }
@@ -331,6 +350,7 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
     fun clearWebPrompts() {
         _webPrompts.value = emptyList()
         _webError.value = null
+        _loadingMessage.value = "در حال اتصال..."
     }
 
     // ==================== Translation ====================
