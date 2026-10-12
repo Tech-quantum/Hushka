@@ -1,18 +1,18 @@
 package com.techquantum.hushka
 
-import android.util.Log
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.update
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
@@ -22,6 +22,8 @@ import java.net.URL
 class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+
+    private var filterJob: Job? = null
 
     init {
         viewModelScope.launch(Dispatchers.IO) { repository.initializeDefaults() }
@@ -82,11 +84,7 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
     fun deletePrompt(prompt: PromptEntity) { viewModelScope.launch(Dispatchers.IO) { repository.deletePrompt(prompt) } }
     fun toggleFavorite(prompt: PromptEntity) { viewModelScope.launch(Dispatchers.IO) { repository.toggleFavorite(prompt) } }
 
-    private fun updateState(transform: (HomeUiState) -> HomeUiState) {
-        _uiState.value = applyFilters(transform(_uiState.value))
-    }
-
-        private var filterJob: Job? = null
+    // ==================== State & Filtering ====================
 
     private fun updateState(transform: (HomeUiState) -> HomeUiState) {
         _uiState.update(transform)
@@ -131,10 +129,8 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
         recentOnly = state.recentOnly
     )
 
-    private companion object {
-        const val TAG = "HushkaViewModel"
-    }
-    
+    // ==================== Export / Import ====================
+
     fun exportToJson(context: Context, uri: Uri, prompts: List<PromptEntity>) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -155,7 +151,7 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
                     out.write(jsonArray.toString(2).toByteArray())
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.e(TAG, "Export JSON failed", e)
             }
         }
     }
@@ -178,7 +174,7 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
                     out.write(sb.toString().toByteArray())
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.e(TAG, "Export Markdown failed", e)
             }
         }
     }
@@ -204,7 +200,7 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
                     )
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.e(TAG, "Import JSON failed", e)
             }
         }
     }
@@ -237,7 +233,7 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
                     _webError.value = "no_prompts_found"
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.e(TAG, "Fetching web prompts failed", e)
                 _webError.value = e.message ?: "unknown_error"
                 _webPrompts.value = emptyList()
             } finally {
@@ -332,5 +328,9 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
     fun clearWebPrompts() {
         _webPrompts.value = emptyList()
         _webError.value = null
+    }
+
+    private companion object {
+        const val TAG = "HushkaViewModel"
     }
 }
