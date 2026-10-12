@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -36,6 +37,7 @@ data class PromptAnalysis(
     val recommendationRes: Int,
     val hasRole: Boolean
 )
+
 // الگوها یک بار ساخته می‌شوند (ساختن Regex در هر بار آنالیز هزینه‌ی زیادی دارد)
 private val BRACKET_VAR_REGEX = Regex("\\[([A-Z_]+)\\]")
 private val CURLY_VAR_REGEX = Regex("\\{([^}]+)\\}")
@@ -65,7 +67,6 @@ fun analyzePromptAdvanced(text: String): PromptAnalysis {
         wordCount > 200 -> 14
         else -> 10
     }
-
 
     val hasRole = RoleSuggester.hasRoleDefinition(text)
     val role = when {
@@ -145,15 +146,19 @@ fun AdvancedAnalyzeDialog(
 ) {
     val context = LocalContext.current
     val analysis = remember(prompt.text) { analyzePromptAdvanced(prompt.text) }
-    val suggestedRole = remember(prompt.id, prompt.text) {
+    // برای همه‌ی پرامپت‌هایی که نقش ندارند یک نقش پیشنهاد می‌شود
+    val suggestion = remember(prompt.id, prompt.text) {
         if (analysis.hasRole) null else RoleSuggester.suggest(prompt)
     }
-    val bgColor = Color(0xFF0F0F1E)
-    val cardColor = Color(0xFF1A1A2E)
-    val cardLight = Color(0xFF252538)
-    val purplePrimary = Color(0xFF7C7CFF)
-    val textColor = Color(0xFFEAEAEA)
-    val textGray = Color(0xFF9E9EAE)
+
+    // رنگ‌ها از تم برنامه گرفته می‌شود تا با بقیه‌ی صفحه‌ها یکسان باشد
+    val bgColor = MaterialTheme.colorScheme.background
+    val cardColor = MaterialTheme.colorScheme.surface
+    val cardLight = MaterialTheme.colorScheme.surfaceVariant
+    val purplePrimary = MaterialTheme.colorScheme.primary
+    val textColor = MaterialTheme.colorScheme.onSurface
+    val textGray = MaterialTheme.colorScheme.onSurfaceVariant
+    val goodColor = Color(0xFF4CAF50)
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -172,7 +177,7 @@ fun AdvancedAnalyzeDialog(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(horizontal = 16.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(onClick = onDismiss) {
@@ -182,21 +187,21 @@ fun AdvancedAnalyzeDialog(
                     Column(horizontalAlignment = Alignment.End) {
                         Text(
                             stringResource(R.string.an_title),
-                            fontSize = 15.sp,
+                            fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = textColor
                         )
                         Text(
                             stringResource(R.string.an_subtitle),
-                            fontSize = 10.sp,
+                            fontSize = 11.sp,
                             color = textGray
                         )
                     }
-                    Spacer(Modifier.width(8.dp))
+                    Spacer(Modifier.width(10.dp))
                     Surface(
                         shape = CircleShape,
-                        color = Color(0xFFFFB74D).copy(alpha = 0.2f),
-                        modifier = Modifier.size(36.dp)
+                        color = purplePrimary.copy(alpha = 0.15f),
+                        modifier = Modifier.size(38.dp)
                     ) {
                         Box(contentAlignment = Alignment.Center) {
                             Text("✨", fontSize = 16.sp)
@@ -210,33 +215,16 @@ fun AdvancedAnalyzeDialog(
                         .weight(1f)
                         .fillMaxWidth()
                         .verticalScroll(rememberScrollState())
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
-                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
-                        Surface(
-                            shape = RoundedCornerShape(20.dp),
-                            color = purplePrimary.copy(alpha = 0.2f)
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text("⚡", fontSize = 12.sp)
-                                Spacer(Modifier.width(4.dp))
-                                Text("AI Prompt Studio", fontSize = 11.sp, color = purplePrimary, fontWeight = FontWeight.Bold)
-                            }
-                        }
-                    }
-
-                    Spacer(Modifier.height(16.dp))
-
                     // ===== Main Score Card =====
                     Surface(
-                        shape = RoundedCornerShape(20.dp),
+                        shape = RoundedCornerShape(22.dp),
                         color = cardColor,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Column(modifier = Modifier.padding(20.dp)) {
+                        Column(modifier = Modifier.padding(18.dp)) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Column(modifier = Modifier.weight(1f)) {
                                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -247,13 +235,13 @@ fun AdvancedAnalyzeDialog(
                                     Spacer(Modifier.height(6.dp))
                                     Surface(
                                         shape = RoundedCornerShape(8.dp),
-                                        color = Color(0xFF4CAF50).copy(alpha = 0.2f)
+                                        color = goodColor.copy(alpha = 0.15f)
                                     ) {
                                         Text(
                                             stringResource(analysis.gradeLabelRes),
                                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
                                             fontSize = 11.sp,
-                                            color = Color(0xFF4CAF50),
+                                            color = goodColor,
                                             fontWeight = FontWeight.Bold
                                         )
                                     }
@@ -273,8 +261,8 @@ fun AdvancedAnalyzeDialog(
                                         .background(
                                             Brush.radialGradient(
                                                 listOf(
-                                                    Color(0xFF4CAF50).copy(alpha = 0.35f),
-                                                    Color(0xFF4CAF50).copy(alpha = 0.08f)
+                                                    goodColor.copy(alpha = 0.30f),
+                                                    goodColor.copy(alpha = 0.06f)
                                                 )
                                             )
                                         ),
@@ -285,18 +273,18 @@ fun AdvancedAnalyzeDialog(
                                             "${analysis.score}",
                                             fontSize = 28.sp,
                                             fontWeight = FontWeight.Bold,
-                                            color = Color(0xFF4CAF50)
+                                            color = goodColor
                                         )
                                         Text(stringResource(R.string.an_out_of), fontSize = 9.sp, color = textGray)
                                     }
                                 }
                             }
 
-                            Spacer(Modifier.height(16.dp))
+                            Spacer(Modifier.height(14.dp))
 
                             // Risk badge
                             Surface(
-                                shape = RoundedCornerShape(12.dp),
+                                shape = RoundedCornerShape(14.dp),
                                 color = cardLight,
                                 modifier = Modifier.fillMaxWidth()
                             ) {
@@ -329,16 +317,14 @@ fun AdvancedAnalyzeDialog(
                         }
                     }
 
-                    Spacer(Modifier.height(16.dp))
-
                     // ===== Detailed Scores =====
                     Surface(
-                        shape = RoundedCornerShape(20.dp),
+                        shape = RoundedCornerShape(22.dp),
                         color = cardColor,
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Column(
-                            modifier = Modifier.padding(20.dp),
+                            modifier = Modifier.padding(18.dp),
                             verticalArrangement = Arrangement.spacedBy(14.dp)
                         ) {
                             DetailBar(stringResource(R.string.an_clarity), "(Clarity)", analysis.clarity, 20, Color(0xFF7C7CFF), textColor, textGray)
@@ -349,12 +335,10 @@ fun AdvancedAnalyzeDialog(
                         }
                     }
 
-                    Spacer(Modifier.height(16.dp))
-
                     // ===== Recommendation =====
                     Surface(
-                        shape = RoundedCornerShape(16.dp),
-                        color = purplePrimary.copy(alpha = 0.15f),
+                        shape = RoundedCornerShape(22.dp),
+                        color = purplePrimary.copy(alpha = 0.12f),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Column(modifier = Modifier.padding(16.dp)) {
@@ -362,8 +346,14 @@ fun AdvancedAnalyzeDialog(
                                 Text("✨", fontSize = 18.sp)
                                 Spacer(Modifier.width(10.dp))
                                 Text(
-                                    if (suggestedRole != null) {
-                                        stringResource(R.string.an_rec_role_suggest, suggestedRole.displayName())
+                                    if (suggestion != null) {
+                                        val roleName = suggestion.template?.displayName()
+                                            ?: if (suggestion.topic.isNotBlank()) {
+                                                stringResource(R.string.role_auto_name, suggestion.topic)
+                                            } else {
+                                                stringResource(R.string.role_auto_generic)
+                                            }
+                                        stringResource(R.string.an_rec_role_suggest, roleName)
                                     } else {
                                         stringResource(analysis.recommendationRes)
                                     },
@@ -373,15 +363,15 @@ fun AdvancedAnalyzeDialog(
                                 )
                             }
 
-                            if (suggestedRole != null) {
+                            if (suggestion != null) {
                                 Spacer(Modifier.height(12.dp))
                                 Surface(
-                                    shape = RoundedCornerShape(10.dp),
-                                    color = cardLight,
+                                    shape = RoundedCornerShape(12.dp),
+                                    color = cardColor,
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
                                     Text(
-                                        "${suggestedRole.emoji}  ${suggestedRole.promptPrefix}",
+                                        "${suggestion.emoji}  ${suggestion.prefix}",
                                         modifier = Modifier.padding(12.dp),
                                         fontSize = 11.sp,
                                         color = textGray,
@@ -391,15 +381,11 @@ fun AdvancedAnalyzeDialog(
                                 Spacer(Modifier.height(12.dp))
                                 Button(
                                     onClick = {
-                                        onApplyRole(RoleSuggester.applyRole(prompt.text, suggestedRole))
+                                        onApplyRole(RoleSuggester.applyRole(prompt.text, suggestion.prefix))
                                         Toast.makeText(context, context.getString(R.string.an_role_applied), Toast.LENGTH_SHORT).show()
                                     },
                                     modifier = Modifier.fillMaxWidth(),
-                                    shape = RoundedCornerShape(12.dp),
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = purplePrimary,
-                                        contentColor = Color.White
-                                    )
+                                    shape = RoundedCornerShape(14.dp)
                                 ) {
                                     Text(stringResource(R.string.an_apply_role), fontSize = 12.sp, fontWeight = FontWeight.Bold)
                                 }
@@ -407,18 +393,19 @@ fun AdvancedAnalyzeDialog(
                         }
                     }
 
-                    Spacer(Modifier.height(24.dp))
+                    Spacer(Modifier.height(4.dp))
                 }
 
                 // ===== Bottom Action Buttons =====
                 Surface(
                     color = cardColor,
+                    tonalElevation = 2.dp,
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
+                            .padding(horizontal = 12.dp, vertical = 12.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -428,60 +415,54 @@ fun AdvancedAnalyzeDialog(
                                 Toast.makeText(context, context.getString(R.string.an_toast_updated), Toast.LENGTH_SHORT).show()
                                 onDismiss()
                             },
-                            modifier = Modifier.weight(1.2f).height(56.dp),
+                            modifier = Modifier.weight(1f).heightIn(min = 56.dp),
                             shape = RoundedCornerShape(14.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF4CAF50),
-                                contentColor = Color.White
-                            )
+                            contentPadding = PaddingValues(horizontal = 6.dp, vertical = 6.dp)
                         ) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text(stringResource(R.string.an_replace_a), fontSize = 10.sp, fontWeight = FontWeight.Bold)
-                                Text(stringResource(R.string.an_replace_b), fontSize = 10.sp, fontWeight = FontWeight.Bold)
-                            }
+                            Text(
+                                stringResource(R.string.an_replace_a) + " " + stringResource(R.string.an_replace_b),
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center,
+                                lineHeight = 15.sp,
+                                maxLines = 3
+                            )
                         }
 
-                        Button(
+                        FilledTonalButton(
                             onClick = {
                                 onSaveAsNew()
                                 Toast.makeText(context, context.getString(R.string.an_toast_saved), Toast.LENGTH_SHORT).show()
                                 onDismiss()
                             },
-                            modifier = Modifier.weight(1.1f).height(56.dp),
+                            modifier = Modifier.weight(1f).heightIn(min = 56.dp),
                             shape = RoundedCornerShape(14.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFFFFB74D).copy(alpha = 0.25f),
-                                contentColor = Color(0xFFFFB74D)
-                            )
+                            contentPadding = PaddingValues(horizontal = 6.dp, vertical = 6.dp)
                         ) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text(stringResource(R.string.an_save_a), fontSize = 10.sp, fontWeight = FontWeight.Bold)
-                                Text(stringResource(R.string.an_save_b), fontSize = 10.sp, fontWeight = FontWeight.Bold)
-                            }
+                            Text(
+                                stringResource(R.string.an_save_a) + " " + stringResource(R.string.an_save_b),
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center,
+                                lineHeight = 15.sp,
+                                maxLines = 3
+                            )
                         }
 
-                        Button(
+                        OutlinedButton(
                             onClick = onTestInSimulator,
-                            modifier = Modifier.weight(1f).height(56.dp),
+                            modifier = Modifier.weight(1f).heightIn(min = 56.dp),
                             shape = RoundedCornerShape(14.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF64B5F6).copy(alpha = 0.25f),
-                                contentColor = Color(0xFF64B5F6)
+                            contentPadding = PaddingValues(horizontal = 6.dp, vertical = 6.dp)
+                        ) {
+                            Text(
+                                stringResource(R.string.an_test_a) + " " + stringResource(R.string.an_test_b),
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center,
+                                lineHeight = 15.sp,
+                                maxLines = 3
                             )
-                        ) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text(stringResource(R.string.an_test_a), fontSize = 10.sp, fontWeight = FontWeight.Bold)
-                                Text(stringResource(R.string.an_test_b), fontSize = 10.sp, fontWeight = FontWeight.Bold)
-                            }
-                        }
-
-                        IconButton(
-                            onClick = {
-                                Toast.makeText(context, context.getString(R.string.an_toast_history), Toast.LENGTH_SHORT).show()
-                            },
-                            modifier = Modifier.size(40.dp)
-                        ) {
-                            Text("🔄", fontSize = 16.sp, color = textGray)
                         }
                     }
                 }
