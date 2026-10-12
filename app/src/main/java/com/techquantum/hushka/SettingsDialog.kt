@@ -237,7 +237,7 @@ fun SettingsDialog(
                     Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Text("🌐  ترجمه با Hugging Face", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = textColor)
                         Text(
-                            "برای فعال‌سازی ترجمه خودکار، توکن Hugging Face خود را وارد کنید. توکن را می‌توانید از سایت huggingface.co بگیرید.",
+                            "برای فعال‌سازی ترجمه خودکار پرامپت‌های انگلیسی به فارسی، توکن Hugging Face خود را وارد کنید. این توکن رایگان است و از سایت huggingface.co دریافت می‌شود.",
                             style = MaterialTheme.typography.bodySmall,
                             color = textGrayColor,
                             fontSize = 11.sp,
