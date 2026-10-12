@@ -29,7 +29,7 @@ data class MyMemoryData(
     val match: Double?
 )
 
-object HuggingFaceService {
+object TranslationService {
 
     private const val BASE_URL = "https://api.mymemory.translated.net/"
     private const val MAX_CHARS = 480

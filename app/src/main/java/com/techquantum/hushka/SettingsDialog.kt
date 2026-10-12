@@ -24,11 +24,9 @@ fun SettingsDialog(
     themeMode: String,
     colorTheme: String,
     language: String,
-    huggingFaceToken: String,
     onThemeChange: (String) -> Unit,
     onColorThemeChange: (String) -> Unit,
     onLanguageChange: (String) -> Unit,
-    onHuggingFaceTokenChange: (String) -> Unit,
     onExportJson: () -> Unit,
     onExportMarkdown: () -> Unit,
     onImportJson: () -> Unit,
@@ -41,8 +39,6 @@ fun SettingsDialog(
     val textGrayColor = MaterialTheme.colorScheme.onSurfaceVariant
     val purplePrimary = MaterialTheme.colorScheme.primary
 
-    var tokenInput by remember { mutableStateOf(huggingFaceToken) }
-    var showToken by remember { mutableStateOf(false) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -228,72 +224,6 @@ fun SettingsDialog(
                     }
                 }
 
-                // ===== Hugging Face Translation Card =====
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(14.dp),
-                    colors = CardDefaults.cardColors(containerColor = cardColor)
-                ) {
-                    Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text("🌐  ترجمه با Hugging Face", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = textColor)
-                        Text(
-                            "برای فعال‌سازی ترجمه خودکار پرامپت‌های انگلیسی به فارسی، توکن Hugging Face خود را وارد کنید. این توکن رایگان است و از سایت huggingface.co دریافت می‌شود.",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = textGrayColor,
-                            fontSize = 11.sp,
-                            lineHeight = 16.sp
-                        )
-
-                        OutlinedTextField(
-                            value = tokenInput,
-                            onValueChange = { tokenInput = it },
-                            modifier = Modifier.fillMaxWidth(),
-                            label = { Text("توکن Hugging Face", fontSize = 12.sp) },
-                            placeholder = { Text("hf_xxxxxxxxxxxxxxxxxxxx", fontSize = 11.sp, color = textGrayColor) },
-                            singleLine = true,
-                            shape = RoundedCornerShape(10.dp),
-                            visualTransformation = if (showToken) VisualTransformation.None else PasswordVisualTransformation(),
-                            trailingIcon = {
-                                TextButton(onClick = { showToken = !showToken }) {
-                                    Text(
-                                        if (showToken) "👁" else "👁‍🗨",
-                                        fontSize = 16.sp,
-                                        color = purplePrimary
-                                    )
-                                }
-                            },
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = purplePrimary,
-                                unfocusedBorderColor = textGrayColor.copy(alpha = 0.4f),
-                                focusedTextColor = textColor,
-                                unfocusedTextColor = textColor,
-                                focusedLabelColor = purplePrimary,
-                                unfocusedLabelColor = textGrayColor
-                            )
-                        )
-
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Button(
-                                onClick = { onHuggingFaceTokenChange(tokenInput.trim()) },
-                                modifier = Modifier.weight(1f),
-                                shape = RoundedCornerShape(10.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = purplePrimary)
-                            ) {
-                                Text("💾 ذخیره توکن", fontSize = 12.sp, color = Color.White)
-                            }
-                            OutlinedButton(
-                                onClick = {
-                                    tokenInput = ""
-                                    onHuggingFaceTokenChange("")
-                                },
-                                modifier = Modifier.weight(1f),
-                                shape = RoundedCornerShape(10.dp)
-                            ) {
-                                Text("🗑 پاک کردن", fontSize = 12.sp)
-                            }
-                        }
-                    }
-                }
 
                 // ===== Manage Colors Card =====
                 Card(

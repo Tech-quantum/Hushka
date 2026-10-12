@@ -7,7 +7,6 @@ object AppSettings {
     private const val THEME = "theme_mode"
     private const val LANGUAGE = "language"
     private const val COLOR_THEME = "color_theme"
-    private const val HF_TOKEN = "hf_token"
     private const val IMPORTED_CATALOG_IDS = "imported_catalog_ids"
     private const val DELETED_LIBRARY_KEYS = "deleted_library_keys"
 
@@ -54,11 +53,5 @@ object AppSettings {
         prefs(context).edit().putString(COLOR_THEME, value).apply()
     }
 
-    // Hugging Face API Token برای ترجمه
-    fun getHuggingFaceToken(context: Context): String =
-        prefs(context).getString(HF_TOKEN, "") ?: ""
 
-    fun setHuggingFaceToken(context: Context, value: String) {
-        prefs(context).edit().putString(HF_TOKEN, value).apply()
-    }
 }

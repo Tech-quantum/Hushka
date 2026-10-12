@@ -625,16 +625,7 @@ fun HomeScreen(
             error = webError,
             isTranslating = isTranslating,
             onTranslate = { selected ->
-                val token = AppSettings.getHuggingFaceToken(appContext)
-                if (token.isNotBlank()) {
-                    viewModel.translateWebPrompts(selected, token)
-                } else {
-                    Toast.makeText(
-                        appContext,
-                        "لطفاً توکن Hugging Face را در تنظیمات وارد کنید",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
+                viewModel.translateWebPrompts(selected)
             },
             onImport = { selected ->
                 viewModel.importWebPrompts(selected)

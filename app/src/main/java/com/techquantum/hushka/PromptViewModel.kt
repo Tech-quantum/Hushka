@@ -335,14 +335,14 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
 
     // ==================== Translation ====================
 
-    fun translateWebPrompts(prompts: List<PromptEntity>, token: String) {
+    fun translateWebPrompts(prompts: List<PromptEntity>) {
         if (_isTranslating.value) return
         _isTranslating.value = true
         viewModelScope.launch {
             try {
                 val translated = withContext(Dispatchers.IO) {
                     prompts.map { prompt ->
-                        val translatedText = HuggingFaceService.translateText(prompt.text)
+                        val translatedText = TranslationService.translateText(prompt.text)
                         if (translatedText != null) {
                             prompt.copy(text = translatedText)
                         } else {
