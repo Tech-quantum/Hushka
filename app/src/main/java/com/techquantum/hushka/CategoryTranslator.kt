@@ -8,7 +8,6 @@ import androidx.compose.ui.res.stringResource
 fun getLocalizedCategory(category: String): String {
     if (category.isBlank()) return ""
 
-    // دسته‌های تک‌کلمه‌ای
     when {
         category.equals("web", true) -> return stringResource(R.string.cat_web)
         category.equals("github", true) -> return stringResource(R.string.cat_github)
@@ -17,7 +16,6 @@ fun getLocalizedCategory(category: String): String {
         category.equals("audio", true) -> return stringResource(R.string.cat_audio)
     }
 
-    // دسته‌های دو بخشی: {domain}.{sub}
     val parts = category.split(".", limit = 2)
     if (parts.size < 2) return category
 
@@ -26,7 +24,6 @@ fun getLocalizedCategory(category: String): String {
 
     val domainName = getDomainName(domain)
 
-    // در حالت غیرفارسی، کل عبارت رو Title Case می‌کنیم
     if (!isPersian()) {
         return "$domainName • ${toTitleCase(sub)}"
     }
@@ -36,7 +33,6 @@ fun getLocalizedCategory(category: String): String {
 
 @Composable
 private fun getDomainName(domain: String): String {
-    // برای فارسی از strings استفاده می‌کنیم
     if (isPersian()) {
         return when (domain) {
             "agent" -> stringResource(R.string.domain_agent)
@@ -52,14 +48,9 @@ private fun getDomainName(domain: String): String {
             else -> toTitleCase(domain)
         }
     }
-    // برای بقیه زبان‌ها Title Case انگلیسی
     return toTitleCase(domain)
 }
 
-/**
- * تبدیل slug به Title Case
- * code-generation → Code Generation
- */
 private fun toTitleCase(slug: String): String {
     if (slug.isBlank()) return slug
     return slug
@@ -70,33 +61,23 @@ private fun toTitleCase(slug: String): String {
         }
 }
 
-/**
- * بررسی اینکه زبان اپ فارسی هست یا نه
- */
 @Composable
 private fun isPersian(): Boolean {
     val config = LocalConfiguration.current
     return config.locales[0].language == "fa"
 }
 
-/**
- * ترجمه فارسی زیردسته (فقط برای زبان فارسی استفاده می‌شود)
- */
+@Composable
 private fun getSubcategoryName(sub: String): String {
     return when (sub) {
-        // agent
         "agentic-workflow" -> "گردش‌کار عاملی"
         "tool-use" -> "استفاده از ابزار"
-
-        // analysis
         "analysis" -> "تحلیل عمومی"
         "classification" -> "طبقه‌بندی"
         "evaluation" -> "ارزیابی"
         "reasoning" -> "استدلال"
         "research" -> "تحقیق"
         "self-check" -> "خودبررسی"
-
-        // coding
         "authentication" -> "احراز هویت"
         "backend" -> "بک‌اند"
         "code-explanation" -> "توضیح کد"
@@ -110,8 +91,6 @@ private fun getSubcategoryName(sub: String): String {
         "testing" -> "تست"
         "ui" -> "رابط کاربری"
         "version-control" -> "کنترل نسخه"
-
-        // image
         "art-style" -> "سبک هنری"
         "aspect-ratio" -> "نسبت ابعاد"
         "background" -> "پس‌زمینه"
@@ -144,16 +123,10 @@ private fun getSubcategoryName(sub: String): String {
         "text-in-image" -> "متن در تصویر"
         "time-period" -> "دوره زمانی"
         "typography" -> "تایپوگرافی"
-
-        // marketing
         "copywriting" -> "کپی‌رایتینگ"
         "seo" -> "سئو"
         "social-media" -> "شبکه‌های اجتماعی"
-
-        // other
         "prompt-engineering" -> "مهندسی پرامپت"
-
-        // prompting
         "anti-hallucination" -> "ضد توهم"
         "context" -> "زمینه"
         "delimiter" -> "جداکننده"
@@ -166,8 +139,6 @@ private fun getSubcategoryName(sub: String): String {
         "scope-control" -> "کنترل دامنه"
         "specificity" -> "دقت"
         "xml-structure" -> "ساختار XML"
-
-        // text
         "completion" -> "تکمیل"
         "document-creation" -> "ایجاد سند"
         "extraction" -> "استخراج"
@@ -180,10 +151,7 @@ private fun getSubcategoryName(sub: String): String {
         "summarization" -> "خلاصه‌سازی"
         "translation" -> "ترجمه"
         "writing" -> "نوشتن"
-
-        // ai
         "improve" -> "بهبود"
-
         else -> toTitleCase(sub)
     }
 }
