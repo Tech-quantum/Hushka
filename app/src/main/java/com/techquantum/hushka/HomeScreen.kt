@@ -416,6 +416,8 @@ fun HomeScreen(
                         tags = prompt.tags.split(",").map { it.trim() }.filter { it.isNotEmpty() },
                         provider = prompt.collection.ifBlank { "custom" },
                         roleId = prompt.role,
+                        isPinned = prompt.pinned,
+                        isFavorite = prompt.favorite,
                         onFavoriteToggle = { viewModel.toggleFavorite(prompt) },
                         onPinToggle = { viewModel.togglePinned(prompt) },
                         onCardClick = { editingPrompt = prompt },
