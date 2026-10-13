@@ -6,6 +6,9 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -19,10 +22,13 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -39,6 +45,7 @@ fun PromptCard(
     roleId: String = "",
     isPinned: Boolean = false,
     isFavorite: Boolean = false,
+    lastUsedAt: Long = 0L,
     onFavoriteToggle: () -> Unit,
     onPinToggle: () -> Unit,
     onCardClick: () -> Unit,
@@ -58,14 +65,48 @@ fun PromptCard(
 
     val roleTemplate = if (roleId.isNotBlank()) RoleTemplates.findById(roleId) else null
 
+    // 🎨 رنگ اختصاصی دسته
+    val accentColor = remember(mainTag, purplePrimary) {
+        getCategoryColor(mainTag, purplePrimary)
+    }
+
+    // 📊 زمان آخرین استفاده
+    val metadataText = remember(lastUsedAt) { formatLastUsed(lastUsedAt) }
+
+    // 🎬 انیمیشن press
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.98f else 1f,
+        animationSpec = spring(stiffness = Spring.StiffnessHigh),
+        label = "cardScale"
+    )
+
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            },
         shape = RoundedCornerShape(22.dp),
         colors = CardDefaults.cardColors(containerColor = cardColor),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-        onClick = onCardClick
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        onClick = onCardClick,
+        interactionSource = interactionSource
     ) {
-        Column(modifier = Modifier.padding(18.dp)) {
+        Column(
+            modifier = Modifier
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            accentColor.copy(alpha = 0.07f),
+                            Color.Transparent
+                        )
+                    )
+                )
+                .padding(18.dp)
+        ) {
             // ===== عنوان + دکمه‌های بالا =====
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -83,13 +124,10 @@ fun PromptCard(
                 )
                 Spacer(Modifier.width(8.dp))
                 Row {
-                    // 👁 پیش‌نمایش — همیشه خاکستری (action)
                     EyeCircleButton(onClick = onPreviewClick)
                     Spacer(Modifier.width(6.dp))
-                    // 📌 پین — عمودی خاکستری / کج بنفش
                     PinToggleButton(isPinned = isPinned, onClick = onPinToggle)
                     Spacer(Modifier.width(6.dp))
-                    // ⭐ علاقه‌مندی — outline خاکستری / پر طلایی
                     StarToggleButton(isFavorite = isFavorite, onClick = onFavoriteToggle)
                 }
             }
@@ -104,13 +142,14 @@ fun PromptCard(
                 if (mainTag.isNotBlank()) {
                     Surface(
                         shape = RoundedCornerShape(8.dp),
-                        color = purplePrimary.copy(alpha = 0.15f)
+                        color = accentColor.copy(alpha = 0.15f)
                     ) {
                         Text(
                             getLocalizedCategory(mainTag),
                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                             fontSize = 11.sp,
-                            color = purplePrimary
+                            fontWeight = FontWeight.Medium,
+                            color = accentColor
                         )
                     }
                 }
@@ -133,19 +172,19 @@ fun PromptCard(
                 Spacer(Modifier.height(10.dp))
             }
 
-            // ===== تگ‌ها =====
+            // ===== تگ‌ها (رنگی) =====
             if (tags.isNotEmpty()) {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     items(tags) { tag ->
                         Surface(
                             shape = RoundedCornerShape(8.dp),
-                            color = cardLightColor
+                            color = accentColor.copy(alpha = 0.10f)
                         ) {
                             Text(
                                 tag,
                                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                                 fontSize = 11.sp,
-                                color = textColor
+                                color = accentColor
                             )
                         }
                     }
@@ -163,32 +202,43 @@ fun PromptCard(
                 color = textGrayColor
             )
 
-            Spacer(Modifier.height(14.dp))
+            Spacer(Modifier.height(12.dp))
 
-            // ===== ارائه‌دهنده =====
+            // ===== Metadata: زمان + provider =====
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Start
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
+                if (metadataText != null) {
+                    Text(
+                        "⏱  $metadataText",
+                        fontSize = 10.sp,
+                        color = textGrayColor
+                    )
+                } else {
+                    Spacer(Modifier.width(1.dp))
+                }
+
                 Surface(
                     shape = RoundedCornerShape(8.dp),
-                    color = purplePrimary.copy(alpha = 0.3f)
+                    color = purplePrimary.copy(alpha = 0.30f)
                 ) {
                     Text(
                         provider,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                        fontSize = 11.sp,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+                        fontSize = 10.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )
                 }
             }
 
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(10.dp))
 
             HorizontalDivider(color = cardLightColor.copy(alpha = 0.5f))
 
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(8.dp))
 
             // ===== ردیف دکمه‌های عملیات =====
             Row(
@@ -204,6 +254,55 @@ fun PromptCard(
                 ActionButton(emoji = "🗑", label = stringResource(R.string.delete), onClick = onDeleteClick, color = Color(0xFFE57373))
             }
         }
+    }
+}
+
+// ============================================================
+// 🎨 رنگ اختصاصی هر دسته
+// ============================================================
+private fun getCategoryColor(category: String, fallback: Color): Color {
+    val domain = category.substringBefore('.').lowercase()
+    return when (domain) {
+        "ai" -> Color(0xFF8B5CF6)          // بنفش
+        "analysis" -> Color(0xFF6366F1)    // نیلی
+        "business" -> Color(0xFFF59E0B)    // کهربایی
+        "career" -> Color(0xFF14B8A6)      // فیروزه‌ای
+        "code", "coding" -> Color(0xFF3B82F6) // آبی
+        "data" -> Color(0xFF06B6D4)        // سایان
+        "fun" -> Color(0xFFEC4899)         // صورتی
+        "image" -> Color(0xFFEF4444)       // قرمز
+        "life" -> Color(0xFF10B981)        // زمرد
+        "logo" -> Color(0xFFA855F7)        // بنفش روشن
+        "marketing" -> Color(0xFFF97316)   // نارنجی
+        "prompting" -> Color(0xFF6366F1)   // نیلی
+        "seo" -> Color(0xFFFBBF24)         // زرد
+        "social" -> Color(0xFF0EA5E9)      // آبی آسمانی
+        "study" -> Color(0xFF8B5CF6)       // بنفش
+        "text", "writing" -> Color(0xFF10B981) // سبز
+        "video" -> Color(0xFFDC2626)       // قرمز تیره
+        "other" -> Color(0xFF6B7280)       // خاکستری
+        else -> fallback
+    }
+}
+
+// ============================================================
+// 📊 فرمت زمان آخرین استفاده
+// ============================================================
+private fun formatLastUsed(lastUsedAt: Long): String? {
+    if (lastUsedAt <= 0L) return null
+    val diff = System.currentTimeMillis() - lastUsedAt
+    val minutes = diff / (1000 * 60)
+    val hours = minutes / 60
+    val days = hours / 24
+    return when {
+        minutes < 1 -> "همین حالا"
+        minutes < 60 -> "$minutes دقیقه پیش"
+        hours < 24 -> "$hours ساعت پیش"
+        days == 1L -> "دیروز"
+        days < 7 -> "$days روز پیش"
+        days < 30 -> "${days / 7} هفته پیش"
+        days < 365 -> "${days / 30} ماه پیش"
+        else -> "${days / 365} سال پیش"
     }
 }
 
@@ -244,7 +343,6 @@ private fun PinToggleButton(isPinned: Boolean, onClick: () -> Unit) {
     val inactiveIconColor = MaterialTheme.colorScheme.onSurfaceVariant
     val inactiveBgColor = MaterialTheme.colorScheme.surfaceVariant
 
-    // 🎬 چرخش -45 درجه با انیمیشن spring
     val rotation by animateFloatAsState(
         targetValue = if (isPinned) -45f else 0f,
         animationSpec = spring(
