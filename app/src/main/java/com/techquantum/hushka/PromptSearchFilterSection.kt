@@ -84,7 +84,6 @@ fun PromptSearchFilterSection(
 
     Spacer(Modifier.height(10.dp))
 
-    // Primary navigation: keep Categories and Filter always visible.
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -164,78 +163,94 @@ fun PromptSearchFilterSection(
 
     Spacer(Modifier.height(8.dp))
 
-    // Provider and domain filters were previously implemented in state but not exposed in the UI.
-    if (providers.isNotEmpty() || domains.isNotEmpty()) {
+    // ==================== Providers ====================
+    if (providers.isNotEmpty()) {
         LazyRow(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(horizontal = 2.dp)
         ) {
             item {
-                FilterChip(
+                ModernChip(
+                    label = stringResource(R.string.all_providers),
                     selected = selectedProvider == ALL_PROVIDER,
                     onClick = { onProviderSelected(ALL_PROVIDER) },
-                    label = { Text(stringResource(R.string.all_providers)) }
+                    leadingEmoji = "✨"
                 )
             }
             items(providers) { provider ->
-                FilterChip(
+                ModernChip(
+                    label = provider,
                     selected = selectedProvider == provider,
-                    onClick = { onProviderSelected(provider) },
-                    label = { Text(provider) }
+                    onClick = { onProviderSelected(provider) }
                 )
             }
+        }
+        Spacer(Modifier.height(6.dp))
+    }
+
+    // ==================== Domains ====================
+    if (domains.isNotEmpty()) {
+        LazyRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(horizontal = 2.dp)
+        ) {
             item {
-                FilterChip(
+                ModernChip(
+                    label = stringResource(R.string.all_domains),
                     selected = selectedDomain == ALL_DOMAIN,
                     onClick = { onDomainSelected(ALL_DOMAIN) },
-                    label = { Text(stringResource(R.string.all_domains)) }
+                    leadingEmoji = "🌐"
                 )
             }
             items(domains) { domain ->
-                FilterChip(
+                ModernChip(
+                    label = domain,
                     selected = selectedDomain == domain,
-                    onClick = { onDomainSelected(domain) },
-                    label = { Text(domain) }
+                    onClick = { onDomainSelected(domain) }
                 )
             }
         }
         Spacer(Modifier.height(8.dp))
     }
 
-    // Secondary filters are horizontally scrollable so none of them disappear on small screens.
+    // ==================== Secondary filters ====================
     LazyRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(horizontal = 2.dp)
     ) {
         item {
-            FilterChip(
+            ModernChip(
+                label = stringResource(R.string.pinned),
                 selected = pinnedOnly,
                 onClick = onPinnedToggled,
-                label = { Text(stringResource(R.string.pinned)) }
+                leadingEmoji = "📌",
+                accentColor = Color(0xFFD97757)
             )
         }
         item {
-            FilterChip(
+            ModernChip(
+                label = stringResource(R.string.recent),
                 selected = recentOnly,
                 onClick = onRecentToggled,
-                label = { Text(stringResource(R.string.recent)) }
+                leadingEmoji = "⏱",
+                accentColor = Color(0xFF4285F4)
             )
         }
         item {
             Box {
-                FilterChip(
+                ModernChip(
+                    label = if (selectedCollection == ALL_COLLECTION)
+                        stringResource(R.string.collections)
+                    else
+                        selectedCollection,
                     selected = selectedCollection != ALL_COLLECTION,
                     onClick = { collectionMenuExpanded = true },
-                    label = {
-                        Text(
-                            if (selectedCollection == ALL_COLLECTION)
-                                stringResource(R.string.collections)
-                            else
-                                selectedCollection
-                        )
-                    }
+                    leadingEmoji = "📁",
+                    trailingEmoji = "⌄",
+                    accentColor = Color(0xFF10A37F)
                 )
                 DropdownMenu(
                     expanded = collectionMenuExpanded,
@@ -261,10 +276,12 @@ fun PromptSearchFilterSection(
             }
         }
         item {
-            FilterChip(
+            ModernChip(
+                label = stringResource(R.string.favorites),
                 selected = favoritesOnly,
                 onClick = onFavoritesToggled,
-                label = { Text(stringResource(R.string.favorites)) }
+                leadingEmoji = "⭐",
+                accentColor = Color(0xFFFFB300)
             )
         }
         if (selectedCategories.isNotEmpty()) {
@@ -274,7 +291,7 @@ fun PromptSearchFilterSection(
                         draftCategories = emptySet()
                         onCategoriesSelected(emptySet())
                     },
-                    shape = RoundedCornerShape(16.dp)
+                    shape = RoundedCornerShape(50)
                 ) {
                     Text(stringResource(R.string.clear_filter))
                 }
@@ -284,23 +301,21 @@ fun PromptSearchFilterSection(
 
     Spacer(Modifier.height(8.dp))
 
+    // ==================== Sort ====================
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.End
     ) {
         Box {
-            FilterChip(
+            ModernChip(
+                label = stringResource(
+                    R.string.sort_label,
+                    localizedSort(sortMode)
+                ),
                 selected = sortMode != SORT_LATEST,
                 onClick = { sortMenuExpanded = true },
-                label = {
-                    Text(
-                        stringResource(
-                            R.string.sort_label,
-                            localizedSort(sortMode)
-                        )
-                    )
-                },
-                trailingIcon = { Text("⌄") }
+                leadingEmoji = "⇅",
+                trailingEmoji = "⌄"
             )
             DropdownMenu(
                 expanded = sortMenuExpanded,
@@ -317,35 +332,6 @@ fun PromptSearchFilterSection(
                         )
                     }
             }
-        }
-    }
-}
-
-@Composable
-private fun FilterRow(
-    label: String,
-    selected: String,
-    values: List<String>,
-    allValue: String,
-    onSelected: (String) -> Unit
-) {
-    LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(horizontal = 2.dp)
-    ) {
-        item {
-            FilterChip(
-                selected = selected == allValue,
-                onClick = { onSelected(allValue) },
-                label = { Text("All $label") }
-            )
-        }
-        items(values) { value ->
-            FilterChip(
-                selected = selected == value,
-                onClick = { onSelected(value) },
-                label = { Text(value.replaceFirstChar { it.uppercase() }) }
-            )
         }
     }
 }
