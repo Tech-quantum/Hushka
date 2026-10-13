@@ -32,7 +32,7 @@ fun getLocalizedCategory(category: String): String {
 }
 
 @Composable
-private fun getDomainName(domain: String): String {
+fun getDomainName(domain: String): String {
     if (isPersian()) {
         return when (domain) {
             "agent" -> stringResource(R.string.domain_agent)

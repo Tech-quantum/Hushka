@@ -192,23 +192,6 @@ private fun getDomainEmoji(domain: String): String = when (domain.lowercase()) {
     else -> "📁"
 }
 
-@Composable
-private fun getDomainName(domain: String): String = when (domain.lowercase()) {
-    "agent" -> stringResource(R.string.domain_agent)
-    "analysis" -> stringResource(R.string.domain_analysis)
-    "prompting" -> stringResource(R.string.domain_prompting)
-    "text" -> stringResource(R.string.domain_text)
-    "coding" -> stringResource(R.string.domain_coding)
-    "image" -> stringResource(R.string.domain_image)
-    "video" -> stringResource(R.string.domain_video)
-    "marketing" -> "بازاریابی"
-    "other" -> "سایر"
-    "ai" -> "هوش مصنوعی"
-    "web" -> stringResource(R.string.cat_web)
-    "github" -> stringResource(R.string.cat_github)
-    "audio" -> stringResource(R.string.cat_audio)
-    else -> domain
-}
 
 @Composable
 private fun getSubcategoryOnly(category: String): String {

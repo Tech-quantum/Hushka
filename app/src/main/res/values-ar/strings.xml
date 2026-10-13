@@ -292,4 +292,7 @@
     <string name="loading_almost_ready">على وشك الانتهاء...</string>
     <string name="loading_slow_internet">الاتصال بطيء، يرجى الانتظار...</string>
     <string name="loading_source">المصدر: awesome-chatgpt-prompts</string>
+    <string name="domain_marketing">التسويق</string>
+    <string name="domain_other">أخرى</string>
+    <string name="domain_ai">الذكاء الاصطناعي</string>
 </resources>
