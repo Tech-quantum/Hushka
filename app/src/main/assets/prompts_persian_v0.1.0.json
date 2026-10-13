@@ -1,0 +1,232 @@
+{
+  "schema_version": "1.0",
+  "dataset_version": "0.1.0",
+  "collected_at": "2026-10-13",
+  "description": "Persian prompts from diba7star/awesome-persian-prompts (CC0)",
+  "sources": [
+    {
+      "id": "diba7star_persian_prompts",
+      "provider": "diba7star",
+      "url": "https://github.com/diba7star/awesome-persian-prompts",
+      "note": "Awesome Persian Prompts — CC0 licensed, short AI prompts in Persian/English/Arabic"
+    }
+  ],
+  "prompts": [
+    {
+      "id": "fa-ai-ai-improve-weak-prompt",
+      "provider": "openai",
+      "model": "chatgpt, claude, gemini",
+      "modality": "text-to-text",
+      "category": "ai.improve",
+      "title": "بهبود یک پرامپت ضعیف",
+      "prompt": "تو مهندس پرامپت هستی. این پرامپت من جواب کلی و بی‌کیفیت می‌دهد: [پرامپت]. هدفم: [هدف]. ایرادهایش را فهرست کن، سپس نسخه‌ی بهبودیافته با نقش، زمینه، قالب خروجی، محدودیت‌ها و یک مثال بنویس. تغییرات را کوتاه توضیح بده.",
+      "variables": [
+        "پرامپت",
+        "هدف"
+      ],
+      "tags": [
+        "بهبود پرامپت",
+        "مهندسی پرامپت",
+        "کیفیت خروجی",
+        "نقش"
+      ],
+      "source_ids": [
+        "diba7star_persian_prompts"
+      ]
+    },
+    {
+      "id": "fa-ai-ai-ask-clarifying-first",
+      "provider": "openai",
+      "model": "chatgpt, claude, gemini, deepseek",
+      "modality": "text-to-text",
+      "category": "ai.improve",
+      "title": "اول سؤال بپرس، بعد جواب بده",
+      "prompt": "می‌خواهم [کار موردنظر] را انجام دهی، اما قبل از شروع، حداکثر ۵ سؤال کلیدی بپرس که بدون جوابشان خروجی دقیق نمی‌شود. سؤال‌ها را شماره‌دار بنویس، برای هر کدام یک پیش‌فرض پیشنهادی بده و تا جواب من چیزی تولید نکن.",
+      "variables": [
+        "کار موردنظر"
+      ],
+      "tags": [
+        "سؤال روشن‌کننده",
+        "پرامپت",
+        "دقت",
+        "گفت‌وگو"
+      ],
+      "source_ids": [
+        "diba7star_persian_prompts"
+      ]
+    },
+    {
+      "id": "fa-ai-ai-persian-prompt-to-english",
+      "provider": "openai",
+      "model": "chatgpt, claude, gemini",
+      "modality": "text-to-text",
+      "category": "ai.improve",
+      "title": "ترجمه‌ی بهینه‌ی پرامپت فارسی",
+      "prompt": "این پرامپت فارسی را برای استفاده در [ابزار] به انگلیسی برگردان، اما ترجمه‌ی کلمه‌به‌کلمه نکن؛ آن را به ساختار پرامپت انگلیسی استاندارد درآور، اصطلاحات فرهنگی ایرانی را توضیح بده و خروجی را به فارسی بخواه: [پرامپت].",
+      "variables": [
+        "ابزار",
+        "پرامپت"
+      ],
+      "tags": [
+        "ترجمه پرامپت",
+        "انگلیسی",
+        "فارسی",
+        "بهبود"
+      ],
+      "source_ids": [
+        "diba7star_persian_prompts"
+      ]
+    },
+    {
+      "id": "fa-ai-ai-add-few-shot-examples",
+      "provider": "openai",
+      "model": "chatgpt, claude, deepseek",
+      "modality": "text-to-text",
+      "category": "ai.improve",
+      "title": "افزودن مثال به پرامپت",
+      "prompt": "پرامپت من [پرامپت] است و خروجی‌ها سبک ثابتی ندارند. سه مثال ورودی و خروجی نمونه (few-shot) بساز که سبک موردنظرم [توصیف سبک] را دقیق نشان دهند، و پرامپت نهایی را با این مثال‌ها در قالب منظم بازنویسی کن.",
+      "variables": [
+        "پرامپت",
+        "توصیف سبک"
+      ],
+      "tags": [
+        "few-shot",
+        "مثال",
+        "یکدستی",
+        "پرامپت"
+      ],
+      "source_ids": [
+        "diba7star_persian_prompts"
+      ]
+    },
+    {
+      "id": "fa-ai-ai-structured-json-output",
+      "provider": "openai",
+      "model": "chatgpt, claude, gemini",
+      "modality": "text-to-text",
+      "category": "ai.improve",
+      "title": "گرفتن خروجی ساخت‌یافته JSON",
+      "prompt": "می‌خواهم خروجی پرامپت [پرامپت] همیشه یک JSON معتبر با این فیلدها باشد: [فیلدها و نوعشان]. پرامپت را بازنویسی کن تا فقط JSON برگردد، بدون متن اضافه، با مقدار null برای فیلدهای نامعلوم. یک نمونه‌ی خروجی هم بده.",
+      "variables": [
+        "پرامپت",
+        "فیلدها و نوعشان"
+      ],
+      "tags": [
+        "JSON",
+        "خروجی ساخت‌یافته",
+        "پرامپت",
+        "برنامه‌نویسی"
+      ],
+      "source_ids": [
+        "diba7star_persian_prompts"
+      ]
+    },
+    {
+      "id": "fa-ai-ai-prompt-critique-score",
+      "provider": "openai",
+      "model": "chatgpt, claude, gemini",
+      "modality": "text-to-text",
+      "category": "ai.improve",
+      "title": "نمره‌دهی و نقد پرامپت",
+      "prompt": "این پرامپت را بر اساس شش معیار نمره بده (۱ تا ۱۰): وضوح هدف، زمینه، نقش، قالب خروجی، محدودیت‌ها، مثال. برای هر معیار یک جمله دلیل و یک پیشنهاد بنویس و در پایان نسخه‌ی ۱۰ از ۱۰ را بده: [پرامپت].",
+      "variables": [
+        "پرامپت"
+      ],
+      "tags": [
+        "نقد پرامپت",
+        "ارزیابی",
+        "معیار",
+        "بهبود"
+      ],
+      "source_ids": [
+        "diba7star_persian_prompts"
+      ]
+    },
+    {
+      "id": "fa-ai-ai-chain-of-steps",
+      "provider": "openai",
+      "model": "chatgpt, claude, gemini",
+      "modality": "text-to-text",
+      "category": "ai.improve",
+      "title": "شکستن کار بزرگ به زنجیره‌ی پرامپت",
+      "prompt": "کار من [کار بزرگ، مثلاً نوشتن کتاب الکترونیکی ۳۰ صفحه‌ای] است و یک پرامپت تنها جواب خوب نمی‌دهد. آن را به زنجیره‌ای از ۴ تا ۷ پرامپت پشت‌سرهم تقسیم کن؛ برای هر مرحله پرامپت کامل، ورودی و خروجی و نحوه‌ی انتقال به مرحله‌ی بعد را بنویس.",
+      "variables": [
+        "کار بزرگ، مثلاً نوشتن کتاب الکترونیکی ۳۰ صفحه‌ای"
+      ],
+      "tags": [
+        "زنجیره پرامپت",
+        "prompt chaining",
+        "کار بزرگ",
+        "برنامه‌ریزی"
+      ],
+      "source_ids": [
+        "diba7star_persian_prompts"
+      ]
+    },
+    {
+      "id": "fa-ai-ai-reduce-hallucination",
+      "provider": "openai",
+      "model": "chatgpt, claude, gemini, perplexity",
+      "modality": "text-to-text",
+      "category": "ai.improve",
+      "title": "کاهش اطلاعات ساختگی",
+      "prompt": "پرامپتم [پرامپت] گاهی آمار و منبع ساختگی می‌دهد. آن را بازنویسی کن تا مدل فقط از متن ارائه‌شده استفاده کند، برای هر ادعا منبع بیاورد، در صورت نبود اطلاعات بگوید «نمی‌دانم» و سطح اطمینانش را بگوید.",
+      "variables": [
+        "پرامپت"
+      ],
+      "tags": [
+        "توهم مدل",
+        "hallucination",
+        "دقت",
+        "منبع"
+      ],
+      "source_ids": [
+        "diba7star_persian_prompts"
+      ]
+    },
+    {
+      "id": "fa-ai-ai-tone-persian-natural",
+      "provider": "openai",
+      "model": "chatgpt, claude, gemini, deepseek",
+      "modality": "text-to-text",
+      "category": "ai.improve",
+      "title": "فارسی طبیعی به‌جای ترجمه‌ای",
+      "prompt": "خروجی‌های فارسی مدل ترجمه‌ای و خشک است. بخشی به پرامپتم [پرامپت] اضافه کن که فارسی روان و طبیعی بخواهد: جمله‌های کوتاه، نیم‌فاصله‌ی درست، پرهیز از ساختار انگلیسی و کلمات عربی سنگین، و لحن [لحن]. یک قبل و بعد نمونه بده.",
+      "variables": [
+        "پرامپت",
+        "لحن"
+      ],
+      "tags": [
+        "فارسی روان",
+        "لحن",
+        "نیم‌فاصله",
+        "کیفیت متن"
+      ],
+      "source_ids": [
+        "diba7star_persian_prompts"
+      ]
+    },
+    {
+      "id": "fa-ai-ai-meta-prompt-generator",
+      "provider": "openai",
+      "model": "chatgpt, claude, gemini",
+      "modality": "text-to-text",
+      "category": "ai.improve",
+      "title": "پرامپت‌ساز برای هر کاری",
+      "prompt": "نقش پرامپت‌ساز را بگیر. من فقط یک جمله می‌گویم که چه می‌خواهم: [خواسته]. تو یک پرامپت کامل بساز با بخش‌های نقش، زمینه، وظیفه، قالب خروجی، محدودیت‌ها و معیار کیفیت، و جاهای خالی را با [ ] مشخص کن تا خودم پر کنم.",
+      "variables": [
+        "خواسته",
+        " "
+      ],
+      "tags": [
+        "پرامپت‌ساز",
+        "قالب پرامپت",
+        "متاپرامپت",
+        "سرعت"
+      ],
+      "source_ids": [
+        "diba7star_persian_prompts"
+      ]
+    }
+  ]
+}
