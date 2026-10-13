@@ -145,7 +145,3 @@ private fun getSubcategoryName(sub: String): String {
         else -> sub.replace("-", " ")
     }
 }
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
-
-@Composable
