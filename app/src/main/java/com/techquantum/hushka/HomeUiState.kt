@@ -12,6 +12,7 @@ data class HomeUiState(
     val pinnedOnly: Boolean = false,
     val recentOnly: Boolean = false,
     val favoritesOnly: Boolean = false,
+    val selectedLanguage: String = ALL_LANGUAGE,
     val sortMode: String = SORT_LATEST,
     val isUpdating: Boolean = false,
     val updateMessageKey: String = "",
@@ -24,6 +25,7 @@ const val ALL_PROVIDER = "__all_provider__"
 const val ALL_DOMAIN = "__all_domain__"
 const val ALL_CATEGORY = "__all__"
 const val ALL_COLLECTION = "__all_collection__"
+const val ALL_LANGUAGE = "__all_language__"
 const val SORT_RELEVANT = "relevant"
 const val SORT_MOST_VIEWED = "most_viewed"
 const val SORT_LATEST = "latest"

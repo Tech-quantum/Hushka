@@ -54,6 +54,7 @@ fun HomeScreen(
     var sortExpanded by remember { mutableStateOf(false) }
     var showCategoryDialog by remember { mutableStateOf(false) }
     var showStats by remember { mutableStateOf(false) }
+    var languageMenuExpanded by remember { mutableStateOf(false) }
     val appContext = LocalContext.current
 
     // ============ Statistics Screen ============
@@ -221,6 +222,59 @@ fun HomeScreen(
                             onClick = { viewModel.onProviderSelected(value) },
                             leadingEmoji = if (key == "all") "✨" else null
                         )
+                    }
+                    // ===== چیپ بومی (فیلتر زبان) =====
+                    item {
+                        val langs = listOf(
+                            Triple(ALL_LANGUAGE, "همه", "🌐"),
+                            Triple("fa", "فارسی", "🇮🇷"),
+                            Triple("en", "English", "🇬🇧"),
+                            Triple("ar", "العربية", "🇸🇦"),
+                            Triple("tr", "Türkçe", "🇹🇷")
+                        )
+                        val selectedName = langs.firstOrNull { it.first == uiState.selectedLanguage }?.second
+                        val chipLabel = if (uiState.selectedLanguage == ALL_LANGUAGE || selectedName == null) {
+                            "بومی"
+                        } else {
+                            "بومی / $selectedName"
+                        }
+
+                        Box {
+                            ModernChip(
+                                label = chipLabel,
+                                selected = uiState.selectedLanguage != ALL_LANGUAGE,
+                                onClick = { languageMenuExpanded = true },
+                                leadingEmoji = "🗣️"
+                            )
+                            DropdownMenu(
+                                expanded = languageMenuExpanded,
+                                onDismissRequest = { languageMenuExpanded = false }
+                            ) {
+                                langs.forEach { lang ->
+                                    val isCurrent = lang.first == uiState.selectedLanguage
+                                    DropdownMenuItem(
+                                        text = {
+                                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                                Text(lang.third, fontSize = 16.sp)
+                                                Spacer(Modifier.width(8.dp))
+                                                Text(
+                                                    lang.second,
+                                                    fontWeight = if (isCurrent) FontWeight.Bold else FontWeight.Normal
+                                                )
+                                                if (isCurrent) {
+                                                    Spacer(Modifier.width(6.dp))
+                                                    Text("✓", color = purplePrimary, fontWeight = FontWeight.Bold)
+                                                }
+                                            }
+                                        },
+                                        onClick = {
+                                            languageMenuExpanded = false
+                                            viewModel.onLanguageSelected(lang.first)
+                                        }
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }

@@ -50,6 +50,7 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
     fun markUsed(prompt: PromptEntity) { viewModelScope.launch(Dispatchers.IO) { repository.markUsed(prompt) } }
     fun onFavoritesToggled() = updateState { it.copy(favoritesOnly = !it.favoritesOnly) }
     fun onSortSelected(value: String) = updateState { it.copy(sortMode = value) }
+    fun onLanguageSelected(value: String) = updateState { it.copy(selectedLanguage = value) }
     fun clearNewPromptId() = updateState { it.copy(newPromptId = null) }
 
     fun updateLibrary() {
@@ -130,7 +131,8 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
         favoritesOnly = state.favoritesOnly,
         sortMode = state.sortMode,
         pinnedOnly = state.pinnedOnly,
-        recentOnly = state.recentOnly
+        recentOnly = state.recentOnly,
+        selectedLanguage = state.selectedLanguage
     )
 
     // ==================== Export / Import ====================

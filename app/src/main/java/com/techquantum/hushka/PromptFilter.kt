@@ -32,7 +32,8 @@ object PromptFilter {
         favoritesOnly: Boolean,
         sortMode: String,
         pinnedOnly: Boolean,
-        recentOnly: Boolean
+        recentOnly: Boolean,
+        selectedLanguage: String = ALL_LANGUAGE
     ): List<PromptEntity> {
         var result = prompts
 
@@ -44,6 +45,10 @@ object PromptFilter {
                 it.text.lowercase().contains(q) ||
                 it.tags.lowercase().contains(q)
             }
+        }
+
+        if (selectedLanguage != ALL_LANGUAGE && selectedLanguage.isNotBlank()) {
+            result = result.filter { LanguageDetector.detect(it.text) == selectedLanguage }
         }
 
         if (selectedProvider != ALL_PROVIDER && selectedProvider.isNotBlank()) {
