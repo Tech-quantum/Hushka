@@ -95,7 +95,7 @@ fun CategoryPickerDialog(
                                 onClick = { onCategorySelected(cat) }
                             ) {
                                 Text(
-                                    "${getDomainEmoji(domain)}  ${getDomainName(domain)}",
+                                    getDomainName(domain),
                                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
                                     color = if (isSelected) Color.White else textColor,
                                     fontSize = 14.sp,
@@ -123,7 +123,7 @@ fun CategoryPickerDialog(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Text(
-                                        "${getDomainEmoji(domain)}  ${getDomainName(domain)}",
+                                        getDomainName(domain),
                                         color = if (isSelected) Color.White else purplePrimary,
                                         fontSize = 14.sp,
                                         fontWeight = FontWeight.Bold
