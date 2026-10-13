@@ -418,6 +418,7 @@ fun HomeScreen(
                         roleId = prompt.role,
                         isPinned = prompt.pinned,
                         isFavorite = prompt.favorite,
+                        lastUsedAt = prompt.lastUsedAt,
                         onFavoriteToggle = { viewModel.toggleFavorite(prompt) },
                         onPinToggle = { viewModel.togglePinned(prompt) },
                         onCardClick = { editingPrompt = prompt },
