@@ -212,20 +212,12 @@ fun HomeScreen(
                         val value = if (key == "all") ALL_PROVIDER else key
                         val label = if (key == "all") stringResource(R.string.all_providers) else key
                         val isSelected = uiState.selectedProvider == value
-                        Surface(
-                            shape = RoundedCornerShape(50),
-                            color = if (isSelected) purplePrimary.copy(alpha = 0.25f) else Color.Transparent,
-                            border = BorderStroke(1.dp, if (isSelected) purplePrimary else borderColor),
-                            onClick = { viewModel.onProviderSelected(value) }
-                        ) {
-                            Text(
-                                label,
-                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                                fontSize = 12.sp,
-                                color = if (isSelected) purplePrimary else textGrayColor,
-                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                            )
-                        }
+                        ModernChip(
+                            label = label,
+                            selected = isSelected,
+                            onClick = { viewModel.onProviderSelected(value) },
+                            leadingEmoji = if (key == "all") "✨" else null
+                        )
                     }
                 }
             }
@@ -247,26 +239,24 @@ fun HomeScreen(
                             "favorites" -> uiState.favoritesOnly
                             else -> false
                         }
-                        Surface(
-                            shape = RoundedCornerShape(50),
-                            color = if (isSelected) purplePrimary.copy(alpha = 0.25f) else Color.Transparent,
-                            border = BorderStroke(1.dp, if (isSelected) purplePrimary else borderColor),
+                        val emoji = when (key) {
+                            "recent" -> "⏱"
+                            "pinned" -> "📌"
+                            "favorites" -> "⭐"
+                            else -> null
+                        }
+                        ModernChip(
+                            label = label,
+                            selected = isSelected,
                             onClick = {
                                 when (key) {
                                     "recent" -> viewModel.onRecentToggled()
                                     "pinned" -> viewModel.onPinnedToggled()
                                     "favorites" -> viewModel.onFavoritesToggled()
                                 }
-                            }
-                        ) {
-                            Text(
-                                label,
-                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                                fontSize = 12.sp,
-                                color = if (isSelected) purplePrimary else textGrayColor,
-                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                            )
-                        }
+                            },
+                            leadingEmoji = emoji
+                        )
                     }
                 }
             }
@@ -287,21 +277,13 @@ fun HomeScreen(
                             SORT_FEATURED -> stringResource(R.string.sort_featured)
                             else -> stringResource(R.string.sort_latest)
                         }
-                        Surface(
-                            shape = RoundedCornerShape(50),
-                            color = Color.Transparent,
-                            border = BorderStroke(1.dp, borderColor),
-                            onClick = { sortExpanded = true }
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(stringResource(R.string.sort_label, sortLabel), fontSize = 12.sp, color = textGrayColor)
-                                Spacer(Modifier.width(4.dp))
-                                Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = textGrayColor, modifier = Modifier.size(18.dp))
-                            }
-                        }
+                        ModernChip(
+                            label = stringResource(R.string.sort_label, sortLabel),
+                            selected = uiState.sortMode != SORT_LATEST,
+                            onClick = { sortExpanded = true },
+                            leadingEmoji = "⇅",
+                            trailingEmoji = "⌄"
+                        )
                         DropdownMenu(expanded = sortExpanded, onDismissRequest = { sortExpanded = false }) {
                             listOf(
                                 SORT_RELEVANT to stringResource(R.string.sort_relevant),
