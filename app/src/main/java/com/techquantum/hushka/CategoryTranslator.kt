@@ -1,6 +1,7 @@
 package com.techquantum.hushka
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 
 @Composable
@@ -23,24 +24,65 @@ fun getLocalizedCategory(category: String): String {
     val domain = parts[0].lowercase()
     val sub = parts[1].lowercase()
 
-    val domainName = when (domain) {
-        "agent" -> stringResource(R.string.domain_agent)
-        "analysis" -> stringResource(R.string.domain_analysis)
-        "prompting" -> stringResource(R.string.domain_prompting)
-        "text" -> stringResource(R.string.domain_text)
-        "coding" -> stringResource(R.string.domain_coding)
-        "image" -> stringResource(R.string.domain_image)
-        "video" -> stringResource(R.string.domain_video)
-        "marketing" -> "بازاریابی"
-        "other" -> "سایر"
-        "ai" -> "هوش مصنوعی"
-        else -> domain
+    val domainName = getDomainName(domain)
+
+    // در حالت غیرفارسی، کل عبارت رو Title Case می‌کنیم
+    if (!isPersian()) {
+        return "$domainName • ${toTitleCase(sub)}"
     }
 
     return "$domainName • ${getSubcategoryName(sub)}"
 }
 
-fun getSubcategoryName(sub: String): String {
+@Composable
+private fun getDomainName(domain: String): String {
+    // برای فارسی از strings استفاده می‌کنیم
+    if (isPersian()) {
+        return when (domain) {
+            "agent" -> stringResource(R.string.domain_agent)
+            "analysis" -> stringResource(R.string.domain_analysis)
+            "prompting" -> stringResource(R.string.domain_prompting)
+            "text" -> stringResource(R.string.domain_text)
+            "coding" -> stringResource(R.string.domain_coding)
+            "image" -> stringResource(R.string.domain_image)
+            "video" -> stringResource(R.string.domain_video)
+            "marketing" -> "بازاریابی"
+            "other" -> "سایر"
+            "ai" -> "هوش مصنوعی"
+            else -> toTitleCase(domain)
+        }
+    }
+    // برای بقیه زبان‌ها Title Case انگلیسی
+    return toTitleCase(domain)
+}
+
+/**
+ * تبدیل slug به Title Case
+ * code-generation → Code Generation
+ */
+private fun toTitleCase(slug: String): String {
+    if (slug.isBlank()) return slug
+    return slug
+        .split("-")
+        .joinToString(" ") { word ->
+            if (word.isBlank()) word
+            else word.replaceFirstChar { it.uppercase() }
+        }
+}
+
+/**
+ * بررسی اینکه زبان اپ فارسی هست یا نه
+ */
+@Composable
+private fun isPersian(): Boolean {
+    val config = LocalConfiguration.current
+    return config.locales[0].language == "fa"
+}
+
+/**
+ * ترجمه فارسی زیردسته (فقط برای زبان فارسی استفاده می‌شود)
+ */
+private fun getSubcategoryName(sub: String): String {
     return when (sub) {
         // agent
         "agentic-workflow" -> "گردش‌کار عاملی"
@@ -142,6 +184,6 @@ fun getSubcategoryName(sub: String): String {
         // ai
         "improve" -> "بهبود"
 
-        else -> sub.replace("-", " ")
+        else -> toTitleCase(sub)
     }
 }
