@@ -216,6 +216,15 @@ private fun getSubcategoryOnly(category: String): String {
     return if (parts.size < 2) {
         getLocalizedCategory(category)
     } else {
-        getSubcategoryName(parts[1])
+        // در حالت غیرفارسی از Title Case استفاده می‌کنیم
+        val config = androidx.compose.ui.platform.LocalConfiguration.current
+        val isPersian = config.locales[0].language == "fa"
+        if (isPersian) {
+            getLocalizedCategory(category).substringAfter(" • ", parts[1])
+        } else {
+            parts[1].split("-").joinToString(" ") { word ->
+                word.replaceFirstChar { it.uppercase() }
+            }
+        }
     }
 }
