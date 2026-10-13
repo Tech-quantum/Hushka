@@ -3,7 +3,7 @@ import json
 import re
 import sys
 
-LIMIT = 10  # ← برای تست ۱۰ تا. بعداً 0 (همه) می‌کنیم
+LIMIT = 0  # همه پرامپت‌ها
 
 SOURCE = '/sdcard/hf_all.json'
 TARGET = 'app/src/main/assets/prompts_persian_v0.1.0.json'
