@@ -40,7 +40,7 @@ fun getLocalizedCategory(category: String): String {
     return "$domainName • ${getSubcategoryName(sub)}"
 }
 
-private fun getSubcategoryName(sub: String): String {
+fun getSubcategoryName(sub: String): String {
     return when (sub) {
         // agent
         "agentic-workflow" -> "گردش‌کار عاملی"

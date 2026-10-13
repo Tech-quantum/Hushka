@@ -599,68 +599,14 @@ fun HomeScreen(
 
     // ============ Categories Dialog ============
     if (showCategoryDialog) {
-        val uniqueCategories = uiState.prompts
-            .map { it.category }
-            .filter { it.isNotBlank() }
-            .distinct()
-            .sorted()
-        AlertDialog(
-            onDismissRequest = { showCategoryDialog = false },
-            containerColor = cardColor,
-            titleContentColor = textColor,
-            textContentColor = textColor,
-            title = { Text(stringResource(R.string.select_category_title), color = textColor) },
-            text = {
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth().heightIn(max = 400.dp)
-                ) {
-                    item {
-                        val isSelected = uiState.selectedCategory == ALL_CATEGORY
-                        Surface(
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                            shape = RoundedCornerShape(10.dp),
-                            color = if (isSelected) purplePrimary else cardLightColor,
-                            onClick = {
-                                viewModel.onCategorySelected(ALL_CATEGORY)
-                                showCategoryDialog = false
-                            }
-                        ) {
-                            Text(
-                                stringResource(R.string.all_categories),
-                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                                color = if (isSelected) Color.White else textColor,
-                                fontSize = 14.sp,
-                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                            )
-                        }
-                    }
-                    items(uniqueCategories) { category ->
-                        val isSelected = uiState.selectedCategory == category
-                        Surface(
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                            shape = RoundedCornerShape(10.dp),
-                            color = if (isSelected) purplePrimary else cardLightColor,
-                            onClick = {
-                                viewModel.onCategorySelected(category)
-                                showCategoryDialog = false
-                            }
-                        ) {
-                            Text(
-                                getLocalizedCategory(category),
-                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                                color = if (isSelected) Color.White else textColor,
-                                fontSize = 14.sp,
-                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                            )
-                        }
-                    }
-                }
+        CategoryPickerDialog(
+            prompts = uiState.prompts,
+            selectedCategory = uiState.selectedCategory,
+            onCategorySelected = { cat ->
+                viewModel.onCategorySelected(cat)
+                showCategoryDialog = false
             },
-            confirmButton = {
-                TextButton(onClick = { showCategoryDialog = false }) {
-                    Text(stringResource(R.string.close), color = purplePrimary)
-                }
-            }
+            onDismiss = { showCategoryDialog = false }
         )
     }
 

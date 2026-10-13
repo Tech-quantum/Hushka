@@ -60,7 +60,9 @@ object PromptFilter {
         }
 
         if (selectedCategory != ALL_CATEGORY && selectedCategory.isNotBlank()) {
-            result = result.filter { it.category == selectedCategory }
+            result = result.filter {
+                it.category == selectedCategory || it.category.startsWith("$selectedCategory.")
+            }
         }
 
         if (selectedCategories.isNotEmpty()) {
