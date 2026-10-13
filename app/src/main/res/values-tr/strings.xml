@@ -287,4 +287,9 @@
     <string name="an_rec_role_suggest">Hushka önerisi: “%1$s” rolü bu prompt için uygun. Bunu promptun başına ekleyebilirsin.</string>
     <string name="an_apply_role">➕ Rolü promptun başına ekle</string>
     <string name="an_role_applied">Rol prompta eklendi</string>
+    <string name="loading_connecting">Bağlanıyor...</string>
+    <string name="loading_downloading">Komutlar indiriliyor...</string>
+    <string name="loading_almost_ready">Neredeyse hazır...</string>
+    <string name="loading_slow_internet">Bağlantı yavaş, lütfen bekleyin...</string>
+    <string name="loading_source">Kaynak: awesome-chatgpt-prompts</string>
 </resources>

@@ -223,7 +223,7 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
     val webError: StateFlow<String?> = _webError.asStateFlow()
 
     // 🆕 پیام پویا برای نمایش به کاربر هنگام لودینگ
-    private val _loadingMessage = MutableStateFlow("در حال اتصال...")
+    private val _loadingMessage = MutableStateFlow("loading_connecting")
     val loadingMessage: StateFlow<String> = _loadingMessage.asStateFlow()
 
     fun fetchWebPrompts() {
@@ -231,17 +231,17 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
         _isFetchingWeb.value = true
         _webError.value = null
         _webPrompts.value = emptyList()
-        _loadingMessage.value = "در حال اتصال..."
+        _loadingMessage.value = "loading_connecting"
 
         viewModelScope.launch {
             // 🎬 تایمر پیام‌های پویا — با پیشرفت زمان، متن عوض می‌شود
             val messageJob = launch {
                 delay(3_000)
-                _loadingMessage.value = "در حال دانلود پرامپت‌ها..."
+                _loadingMessage.value = "loading_downloading"
                 delay(4_000)
-                _loadingMessage.value = "تقریباً آماده..."
+                _loadingMessage.value = "loading_almost_ready"
                 delay(5_000)
-                _loadingMessage.value = "اینترنت کند است، لطفاً صبر کنید..."
+                _loadingMessage.value = "loading_slow_internet"
             }
 
             try {
@@ -260,7 +260,7 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
                 _webPrompts.value = emptyList()
             } finally {
                 messageJob.cancel()
-                _loadingMessage.value = "در حال اتصال..."
+                _loadingMessage.value = "loading_connecting"
                 _isFetchingWeb.value = false
             }
         }
@@ -352,7 +352,7 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
     fun clearWebPrompts() {
         _webPrompts.value = emptyList()
         _webError.value = null
-        _loadingMessage.value = "در حال اتصال..."
+        _loadingMessage.value = "loading_connecting"
     }
 
     // ==================== Translation ====================

@@ -303,4 +303,9 @@
         <string name="an_rec_role_suggest">توصیه گاردریل هوشکا: نقش «%1$s» برای این پرامپت مناسب است. می‌تونی آن را به ابتدای پرامپت اضافه کنی.</string>
     <string name="an_apply_role">➕ افزودن نقش به ابتدای پرامپت</string>
     <string name="an_role_applied">نقش به پرامپت اضافه شد</string>
+    <string name="loading_connecting">در حال اتصال...</string>
+    <string name="loading_downloading">در حال دانلود پرامپت‌ها...</string>
+    <string name="loading_almost_ready">تقریباً آماده...</string>
+    <string name="loading_slow_internet">اینترنت کند است، لطفاً صبر کنید...</string>
+    <string name="loading_source">منبع: awesome-chatgpt-prompts</string>
 </resources>

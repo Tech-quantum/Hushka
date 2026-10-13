@@ -78,14 +78,14 @@ fun WebPromptsDialog(
                             )
                             Spacer(Modifier.height(24.dp))
                             Text(
-                                text = loadingMessage,
+                                text = getLoadingText(loadingMessage),
                                 color = textColor,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Medium
                             )
                             Spacer(Modifier.height(10.dp))
                             Text(
-                                text = "منبع: awesome-chatgpt-prompts",
+                                text = stringResource(R.string.loading_source),
                                 color = textGrayColor,
                                 fontSize = 11.sp
                             )
@@ -332,4 +332,13 @@ fun WebPromptsDialog(
             }
         }
     )
+}
+
+@Composable
+private fun getLoadingText(key: String): String = when (key) {
+    "loading_connecting" -> stringResource(R.string.loading_connecting)
+    "loading_downloading" -> stringResource(R.string.loading_downloading)
+    "loading_almost_ready" -> stringResource(R.string.loading_almost_ready)
+    "loading_slow_internet" -> stringResource(R.string.loading_slow_internet)
+    else -> key
 }
