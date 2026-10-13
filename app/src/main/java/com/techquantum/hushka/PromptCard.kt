@@ -1,17 +1,31 @@
 package com.techquantum.hushka
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PushPin
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.StarBorder
+import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -23,6 +37,8 @@ fun PromptCard(
     tags: List<String>,
     provider: String,
     roleId: String = "",
+    isPinned: Boolean = false,
+    isFavorite: Boolean = false,
     onFavoriteToggle: () -> Unit,
     onPinToggle: () -> Unit,
     onCardClick: () -> Unit,
@@ -67,41 +83,14 @@ fun PromptCard(
                 )
                 Spacer(Modifier.width(8.dp))
                 Row {
-                    // چشم (پیش‌نمایش)
-                    Surface(
-                        shape = RoundedCornerShape(50),
-                        color = cardLightColor,
-                        modifier = Modifier.size(32.dp),
-                        onClick = onPreviewClick
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Text("👁", fontSize = 14.sp)
-                        }
-                    }
+                    // 👁 پیش‌نمایش — همیشه خاکستری (action)
+                    EyeCircleButton(onClick = onPreviewClick)
                     Spacer(Modifier.width(6.dp))
-                    // پین
-                    Surface(
-                        shape = RoundedCornerShape(50),
-                        color = cardLightColor,
-                        modifier = Modifier.size(32.dp),
-                        onClick = onPinToggle
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Text("📌", fontSize = 14.sp)
-                        }
-                    }
+                    // 📌 پین — عمودی خاکستری / کج بنفش
+                    PinToggleButton(isPinned = isPinned, onClick = onPinToggle)
                     Spacer(Modifier.width(6.dp))
-                    // ستاره
-                    Surface(
-                        shape = RoundedCornerShape(50),
-                        color = cardLightColor,
-                        modifier = Modifier.size(32.dp),
-                        onClick = onFavoriteToggle
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Text("⭐", fontSize = 14.sp)
-                        }
-                    }
+                    // ⭐ علاقه‌مندی — outline خاکستری / پر طلایی
+                    StarToggleButton(isFavorite = isFavorite, onClick = onFavoriteToggle)
                 }
             }
 
@@ -214,6 +203,139 @@ fun PromptCard(
                 ActionButton(emoji = "✏️", label = stringResource(R.string.edit), onClick = onEditClick, color = textGrayColor)
                 ActionButton(emoji = "🗑", label = stringResource(R.string.delete), onClick = onDeleteClick, color = Color(0xFFE57373))
             }
+        }
+    }
+}
+
+// ============================================================
+// 👁 دکمه پیش‌نمایش — همیشه خاکستری (action، نه toggle)
+// ============================================================
+@Composable
+private fun EyeCircleButton(onClick: () -> Unit) {
+    val iconColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val bgColor = MaterialTheme.colorScheme.surfaceVariant
+
+    Surface(
+        shape = CircleShape,
+        color = bgColor,
+        modifier = Modifier.size(36.dp),
+        onClick = onClick
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Icon(
+                imageVector = Icons.Default.Visibility,
+                contentDescription = null,
+                tint = iconColor,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+    }
+}
+
+// ============================================================
+// 📌 دکمه پین — عمودی خاکستری / کج -45° بنفش
+// ============================================================
+@Composable
+private fun PinToggleButton(isPinned: Boolean, onClick: () -> Unit) {
+    val activeIconColor = Color(0xFFA78BFA)
+    val activeBgColor = Color(0xFF7C3AED).copy(alpha = 0.22f)
+    val activeBorderColor = Color(0xFFA78BFA).copy(alpha = 0.55f)
+
+    val inactiveIconColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val inactiveBgColor = MaterialTheme.colorScheme.surfaceVariant
+
+    // 🎬 چرخش -45 درجه با انیمیشن spring
+    val rotation by animateFloatAsState(
+        targetValue = if (isPinned) -45f else 0f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = "pinRotation"
+    )
+
+    val iconColor by animateColorAsState(
+        targetValue = if (isPinned) activeIconColor else inactiveIconColor,
+        animationSpec = tween(300),
+        label = "pinIconColor"
+    )
+
+    val bgColor by animateColorAsState(
+        targetValue = if (isPinned) activeBgColor else inactiveBgColor,
+        animationSpec = tween(300),
+        label = "pinBgColor"
+    )
+
+    val borderColor by animateColorAsState(
+        targetValue = if (isPinned) activeBorderColor else Color.Transparent,
+        animationSpec = tween(300),
+        label = "pinBorderColor"
+    )
+
+    Surface(
+        shape = CircleShape,
+        color = bgColor,
+        border = BorderStroke(1.dp, borderColor),
+        modifier = Modifier.size(36.dp),
+        onClick = onClick
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Icon(
+                imageVector = Icons.Default.PushPin,
+                contentDescription = null,
+                tint = iconColor,
+                modifier = Modifier
+                    .size(20.dp)
+                    .rotate(rotation)
+            )
+        }
+    }
+}
+
+// ============================================================
+// ⭐ دکمه علاقه‌مندی — outline خاکستری / پر طلایی
+// ============================================================
+@Composable
+private fun StarToggleButton(isFavorite: Boolean, onClick: () -> Unit) {
+    val activeIconColor = Color(0xFFFFC107)
+    val activeBgColor = Color(0xFFFFB300).copy(alpha = 0.22f)
+    val activeBorderColor = Color(0xFFFFC107).copy(alpha = 0.55f)
+
+    val inactiveIconColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val inactiveBgColor = MaterialTheme.colorScheme.surfaceVariant
+
+    val iconColor by animateColorAsState(
+        targetValue = if (isFavorite) activeIconColor else inactiveIconColor,
+        animationSpec = tween(300),
+        label = "starIconColor"
+    )
+
+    val bgColor by animateColorAsState(
+        targetValue = if (isFavorite) activeBgColor else inactiveBgColor,
+        animationSpec = tween(300),
+        label = "starBgColor"
+    )
+
+    val borderColor by animateColorAsState(
+        targetValue = if (isFavorite) activeBorderColor else Color.Transparent,
+        animationSpec = tween(300),
+        label = "starBorderColor"
+    )
+
+    Surface(
+        shape = CircleShape,
+        color = bgColor,
+        border = BorderStroke(1.dp, borderColor),
+        modifier = Modifier.size(36.dp),
+        onClick = onClick
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Icon(
+                imageVector = if (isFavorite) Icons.Default.Star else Icons.Default.StarBorder,
+                contentDescription = null,
+                tint = iconColor,
+                modifier = Modifier.size(20.dp)
+            )
         }
     }
 }
