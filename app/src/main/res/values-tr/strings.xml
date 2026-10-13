@@ -10,6 +10,7 @@
     <string name="my_prompts">İstemlerim</string>
     <string name="saved_count">%1$d istem kaydedildi</string>
     <string name="all_providers">Tümü</string>
+    <string name="all_providers_short">Tümü</string>
     <string name="recent_tab">Son</string>
     <string name="pinned_tab">Sabitlenmiş</string>
     <string name="favorites_tab">Favoriler</string>

@@ -10,6 +10,7 @@
     <string name="my_prompts">My Prompts</string>
     <string name="saved_count">%1$d prompts saved</string>
     <string name="all_providers">All</string>
+    <string name="all_providers_short">All</string>
     <string name="recent_tab">Recent</string>
     <string name="pinned_tab">Pinned</string>
     <string name="favorites_tab">Favorites</string>

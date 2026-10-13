@@ -207,10 +207,13 @@ fun HomeScreen(
             // ===== Provider Chips =====
             item {
                 val providerKeys = listOf("all", "anthropic", "deepseek", "gemini", "openai")
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(horizontal = 4.dp)
+                ) {
                     items(providerKeys) { key ->
                         val value = if (key == "all") ALL_PROVIDER else key
-                        val label = if (key == "all") stringResource(R.string.all_providers) else key
+                        val label = if (key == "all") stringResource(R.string.all_providers_short) else key
                         val isSelected = uiState.selectedProvider == value
                         ModernChip(
                             label = label,
@@ -225,7 +228,10 @@ fun HomeScreen(
             // ===== Tab Chips =====
             item {
                 val tabKeys = listOf("recent", "pinned", "favorites")
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(horizontal = 4.dp)
+                ) {
                     items(tabKeys) { key ->
                         val label = when (key) {
                             "recent" -> stringResource(R.string.recent_tab)

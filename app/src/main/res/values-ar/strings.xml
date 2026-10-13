@@ -10,6 +10,7 @@
     <string name="my_prompts">مطالباتي</string>
     <string name="saved_count">%1$d مطالبة محفوظة</string>
     <string name="all_providers">الكل</string>
+    <string name="all_providers_short">الكل</string>
     <string name="recent_tab">الأحدث</string>
     <string name="pinned_tab">المثبتة</string>
     <string name="favorites_tab">المفضلة</string>
