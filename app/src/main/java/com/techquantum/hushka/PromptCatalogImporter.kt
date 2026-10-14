@@ -6,6 +6,10 @@ import org.json.JSONObject
 object PromptCatalogImporter {
     private val ASSET_NAMES = listOf(
         "prompts_catalog_v1.2.0.json",
+        "prompts_seed_v0.1.0.json",
+        "prompts_openai_claude_v0.1.0.json",
+        "prompts_midjourney_v0.1.0.json",
+        "prompts_lovable_deepseek_v0.1.0.json",
         "prompts_persian_v0.1.0.json",
         "prompts_psychology_v0.2.0.json",
         "prompts_psychology_v0.3.0.json",
