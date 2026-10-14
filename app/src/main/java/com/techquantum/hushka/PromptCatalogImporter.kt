@@ -8,6 +8,7 @@ object PromptCatalogImporter {
         "prompts_catalog_v1.2.0.json",
         "prompts_persian_v0.1.0.json",
         "prompts_psychology_v0.2.0.json",
+        "prompts_psychology_v0.3.0.json",
         "prompts_life_v0.1.0.json"
     )
 
