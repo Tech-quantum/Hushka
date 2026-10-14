@@ -275,6 +275,40 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
                             titleField = "name",
                             limit = 100
                         )
+                        WebSource.HF_PERSIAN -> fetchFromHuggingFace(
+                            dataset = "kasranaqhdpur/persiandatasets2",
+                            promptField = "instruction",
+                            titleField = null,
+                            limit = 300,
+                            extraField = "input"
+                        )
+                        WebSource.HF_DOLLY -> fetchFromHuggingFace(
+                            dataset = "databricks/databricks-dolly-15k",
+                            promptField = "instruction",
+                            titleField = null,
+                            limit = 300,
+                            extraField = "context"
+                        )
+                        WebSource.HF_WRITING -> fetchFromHuggingFace(
+                            dataset = "euclaise/writingprompts",
+                            promptField = "prompt",
+                            titleField = null,
+                            limit = 300
+                        )
+                        WebSource.HF_CODE -> fetchFromHuggingFace(
+                            dataset = "sahil2801/CodeAlpaca-20k",
+                            promptField = "instruction",
+                            titleField = null,
+                            limit = 300,
+                            extraField = "input"
+                        )
+                        WebSource.HF_MEDICAL -> fetchFromHuggingFace(
+                            dataset = "medalpaca/medical_meadow_medical_flashcards",
+                            promptField = "instruction",
+                            titleField = null,
+                            limit = 200,
+                            extraField = "input"
+                        )
                     }
                 }
                 _webPrompts.value = result
@@ -303,7 +337,8 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
         dataset: String,
         promptField: String,
         titleField: String?,
-        limit: Int
+        limit: Int,
+        extraField: String? = null
     ): List<PromptEntity> {
         val allPrompts = mutableListOf<PromptEntity>()
         val encodedDataset = URLEncoder.encode(dataset, "UTF-8")
@@ -322,7 +357,13 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
 
             for (i in 0 until rows.length()) {
                 val rowObj = rows.getJSONObject(i).getJSONObject("row")
-                val promptText = rowObj.optString(promptField, "").trim()
+                val mainText = rowObj.optString(promptField, "").trim()
+                val extraText = if (extraField != null) rowObj.optString(extraField, "").trim() else ""
+                val promptText = if (extraText.isNotBlank() && !mainText.contains(extraText)) {
+                    "$mainText\n\n$extraText"
+                } else {
+                    mainText
+                }
                 if (promptText.isBlank()) continue
 
                 val title = if (titleField != null) {
