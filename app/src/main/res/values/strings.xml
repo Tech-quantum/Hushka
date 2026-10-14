@@ -321,4 +321,6 @@
     <string name="tag_color_reset_all">بازنشانی همه رنگ‌ها</string>
     <string name="tag_color_pick_for">انتخاب رنگ برای</string>
     <string name="tag_color_default">پیش‌فرض</string>
+    <string name="domain_psychology">روانشناسی</string>
+    <string name="domain_life">زندگی</string>
 </resources>

@@ -305,4 +305,6 @@
     <string name="tag_color_reset_all">إعادة تعيين جميع الألوان</string>
     <string name="tag_color_pick_for">اختر لوناً لـ</string>
     <string name="tag_color_default">افتراضي</string>
+    <string name="domain_psychology">علم النفس</string>
+    <string name="domain_life">الحياة</string>
 </resources>

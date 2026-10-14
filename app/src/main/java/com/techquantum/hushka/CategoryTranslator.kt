@@ -45,6 +45,8 @@ fun getDomainName(domain: String): String {
             "marketing" -> "بازاریابی"
             "other" -> "سایر"
             "ai" -> "هوش مصنوعی"
+            "psychology" -> "روانشناسی"
+            "life" -> "زندگی"
             else -> toTitleCase(domain)
         }
     }
@@ -152,6 +154,33 @@ private fun getSubcategoryName(sub: String): String {
         "translation" -> "ترجمه"
         "writing" -> "نوشتن"
         "improve" -> "بهبود"
+
+        // psychology
+        "emotions" -> "احساسات و هیجانات"
+        "breathing" -> "تنفس و آرام‌سازی"
+        "cbt" -> "درمان شناختی-رفتاری (CBT)"
+        "grounding" -> "بازگشت به لحظه‌ی حال"
+        "journaling" -> "ژورنالینگ"
+        "communication" -> "ارتباط مؤثر"
+        "stress" -> "مدیریت استرس"
+        "gratitude" -> "قدردانی و شکرگزاری"
+        "exposure" -> "مواجهه با ترس"
+        "boundaries" -> "مرزگذاری سالم"
+        "relationships" -> "روابط و زوجین"
+        "teen" -> "نوجوان"
+        "grief" -> "سوگ و فقدان"
+        "self-esteem" -> "اعتماد به نفس"
+        "procrastination" -> "غلبه بر اهمال‌کاری"
+
+        // life
+        "food" -> "غذا و تغذیه"
+        "money" -> "مالی و بودجه"
+        "travel" -> "سفر"
+        "health" -> "سلامت و تناسب اندام"
+        "family" -> "خانواده"
+        "habits" -> "عادت‌ها"
+        "home" -> "خانه و منزل"
+
         else -> toTitleCase(sub)
     }
 }

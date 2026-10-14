@@ -305,4 +305,6 @@
     <string name="tag_color_reset_all">Reset all colors</string>
     <string name="tag_color_pick_for">Pick color for</string>
     <string name="tag_color_default">Default</string>
+    <string name="domain_psychology">Psychology</string>
+    <string name="domain_life">Life</string>
 </resources>

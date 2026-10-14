@@ -189,6 +189,8 @@ private fun getDomainEmoji(domain: String): String = when (domain.lowercase()) {
     "marketing" -> "📢"
     "other" -> "🔧"
     "ai" -> "✨"
+    "psychology" -> "🧠"
+    "life" -> "🏡"
     else -> "📁"
 }
 

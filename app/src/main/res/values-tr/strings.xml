@@ -305,4 +305,6 @@
     <string name="tag_color_reset_all">Tüm renkleri sıfırla</string>
     <string name="tag_color_pick_for">Rengi seç:</string>
     <string name="tag_color_default">Varsayılan</string>
+    <string name="domain_psychology">Psikoloji</string>
+    <string name="domain_life">Yaşam</string>
 </resources>
