@@ -11,6 +11,7 @@ object PromptCatalogImporter {
         "prompts_psychology_v0.3.0.json",
         "prompts_psychology_v0.4.0.json",
         "prompts_psychology_v0.5.0.json",
+        "prompts_psychology_v0.6.0.json",
         "prompts_life_v0.1.0.json"
     )
 
