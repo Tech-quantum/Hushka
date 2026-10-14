@@ -390,6 +390,14 @@ fun WebPromptsDialog(
 }
 
 @Composable
+private fun sourceSubtitle(source: WebSource): String = when (source) {
+    WebSource.GITHUB -> "مخزن: awesome-chatgpt-prompts"
+    WebSource.HF_PROMPTS_CHAT -> "🤗 Hugging Face: fka/prompts.chat"
+    WebSource.HF_STABLE_DIFFUSION -> "🤗 Hugging Face: Gustavosta/Stable-Diffusion-Prompts"
+    WebSource.HF_JAILBREAK -> "🤗 Hugging Face: rubend18/ChatGPT-Jailbreak-Prompts"
+}
+
+@Composable
 private fun getLoadingText(key: String): String = when (key) {
     "loading_connecting" -> stringResource(R.string.loading_connecting)
     "loading_downloading" -> stringResource(R.string.loading_downloading)
