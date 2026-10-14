@@ -75,9 +75,9 @@ fun HushkaLogo(
     val blendedColor = lerp(LED_COLORS[lower], LED_COLORS[upper], fraction)
 
     Box(
-        modifier = Modifier.size(size * 1.6f),
-        contentAlignment = Alignment.Center
-    ) {
+    modifier = modifier.size(size * 1.6f),
+    contentAlignment = Alignment.Center
+) {
         // 🔆 هاله بیرونی (Glow)
         Box(
             modifier = Modifier
