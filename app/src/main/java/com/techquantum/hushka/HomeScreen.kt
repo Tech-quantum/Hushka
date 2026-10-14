@@ -27,6 +27,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -139,34 +142,44 @@ fun HomeScreen(
     Scaffold(
         containerColor = bgColor,
         topBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .statusBarsPadding()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // 💎 لوگو درخشان LED
-                HushkaLogo(size = 40.dp)
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .statusBarsPadding()
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // 💎 لوگو — همیشه چپ (مستقل از زبان)
+                    HushkaLogo(size = 40.dp)
 
-                Spacer(Modifier.width(12.dp))
+                    Spacer(Modifier.width(8.dp))
 
-                // عنوان + زیرنویس
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        "Hushka",
-                        fontSize = 26.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = textColor
-                    )
-                    Spacer(Modifier.height(2.dp))
-                    Text(
-                        stringResource(R.string.app_subtitle),
-                        fontSize = 11.sp,
-                        color = textGrayColor,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    // عنوان + زیرنویس — وسط‌چین
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            "Hushka",
+                            fontSize = 26.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = textColor,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(Modifier.height(2.dp))
+                        Text(
+                            stringResource(R.string.app_subtitle),
+                            fontSize = 11.sp,
+                            color = textGrayColor,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                    // Spacer تقارن (به اندازه لوگو + فاصله)
+                    Spacer(Modifier.width(72.dp))
                 }
             }
         },
