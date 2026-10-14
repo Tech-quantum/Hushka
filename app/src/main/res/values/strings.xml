@@ -309,6 +309,5 @@
     <string name="loading_slow_internet">اینترنت کند است، لطفاً صبر کنید...</string>
     <string name="loading_source">منبع: awesome-chatgpt-prompts</string>
     <string name="domain_marketing">بازاریابی</string>
-    <string name="domain_other">سایر</string>
     <string name="domain_ai">هوش مصنوعی</string>
 </resources>

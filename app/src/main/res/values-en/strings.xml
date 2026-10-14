@@ -293,6 +293,5 @@
     <string name="loading_slow_internet">Slow connection, please wait...</string>
     <string name="loading_source">Source: awesome-chatgpt-prompts</string>
     <string name="domain_marketing">Marketing</string>
-    <string name="domain_other">Other</string>
     <string name="domain_ai">AI</string>
 </resources>

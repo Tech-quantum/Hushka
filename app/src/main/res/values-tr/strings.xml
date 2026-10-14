@@ -293,6 +293,5 @@
     <string name="loading_slow_internet">Bağlantı yavaş, lütfen bekleyin...</string>
     <string name="loading_source">Kaynak: awesome-chatgpt-prompts</string>
     <string name="domain_marketing">Pazarlama</string>
-    <string name="domain_other">Diğer</string>
     <string name="domain_ai">Yapay Zeka</string>
 </resources>
