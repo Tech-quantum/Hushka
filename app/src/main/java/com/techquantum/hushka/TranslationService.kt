@@ -49,6 +49,32 @@ object TranslationService {
     }
 
     /**
+     * تبدیل markup های [xxx] و #xx به placeholder های امن قبل از ترجمه
+     * سپس برمی‌گردونیم به شکل اصلی
+     */
+    private fun protectMarkups(text: String): Pair<String, Map<String, String>> {
+        val placeholders = mutableMapOf<String, String>()
+        var counter = 0
+        // الگوهای رایج: [متن] یا #عدد یا [متن:عدد]
+        val regex = Regex("\\[[^\\]]{1,30}\\]|#[0-9]+")
+        val protected = regex.replace(text) { match ->
+            val key = "__MRK${counter}__"
+            placeholders[key] = match.value
+            counter++
+            key
+        }
+        return protected to placeholders
+    }
+
+    private fun restoreMarkups(text: String, placeholders: Map<String, String>): String {
+        var result = text
+        placeholders.forEach { (key, original) ->
+            result = result.replace(key, original)
+        }
+        return result
+    }
+
+    /**
      * ترجمه با زبان‌های دلخواه (منبع و مقصد)
      */
     suspend fun translateText(
@@ -59,7 +85,8 @@ object TranslationService {
         if (text.isBlank()) return@withContext null
 
         try {
-            val chunks = text.chunked(MAX_CHARS)
+            val (protectedText, placeholders) = protectMarkups(text)
+            val chunks = protectedText.chunked(MAX_CHARS)
             val translatedParts = mutableListOf<String>()
             val langPair = "$sourceLang|$targetLang"
 
@@ -80,7 +107,7 @@ object TranslationService {
                 }
             }
 
-            translatedParts.joinToString(" ")
+            restoreMarkups(translatedParts.joinToString(" "), placeholders)
         } catch (e: Exception) {
             e.printStackTrace()
             null
