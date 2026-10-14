@@ -56,7 +56,7 @@ fun WebPromptsDialog(
             Column {
                 Text(stringResource(R.string.web_title), color = textColor, fontWeight = FontWeight.Bold)
                 Text(
-                    stringResource(R.string.web_repo),
+                    text = sourceSubtitle(selectedSource),
                     color = textGrayColor,
                     fontSize = 11.sp
                 )
