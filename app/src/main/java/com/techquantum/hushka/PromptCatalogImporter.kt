@@ -6,7 +6,8 @@ import org.json.JSONObject
 object PromptCatalogImporter {
     private val ASSET_NAMES = listOf(
         "prompts_catalog_v1.2.0.json",
-        "prompts_persian_v0.1.0.json"
+        "prompts_persian_v0.1.0.json",
+        "prompts_psychology_v0.1.0.json"
     )
 
     suspend fun importIfNeeded(context: Context, dao: PromptDao) {
