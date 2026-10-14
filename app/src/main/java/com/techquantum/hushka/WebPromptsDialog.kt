@@ -1,5 +1,6 @@
 package com.techquantum.hushka
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -22,6 +23,8 @@ fun WebPromptsDialog(
     loadingMessage: String = "در حال اتصال...",
     error: String?,
     isTranslating: Boolean = false,
+    selectedSource: WebSource = WebSource.GITHUB,
+    onSourceSelected: (WebSource) -> Unit = {},
     onTranslate: (List<PromptEntity>) -> Unit,
     onImport: (List<PromptEntity>) -> Unit,
     onDismiss: () -> Unit
@@ -114,6 +117,57 @@ fun WebPromptsDialog(
                         }
                     }
                     else -> {
+                        // ============ 🌐 Source Chips ============
+                        Text(
+                            stringResource(R.string.web_source_label),
+                            color = textGrayColor,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                        Spacer(Modifier.height(6.dp))
+
+                        LazyRow(
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            contentPadding = PaddingValues(horizontal = 2.dp)
+                        ) {
+                            items(WebSource.values().toList()) { source ->
+                                val isSelected = source == selectedSource
+                                val accent = when (source) {
+                                    WebSource.GITHUB -> Color(0xFF10A37F)
+                                    WebSource.HF_PROMPTS_CHAT -> Color(0xFFFFB74D)
+                                    WebSource.HF_STABLE_DIFFUSION -> Color(0xFF7C7CFF)
+                                    WebSource.HF_JAILBREAK -> Color(0xFFE57373)
+                                }
+                                Surface(
+                                    shape = RoundedCornerShape(50),
+                                    color = if (isSelected) accent else cardLightColor,
+                                    border = BorderStroke(
+                                        width = 1.dp,
+                                        color = if (isSelected) accent else Color.Transparent
+                                    ),
+                                    onClick = {
+                                        if (!isLoading) onSourceSelected(source)
+                                    }
+                                ) {
+                                    Row(
+                                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(source.emoji, fontSize = 11.sp)
+                                        Spacer(Modifier.width(4.dp))
+                                        Text(
+                                            stringResource(source.labelResId),
+                                            color = if (isSelected) Color.White else textGrayColor,
+                                            fontSize = 11.sp,
+                                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        Spacer(Modifier.height(10.dp))
+
                         // ============ 🔍 Search Field ============
                         OutlinedTextField(
                             value = searchQuery,
