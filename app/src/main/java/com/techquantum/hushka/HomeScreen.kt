@@ -111,6 +111,7 @@ fun HomeScreen(
     val isTranslating by viewModel.isTranslating.collectAsStateWithLifecycle()
     val webError by viewModel.webError.collectAsStateWithLifecycle()
     val loadingMessage by viewModel.loadingMessage.collectAsStateWithLifecycle()
+    val selectedWebSource by viewModel.selectedWebSource.collectAsStateWithLifecycle()
 
     // 🌐 In-app translation state
     val translateTargetPrompt by viewModel.translateTargetPrompt.collectAsStateWithLifecycle()
@@ -646,6 +647,8 @@ fun HomeScreen(
             loadingMessage = loadingMessage,
             error = webError,
             isTranslating = isTranslating,
+            selectedSource = selectedWebSource,
+            onSourceSelected = { viewModel.onWebSourceSelected(it) },
             onTranslate = { selected ->
                 viewModel.translateWebPrompts(selected)
             },
