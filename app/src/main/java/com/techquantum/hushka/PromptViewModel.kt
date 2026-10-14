@@ -256,6 +256,7 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
             try {
                 val result = withContext(Dispatchers.IO) {
                     when (source) {
+                        WebSource.ALL -> fetchAllSources()
                         WebSource.GITHUB -> fetchFromGitHub()
                         WebSource.HF_PROMPTS_CHAT -> fetchFromHuggingFace(
                             dataset = "fka/prompts.chat",
@@ -325,6 +326,43 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
                 _isFetchingWeb.value = false
             }
         }
+    }
+
+    /**
+     * واکشی از همه منابع — با تحمل خطا
+     */
+    private suspend fun fetchAllSources(): List<PromptEntity> {
+        val result = mutableListOf<PromptEntity>()
+
+        try { result += fetchFromGitHub() } catch (e: Exception) { Log.e(TAG, "ALL: GitHub failed", e) }
+
+        val hfSources = listOf(
+            Triple("fka/prompts.chat", "prompt" to "act", null as String?),
+            Triple("Gustavosta/Stable-Diffusion-Prompts", "Prompt" to null, null),
+            Triple("rubend18/ChatGPT-Jailbreak-Prompts", "Prompt" to "name", null),
+            Triple("kasranaqhdpur/persiandatasets2", "instruction" to null, "input"),
+            Triple("databricks/databricks-dolly-15k", "instruction" to null, "context"),
+            Triple("euclaise/writingprompts", "prompt" to null, null),
+            Triple("sahil2801/CodeAlpaca-20k", "instruction" to null, "input"),
+            Triple("medalpaca/medical_meadow_medical_flashcards", "instruction" to null, "input")
+        )
+
+        for ((dataset, fields, extra) in hfSources) {
+            val (promptField, titleField) = fields
+            try {
+                result += fetchFromHuggingFace(
+                    dataset = dataset,
+                    promptField = promptField,
+                    titleField = titleField,
+                    limit = 200,
+                    extraField = extra
+                )
+            } catch (e: Exception) {
+                Log.e(TAG, "ALL: $dataset failed", e)
+            }
+        }
+
+        return result
     }
 
     private suspend fun fetchFromGitHub(): List<PromptEntity> {

@@ -134,6 +134,7 @@ fun WebPromptsDialog(
                             items(WebSource.values().toList()) { source ->
                                 val isSelected = source == selectedSource
                                 val accent = when (source) {
+                                    WebSource.ALL -> Color(0xFF9C27B0)
                                     WebSource.GITHUB -> Color(0xFF10A37F)
                                     WebSource.HF_PROMPTS_CHAT -> Color(0xFFFFB74D)
                                     WebSource.HF_STABLE_DIFFUSION -> Color(0xFF7C7CFF)
@@ -396,6 +397,7 @@ fun WebPromptsDialog(
 
 @Composable
 private fun sourceSubtitle(source: WebSource): String = when (source) {
+    WebSource.ALL -> "🌐 " + stringResource(R.string.web_source_all)
     WebSource.GITHUB -> stringResource(R.string.web_subtitle_repo_prefix) + " awesome-chatgpt-prompts"
     WebSource.HF_PROMPTS_CHAT -> "🤗 Hugging Face: fka/prompts.chat"
     WebSource.HF_STABLE_DIFFUSION -> "🤗 Hugging Face: Gustavosta/Stable-Diffusion-Prompts"
