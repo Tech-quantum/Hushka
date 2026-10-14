@@ -111,6 +111,12 @@ fun HomeScreen(
     val isTranslating by viewModel.isTranslating.collectAsStateWithLifecycle()
     val webError by viewModel.webError.collectAsStateWithLifecycle()
     val loadingMessage by viewModel.loadingMessage.collectAsStateWithLifecycle()
+
+    // 🌐 In-app translation state
+    val translateTargetPrompt by viewModel.translateTargetPrompt.collectAsStateWithLifecycle()
+    val translateLoading by viewModel.translateLoading.collectAsStateWithLifecycle()
+    val translatedResult by viewModel.translatedResult.collectAsStateWithLifecycle()
+    val translateError by viewModel.translateError.collectAsStateWithLifecycle()
     var showWebDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(isFetchingWeb) {
@@ -442,6 +448,10 @@ fun HomeScreen(
                                 Toast.makeText(appContext, appContext.getString(R.string.no_app_found), Toast.LENGTH_SHORT).show()
                             }
                         },
+                        onTranslateClick = {
+                            val targetLang = AppSettings.getLanguage(appContext)
+                            viewModel.startPromptTranslation(prompt, targetLang)
+                        },
                         onAnalyzeClick = { analyzePrompt = prompt },
                         onLiveTestClick = { liveTestPrompt = prompt },
                         onEditClick = { editingPrompt = prompt },
@@ -608,6 +618,23 @@ fun HomeScreen(
                 showCategoryDialog = false
             },
             onDismiss = { showCategoryDialog = false }
+        )
+    }
+
+    // ============ Translated Prompt Dialog ============
+    translateTargetPrompt?.let { prompt ->
+        TranslatedPromptDialog(
+            originalTitle = prompt.title,
+            sourceLang = LanguageDetector.detect(prompt.text),
+            targetLang = AppSettings.getLanguage(appContext),
+            isLoading = translateLoading,
+            translatedText = translatedResult,
+            error = translateError,
+            onRetry = {
+                val targetLang = AppSettings.getLanguage(appContext)
+                viewModel.retryPromptTranslation(targetLang)
+            },
+            onDismiss = { viewModel.dismissPromptTranslation() }
         )
     }
 

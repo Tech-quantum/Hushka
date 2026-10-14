@@ -53,6 +53,7 @@ fun PromptCard(
     onPreviewClick: () -> Unit,
     onCopyClick: () -> Unit,
     onShareClick: () -> Unit,
+    onTranslateClick: () -> Unit = {},
     onAnalyzeClick: () -> Unit,
     onLiveTestClick: () -> Unit,
     onEditClick: () -> Unit,
@@ -258,6 +259,7 @@ fun PromptCard(
             ) {
                 ActionButton(emoji = "📋", label = stringResource(R.string.copy), onClick = onCopyClick, color = purplePrimary)
                 ActionButton(emoji = "📤", label = stringResource(R.string.card_share), onClick = onShareClick, color = Color(0xFF4CAF50))
+                ActionButton(emoji = "🌐", label = stringResource(R.string.translate_prompt), onClick = onTranslateClick, color = Color(0xFF9C27B0))
                 ActionButton(emoji = "✨", label = stringResource(R.string.card_analyze), onClick = onAnalyzeClick, color = Color(0xFFFFB74D))
                 ActionButton(emoji = "▶", label = stringResource(R.string.card_test), onClick = onLiveTestClick, color = Color(0xFF64B5F6))
                 ActionButton(emoji = "✏️", label = stringResource(R.string.edit), onClick = onEditClick, color = textGrayColor)
