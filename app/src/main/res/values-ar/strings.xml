@@ -317,4 +317,9 @@
     <string name="web_source_hf_sd">Stable Diffusion</string>
     <string name="web_source_hf_jailbreak">Jailbreak</string>
     <string name="web_source_label">المصدر:</string>
+    <string name="web_source_hf_persian">الفارسية</string>
+    <string name="web_source_hf_dolly">Dolly 15k</string>
+    <string name="web_source_hf_writing">WritingPrompts</string>
+    <string name="web_source_hf_code">CodeAlpaca</string>
+    <string name="web_source_hf_medical">الطبي</string>
 </resources>
