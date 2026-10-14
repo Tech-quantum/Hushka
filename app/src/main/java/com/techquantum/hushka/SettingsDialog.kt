@@ -153,7 +153,6 @@ private fun AppearanceTab(
     val textGrayColor = MaterialTheme.colorScheme.onSurfaceVariant
     val purplePrimary = MaterialTheme.colorScheme.primary
 
-    // Theme
     Text(
         stringResource(R.string.appearance),
         style = MaterialTheme.typography.titleSmall,
@@ -185,7 +184,6 @@ private fun AppearanceTab(
 
     Spacer(Modifier.height(4.dp))
 
-    // Color Theme
     Text(
         stringResource(R.string.color_theme),
         style = MaterialTheme.typography.titleSmall,
@@ -244,7 +242,6 @@ private fun AppearanceTab(
 
     Spacer(Modifier.height(4.dp))
 
-    // Language
     Text(
         stringResource(R.string.language),
         style = MaterialTheme.typography.titleSmall,
@@ -291,7 +288,6 @@ private fun DataTab(
     val textGrayColor = MaterialTheme.colorScheme.onSurfaceVariant
     val purplePrimary = MaterialTheme.colorScheme.primary
 
-    // Backup Card
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
@@ -332,7 +328,6 @@ private fun DataTab(
         }
     }
 
-    // Cloud Card
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
@@ -368,7 +363,6 @@ private fun AboutTab(onManageColors: () -> Unit) {
     val textGrayColor = MaterialTheme.colorScheme.onSurfaceVariant
     val purplePrimary = MaterialTheme.colorScheme.primary
 
-    // Manage Colors Card
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
@@ -393,7 +387,6 @@ private fun AboutTab(onManageColors: () -> Unit) {
         }
     }
 
-    // About App Card
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
