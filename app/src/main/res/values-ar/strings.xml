@@ -299,4 +299,10 @@
     <string name="settings_tab_data">البيانات</string>
     <string name="settings_tab_about">حول</string>
     <string name="about_version">الإصدار ١.٠.٠</string>
+    <string name="tag_colors_title">ألوان الوسوم</string>
+    <string name="tag_colors_empty">لا توجد وسوم في البرومبتات</string>
+    <string name="tag_colors_hint">اضغط على أي وسم لاختيار لونه</string>
+    <string name="tag_color_reset_all">إعادة تعيين جميع الألوان</string>
+    <string name="tag_color_pick_for">اختر لوناً لـ</string>
+    <string name="tag_color_default">افتراضي</string>
 </resources>

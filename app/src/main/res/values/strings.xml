@@ -315,4 +315,10 @@
     <string name="settings_tab_data">داده‌ها</string>
     <string name="settings_tab_about">درباره</string>
     <string name="about_version">نسخه ۱.۰.۰</string>
+    <string name="tag_colors_title">مدیریت رنگ تگ‌ها</string>
+    <string name="tag_colors_empty">هیچ تگی در پرامپت‌های شما یافت نشد</string>
+    <string name="tag_colors_hint">روی هر تگ بزنید تا رنگ آن را انتخاب کنید</string>
+    <string name="tag_color_reset_all">بازنشانی همه رنگ‌ها</string>
+    <string name="tag_color_pick_for">انتخاب رنگ برای</string>
+    <string name="tag_color_default">پیش‌فرض</string>
 </resources>

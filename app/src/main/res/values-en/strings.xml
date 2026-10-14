@@ -299,4 +299,10 @@
     <string name="settings_tab_data">Data</string>
     <string name="settings_tab_about">About</string>
     <string name="about_version">Version 1.0.0</string>
+    <string name="tag_colors_title">Tag Colors</string>
+    <string name="tag_colors_empty">No tags found in your prompts</string>
+    <string name="tag_colors_hint">Tap any tag to pick its color</string>
+    <string name="tag_color_reset_all">Reset all colors</string>
+    <string name="tag_color_pick_for">Pick color for</string>
+    <string name="tag_color_default">Default</string>
 </resources>

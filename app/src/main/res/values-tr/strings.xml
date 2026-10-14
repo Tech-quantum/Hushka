@@ -299,4 +299,10 @@
     <string name="settings_tab_data">Veriler</string>
     <string name="settings_tab_about">Hakkında</string>
     <string name="about_version">Sürüm 1.0.0</string>
+    <string name="tag_colors_title">Etiket Renkleri</string>
+    <string name="tag_colors_empty">Komutlarınızda etiket bulunamadı</string>
+    <string name="tag_colors_hint">Rengini seçmek için herhangi bir etikete dokunun</string>
+    <string name="tag_color_reset_all">Tüm renkleri sıfırla</string>
+    <string name="tag_color_pick_for">Rengi seç:</string>
+    <string name="tag_color_default">Varsayılan</string>
 </resources>
