@@ -41,6 +41,7 @@ private val LED_COLORS = listOf(
 
 @Composable
 fun HushkaLogo(
+    modifier: Modifier = Modifier,
     size: Dp = 44.dp
 ) {
     val transition = rememberInfiniteTransition(label = "hushkaLogo")
