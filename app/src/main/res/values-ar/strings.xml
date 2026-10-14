@@ -312,4 +312,9 @@
     <string name="translation_error">خطأ في الترجمة</string>
     <string name="translation_result">النص المترجم</string>
     <string name="translation_retry">إعادة المحاولة</string>
+    <string name="web_source_github">GitHub</string>
+    <string name="web_source_hf_prompts">Prompts.chat</string>
+    <string name="web_source_hf_sd">Stable Diffusion</string>
+    <string name="web_source_hf_jailbreak">Jailbreak</string>
+    <string name="web_source_label">المصدر:</string>
 </resources>

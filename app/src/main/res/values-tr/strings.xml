@@ -312,4 +312,9 @@
     <string name="translation_error">Çeviri hatası</string>
     <string name="translation_result">Çevrilmiş metin</string>
     <string name="translation_retry">Tekrar dene</string>
+    <string name="web_source_github">GitHub</string>
+    <string name="web_source_hf_prompts">Prompts.chat</string>
+    <string name="web_source_hf_sd">Stable Diffusion</string>
+    <string name="web_source_hf_jailbreak">Jailbreak</string>
+    <string name="web_source_label">Kaynak:</string>
 </resources>

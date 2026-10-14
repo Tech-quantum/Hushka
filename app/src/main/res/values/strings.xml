@@ -328,4 +328,9 @@
     <string name="translation_error">خطا در ترجمه</string>
     <string name="translation_result">متن ترجمه‌شده</string>
     <string name="translation_retry">تلاش دوباره</string>
+    <string name="web_source_github">GitHub</string>
+    <string name="web_source_hf_prompts">Prompts.chat</string>
+    <string name="web_source_hf_sd">Stable Diffusion</string>
+    <string name="web_source_hf_jailbreak">Jailbreak</string>
+    <string name="web_source_label">منبع:</string>
 </resources>
