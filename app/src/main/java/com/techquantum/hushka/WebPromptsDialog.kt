@@ -89,7 +89,7 @@ fun WebPromptsDialog(
                             )
                             Spacer(Modifier.height(10.dp))
                             Text(
-                                text = stringResource(R.string.loading_source),
+                                text = sourceSubtitle(selectedSource),
                                 color = textGrayColor,
                                 fontSize = 11.sp
                             )
