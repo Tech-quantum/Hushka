@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -68,6 +69,12 @@ fun PromptCard(
     // 🎨 رنگ اختصاصی دسته
     val accentColor = remember(mainTag, purplePrimary) {
         getCategoryColor(mainTag, purplePrimary)
+    }
+
+    // 🏷️ رنگ‌های سفارشی تگ‌ها (از AppSettings)
+    val appContext = LocalContext.current
+    val tagColors = remember(tags) {
+        AppSettings.getAllTagColors(appContext)
     }
 
     // 📊 زمان آخرین استفاده
@@ -172,19 +179,22 @@ fun PromptCard(
                 Spacer(Modifier.height(10.dp))
             }
 
-            // ===== تگ‌ها (رنگی) =====
+            // ===== تگ‌ها (رنگی با اولویت سفارشی) =====
             if (tags.isNotEmpty()) {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     items(tags) { tag ->
+                        // اگه رنگ سفارشی داره، از اون استفاده کن؛ وگرنه accentColor
+                        val tagColor = tagColors[tag]?.let { parseHexColor(it) } ?: accentColor
                         Surface(
                             shape = RoundedCornerShape(8.dp),
-                            color = accentColor.copy(alpha = 0.10f)
+                            color = tagColor.copy(alpha = 0.15f)
                         ) {
                             Text(
                                 tag,
                                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
                                 fontSize = 11.sp,
-                                color = accentColor
+                                color = tagColor,
+                                fontWeight = FontWeight.Medium
                             )
                         }
                     }
@@ -288,6 +298,16 @@ private fun getCategoryColor(category: String, fallback: Color): Color {
 // ============================================================
 // 📊 فرمت زمان آخرین استفاده
 // ============================================================
+private fun parseHexColor(hex: String): Color? {
+    return try {
+        val cleaned = hex.removePrefix("#")
+        val colorInt = cleaned.toLong(16)
+        Color(0xFF000000 or colorInt)
+    } catch (e: Exception) {
+        null
+    }
+}
+
 private fun formatLastUsed(lastUsedAt: Long): String? {
     if (lastUsedAt <= 0L) return null
     val diff = System.currentTimeMillis() - lastUsedAt

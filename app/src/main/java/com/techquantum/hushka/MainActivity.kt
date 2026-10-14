@@ -87,6 +87,7 @@ class MainActivity : AppCompatActivity() {
             var language by remember { mutableStateOf(savedLanguage) }
             var colorTheme by remember { mutableStateOf(AppSettings.getColorTheme(this@MainActivity)) }
             var backPressedTime by remember { mutableLongStateOf(0L) }
+            var showTagColorManager by remember { mutableStateOf(false) }
 
             // === 🚪 دو بار بک برای خروج ===
             BackHandler {
@@ -146,9 +147,21 @@ class MainActivity : AppCompatActivity() {
                             viewModel.fetchWebPrompts()
                         },
                         onManageColors = {
-                            Toast.makeText(this@MainActivity, this@MainActivity.getString(R.string.toast_coming_soon), Toast.LENGTH_SHORT).show()
+                            showSettings = false
+                            showTagColorManager = true
                         },
                         onDismiss = { showSettings = false }
+                    )
+                }
+
+                if (showTagColorManager) {
+                    val allTags = viewModel.uiState.value.prompts
+                        .flatMap { it.tags.split(",").map { t -> t.trim() } }
+                        .filter { it.isNotEmpty() }
+                        .distinct()
+                    TagColorManagerDialog(
+                        allTags = allTags,
+                        onDismiss = { showTagColorManager = false }
                     )
                 }
             }
