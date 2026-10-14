@@ -648,7 +648,10 @@ fun HomeScreen(
             error = webError,
             isTranslating = isTranslating,
             selectedSource = selectedWebSource,
-            onSourceSelected = { viewModel.onWebSourceSelected(it) },
+            onSourceSelected = {
+                viewModel.onWebSourceSelected(it)
+                viewModel.fetchWebPrompts()
+            },
             onTranslate = { selected ->
                 viewModel.translateWebPrompts(selected)
             },
