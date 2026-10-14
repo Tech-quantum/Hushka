@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -210,13 +212,26 @@ fun LiveTestDialog(
         onDismissRequest = onDismiss,
         containerColor = cardColor,
         title = {
-            Column {
-                Text(stringResource(R.string.tool_live_title), color = textColor, fontWeight = FontWeight.Bold)
-                Text(
-                    stringResource(R.string.tool_live_sub),
-                    color = textGrayColor,
-                    fontSize = 11.sp
-                )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(stringResource(R.string.tool_live_title), color = textColor, fontWeight = FontWeight.Bold)
+                    Text(
+                        stringResource(R.string.tool_live_sub),
+                        color = textGrayColor,
+                        fontSize = 11.sp
+                    )
+                }
+                IconButton(onClick = onDismiss) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = stringResource(R.string.close),
+                        tint = textGrayColor
+                    )
+                }
             }
         },
         text = {
@@ -288,43 +303,46 @@ fun LiveTestDialog(
             }
         },
         confirmButton = {
-    Button(
-        onClick = {
-            val finalText = buildFinalText()
-            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            clipboard.setPrimaryClip(ClipData.newPlainText("Hushka Prompt", finalText))
-            Toast.makeText(context, context.getString(R.string.tool_copied_chatgpt), Toast.LENGTH_LONG).show()
+            Button(
+                onClick = {
+                    val finalText = buildFinalText()
+                    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    clipboard.setPrimaryClip(ClipData.newPlainText("Hushka Prompt", finalText))
+                    Toast.makeText(context, context.getString(R.string.tool_copied_chatgpt), Toast.LENGTH_LONG).show()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = purplePrimary,
+                    contentColor = Color.White
+                ),
+                shape = RoundedCornerShape(10.dp)
+            ) {
+                Text(stringResource(R.string.tool_copy_final), fontSize = 12.sp)
+            }
         },
-        colors = ButtonDefaults.buttonColors(
-            containerColor = purplePrimary,
-            contentColor = Color.White
-        ),
-        shape = RoundedCornerShape(10.dp)
-    ) {
-        Text(stringResource(R.string.tool_copy_final), fontSize = 12.sp)
-    }
-},
         dismissButton = {
             Row {
+                TextButton(onClick = onDismiss) {
+                    Text(stringResource(R.string.close), color = textGrayColor, fontSize = 11.sp)
+                }
                 TextButton(onClick = {
-    val finalText = buildFinalText()
-    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-    clipboard.setPrimaryClip(ClipData.newPlainText("Hushka Prompt", finalText))
-    try {
-        val shareIntent = Intent(Intent.ACTION_SEND).apply {
-            type = "text/plain"
-            putExtra(Intent.EXTRA_TEXT, finalText)
-            putExtra(Intent.EXTRA_SUBJECT, prompt.title)
-        }
-        context.startActivity(
-            Intent.createChooser(shareIntent, context.getString(R.string.tool_send_to))
-        )
-    } catch (e: Exception) {
-        Toast.makeText(context, context.getString(R.string.no_app_found), Toast.LENGTH_SHORT).show()
-    }
-}) {
-    Text(stringResource(R.string.tool_share), color = textGrayColor, fontSize = 11.sp)
-}
+                    val finalText = buildFinalText()
+                    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    clipboard.setPrimaryClip(ClipData.newPlainText("Hushka Prompt", finalText))
+                    try {
+                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                            type = "text/plain"
+                            putExtra(Intent.EXTRA_TEXT, finalText)
+                            putExtra(Intent.EXTRA_SUBJECT, prompt.title)
+                        }
+                        context.startActivity(
+                            Intent.createChooser(shareIntent, context.getString(R.string.tool_send_to))
+                        )
+                    } catch (e: Exception) {
+                        Toast.makeText(context, context.getString(R.string.no_app_found), Toast.LENGTH_SHORT).show()
+                    }
+                }) {
+                    Text(stringResource(R.string.tool_share), color = textGrayColor, fontSize = 11.sp)
+                }
             }
         }
     )
