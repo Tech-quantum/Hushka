@@ -338,4 +338,6 @@
     <string name="web_source_hf_writing">WritingPrompts</string>
     <string name="web_source_hf_code">CodeAlpaca</string>
     <string name="web_source_hf_medical">پزشکی</string>
+    <string name="web_subtitle_all">همه منابع</string>
+    <string name="web_subtitle_repo_prefix">مخزن:</string>
 </resources>
