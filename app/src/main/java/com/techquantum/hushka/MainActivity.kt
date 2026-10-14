@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -85,6 +86,24 @@ class MainActivity : AppCompatActivity() {
             var themeMode by remember { mutableStateOf(AppSettings.getTheme(this@MainActivity)) }
             var language by remember { mutableStateOf(savedLanguage) }
             var colorTheme by remember { mutableStateOf(AppSettings.getColorTheme(this@MainActivity)) }
+            var backPressedTime by remember { mutableLongStateOf(0L) }
+
+            // === 🚪 دو بار بک برای خروج ===
+            BackHandler {
+                val currentTime = System.currentTimeMillis()
+                if (currentTime - backPressedTime < 2000) {
+                    // بار دوم: خروج
+                    finish()
+                } else {
+                    // بار اول: پیغام صمیمی
+                    backPressedTime = currentTime
+                    Toast.makeText(
+                        this@MainActivity,
+                        getString(R.string.press_back_again),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
 
             HushkaTheme(themeMode = themeMode, colorTheme = colorTheme) {
                 HomeScreen(
