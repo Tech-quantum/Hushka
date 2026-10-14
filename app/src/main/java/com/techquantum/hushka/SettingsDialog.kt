@@ -122,12 +122,13 @@ fun SettingsDialog(
                     when (selectedTab) {
                         0 -> AppearanceTab(
                             themeMode, colorTheme, language,
-                            onThemeChange, onColorThemeChange, onLanguageChange
+                            onThemeChange, onColorThemeChange, onLanguageChange,
+                            onManageColors
                         )
                         1 -> DataTab(
                             onExportJson, onExportMarkdown, onImportJson, onBrowseWeb
                         )
-                        else -> AboutTab(onManageColors)
+                        else -> AboutTab()
                     }
                 }
             }
@@ -146,7 +147,8 @@ private fun AppearanceTab(
     language: String,
     onThemeChange: (String) -> Unit,
     onColorThemeChange: (String) -> Unit,
-    onLanguageChange: (String) -> Unit
+    onLanguageChange: (String) -> Unit,
+    onManageColors: () -> Unit
 ) {
     val cardColor = MaterialTheme.colorScheme.surfaceVariant
     val textColor = MaterialTheme.colorScheme.onSurface
@@ -271,6 +273,33 @@ private fun AppearanceTab(
             }
         }
     }
+
+    Spacer(Modifier.height(4.dp))
+
+    // ===== Tag Colors Card (منتقل‌شده از About) =====
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(14.dp),
+        colors = CardDefaults.cardColors(containerColor = cardColor)
+    ) {
+        Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text("🎨  " + stringResource(R.string.colors_title), fontWeight = FontWeight.Bold, fontSize = 13.sp, color = textColor)
+            Text(
+                stringResource(R.string.colors_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = textGrayColor,
+                fontSize = 11.sp
+            )
+            Button(
+                onClick = onManageColors,
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(10.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = purplePrimary)
+            ) {
+                Text(stringResource(R.string.manage_colors), fontSize = 12.sp, color = Color.White)
+            }
+        }
+    }
 }
 
 // ============================================================
@@ -357,35 +386,11 @@ private fun DataTab(
 // ℹ️ Tab 3: About
 // ============================================================
 @Composable
-private fun AboutTab(onManageColors: () -> Unit) {
+private fun AboutTab() {
     val cardColor = MaterialTheme.colorScheme.surfaceVariant
     val textColor = MaterialTheme.colorScheme.onSurface
     val textGrayColor = MaterialTheme.colorScheme.onSurfaceVariant
     val purplePrimary = MaterialTheme.colorScheme.primary
-
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(14.dp),
-        colors = CardDefaults.cardColors(containerColor = cardColor)
-    ) {
-        Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("🎨  " + stringResource(R.string.colors_title), fontWeight = FontWeight.Bold, fontSize = 13.sp, color = textColor)
-            Text(
-                stringResource(R.string.colors_desc),
-                style = MaterialTheme.typography.bodySmall,
-                color = textGrayColor,
-                fontSize = 11.sp
-            )
-            Button(
-                onClick = onManageColors,
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(10.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = purplePrimary)
-            ) {
-                Text(stringResource(R.string.manage_colors), fontSize = 12.sp, color = Color.White)
-            }
-        }
-    }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
