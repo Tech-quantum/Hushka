@@ -295,4 +295,8 @@
     <string name="domain_marketing">Pazarlama</string>
     <string name="domain_ai">Yapay Zeka</string>
     <string name="press_back_again">Çıkmak için tekrar bas! 👋</string>
+    <string name="settings_tab_appearance">Görünüm</string>
+    <string name="settings_tab_data">Veriler</string>
+    <string name="settings_tab_about">Hakkında</string>
+    <string name="about_version">Sürüm 1.0.0</string>
 </resources>

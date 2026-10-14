@@ -295,4 +295,8 @@
     <string name="domain_marketing">التسويق</string>
     <string name="domain_ai">الذكاء الاصطناعي</string>
     <string name="press_back_again">اضغط رجوع مرة أخرى للمغادرة! 👋</string>
+    <string name="settings_tab_appearance">المظهر</string>
+    <string name="settings_tab_data">البيانات</string>
+    <string name="settings_tab_about">حول</string>
+    <string name="about_version">الإصدار ١.٠.٠</string>
 </resources>

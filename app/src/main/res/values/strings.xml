@@ -311,4 +311,8 @@
     <string name="domain_marketing">بازاریابی</string>
     <string name="domain_ai">هوش مصنوعی</string>
     <string name="press_back_again">یه بار دیگه بک بزن تا بریم! 👋</string>
+    <string name="settings_tab_appearance">ظاهر</string>
+    <string name="settings_tab_data">داده‌ها</string>
+    <string name="settings_tab_about">درباره</string>
+    <string name="about_version">نسخه ۱.۰.۰</string>
 </resources>
