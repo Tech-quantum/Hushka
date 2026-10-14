@@ -139,21 +139,35 @@ fun HomeScreen(
     Scaffold(
         containerColor = bgColor,
         topBar = {
-            Column(
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .statusBarsPadding()
-                    .padding(horizontal = 20.dp, vertical = 12.dp)
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Hushka", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = textColor)
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    stringResource(R.string.app_subtitle),
-                    fontSize = 12.sp,
-                    color = textGrayColor,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
+                // 💎 لوگو درخشان LED
+                HushkaLogo(size = 40.dp)
+
+                Spacer(Modifier.width(12.dp))
+
+                // عنوان + زیرنویس
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        "Hushka",
+                        fontSize = 26.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = textColor
+                    )
+                    Spacer(Modifier.height(2.dp))
+                    Text(
+                        stringResource(R.string.app_subtitle),
+                        fontSize = 11.sp,
+                        color = textGrayColor,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
         },
         bottomBar = {
