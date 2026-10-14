@@ -19,6 +19,7 @@ import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
+import java.net.URLEncoder
 
 class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -213,6 +214,13 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
 
     // ==================== Web Prompts Fetch ====================
 
+    private val _selectedWebSource = MutableStateFlow(WebSource.GITHUB)
+    val selectedWebSource: StateFlow<WebSource> = _selectedWebSource.asStateFlow()
+
+    fun onWebSourceSelected(source: WebSource) {
+        _selectedWebSource.value = source
+    }
+
     private val _webPrompts = MutableStateFlow<List<PromptEntity>>(emptyList())
     val webPrompts: StateFlow<List<PromptEntity>> = _webPrompts.asStateFlow()
 
@@ -232,9 +240,10 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
         _webError.value = null
         _webPrompts.value = emptyList()
         _loadingMessage.value = "loading_connecting"
+        val source = _selectedWebSource.value
 
         viewModelScope.launch {
-            // 🎬 تایمر پیام‌های پویا — با پیشرفت زمان، متن عوض می‌شود
+            // 🎬 تایمر پیام‌های پویا
             val messageJob = launch {
                 delay(3_000)
                 _loadingMessage.value = "loading_downloading"
@@ -246,9 +255,27 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
 
             try {
                 val result = withContext(Dispatchers.IO) {
-                    val url = URL("https://raw.githubusercontent.com/f/awesome-chatgpt-prompts/main/prompts.csv")
-                    val csv = url.readText()
-                    parseCsv(csv)
+                    when (source) {
+                        WebSource.GITHUB -> fetchFromGitHub()
+                        WebSource.HF_PROMPTS_CHAT -> fetchFromHuggingFace(
+                            dataset = "fka/prompts.chat",
+                            promptField = "prompt",
+                            titleField = "act",
+                            limit = 500
+                        )
+                        WebSource.HF_STABLE_DIFFUSION -> fetchFromHuggingFace(
+                            dataset = "Gustavosta/Stable-Diffusion-Prompts",
+                            promptField = "Prompt",
+                            titleField = null,
+                            limit = 500
+                        )
+                        WebSource.HF_JAILBREAK -> fetchFromHuggingFace(
+                            dataset = "rubend18/ChatGPT-Jailbreak-Prompts",
+                            promptField = "Prompt",
+                            titleField = "name",
+                            limit = 100
+                        )
+                    }
                 }
                 _webPrompts.value = result
                 if (result.isEmpty()) {
@@ -264,6 +291,65 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
                 _isFetchingWeb.value = false
             }
         }
+    }
+
+    private suspend fun fetchFromGitHub(): List<PromptEntity> {
+        val url = URL("https://raw.githubusercontent.com/f/awesome-chatgpt-prompts/main/prompts.csv")
+        val csv = url.readText()
+        return parseCsv(csv)
+    }
+
+    private suspend fun fetchFromHuggingFace(
+        dataset: String,
+        promptField: String,
+        titleField: String?,
+        limit: Int
+    ): List<PromptEntity> {
+        val allPrompts = mutableListOf<PromptEntity>()
+        val encodedDataset = URLEncoder.encode(dataset, "UTF-8")
+        val batchSize = 100
+        var offset = 0
+
+        while (offset < limit) {
+            val length = minOf(batchSize, limit - offset)
+            val url = "https://datasets-server.huggingface.co/rows?" +
+                    "dataset=$encodedDataset&config=default&split=train" +
+                    "&offset=$offset&length=$length"
+            val response = URL(url).readText()
+            val json = JSONObject(response)
+            val rows = json.optJSONArray("rows") ?: break
+            if (rows.length() == 0) break
+
+            for (i in 0 until rows.length()) {
+                val rowObj = rows.getJSONObject(i).getJSONObject("row")
+                val promptText = rowObj.optString(promptField, "").trim()
+                if (promptText.isBlank()) continue
+
+                val title = if (titleField != null) {
+                    rowObj.optString(titleField, "").trim().take(100).ifBlank {
+                        promptText.take(60)
+                    }
+                } else {
+                    promptText.take(60)
+                }
+
+                allPrompts.add(
+                    PromptEntity(
+                        title = title,
+                        category = "web",
+                        tags = "huggingface,$dataset",
+                        text = promptText,
+                        collection = "huggingface"
+                    )
+                )
+            }
+
+            offset += rows.length()
+            if (rows.length() < length) break
+            delay(200)
+        }
+
+        return allPrompts
     }
 
     private fun parseCsv(csv: String): List<PromptEntity> {
