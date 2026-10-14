@@ -138,6 +138,11 @@ fun WebPromptsDialog(
                                     WebSource.HF_PROMPTS_CHAT -> Color(0xFFFFB74D)
                                     WebSource.HF_STABLE_DIFFUSION -> Color(0xFF7C7CFF)
                                     WebSource.HF_JAILBREAK -> Color(0xFFE57373)
+                                    WebSource.HF_PERSIAN -> Color(0xFF4CAF50)
+                                    WebSource.HF_DOLLY -> Color(0xFF00BCD4)
+                                    WebSource.HF_WRITING -> Color(0xFFEC407A)
+                                    WebSource.HF_CODE -> Color(0xFF3B82F6)
+                                    WebSource.HF_MEDICAL -> Color(0xFF26C6DA)
                                 }
                                 Surface(
                                     shape = RoundedCornerShape(50),
@@ -395,6 +400,11 @@ private fun sourceSubtitle(source: WebSource): String = when (source) {
     WebSource.HF_PROMPTS_CHAT -> "🤗 Hugging Face: fka/prompts.chat"
     WebSource.HF_STABLE_DIFFUSION -> "🤗 Hugging Face: Gustavosta/Stable-Diffusion-Prompts"
     WebSource.HF_JAILBREAK -> "🤗 Hugging Face: rubend18/ChatGPT-Jailbreak-Prompts"
+    WebSource.HF_PERSIAN -> "🤗 Hugging Face: kasranaqhdpur/persiandatasets2"
+    WebSource.HF_DOLLY -> "🤗 Hugging Face: databricks/databricks-dolly-15k"
+    WebSource.HF_WRITING -> "🤗 Hugging Face: euclaise/writingprompts"
+    WebSource.HF_CODE -> "🤗 Hugging Face: sahil2801/CodeAlpaca-20k"
+    WebSource.HF_MEDICAL -> "🤗 Hugging Face: medalpaca/medical_meadow_medical_flashcards"
 }
 
 @Composable
