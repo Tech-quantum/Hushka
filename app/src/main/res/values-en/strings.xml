@@ -324,4 +324,5 @@
     <string name="web_source_hf_medical">Medical</string>
     <string name="web_subtitle_all">All Sources</string>
     <string name="web_subtitle_repo_prefix">Repo:</string>
+    <string name="web_source_all">All</string>
 </resources>

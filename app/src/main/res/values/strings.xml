@@ -340,4 +340,5 @@
     <string name="web_source_hf_medical">پزشکی</string>
     <string name="web_subtitle_all">همه منابع</string>
     <string name="web_subtitle_repo_prefix">مخزن:</string>
+    <string name="web_source_all">همه</string>
 </resources>

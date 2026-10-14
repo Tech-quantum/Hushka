@@ -324,4 +324,5 @@
     <string name="web_source_hf_medical">Tıbbi</string>
     <string name="web_subtitle_all">Tüm Kaynaklar</string>
     <string name="web_subtitle_repo_prefix">Depo:</string>
+    <string name="web_source_all">Tümü</string>
 </resources>

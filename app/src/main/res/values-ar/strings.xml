@@ -324,4 +324,5 @@
     <string name="web_source_hf_medical">الطبي</string>
     <string name="web_subtitle_all">كل المصادر</string>
     <string name="web_subtitle_repo_prefix">المستودع:</string>
+    <string name="web_source_all">الكل</string>
 </resources>
