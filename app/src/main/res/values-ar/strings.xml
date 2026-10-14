@@ -307,4 +307,9 @@
     <string name="tag_color_default">افتراضي</string>
     <string name="domain_psychology">علم النفس</string>
     <string name="domain_life">الحياة</string>
+    <string name="translate_prompt">ترجمة تلقائية</string>
+    <string name="translating">جاري الترجمة...</string>
+    <string name="translation_error">خطأ في الترجمة</string>
+    <string name="translation_result">النص المترجم</string>
+    <string name="translation_retry">إعادة المحاولة</string>
 </resources>

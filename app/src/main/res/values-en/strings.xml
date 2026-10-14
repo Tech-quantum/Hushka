@@ -307,4 +307,9 @@
     <string name="tag_color_default">Default</string>
     <string name="domain_psychology">Psychology</string>
     <string name="domain_life">Life</string>
+    <string name="translate_prompt">Translate</string>
+    <string name="translating">Translating...</string>
+    <string name="translation_error">Translation error</string>
+    <string name="translation_result">Translated text</string>
+    <string name="translation_retry">Retry</string>
 </resources>

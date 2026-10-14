@@ -307,4 +307,9 @@
     <string name="tag_color_default">Varsayılan</string>
     <string name="domain_psychology">Psikoloji</string>
     <string name="domain_life">Yaşam</string>
+    <string name="translate_prompt">Otomatik Çeviri</string>
+    <string name="translating">Çevriliyor...</string>
+    <string name="translation_error">Çeviri hatası</string>
+    <string name="translation_result">Çevrilmiş metin</string>
+    <string name="translation_retry">Tekrar dene</string>
 </resources>

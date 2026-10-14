@@ -48,15 +48,23 @@ object TranslationService {
             .create(TranslationApi::class.java)
     }
 
-    suspend fun translateText(text: String): String? = withContext(Dispatchers.IO) {
+    /**
+     * ترجمه با زبان‌های دلخواه (منبع و مقصد)
+     */
+    suspend fun translateText(
+        text: String,
+        sourceLang: String = "en",
+        targetLang: String = "fa"
+    ): String? = withContext(Dispatchers.IO) {
         if (text.isBlank()) return@withContext null
 
         try {
             val chunks = text.chunked(MAX_CHARS)
             val translatedParts = mutableListOf<String>()
+            val langPair = "$sourceLang|$targetLang"
 
             for ((index, chunk) in chunks.withIndex()) {
-                val response = api.translate(chunk, "en|fa")
+                val response = api.translate(chunk, langPair)
                 val translated = response.responseData?.translatedText
 
                 if (translated.isNullOrBlank() ||
@@ -78,4 +86,10 @@ object TranslationService {
             null
         }
     }
+
+    /**
+     * نسخه سازگاری با کد قدیم (en → fa)
+     */
+    suspend fun translateText(text: String): String? =
+        translateText(text, "en", "fa")
 }

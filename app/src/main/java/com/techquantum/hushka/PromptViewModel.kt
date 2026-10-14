@@ -381,6 +381,65 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
         }
     }
 
+    // ==================== In-app Prompt Translation ====================
+
+    private val _translateTargetPrompt = MutableStateFlow<PromptEntity?>(null)
+    val translateTargetPrompt: StateFlow<PromptEntity?> = _translateTargetPrompt.asStateFlow()
+
+    private val _translateLoading = MutableStateFlow(false)
+    val translateLoading: StateFlow<Boolean> = _translateLoading.asStateFlow()
+
+    private val _translatedResult = MutableStateFlow<String?>(null)
+    val translatedResult: StateFlow<String?> = _translatedResult.asStateFlow()
+
+    private val _translateError = MutableStateFlow<String?>(null)
+    val translateError: StateFlow<String?> = _translateError.asStateFlow()
+
+    fun startPromptTranslation(prompt: PromptEntity, targetLang: String) {
+        if (_translateLoading.value) return
+        _translateTargetPrompt.value = prompt
+        _translateLoading.value = true
+        _translatedResult.value = null
+        _translateError.value = null
+
+        viewModelScope.launch {
+            try {
+                val sourceLang = LanguageDetector.detect(prompt.text)
+                if (sourceLang == targetLang) {
+                    _translateError.value = "same_language"
+                } else {
+                    val result = TranslationService.translateText(
+                        text = prompt.text,
+                        sourceLang = sourceLang,
+                        targetLang = targetLang
+                    )
+                    if (result.isNullOrBlank() || result.equals(prompt.text, ignoreCase = true)) {
+                        _translateError.value = "empty_result"
+                    } else {
+                        _translatedResult.value = result
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Prompt translation failed", e)
+                _translateError.value = e.message ?: "unknown"
+            } finally {
+                _translateLoading.value = false
+            }
+        }
+    }
+
+    fun retryPromptTranslation(targetLang: String) {
+        val prompt = _translateTargetPrompt.value ?: return
+        startPromptTranslation(prompt, targetLang)
+    }
+
+    fun dismissPromptTranslation() {
+        _translateTargetPrompt.value = null
+        _translateLoading.value = false
+        _translatedResult.value = null
+        _translateError.value = null
+    }
+
     private companion object {
         const val TAG = "HushkaViewModel"
     }

@@ -323,4 +323,9 @@
     <string name="tag_color_default">پیش‌فرض</string>
     <string name="domain_psychology">روانشناسی</string>
     <string name="domain_life">زندگی</string>
+    <string name="translate_prompt">ترجمه خودکار</string>
+    <string name="translating">در حال ترجمه...</string>
+    <string name="translation_error">خطا در ترجمه</string>
+    <string name="translation_result">متن ترجمه‌شده</string>
+    <string name="translation_retry">تلاش دوباره</string>
 </resources>
