@@ -8,6 +8,11 @@ enum class WebSource(
     val labelResId: Int,
     val emoji: String
 ) {
+    ALL(
+        id = "all",
+        labelResId = R.string.web_source_all,
+        emoji = "🌐"
+    ),
     GITHUB(
         id = "github",
         labelResId = R.string.web_source_github,
