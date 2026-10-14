@@ -180,8 +180,13 @@ fun AdvancedAnalyzeDialog(
                         .padding(horizontal = 16.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    IconButton(onClick = onDismiss) {
-                        Text("✕", fontSize = 20.sp, color = textGray)
+                    TextButton(onClick = onDismiss) {
+                        Text(
+                            stringResource(R.string.close),
+                            fontSize = 13.sp,
+                            color = textGray,
+                            fontWeight = FontWeight.Medium
+                        )
                     }
                     Spacer(Modifier.weight(1f))
                     Column(horizontalAlignment = Alignment.End) {
