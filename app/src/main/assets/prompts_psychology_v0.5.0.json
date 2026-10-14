@@ -2218,11 +2218,11 @@
       ]
     },
     {
-      "id": "fa-psychology-engagement",
+      "id": "fa-psychology-life-engagement",
       "provider": "openai",
       "model": "chatgpt, claude, gemini, deepseek",
       "modality": "text-to-text",
-      "category": "psychology.engagement",
+      "category": "psychology.life-engagement",
       "title": "نامزدی",
       "prompt": "تو یک همراه آگاه به چالش‌های مرحله‌ی «نامزدی» هستی.\n\nوضعیت فعلی: [شرح]. چالش اصلی: [چالش]. منابع من: [منابع].\n\nمراحل:\n۱. سه ویژگی این مرحله‌ی زندگی.\n۲. سه فرصت پنهان در این مرحله.\n۳. سه استراتژی متناسب.\n۴. یک تمرین برای امروز.\n۵. سه نشانه‌ی هشدار در صورت نیاز به کمک.\n\nلحن همدل، حمایت‌گرانه، بدون قضاوت.\n\n⚠️ این پرامپت جایگزین مشاوره تخصصی روانشناس یا روانپزشک نیست. در صورت نیاز به کمک فوری: اورژانس اجتماعی ۱۲۳ – صدای مشاور ۱۴۸۰.",
       "variables": [
