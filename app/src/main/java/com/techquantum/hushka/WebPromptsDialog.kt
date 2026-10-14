@@ -395,7 +395,6 @@ fun WebPromptsDialog(
 }
 
 @Composable
-@Composable
 private fun sourceSubtitle(source: WebSource): String = when (source) {
     WebSource.GITHUB -> stringResource(R.string.web_subtitle_repo_prefix) + " awesome-chatgpt-prompts"
     WebSource.HF_PROMPTS_CHAT -> "🤗 Hugging Face: fka/prompts.chat"
