@@ -85,41 +85,47 @@ fun WebPromptsDialog(
         }
     }
 
-    // 📢 پیام موفقیت در مرکز صفحه (non-modal Popup)
+    // 📢 پیام موفقیت در مرکز صفحه (Dialog روی AlertDialog)
     if (showSuccessMessage) {
-        androidx.compose.ui.window.Popup(
-            alignment = Alignment.Center,
-            properties = androidx.compose.ui.window.PopupProperties(
-                focusable = false,
+        Dialog(
+            onDismissRequest = { },
+            properties = androidx.compose.ui.window.DialogProperties(
                 dismissOnBackPress = false,
-                dismissOnClickOutside = false
+                dismissOnClickOutside = false,
+                usePlatformDefaultWidth = false
             )
         ) {
-            Surface(
-                shape = RoundedCornerShape(20.dp),
-                color = MaterialTheme.colorScheme.surface,
-                tonalElevation = 8.dp,
-                shadowElevation = 12.dp
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(24.dp),
+                contentAlignment = Alignment.Center
             ) {
-                Column(
-                    modifier = Modifier.padding(horizontal = 32.dp, vertical = 22.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                Surface(
+                    shape = RoundedCornerShape(20.dp),
+                    color = MaterialTheme.colorScheme.surface,
+                    tonalElevation = 8.dp,
+                    shadowElevation = 12.dp
                 ) {
-                    // ✅ آیکون تیک سبز
-                    Text(
-                        text = "✓",
-                        color = Color(0xFF10B981),
-                        fontSize = 40.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(Modifier.height(10.dp))
-                    Text(
-                        text = stringResource(R.string.web_refresh_success),
-                        color = MaterialTheme.colorScheme.onSurface,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium,
-                        textAlign = TextAlign.Center
-                    )
+                    Column(
+                        modifier = Modifier.padding(horizontal = 32.dp, vertical = 22.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "✓",
+                            color = Color(0xFF10B981),
+                            fontSize = 40.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(Modifier.height(10.dp))
+                        Text(
+                            text = stringResource(R.string.web_refresh_success),
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
             }
         }
