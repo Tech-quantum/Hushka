@@ -1,6 +1,5 @@
 package com.techquantum.hushka
 
-import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
@@ -28,6 +27,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import kotlinx.coroutines.delay
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.Alignment
 
 @Composable
 fun WebPromptsDialog(
@@ -49,7 +52,6 @@ fun WebPromptsDialog(
     val textGrayColor = MaterialTheme.colorScheme.onSurfaceVariant
     val purplePrimary = MaterialTheme.colorScheme.primary
 
-    val context = LocalContext.current
     val selected = remember { mutableStateListOf<PromptEntity>() }
     var searchQuery by remember { mutableStateOf("") }
     var wasRefreshing by remember { mutableStateOf(false) }
@@ -66,17 +68,49 @@ fun WebPromptsDialog(
         label = "rotation"
     )
 
-    // ✅ بعد از اتمام بروزرسانی، Toast نمایش بده
+    var showSuccessMessage by remember { mutableStateOf(false) }
+
+    // ✅ بعد از اتمام بروزرسانی، پیام مرکزی نمایش بده
     LaunchedEffect(isLoading, wasRefreshing) {
         if (wasRefreshing && !isLoading) {
-            Toast.makeText(
-                context,
-                "پرامپت‌ها با موفقیت به‌روزرسانی شدند ✅",
-                Toast.LENGTH_SHORT
-            ).show()
             wasRefreshing = false
+            showSuccessMessage = true
+            delay(1800)
+            showSuccessMessage = false
         }
     }
+
+    // 📢 پیام موفقیت در مرکز صفحه
+    if (showSuccessMessage) {
+        Dialog(
+            onDismissRequest = { },
+            properties = androidx.compose.ui.window.DialogProperties(
+                dismissOnBackPress = false,
+                dismissOnClickOutside = false
+            )
+        ) {
+            Surface(
+                shape = RoundedCornerShape(20.dp),
+                color = MaterialTheme.colorScheme.surface,
+                tonalElevation = 8.dp,
+                shadowElevation = 12.dp
+            ) {
+                Column(
+                    modifier = Modifier.padding(horizontal = 32.dp, vertical = 22.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = stringResource(R.string.web_refresh_success),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
+    }
+
 
     // 🔍 فیلتر پرامپت‌ها بر اساس جستجو (case-insensitive، در title و text)
     val filteredPrompts = remember(prompts, searchQuery) {

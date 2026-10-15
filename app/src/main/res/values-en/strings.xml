@@ -347,4 +347,5 @@
     <string name="settings_connection_ok">Connected</string>
     <string name="settings_connection_fail">Connection failed</string>
     <string name="settings_model">Model</string>
+    <string name="web_refresh_success">Prompts refreshed successfully</string>
 </resources>

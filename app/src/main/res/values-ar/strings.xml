@@ -347,4 +347,5 @@
     <string name="settings_connection_ok">متصل</string>
     <string name="settings_connection_fail">فشل الاتصال</string>
     <string name="settings_model">النموذج</string>
+    <string name="web_refresh_success">تم تحديث المطالبات بنجاح</string>
 </resources>
