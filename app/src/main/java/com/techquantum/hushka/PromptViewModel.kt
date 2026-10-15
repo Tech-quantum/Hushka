@@ -234,7 +234,7 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
     private val _loadingMessage = MutableStateFlow("loading_connecting")
     val loadingMessage: StateFlow<String> = _loadingMessage.asStateFlow()
 
-    fun fetchWebPrompts() {
+    fun fetchWebPrompts(forceRefresh: Boolean = false) {
         if (_isFetchingWeb.value) return
         _isFetchingWeb.value = true
         _webError.value = null
@@ -243,7 +243,21 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
         val source = _selectedWebSource.value
 
         viewModelScope.launch {
-            // 🎬 تایمر پیام‌های پویا
+            if (!forceRefresh) {
+                val cached: List<PromptEntity>? = withContext(Dispatchers.IO) {
+                    WebCacheManager.get(
+                        HushkaApplicationHolder.context.applicationContext,
+                        source.id
+                    )
+                }
+                if (!cached.isNullOrEmpty()) {
+                    _webPrompts.value = cached
+                    _loadingMessage.value = "loading_from_cache"
+                    _isFetchingWeb.value = false
+                    return@launch
+                }
+            }
+
             val messageJob = launch {
                 delay(3_000)
                 _loadingMessage.value = "loading_downloading"
@@ -312,18 +326,78 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
                         )
                     }
                 }
+
+                if (result.isNotEmpty()) {
+                    withContext(Dispatchers.IO) {
+                        WebCacheManager.put(
+                            HushkaApplicationHolder.context.applicationContext,
+                            source.id,
+                            result
+                        )
+                    }
+                }
+
                 _webPrompts.value = result
                 if (result.isEmpty()) {
                     _webError.value = "no_prompts_found"
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Fetching web prompts failed", e)
-                _webError.value = e.message ?: "unknown_error"
-                _webPrompts.value = emptyList()
+                val staleCache: List<PromptEntity>? = withContext(Dispatchers.IO) {
+                    try {
+                        val f = java.io.File(
+                            HushkaApplicationHolder.context.applicationContext.filesDir,
+                            "web_cache_${source.id}.json"
+                        )
+                        if (f.exists()) {
+                            val text = f.readText(Charsets.UTF_8)
+                            val arr = org.json.JSONArray(text)
+                            val list = ArrayList<PromptEntity>()
+                            for (i in 0 until arr.length()) {
+                                val o = arr.getJSONObject(i)
+                                list.add(
+                                    PromptEntity(
+                                        id = -(i + 1).toLong(),
+                                        title = o.optString("title"),
+                                        category = o.optString("category"),
+                                        text = o.optString("text"),
+                                        tags = o.optString("tags"),
+                                        source = "web_cache"
+                                    )
+                                )
+                            }
+                            list
+                        } else null
+                    } catch (e2: Throwable) {
+                        Log.e(TAG, "stale cache read failed", e2)
+                        null
+                    }
+                }
+                if (!staleCache.isNullOrEmpty()) {
+                    _webPrompts.value = staleCache
+                    _loadingMessage.value = "loading_from_cache_offline"
+                } else {
+                    _webError.value = e.message ?: "unknown_error"
+                    _webPrompts.value = emptyList()
+                }
             } finally {
                 messageJob.cancel()
                 _loadingMessage.value = "loading_connecting"
                 _isFetchingWeb.value = false
+            }
+        }
+    }
+
+    fun refreshWebPrompts() {
+        fetchWebPrompts(forceRefresh = true)
+    }
+
+    fun clearWebCache() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                WebCacheManager.clearAll(
+                    HushkaApplicationHolder.context.applicationContext
+                )
             }
         }
     }

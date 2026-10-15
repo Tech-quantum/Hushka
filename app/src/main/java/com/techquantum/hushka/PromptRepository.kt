@@ -13,6 +13,10 @@ interface PromptRepository {
     suspend fun togglePinned(prompt: PromptEntity)
     suspend fun markUsed(prompt: PromptEntity)
     suspend fun updateLibrary(): LibraryUpdateResult
+
+    suspend fun getCachedWebPrompts(source: String): List<PromptEntity>?
+    suspend fun cacheWebPrompts(source: String, prompts: List<PromptEntity>)
+    suspend fun clearWebCache()
 }
 
 data class LibraryUpdateResult(

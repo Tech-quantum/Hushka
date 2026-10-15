@@ -7,9 +7,10 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [PromptEntity::class], version = 6, exportSchema = false)
+@Database(entities = [PromptEntity::class, WebCacheEntity::class], version = 7, exportSchema = false)
 abstract class PromptDatabase : RoomDatabase() {
     abstract fun promptDao(): PromptDao
+    abstract fun webCacheDao(): WebCacheDao
 
     companion object {
         private val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -47,6 +48,17 @@ abstract class PromptDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_6_7 = object : Migration(6, 7) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "CREATE TABLE IF NOT EXISTS web_cache (" +
+                    "source TEXT NOT NULL PRIMARY KEY, " +
+                    "payload TEXT NOT NULL, " +
+                    "cachedAt INTEGER NOT NULL)"
+                )
+            }
+        }
+
         @Volatile
         private var INSTANCE: PromptDatabase? = null
 
@@ -62,7 +74,8 @@ abstract class PromptDatabase : RoomDatabase() {
                         MIGRATION_2_3,
                         MIGRATION_3_4,
                         MIGRATION_4_5,
-                        MIGRATION_5_6
+                        MIGRATION_5_6,
+                        MIGRATION_6_7
                     )
                     .build()
                     .also { INSTANCE = it }
