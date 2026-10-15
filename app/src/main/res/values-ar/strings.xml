@@ -356,4 +356,6 @@
     <string name="web_cache_cleared_toast">تم مسح ذاكرة التخزين المؤقت</string>
     <string name="settings_tab_ai">الذكاء الاصطناعي</string>
     <string name="web_search_placeholder">ابحث في العنوان أو النص...</string>
+    <string name="translation_same_language">النص بالفعل بهذه اللغة</string>
+    <string name="translation_empty_result">لم يتم العثور على ترجمة</string>
 </resources>

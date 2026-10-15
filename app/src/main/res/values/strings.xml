@@ -372,4 +372,6 @@
     <string name="web_cache_cleared_toast">کش وب پاک شد</string>
     <string name="settings_tab_ai">هوش مصنوعی</string>
     <string name="web_search_placeholder">جستجو در عنوان یا متن...</string>
+    <string name="translation_same_language">متن پرامپت قبلاً به این زبان است</string>
+    <string name="translation_empty_result">ترجمه‌ای یافت نشد</string>
 </resources>

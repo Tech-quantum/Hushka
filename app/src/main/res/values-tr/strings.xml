@@ -356,4 +356,6 @@
     <string name="web_cache_cleared_toast">Web önbelleği temizlendi</string>
     <string name="settings_tab_ai">Yapay Zeka</string>
     <string name="web_search_placeholder">Başlık veya metinde ara...</string>
+    <string name="translation_same_language">İstem zaten bu dilde</string>
+    <string name="translation_empty_result">Çeviri bulunamadı</string>
 </resources>

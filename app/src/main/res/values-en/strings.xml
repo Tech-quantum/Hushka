@@ -356,4 +356,6 @@
     <string name="web_cache_cleared_toast">Web cache cleared</string>
     <string name="settings_tab_ai">AI</string>
     <string name="web_search_placeholder">Search in title or text...</string>
+    <string name="translation_same_language">The prompt is already in this language</string>
+    <string name="translation_empty_result">No translation found</string>
 </resources>
