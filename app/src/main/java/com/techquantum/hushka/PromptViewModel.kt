@@ -234,7 +234,7 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
     private val _loadingMessage = MutableStateFlow("loading_connecting")
     val loadingMessage: StateFlow<String> = _loadingMessage.asStateFlow()
 
-    fun fetchWebPrompts() {
+    fun fetchWebPrompts(forceRefresh: Boolean = false) {
         if (_isFetchingWeb.value) return
         _isFetchingWeb.value = true
         _webError.value = null
@@ -243,7 +243,18 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
         val source = _selectedWebSource.value
 
         viewModelScope.launch {
-            // 🎬 تایمر پیام‌های پویا
+            if (!forceRefresh) {
+                val cached = withContext(Dispatchers.IO) {
+                    repository.getCachedWebPrompts(source.id)
+                }
+                if (!cached.isNullOrEmpty()) {
+                    _webPrompts.value = cached
+                    _loadingMessage.value = "loading_from_cache"
+                    _isFetchingWeb.value = false
+                    return@launch
+                }
+            }
+
             val messageJob = launch {
                 delay(3_000)
                 _loadingMessage.value = "loading_downloading"
@@ -312,18 +323,45 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
                         )
                     }
                 }
+
+                if (result.isNotEmpty()) {
+                    withContext(Dispatchers.IO) {
+                        repository.cacheWebPrompts(source.id, result)
+                    }
+                }
+
                 _webPrompts.value = result
                 if (result.isEmpty()) {
                     _webError.value = "no_prompts_found"
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Fetching web prompts failed", e)
-                _webError.value = e.message ?: "unknown_error"
-                _webPrompts.value = emptyList()
+                val staleCache = withContext(Dispatchers.IO) {
+                    repository.getCachedWebPrompts(source.id)
+                }
+                if (!staleCache.isNullOrEmpty()) {
+                    _webPrompts.value = staleCache
+                    _loadingMessage.value = "loading_from_cache_offline"
+                } else {
+                    _webError.value = e.message ?: "unknown_error"
+                    _webPrompts.value = emptyList()
+                }
             } finally {
                 messageJob.cancel()
                 _loadingMessage.value = "loading_connecting"
                 _isFetchingWeb.value = false
+            }
+        }
+    }
+
+    fun refreshWebPrompts() {
+        fetchWebPrompts(forceRefresh = true)
+    }
+
+    fun clearWebCache() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                repository.clearWebCache()
             }
         }
     }
