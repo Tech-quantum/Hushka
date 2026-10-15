@@ -1,5 +1,6 @@
 package com.techquantum.hushka
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
@@ -11,10 +12,18 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -40,8 +49,34 @@ fun WebPromptsDialog(
     val textGrayColor = MaterialTheme.colorScheme.onSurfaceVariant
     val purplePrimary = MaterialTheme.colorScheme.primary
 
+    val context = LocalContext.current
     val selected = remember { mutableStateListOf<PromptEntity>() }
     var searchQuery by remember { mutableStateOf("") }
+    var wasRefreshing by remember { mutableStateOf(false) }
+
+    // 🔄 انیمیشن چرخش آیکون
+    val infiniteTransition = rememberInfiniteTransition(label = "refresh")
+    val rotationAngle by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "rotation"
+    )
+
+    // ✅ بعد از اتمام بروزرسانی، Toast نمایش بده
+    LaunchedEffect(isLoading, wasRefreshing) {
+        if (wasRefreshing && !isLoading) {
+            Toast.makeText(
+                context,
+                "پرامپت‌ها با موفقیت به‌روزرسانی شدند ✅",
+                Toast.LENGTH_SHORT
+            ).show()
+            wasRefreshing = false
+        }
+    }
 
     // 🔍 فیلتر پرامپت‌ها بر اساس جستجو (case-insensitive، در title و text)
     val filteredPrompts = remember(prompts, searchQuery) {
@@ -68,9 +103,13 @@ fun WebPromptsDialog(
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.weight(1f)
                     )
-                    if (!isLoading && prompts.isNotEmpty()) {
+                    if ((prompts.isNotEmpty() || wasRefreshing) && !isTranslating) {
                         OutlinedButton(
-                            onClick = onRefresh,
+                            onClick = {
+                                wasRefreshing = true
+                                onRefresh()
+                            },
+                            enabled = !isLoading,
                             modifier = Modifier.height(30.dp),
                             shape = RoundedCornerShape(8.dp),
                             contentPadding = PaddingValues(
@@ -79,17 +118,22 @@ fun WebPromptsDialog(
                             ),
                             border = BorderStroke(1.dp, purplePrimary.copy(alpha = 0.6f)),
                             colors = ButtonDefaults.outlinedButtonColors(
-                                contentColor = purplePrimary
+                                contentColor = purplePrimary,
+                                disabledContentColor = purplePrimary.copy(alpha = 0.5f)
                             )
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.Refresh,
                                 contentDescription = null,
-                                modifier = Modifier.size(13.dp)
+                                modifier = Modifier
+                                    .size(13.dp)
+                                    .graphicsLayer {
+                                        rotationZ = if (wasRefreshing && isLoading) rotationAngle else 0f
+                                    }
                             )
                             Spacer(Modifier.width(4.dp))
                             Text(
-                                text = "به‌روزرسانی",
+                                text = if (wasRefreshing && isLoading) "در حال بروزرسانی..." else "به‌روزرسانی",
                                 fontSize = 10.sp,
                                 fontWeight = FontWeight.Medium
                             )
