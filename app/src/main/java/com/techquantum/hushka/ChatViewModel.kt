@@ -12,15 +12,15 @@ import kotlinx.coroutines.withContext
 
 class ChatViewModel(
     application: Application,
-    private val initialPrompt: PromptEntity
+    private val initialPromptText: String
 ) : AndroidViewModel(application) {
 
     private val context = application.applicationContext
 
     private val _uiState = MutableStateFlow(
         ChatUiState(
-            promptTitle = initialPrompt.title,
-            initialPrompt = initialPrompt.text,
+            promptTitle = initialPromptText.take(60).replace("\n", " ").trim(),
+            initialPrompt = initialPromptText,
             provider = AiProvider.fromId(AppSettings.getAiProvider(context)),
             model = AppSettings.getAiModel(context).ifBlank {
                 AiProvider.fromId(AppSettings.getAiProvider(context)).defaultModel
@@ -31,8 +31,7 @@ class ChatViewModel(
     val uiState: StateFlow<ChatUiState> = _uiState.asStateFlow()
 
     init {
-        // پرامپت رو خودکار ارسال کن
-        if (_uiState.value.hasApiKey) {
+        if (_uiState.value.hasApiKey && initialPromptText.isNotBlank()) {
             sendInitialPrompt()
         }
     }
@@ -40,11 +39,9 @@ class ChatViewModel(
     private fun sendInitialPrompt() {
         val prompt = _uiState.value.initialPrompt
         if (prompt.isBlank()) return
-
         _uiState.value = _uiState.value.copy(
-            messages = listOf(
-                ChatMessage(role = ChatRole.USER, content = prompt)
-            )
+            messages = listOf(ChatMessage(role = ChatRole.USER, content = prompt)),
+            error = null
         )
         sendToAi()
     }
@@ -56,13 +53,10 @@ class ChatViewModel(
     fun sendMessage() {
         val text = _uiState.value.inputText.trim()
         if (text.isBlank() || _uiState.value.isLoading) return
-
-        val newMessages = _uiState.value.messages + ChatMessage(
-            role = ChatRole.USER,
-            content = text
-        )
         _uiState.value = _uiState.value.copy(
-            messages = newMessages,
+            messages = _uiState.value.messages + ChatMessage(
+                role = ChatRole.USER, content = text
+            ),
             inputText = "",
             error = null
         )
@@ -72,37 +66,28 @@ class ChatViewModel(
     private fun sendToAi() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
-
             val apiKey = AppSettings.getAiApiKey(context)
             if (apiKey.isBlank()) {
                 _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    hasApiKey = false,
-                    error = "no_api_key"
+                    isLoading = false, hasApiKey = false, error = "no_api_key"
                 )
                 return@launch
             }
-
             val provider = _uiState.value.provider
             val model = _uiState.value.model.ifBlank { provider.defaultModel }
-
             val result = withContext(Dispatchers.IO) {
                 AiService.sendMessage(
-                    provider = provider,
-                    apiKey = apiKey,
-                    model = model,
-                    messages = _uiState.value.messages
+                    provider = provider, apiKey = apiKey,
+                    model = model, messages = _uiState.value.messages
                 )
             }
-
             result.fold(
                 onSuccess = { response ->
                     _uiState.value = _uiState.value.copy(
                         messages = _uiState.value.messages + ChatMessage(
-                            role = ChatRole.ASSISTANT,
-                            content = response
+                            role = ChatRole.ASSISTANT, content = response
                         ),
-                        isLoading = false
+                        isLoading = false, error = null
                     )
                 },
                 onFailure = { e ->
@@ -112,8 +97,7 @@ class ChatViewModel(
                             content = e.message ?: "Unknown error",
                             isError = true
                         ),
-                        isLoading = false,
-                        error = e.message
+                        isLoading = false, error = e.message
                     )
                 }
             )
@@ -121,26 +105,27 @@ class ChatViewModel(
     }
 
     fun regenerate() {
-        // آخرین پیام AI رو حذف کن و دوباره بفرست
+        if (_uiState.value.isLoading) return
         val messages = _uiState.value.messages.toMutableList()
-        if (messages.isNotEmpty() && messages.last().role == ChatRole.ASSISTANT) {
+        while (messages.isNotEmpty() && messages.last().role == ChatRole.ASSISTANT) {
             messages.removeAt(messages.size - 1)
         }
-        _uiState.value = _uiState.value.copy(messages = messages)
+        if (messages.isEmpty()) return
+        _uiState.value = _uiState.value.copy(messages = messages, error = null)
         sendToAi()
     }
 
     fun clearChat() {
-        _uiState.value = _uiState.value.copy(messages = emptyList())
+        _uiState.value = _uiState.value.copy(
+            messages = emptyList(), inputText = "", error = null, isLoading = false
+        )
     }
 
     fun updateProvider(provider: AiProvider) {
         AppSettings.setAiProvider(context, provider.id)
-        val model = provider.defaultModel
-        AppSettings.setAiModel(context, model)
+        AppSettings.setAiModel(context, provider.defaultModel)
         _uiState.value = _uiState.value.copy(
-            provider = provider,
-            model = model,
+            provider = provider, model = provider.defaultModel,
             hasApiKey = AppSettings.getAiApiKey(context).isNotBlank()
         )
     }
