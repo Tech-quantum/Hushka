@@ -69,21 +69,28 @@ fun WebPromptsDialog(
 
     var showSuccessMessage by remember { mutableStateOf(false) }
 
-    // ✅ بعد از اتمام بروزرسانی، پیام مرکزی نمایش بده
-    LaunchedEffect(isLoading, wasRefreshing) {
-        if (wasRefreshing && !isLoading) {
+    // ✅ trigger نمایش پیام بعد از اتمام بارگذاری
+    LaunchedEffect(isLoading) {
+        if (!isLoading && wasRefreshing) {
             wasRefreshing = false
             showSuccessMessage = true
+        }
+    }
+
+    // ✅ محو شدن پیام پس از 1.8 ثانیه
+    LaunchedEffect(showSuccessMessage) {
+        if (showSuccessMessage) {
             delay(1800)
             showSuccessMessage = false
         }
     }
 
-    // 📢 پیام موفقیت در مرکز صفحه
+    // 📢 پیام موفقیت در مرکز صفحه (non-modal Popup)
     if (showSuccessMessage) {
-        Dialog(
-            onDismissRequest = { },
-            properties = androidx.compose.ui.window.DialogProperties(
+        androidx.compose.ui.window.Popup(
+            alignment = Alignment.Center,
+            properties = androidx.compose.ui.window.PopupProperties(
+                focusable = false,
                 dismissOnBackPress = false,
                 dismissOnClickOutside = false
             )
@@ -98,6 +105,14 @@ fun WebPromptsDialog(
                     modifier = Modifier.padding(horizontal = 32.dp, vertical = 22.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    // ✅ آیکون تیک سبز
+                    Text(
+                        text = "✓",
+                        color = Color(0xFF10B981),
+                        fontSize = 40.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(Modifier.height(10.dp))
                     Text(
                         text = stringResource(R.string.web_refresh_success),
                         color = MaterialTheme.colorScheme.onSurface,
