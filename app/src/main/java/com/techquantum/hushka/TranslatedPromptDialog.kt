@@ -201,7 +201,7 @@ private fun localizedLangName(code: String): String = when (code) {
 
 @Composable
 private fun localizedError(error: String): String = when (error) {
-    "same_language" -> "متن پرامپت قبلاً به این زبان است"
-    "empty_result" -> "ترجمه‌ای یافت نشد"
+    "same_language" -> stringResource(R.string.translation_same_language)
+    "empty_result" -> stringResource(R.string.translation_empty_result)
     else -> error
 }

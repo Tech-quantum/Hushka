@@ -164,7 +164,7 @@ class MainActivity : AppCompatActivity() {
                             viewModel.clearWebCache()
                             Toast.makeText(
                                 this@MainActivity,
-                                "کش وب پاک شد",
+                                getString(R.string.web_cache_cleared_toast),
                                 Toast.LENGTH_SHORT
                             ).show()
                         },

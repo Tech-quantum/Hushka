@@ -187,7 +187,12 @@ fun WebPromptsDialog(
                             )
                             Spacer(Modifier.width(4.dp))
                             Text(
-                                text = if (wasRefreshing && isLoading) "در حال بروزرسانی..." else "به‌روزرسانی",
+                                text = stringResource(
+                                    if (wasRefreshing && isLoading)
+                                        R.string.web_refreshing_label
+                                    else
+                                        R.string.web_refresh_button
+                                ),
                                 fontSize = 10.sp,
                                 fontWeight = FontWeight.Medium
                             )
@@ -322,7 +327,7 @@ fun WebPromptsDialog(
                             modifier = Modifier.fillMaxWidth(),
                             placeholder = {
                                 Text(
-                                    "جستجو در عنوان یا متن...",
+                                    stringResource(R.string.web_search_placeholder),
                                     fontSize = 12.sp,
                                     color = textGrayColor
                                 )

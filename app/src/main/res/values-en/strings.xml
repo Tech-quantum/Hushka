@@ -348,4 +348,14 @@
     <string name="settings_connection_fail">Connection failed</string>
     <string name="settings_model">Model</string>
     <string name="web_refresh_success">Prompts refreshed successfully</string>
+    <string name="web_refresh_button">Refresh</string>
+    <string name="web_refreshing_label">Refreshing...</string>
+    <string name="web_cache_clear_title">🗑  Clear Web Cache</string>
+    <string name="web_cache_clear_desc">Fetched results from the internet are cached for faster loading next time. Clearing them will re-download from the internet.</string>
+    <string name="web_cache_clear_button">Clear cache</string>
+    <string name="web_cache_cleared_toast">Web cache cleared</string>
+    <string name="settings_tab_ai">AI</string>
+    <string name="web_search_placeholder">Search in title or text...</string>
+    <string name="translation_same_language">The prompt is already in this language</string>
+    <string name="translation_empty_result">No translation found</string>
 </resources>

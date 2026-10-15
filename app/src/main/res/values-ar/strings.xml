@@ -348,4 +348,14 @@
     <string name="settings_connection_fail">فشل الاتصال</string>
     <string name="settings_model">النموذج</string>
     <string name="web_refresh_success">تم تحديث المطالبات بنجاح</string>
+    <string name="web_refresh_button">تحديث</string>
+    <string name="web_refreshing_label">جارٍ التحديث...</string>
+    <string name="web_cache_clear_title">🗑  مسح ذاكرة التخزين المؤقت</string>
+    <string name="web_cache_clear_desc">يتم تخزين النتائج التي تم جلبها من الإنترنت مؤقتاً لتحميل أسرع في المرة القادمة. سيؤدي مسحها إلى إعادة التنزيل من الإنترنت.</string>
+    <string name="web_cache_clear_button">مسح الذاكرة</string>
+    <string name="web_cache_cleared_toast">تم مسح ذاكرة التخزين المؤقت</string>
+    <string name="settings_tab_ai">الذكاء الاصطناعي</string>
+    <string name="web_search_placeholder">ابحث في العنوان أو النص...</string>
+    <string name="translation_same_language">النص بالفعل بهذه اللغة</string>
+    <string name="translation_empty_result">لم يتم العثور على ترجمة</string>
 </resources>
