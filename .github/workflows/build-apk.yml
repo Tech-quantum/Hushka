@@ -1,7 +1,7 @@
 name: Build Hushka APK
 on:
   push:
-    branches: [ main, feature/chat ]
+    branches: [ main, feature/chat, feature/splash ]
   workflow_dispatch:
 jobs:
   build:
