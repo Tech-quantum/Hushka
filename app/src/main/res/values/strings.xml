@@ -364,4 +364,6 @@
     <string name="settings_connection_fail">اتصال ناموفق</string>
     <string name="settings_model">مدل</string>
     <string name="web_refresh_success">پرامپت‌ها با موفقیت به‌روزرسانی شدند</string>
+    <string name="web_refresh_button">به‌روزرسانی</string>
+    <string name="web_refreshing_label">در حال بروزرسانی...</string>
 </resources>

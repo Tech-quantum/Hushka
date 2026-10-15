@@ -348,4 +348,6 @@
     <string name="settings_connection_fail">فشل الاتصال</string>
     <string name="settings_model">النموذج</string>
     <string name="web_refresh_success">تم تحديث المطالبات بنجاح</string>
+    <string name="web_refresh_button">تحديث</string>
+    <string name="web_refreshing_label">جارٍ التحديث...</string>
 </resources>
