@@ -39,6 +39,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.techquantum.hushka.ChatScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,6 +52,7 @@ fun HomeScreen(
     var showAddDialog by remember { mutableStateOf(false) }
     var editingPrompt by remember { mutableStateOf<PromptEntity?>(null) }
     var previewPrompt by remember { mutableStateOf<PromptEntity?>(null) }
+    var activeChatPrompt by remember { mutableStateOf<String?>(null) }
     var deletePrompt by remember { mutableStateOf<PromptEntity?>(null) }
     var analyzePrompt by remember { mutableStateOf<PromptEntity?>(null) }
     var liveTestPrompt by remember { mutableStateOf<PromptEntity?>(null) }
@@ -464,6 +466,7 @@ fun HomeScreen(
                             viewModel.markUsed(prompt)
                         },
                         onShareClick = {
+                            activeChatPrompt = prompt.text
                             try {
                                 val shareIntent = Intent(Intent.ACTION_SEND).apply {
                                     type = "text/plain"
@@ -690,6 +693,15 @@ fun HomeScreen(
                 showWebDialog = false
                 viewModel.clearWebPrompts()
             }
+        )
+    }
+
+    // ═══════ ChatScreen Overlay ═══════
+    activeChatPrompt?.let { promptText ->
+        ChatScreen(
+            initialPrompt = promptText,
+            isRtl = true,
+            onDismiss = { activeChatPrompt = null }
         )
     }
 }
