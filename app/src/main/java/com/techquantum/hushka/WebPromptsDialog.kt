@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -56,30 +57,51 @@ fun WebPromptsDialog(
         onDismissRequest = onDismiss,
         containerColor = cardColor,
         title = {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(stringResource(R.string.web_title), color = textColor, fontWeight = FontWeight.Bold)
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Text(
-                        text = sourceSubtitle(selectedSource),
-                        color = textGrayColor,
-                        fontSize = 11.sp
+                        text = stringResource(R.string.web_title),
+                        color = textColor,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(1f)
                     )
-                }
-                if (!isLoading && prompts.isNotEmpty()) {
-                    IconButton(
-                        onClick = onRefresh,
-                        enabled = !isLoading
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Refresh,
-                            contentDescription = "به‌روزرسانی",
-                            tint = purplePrimary
-                        )
+                    if (!isLoading && prompts.isNotEmpty()) {
+                        OutlinedButton(
+                            onClick = onRefresh,
+                            modifier = Modifier.height(30.dp),
+                            shape = RoundedCornerShape(8.dp),
+                            contentPadding = PaddingValues(
+                                horizontal = 10.dp,
+                                vertical = 0.dp
+                            ),
+                            border = BorderStroke(1.dp, purplePrimary.copy(alpha = 0.6f)),
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = purplePrimary
+                            )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Refresh,
+                                contentDescription = null,
+                                modifier = Modifier.size(13.dp)
+                            )
+                            Spacer(Modifier.width(4.dp))
+                            Text(
+                                text = "به‌روزرسانی",
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
                     }
                 }
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = sourceSubtitle(selectedSource),
+                    color = textGrayColor,
+                    fontSize = 11.sp
+                )
             }
         },
         text = {
