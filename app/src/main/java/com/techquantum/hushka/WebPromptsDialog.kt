@@ -327,7 +327,7 @@ fun WebPromptsDialog(
                             modifier = Modifier.fillMaxWidth(),
                             placeholder = {
                                 Text(
-                                    "جستجو در عنوان یا متن...",
+                                    stringResource(R.string.web_search_placeholder),
                                     fontSize = 12.sp,
                                     color = textGrayColor
                                 )

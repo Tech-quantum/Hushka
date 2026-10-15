@@ -354,4 +354,6 @@
     <string name="web_cache_clear_desc">İnternetten alınan sonuçlar, bir sonraki sefer daha hızlı yüklenmesi için önbelleğe alınır. Temizlendiğinde internetten yeniden indirilir.</string>
     <string name="web_cache_clear_button">Önbelleği temizle</string>
     <string name="web_cache_cleared_toast">Web önbelleği temizlendi</string>
+    <string name="settings_tab_ai">Yapay Zeka</string>
+    <string name="web_search_placeholder">Başlık veya metinde ara...</string>
 </resources>
