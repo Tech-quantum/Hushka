@@ -685,6 +685,7 @@ fun HomeScreen(
             onTranslate = { selected ->
                 viewModel.translateWebPrompts(selected)
             },
+            onRefresh = { viewModel.refreshWebPrompts() },
             onImport = { selected ->
                 viewModel.importWebPrompts(selected)
                 showWebDialog = false

@@ -28,6 +28,7 @@ fun WebPromptsDialog(
     onSourceSelected: (WebSource) -> Unit = {},
     onTranslate: (List<PromptEntity>) -> Unit,
     onImport: (List<PromptEntity>) -> Unit,
+    onRefresh: () -> Unit = {},
     onDismiss: () -> Unit
 ) {
     val cardColor = MaterialTheme.colorScheme.surface
@@ -53,13 +54,30 @@ fun WebPromptsDialog(
         onDismissRequest = onDismiss,
         containerColor = cardColor,
         title = {
-            Column {
-                Text(stringResource(R.string.web_title), color = textColor, fontWeight = FontWeight.Bold)
-                Text(
-                    text = sourceSubtitle(selectedSource),
-                    color = textGrayColor,
-                    fontSize = 11.sp
-                )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(stringResource(R.string.web_title), color = textColor, fontWeight = FontWeight.Bold)
+                    Text(
+                        text = sourceSubtitle(selectedSource),
+                        color = textGrayColor,
+                        fontSize = 11.sp
+                    )
+                }
+                if (!isLoading && prompts.isNotEmpty()) {
+                    IconButton(
+                        onClick = onRefresh,
+                        enabled = !isLoading
+                    ) {
+                        Icon(
+                            imageVector = androidx.compose.material.icons.Icons.Filled.Refresh,
+                            contentDescription = "به‌روزرسانی",
+                            tint = purplePrimary
+                        )
+                    }
+                }
             }
         },
         text = {
