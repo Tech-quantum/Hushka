@@ -12,3 +12,6 @@ app/build/
 *.aab
 *.jks
 *.keystore
+
+*.bak
+*.bak2
