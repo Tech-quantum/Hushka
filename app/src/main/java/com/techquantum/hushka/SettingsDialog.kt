@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -73,12 +74,14 @@ fun SettingsDialog(
                         selected = selectedTab == 0,
                         onClick = { selectedTab = 0 },
                         text = {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text("🎨", fontSize = 13.sp)
-                                Spacer(Modifier.width(4.dp))
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text("🎨", fontSize = 18.sp)
                                 Text(
-                                    stringResource(R.string.settings_tab_appearance),
-                                    fontSize = 12.sp,
+                                    "ظاهر",
+                                    fontSize = 10.sp,
+                                    maxLines = 1,
+                                    softWrap = false,
+                                    overflow = TextOverflow.Visible,
                                     fontWeight = if (selectedTab == 0) FontWeight.Bold else FontWeight.Normal
                                 )
                             }
@@ -88,12 +91,14 @@ fun SettingsDialog(
                         selected = selectedTab == 1,
                         onClick = { selectedTab = 1 },
                         text = {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text("📦", fontSize = 13.sp)
-                                Spacer(Modifier.width(4.dp))
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text("📦", fontSize = 18.sp)
                                 Text(
-                                    stringResource(R.string.settings_tab_data),
-                                    fontSize = 12.sp,
+                                    "داده",
+                                    fontSize = 10.sp,
+                                    maxLines = 1,
+                                    softWrap = false,
+                                    overflow = TextOverflow.Visible,
                                     fontWeight = if (selectedTab == 1) FontWeight.Bold else FontWeight.Normal
                                 )
                             }
@@ -103,12 +108,14 @@ fun SettingsDialog(
                         selected = selectedTab == 2,
                         onClick = { selectedTab = 2 },
                         text = {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text("ℹ️", fontSize = 13.sp)
-                                Spacer(Modifier.width(4.dp))
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text("ℹ️", fontSize = 18.sp)
                                 Text(
-                                    stringResource(R.string.settings_tab_about),
-                                    fontSize = 12.sp,
+                                    "درباره",
+                                    fontSize = 10.sp,
+                                    maxLines = 1,
+                                    softWrap = false,
+                                    overflow = TextOverflow.Visible,
                                     fontWeight = if (selectedTab == 2) FontWeight.Bold else FontWeight.Normal
                                 )
                             }
@@ -118,12 +125,14 @@ fun SettingsDialog(
                         selected = selectedTab == 3,
                         onClick = { selectedTab = 3 },
                         text = {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text("🤖", fontSize = 13.sp)
-                                Spacer(Modifier.width(4.dp))
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text("🤖", fontSize = 18.sp)
                                 Text(
                                     "AI",
-                                    fontSize = 12.sp,
+                                    fontSize = 10.sp,
+                                    maxLines = 1,
+                                    softWrap = false,
+                                    overflow = TextOverflow.Visible,
                                     fontWeight = if (selectedTab == 3) FontWeight.Bold else FontWeight.Normal
                                 )
                             }
