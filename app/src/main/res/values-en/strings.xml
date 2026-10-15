@@ -325,4 +325,26 @@
     <string name="web_subtitle_all">All Sources</string>
     <string name="web_subtitle_repo_prefix">Repo:</string>
     <string name="web_source_all">All</string>
+    <string name="chat_title">Chat with AI</string>
+    <string name="chat_open">Chat</string>
+    <string name="chat_send">Send</string>
+    <string name="chat_placeholder">Type your message...</string>
+    <string name="chat_your_prompt">Your prompt</string>
+    <string name="chat_ai_response">AI response</string>
+    <string name="chat_thinking">Thinking...</string>
+    <string name="chat_clear">Clear chat</string>
+    <string name="chat_copy_response">Copy response</string>
+    <string name="chat_regenerate">Regenerate</string>
+    <string name="chat_no_key">Please enter your API Key in settings</string>
+    <string name="chat_error">Connection error</string>
+    <string name="settings_tab_connection">Connection</string>
+    <string name="settings_provider">AI Provider</string>
+    <string name="settings_api_key">API Key</string>
+    <string name="settings_api_key_hint">Enter your key</string>
+    <string name="settings_test_connection">Test connection</string>
+    <string name="settings_save_key">Save key</string>
+    <string name="settings_key_saved">Key saved</string>
+    <string name="settings_connection_ok">Connected</string>
+    <string name="settings_connection_fail">Connection failed</string>
+    <string name="settings_model">Model</string>
 </resources>

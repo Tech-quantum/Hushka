@@ -325,4 +325,26 @@
     <string name="web_subtitle_all">Tüm Kaynaklar</string>
     <string name="web_subtitle_repo_prefix">Depo:</string>
     <string name="web_source_all">Tümü</string>
+    <string name="chat_title">AI ile Sohbet</string>
+    <string name="chat_open">Sohbet</string>
+    <string name="chat_send">Gönder</string>
+    <string name="chat_placeholder">Mesajınızı yazın...</string>
+    <string name="chat_your_prompt">İsteminiz</string>
+    <string name="chat_ai_response">AI yanıtı</string>
+    <string name="chat_thinking">Düşünüyor...</string>
+    <string name="chat_clear">Sohbeti temizle</string>
+    <string name="chat_copy_response">Yanıtı kopyala</string>
+    <string name="chat_regenerate">Yeniden oluştur</string>
+    <string name="chat_no_key">Lütfen ayarlarda API Anahtarınızı girin</string>
+    <string name="chat_error">Bağlantı hatası</string>
+    <string name="settings_tab_connection">Bağlantı</string>
+    <string name="settings_provider">AI Sağlayıcı</string>
+    <string name="settings_api_key">API Anahtarı</string>
+    <string name="settings_api_key_hint">Anahtarınızı girin</string>
+    <string name="settings_test_connection">Bağlantıyı test et</string>
+    <string name="settings_save_key">Anahtarı kaydet</string>
+    <string name="settings_key_saved">Anahtar kaydedildi</string>
+    <string name="settings_connection_ok">Bağlandı</string>
+    <string name="settings_connection_fail">Bağlantı başarısız</string>
+    <string name="settings_model">Model</string>
 </resources>

@@ -341,4 +341,26 @@
     <string name="web_subtitle_all">همه منابع</string>
     <string name="web_subtitle_repo_prefix">مخزن:</string>
     <string name="web_source_all">همه</string>
+    <string name="chat_title">چت با هوش مصنوعی</string>
+    <string name="chat_open">چت</string>
+    <string name="chat_send">ارسال</string>
+    <string name="chat_placeholder">پیام خود را بنویسید...</string>
+    <string name="chat_your_prompt">پرامپت شما</string>
+    <string name="chat_ai_response">پاسخ هوش مصنوعی</string>
+    <string name="chat_thinking">در حال فکر کردن...</string>
+    <string name="chat_clear">پاک کردن چت</string>
+    <string name="chat_copy_response">کپی پاسخ</string>
+    <string name="chat_regenerate">پاسخ دوباره</string>
+    <string name="chat_no_key">لطفاً API Key را در تنظیمات وارد کنید</string>
+    <string name="chat_error">خطا در اتصال</string>
+    <string name="settings_tab_connection">اتصال</string>
+    <string name="settings_provider">سرویس هوش مصنوعی</string>
+    <string name="settings_api_key">کلید API</string>
+    <string name="settings_api_key_hint">کلید خود را وارد کنید</string>
+    <string name="settings_test_connection">تست اتصال</string>
+    <string name="settings_save_key">ذخیره کلید</string>
+    <string name="settings_key_saved">کلید ذخیره شد</string>
+    <string name="settings_connection_ok">اتصال برقرار است</string>
+    <string name="settings_connection_fail">اتصال ناموفق</string>
+    <string name="settings_model">مدل</string>
 </resources>

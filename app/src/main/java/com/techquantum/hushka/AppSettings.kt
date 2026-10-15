@@ -12,6 +12,11 @@ object AppSettings {
     private const val DELETED_LIBRARY_KEYS = "deleted_library_keys"
     private const val TAG_COLORS = "tag_colors"
 
+    // AI Chat settings
+    private const val AI_PROVIDER = "ai_provider"
+    private const val AI_API_KEY = "ai_api_key"
+    private const val AI_MODEL = "ai_model"
+
     private fun prefs(context: Context) =
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
 
@@ -79,6 +84,29 @@ object AppSettings {
 
     fun resetAllTagColors(context: Context) {
         prefs(context).edit().remove(TAG_COLORS).apply()
+    }
+
+    // ==================== AI Chat Settings ====================
+
+    fun getAiProvider(context: Context): String =
+        prefs(context).getString(AI_PROVIDER, "gemini") ?: "gemini"
+
+    fun setAiProvider(context: Context, value: String) {
+        prefs(context).edit().putString(AI_PROVIDER, value).apply()
+    }
+
+    fun getAiApiKey(context: Context): String =
+        prefs(context).getString(AI_API_KEY, "") ?: ""
+
+    fun setAiApiKey(context: Context, value: String) {
+        prefs(context).edit().putString(AI_API_KEY, value).apply()
+    }
+
+    fun getAiModel(context: Context): String =
+        prefs(context).getString(AI_MODEL, "") ?: ""
+
+    fun setAiModel(context: Context, value: String) {
+        prefs(context).edit().putString(AI_MODEL, value).apply()
     }
 
     private fun saveTagColors(context: Context, map: Map<String, String>) {

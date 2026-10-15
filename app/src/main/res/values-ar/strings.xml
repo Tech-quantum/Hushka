@@ -325,4 +325,26 @@
     <string name="web_subtitle_all">كل المصادر</string>
     <string name="web_subtitle_repo_prefix">المستودع:</string>
     <string name="web_source_all">الكل</string>
+    <string name="chat_title">الدردشة مع الذكاء الاصطناعي</string>
+    <string name="chat_open">دردشة</string>
+    <string name="chat_send">إرسال</string>
+    <string name="chat_placeholder">اكتب رسالتك...</string>
+    <string name="chat_your_prompt">برومبتك</string>
+    <string name="chat_ai_response">رد الذكاء الاصطناعي</string>
+    <string name="chat_thinking">جاري التفكير...</string>
+    <string name="chat_clear">مسح الدردشة</string>
+    <string name="chat_copy_response">نسخ الرد</string>
+    <string name="chat_regenerate">إعادة التوليد</string>
+    <string name="chat_no_key">يرجى إدخال مفتاح API في الإعدادات</string>
+    <string name="chat_error">خطأ في الاتصال</string>
+    <string name="settings_tab_connection">الاتصال</string>
+    <string name="settings_provider">مزود الذكاء الاصطناعي</string>
+    <string name="settings_api_key">مفتاح API</string>
+    <string name="settings_api_key_hint">أدخل مفتاحك</string>
+    <string name="settings_test_connection">اختبار الاتصال</string>
+    <string name="settings_save_key">حفظ المفتاح</string>
+    <string name="settings_key_saved">تم حفظ المفتاح</string>
+    <string name="settings_connection_ok">متصل</string>
+    <string name="settings_connection_fail">فشل الاتصال</string>
+    <string name="settings_model">النموذج</string>
 </resources>
