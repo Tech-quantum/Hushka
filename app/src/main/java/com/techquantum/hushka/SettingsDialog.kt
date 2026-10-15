@@ -105,23 +105,6 @@ fun SettingsDialog(
                         }
                     )
                     Tab(
-                        selected = selectedTab == 3,
-                        onClick = { selectedTab = 3 },
-                        text = {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text("ℹ️", fontSize = 18.sp)
-                                Text(
-                                    "درباره",
-                                    fontSize = 10.sp,
-                                    maxLines = 1,
-                                    softWrap = false,
-                                    overflow = TextOverflow.Visible,
-                                    fontWeight = if (selectedTab == 3) FontWeight.Bold else FontWeight.Normal
-                                )
-                            }
-                        }
-                    )
-                    Tab(
                         selected = selectedTab == 2,
                         onClick = { selectedTab = 2 },
                         text = {
@@ -134,6 +117,23 @@ fun SettingsDialog(
                                     softWrap = false,
                                     overflow = TextOverflow.Visible,
                                     fontWeight = if (selectedTab == 2) FontWeight.Bold else FontWeight.Normal
+                                )
+                            }
+                        }
+                    )
+                    Tab(
+                        selected = selectedTab == 3,
+                        onClick = { selectedTab = 3 },
+                        text = {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text("ℹ️", fontSize = 18.sp)
+                                Text(
+                                    "درباره",
+                                    fontSize = 10.sp,
+                                    maxLines = 1,
+                                    softWrap = false,
+                                    overflow = TextOverflow.Visible,
+                                    fontWeight = if (selectedTab == 3) FontWeight.Bold else FontWeight.Normal
                                 )
                             }
                         }
