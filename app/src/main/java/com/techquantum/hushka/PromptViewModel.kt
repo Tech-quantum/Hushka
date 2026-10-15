@@ -244,13 +244,11 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
 
         viewModelScope.launch {
             if (!forceRefresh) {
-                val cached: List<PromptEntity>? = try {
-                    withContext(Dispatchers.IO) {
-                        repository.getCachedWebPrompts(source.id)
-                    }
-                } catch (e: Throwable) {
-                    Log.e(TAG, "cache read failed", e)
-                    null
+                val cached: List<PromptEntity>? = withContext(Dispatchers.IO) {
+                    WebCacheManager.get(
+                        HushkaApplicationHolder.context.applicationContext,
+                        source.id
+                    )
                 }
                 if (!cached.isNullOrEmpty()) {
                     _webPrompts.value = cached
@@ -330,12 +328,12 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
                 }
 
                 if (result.isNotEmpty()) {
-                    try {
-                        withContext(Dispatchers.IO) {
-                            repository.cacheWebPrompts(source.id, result)
-                        }
-                    } catch (e: Throwable) {
-                        Log.e(TAG, "cache write failed", e)
+                    withContext(Dispatchers.IO) {
+                        WebCacheManager.put(
+                            HushkaApplicationHolder.context.applicationContext,
+                            source.id,
+                            result
+                        )
                     }
                 }
 
@@ -345,13 +343,35 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Fetching web prompts failed", e)
-                val staleCache: List<PromptEntity>? = try {
-                    withContext(Dispatchers.IO) {
-                        repository.getCachedWebPrompts(source.id)
+                val staleCache: List<PromptEntity>? = withContext(Dispatchers.IO) {
+                    try {
+                        val f = java.io.File(
+                            HushkaApplicationHolder.context.applicationContext.filesDir,
+                            "web_cache_${source.id}.json"
+                        )
+                        if (f.exists()) {
+                            val text = f.readText(Charsets.UTF_8)
+                            val arr = org.json.JSONArray(text)
+                            val list = ArrayList<PromptEntity>()
+                            for (i in 0 until arr.length()) {
+                                val o = arr.getJSONObject(i)
+                                list.add(
+                                    PromptEntity(
+                                        id = -(i + 1).toLong(),
+                                        title = o.optString("title"),
+                                        category = o.optString("category"),
+                                        text = o.optString("text"),
+                                        tags = o.optString("tags"),
+                                        source = "web_cache"
+                                    )
+                                )
+                            }
+                            list
+                        } else null
+                    } catch (e2: Throwable) {
+                        Log.e(TAG, "stale cache read failed", e2)
+                        null
                     }
-                } catch (e2: Throwable) {
-                    Log.e(TAG, "stale cache read failed", e2)
-                    null
                 }
                 if (!staleCache.isNullOrEmpty()) {
                     _webPrompts.value = staleCache
@@ -375,7 +395,9 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
     fun clearWebCache() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                repository.clearWebCache()
+                WebCacheManager.clearAll(
+                    HushkaApplicationHolder.context.applicationContext
+                )
             }
         }
     }
