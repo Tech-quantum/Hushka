@@ -244,8 +244,13 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
 
         viewModelScope.launch {
             if (!forceRefresh) {
-                val cached = withContext(Dispatchers.IO) {
-                    repository.getCachedWebPrompts(source.id)
+                val cached: List<PromptEntity>? = try {
+                    withContext(Dispatchers.IO) {
+                        repository.getCachedWebPrompts(source.id)
+                    }
+                } catch (e: Throwable) {
+                    Log.e(TAG, "cache read failed", e)
+                    null
                 }
                 if (!cached.isNullOrEmpty()) {
                     _webPrompts.value = cached
@@ -325,8 +330,12 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
                 }
 
                 if (result.isNotEmpty()) {
-                    withContext(Dispatchers.IO) {
-                        repository.cacheWebPrompts(source.id, result)
+                    try {
+                        withContext(Dispatchers.IO) {
+                            repository.cacheWebPrompts(source.id, result)
+                        }
+                    } catch (e: Throwable) {
+                        Log.e(TAG, "cache write failed", e)
                     }
                 }
 
@@ -336,8 +345,13 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Fetching web prompts failed", e)
-                val staleCache = withContext(Dispatchers.IO) {
-                    repository.getCachedWebPrompts(source.id)
+                val staleCache: List<PromptEntity>? = try {
+                    withContext(Dispatchers.IO) {
+                        repository.getCachedWebPrompts(source.id)
+                    }
+                } catch (e2: Throwable) {
+                    Log.e(TAG, "stale cache read failed", e2)
+                    null
                 }
                 if (!staleCache.isNullOrEmpty()) {
                     _webPrompts.value = staleCache

@@ -7,8 +7,14 @@ import org.json.JSONObject
 class PromptRepositoryImpl(private val dao: PromptDao) : PromptRepository {
     override val prompts: Flow<List<PromptEntity>> = dao.observeAll()
 
-    private val webCacheDao: WebCacheDao
-        get() = PromptDatabase.getInstance(HushkaApplicationHolder.context).webCacheDao()
+    private val webCacheDao: WebCacheDao?
+        get() = try {
+            if (HushkaApplicationHolder.isInitialized()) {
+                PromptDatabase.getInstance(HushkaApplicationHolder.context).webCacheDao()
+            } else null
+        } catch (e: Throwable) {
+            null
+        }
 
     private val cacheValidityMs = 24L * 60L * 60L * 1000L
 
@@ -86,15 +92,19 @@ class PromptRepositoryImpl(private val dao: PromptDao) : PromptRepository {
     }
 
     override suspend fun getCachedWebPrompts(source: String): List<PromptEntity>? {
-        val row = webCacheDao.get(source) ?: return null
-        val age = System.currentTimeMillis() - row.cachedAt
-        if (age > cacheValidityMs) return null
-        return runCatching { jsonToPrompts(row.payload) }.getOrNull()
+        val dao = webCacheDao ?: return null
+        return runCatching {
+            val row = dao.get(source) ?: return@runCatching null
+            val age = System.currentTimeMillis() - row.cachedAt
+            if (age > cacheValidityMs) return@runCatching null
+            jsonToPrompts(row.payload)
+        }.getOrNull()
     }
 
     override suspend fun cacheWebPrompts(source: String, prompts: List<PromptEntity>) {
+        val dao = webCacheDao ?: return
         runCatching {
-            webCacheDao.put(
+            dao.put(
                 WebCacheEntity(
                     source = source,
                     payload = promptsToJson(prompts),
@@ -105,7 +115,7 @@ class PromptRepositoryImpl(private val dao: PromptDao) : PromptRepository {
     }
 
     override suspend fun clearWebCache() {
-        runCatching { webCacheDao.clearAll() }
+        runCatching { webCacheDao?.clearAll() }
     }
 
     private fun promptsToJson(prompts: List<PromptEntity>): String {
