@@ -38,6 +38,7 @@ fun SettingsDialog(
     onImportJson: () -> Unit,
     onBrowseWeb: () -> Unit,
     onManageColors: () -> Unit,
+    onClearWebCache: () -> Unit = {},
     onDismiss: () -> Unit
 ) {
     val textColor = MaterialTheme.colorScheme.onSurface
@@ -157,7 +158,8 @@ fun SettingsDialog(
                             onManageColors
                         )
                         1 -> DataTab(
-                            onExportJson, onExportMarkdown, onImportJson, onBrowseWeb
+                            onExportJson, onExportMarkdown, onImportJson, onBrowseWeb,
+                            onClearWebCache
                         )
                         2 -> AiTab()
                         else -> AboutTab()
@@ -342,7 +344,8 @@ private fun DataTab(
     onExportJson: () -> Unit,
     onExportMarkdown: () -> Unit,
     onImportJson: () -> Unit,
-    onBrowseWeb: () -> Unit
+    onBrowseWeb: () -> Unit,
+    onClearWebCache: () -> Unit = {}
 ) {
     val cardColor = MaterialTheme.colorScheme.surfaceVariant
     val textColor = MaterialTheme.colorScheme.onSurface
@@ -409,6 +412,31 @@ private fun DataTab(
                 colors = ButtonDefaults.buttonColors(containerColor = purplePrimary)
             ) {
                 Text(stringResource(R.string.browse_web), fontSize = 12.sp, color = Color.White)
+            }
+        }
+    }
+
+    // 🗑 کارت پاک کردن کش وب
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(14.dp),
+        colors = CardDefaults.cardColors(containerColor = cardColor)
+    ) {
+        Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text("🗑  پاک کردن کش وب", fontWeight = FontWeight.Bold, fontSize = 13.sp, color = textColor)
+            Text(
+                "نتایج واکشی‌شده از اینترنت در حافظه ذخیره می‌شوند تا بار بعد سریع‌تر لود شوند. با پاک کردن، بار بعد دوباره از اینترنت دانلود می‌شوند.",
+                style = MaterialTheme.typography.bodySmall,
+                color = textGrayColor,
+                fontSize = 11.sp
+            )
+            OutlinedButton(
+                onClick = onClearWebCache,
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(10.dp),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFE57373))
+            ) {
+                Text("پاک کردن کش", fontSize = 12.sp)
             }
         }
     }

@@ -160,6 +160,14 @@ class MainActivity : AppCompatActivity() {
                             showSettings = false
                             showTagColorManager = true
                         },
+                        onClearWebCache = {
+                            viewModel.clearWebCache()
+                            Toast.makeText(
+                                this@MainActivity,
+                                "کش وب پاک شد",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        },
                         onDismiss = { showSettings = false }
                     )
                 }

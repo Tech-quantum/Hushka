@@ -1,21 +1,35 @@
 package com.techquantum.hushka
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import kotlinx.coroutines.delay
+import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun WebPromptsDialog(
@@ -28,6 +42,7 @@ fun WebPromptsDialog(
     onSourceSelected: (WebSource) -> Unit = {},
     onTranslate: (List<PromptEntity>) -> Unit,
     onImport: (List<PromptEntity>) -> Unit,
+    onRefresh: () -> Unit = {},
     onDismiss: () -> Unit
 ) {
     val cardColor = MaterialTheme.colorScheme.surface
@@ -38,6 +53,84 @@ fun WebPromptsDialog(
 
     val selected = remember { mutableStateListOf<PromptEntity>() }
     var searchQuery by remember { mutableStateOf("") }
+    var wasRefreshing by remember { mutableStateOf(false) }
+
+    // 🔄 انیمیشن چرخش آیکون
+    val infiniteTransition = rememberInfiniteTransition(label = "refresh")
+    val rotationAngle by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "rotation"
+    )
+
+    var showSuccessMessage by remember { mutableStateOf(false) }
+
+    // ✅ trigger نمایش پیام بعد از اتمام بارگذاری
+    LaunchedEffect(isLoading) {
+        if (!isLoading && wasRefreshing) {
+            wasRefreshing = false
+            showSuccessMessage = true
+        }
+    }
+
+    // ✅ محو شدن پیام پس از 1.8 ثانیه
+    LaunchedEffect(showSuccessMessage) {
+        if (showSuccessMessage) {
+            delay(1800)
+            showSuccessMessage = false
+        }
+    }
+
+    // 📢 پیام موفقیت در مرکز صفحه (Dialog روی AlertDialog)
+    if (showSuccessMessage) {
+        Dialog(
+            onDismissRequest = { },
+            properties = androidx.compose.ui.window.DialogProperties(
+                dismissOnBackPress = false,
+                dismissOnClickOutside = false,
+                usePlatformDefaultWidth = false
+            )
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(24.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Surface(
+                    shape = RoundedCornerShape(20.dp),
+                    color = MaterialTheme.colorScheme.surface,
+                    tonalElevation = 8.dp,
+                    shadowElevation = 12.dp
+                ) {
+                    Column(
+                        modifier = Modifier.padding(horizontal = 32.dp, vertical = 22.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "✓",
+                            color = Color(0xFF10B981),
+                            fontSize = 40.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(Modifier.height(10.dp))
+                        Text(
+                            text = stringResource(R.string.web_refresh_success),
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
+        }
+    }
+
 
     // 🔍 فیلتر پرامپت‌ها بر اساس جستجو (case-insensitive، در title و text)
     val filteredPrompts = remember(prompts, searchQuery) {
@@ -53,8 +146,55 @@ fun WebPromptsDialog(
         onDismissRequest = onDismiss,
         containerColor = cardColor,
         title = {
-            Column {
-                Text(stringResource(R.string.web_title), color = textColor, fontWeight = FontWeight.Bold)
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.web_title),
+                        color = textColor,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(1f)
+                    )
+                    if ((prompts.isNotEmpty() || wasRefreshing) && !isTranslating) {
+                        OutlinedButton(
+                            onClick = {
+                                wasRefreshing = true
+                                onRefresh()
+                            },
+                            enabled = !isLoading,
+                            modifier = Modifier.height(30.dp),
+                            shape = RoundedCornerShape(8.dp),
+                            contentPadding = PaddingValues(
+                                horizontal = 10.dp,
+                                vertical = 0.dp
+                            ),
+                            border = BorderStroke(1.dp, purplePrimary.copy(alpha = 0.6f)),
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = purplePrimary,
+                                disabledContentColor = purplePrimary.copy(alpha = 0.5f)
+                            )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Refresh,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(13.dp)
+                                    .graphicsLayer {
+                                        rotationZ = if (wasRefreshing && isLoading) rotationAngle else 0f
+                                    }
+                            )
+                            Spacer(Modifier.width(4.dp))
+                            Text(
+                                text = if (wasRefreshing && isLoading) "در حال بروزرسانی..." else "به‌روزرسانی",
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                    }
+                }
+                Spacer(Modifier.height(4.dp))
                 Text(
                     text = sourceSubtitle(selectedSource),
                     color = textGrayColor,

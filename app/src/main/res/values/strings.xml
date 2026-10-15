@@ -363,4 +363,5 @@
     <string name="settings_connection_ok">اتصال برقرار است</string>
     <string name="settings_connection_fail">اتصال ناموفق</string>
     <string name="settings_model">مدل</string>
+    <string name="web_refresh_success">پرامپت‌ها با موفقیت به‌روزرسانی شدند</string>
 </resources>
