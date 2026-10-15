@@ -11,6 +11,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -107,6 +114,21 @@ fun SettingsDialog(
                             }
                         }
                     )
+                    Tab(
+                        selected = selectedTab == 3,
+                        onClick = { selectedTab = 3 },
+                        text = {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text("🤖", fontSize = 13.sp)
+                                Spacer(Modifier.width(4.dp))
+                                Text(
+                                    "AI",
+                                    fontSize = 12.sp,
+                                    fontWeight = if (selectedTab == 3) FontWeight.Bold else FontWeight.Normal
+                                )
+                            }
+                        }
+                    )
                 }
 
                 Spacer(Modifier.height(12.dp))
@@ -128,7 +150,8 @@ fun SettingsDialog(
                         1 -> DataTab(
                             onExportJson, onExportMarkdown, onImportJson, onBrowseWeb
                         )
-                        else -> AboutTab()
+                        2 -> AboutTab()
+                        else -> AiTab()
                     }
                 }
             }
@@ -421,6 +444,178 @@ private fun AboutTab() {
                     fontSize = 10.sp,
                     color = purplePrimary,
                     fontWeight = FontWeight.Medium
+                )
+            }
+        }
+    }
+}
+
+
+// ═══════════════════════════════════════════════════════════
+// 🤖 Tab 4: AI Settings
+// ═══════════════════════════════════════════════════════════
+@Composable
+private fun AiTab() {
+    val context = LocalContext.current
+    val textColor = MaterialTheme.colorScheme.onSurface
+    val grayColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val primary = MaterialTheme.colorScheme.primary
+
+    var providerId by remember {
+        mutableStateOf(AppSettings.getAiProvider(context))
+    }
+    var apiKey by remember {
+        mutableStateOf(AppSettings.getAiApiKey(context))
+    }
+    var model by remember {
+        mutableStateOf(AppSettings.getAiModel(context))
+    }
+    var keyVisible by remember { mutableStateOf(false) }
+    var providerMenuOpen by remember { mutableStateOf(false) }
+    var modelMenuOpen by remember { mutableStateOf(false) }
+    var savedToast by remember { mutableStateOf(false) }
+
+    val provider = AiProvider.fromId(providerId)
+
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        // ─── توضیح ───
+        Text(
+            text = "سرویس هوش مصنوعی خود را انتخاب کن و کلید API را وارد کن.",
+            fontSize = 11.sp,
+            color = grayColor
+        )
+
+        // ─── Dropdown انتخاب Provider ───
+        Column {
+            Text("سرویس هوش مصنوعی", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = textColor)
+            Spacer(Modifier.height(6.dp))
+            Box(modifier = Modifier.fillMaxWidth()) {
+                OutlinedButton(
+                    onClick = { providerMenuOpen = true },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text("${provider.emoji}  ${provider.displayName}", modifier = Modifier.weight(1f))
+                    Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
+                }
+                DropdownMenu(
+                    expanded = providerMenuOpen,
+                    onDismissRequest = { providerMenuOpen = false }
+                ) {
+                    AiProvider.values().forEach { p ->
+                        DropdownMenuItem(
+                            text = { Text("${p.emoji}  ${p.displayName}") },
+                            onClick = {
+                                providerId = p.id
+                                AppSettings.setAiProvider(context, p.id)
+                                model = p.defaultModel
+                                AppSettings.setAiModel(context, p.defaultModel)
+                                providerMenuOpen = false
+                            }
+                        )
+                    }
+                }
+            }
+        }
+
+        // ─── API Key ───
+        Column {
+            Text("کلید API", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = textColor)
+            Spacer(Modifier.height(6.dp))
+            OutlinedTextField(
+                value = apiKey,
+                onValueChange = {
+                    apiKey = it
+                    AppSettings.setAiApiKey(context, it)
+                    savedToast = true
+                },
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text("sk-...", fontSize = 11.sp) },
+                singleLine = true,
+                shape = RoundedCornerShape(12.dp),
+                visualTransformation = if (keyVisible) VisualTransformation.None
+                                       else PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(onClick = { keyVisible = !keyVisible }) {
+                        Icon(
+                            imageVector = if (keyVisible) Icons.Filled.VisibilityOff
+                                          else Icons.Filled.Visibility,
+                            contentDescription = null
+                        )
+                    }
+                }
+            )
+        }
+
+        // ─── دکمه دریافت کلید ───
+        TextButton(
+            onClick = { /* کاربر باید به سایت برود */ },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "🔗 دریافت کلید از: ${provider.keyUrl}",
+                fontSize = 10.sp,
+                color = primary
+            )
+        }
+
+        // ─── Dropdown انتخاب Model ───
+        Column {
+            Text("مدل", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = textColor)
+            Spacer(Modifier.height(6.dp))
+            Box(modifier = Modifier.fillMaxWidth()) {
+                OutlinedButton(
+                    onClick = { modelMenuOpen = true },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(model.ifBlank { provider.defaultModel }, modifier = Modifier.weight(1f))
+                    Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
+                }
+                DropdownMenu(
+                    expanded = modelMenuOpen,
+                    onDismissRequest = { modelMenuOpen = false }
+                ) {
+                    provider.models.forEach { m ->
+                        DropdownMenuItem(
+                            text = { Text(m) },
+                            onClick = {
+                                model = m
+                                AppSettings.setAiModel(context, m)
+                                modelMenuOpen = false
+                            }
+                        )
+                    }
+                }
+            }
+        }
+
+        // ─── وضعیت ───
+        if (apiKey.isNotBlank()) {
+            Surface(
+                shape = RoundedCornerShape(10.dp),
+                color = Color(0xFF10B981).copy(alpha = 0.15f)
+            ) {
+                Text(
+                    text = "✅ کلید API ذخیره شده",
+                    color = Color(0xFF10B981),
+                    fontSize = 11.sp,
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                )
+            }
+        } else {
+            Surface(
+                shape = RoundedCornerShape(10.dp),
+                color = Color(0xFFF59E0B).copy(alpha = 0.15f)
+            ) {
+                Text(
+                    text = "⚠️ برای استفاده از چت، کلید API وارد کن",
+                    color = Color(0xFFF59E0B),
+                    fontSize = 11.sp,
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
                 )
             }
         }
