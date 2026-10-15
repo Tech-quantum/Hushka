@@ -78,7 +78,7 @@ fun SettingsDialog(
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text("🎨", fontSize = 18.sp)
                                 Text(
-                                    "ظاهر",
+                                    stringResource(R.string.settings_tab_appearance),
                                     fontSize = 10.sp,
                                     maxLines = 1,
                                     softWrap = false,
@@ -95,7 +95,7 @@ fun SettingsDialog(
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text("📦", fontSize = 18.sp)
                                 Text(
-                                    "داده",
+                                    stringResource(R.string.settings_tab_data),
                                     fontSize = 10.sp,
                                     maxLines = 1,
                                     softWrap = false,
@@ -112,7 +112,7 @@ fun SettingsDialog(
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text("🤖", fontSize = 18.sp)
                                 Text(
-                                    "AI",
+                                    stringResource(R.string.settings_tab_ai),
                                     fontSize = 10.sp,
                                     maxLines = 1,
                                     softWrap = false,
@@ -129,7 +129,7 @@ fun SettingsDialog(
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Text("ℹ️", fontSize = 18.sp)
                                 Text(
-                                    "درباره",
+                                    stringResource(R.string.settings_tab_about),
                                     fontSize = 10.sp,
                                     maxLines = 1,
                                     softWrap = false,
