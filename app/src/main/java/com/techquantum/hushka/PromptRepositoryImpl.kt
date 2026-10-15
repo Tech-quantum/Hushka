@@ -128,6 +128,7 @@ class PromptRepositoryImpl(private val dao: PromptDao) : PromptRepository {
             val o = arr.getJSONObject(i)
             list.add(
                 PromptEntity(
+                    id = -(i + 1).toLong(),
                     title = o.optString("title"),
                     category = o.optString("category"),
                     text = o.optString("text"),
