@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.*
 import androidx.core.os.LocaleListCompat
+import kotlinx.coroutines.delay
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: PromptViewModel by viewModels {
@@ -88,6 +89,12 @@ class MainActivity : AppCompatActivity() {
             var colorTheme by remember { mutableStateOf(AppSettings.getColorTheme(this@MainActivity)) }
             var backPressedTime by remember { mutableLongStateOf(0L) }
             var showTagColorManager by remember { mutableStateOf(false) }
+            var showSplash by remember { mutableStateOf(true) }
+
+            LaunchedEffect(Unit) {
+                delay(2200)
+                showSplash = false
+            }
 
             // === 🚪 دو بار بک برای خروج ===
             BackHandler {
@@ -107,6 +114,9 @@ class MainActivity : AppCompatActivity() {
             }
 
             HushkaTheme(themeMode = themeMode, colorTheme = colorTheme) {
+                if (showSplash) {
+                    SplashScreen()
+                } else {
                 HomeScreen(
                     viewModel = viewModel,
                     onSettingsClick = { showSettings = true },
@@ -164,6 +174,7 @@ class MainActivity : AppCompatActivity() {
                         onDismiss = { showTagColorManager = false }
                     )
                 }
+                }  // close else (showSplash)
             }
         }
     }
