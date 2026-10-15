@@ -423,9 +423,9 @@ private fun DataTab(
         colors = CardDefaults.cardColors(containerColor = cardColor)
     ) {
         Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("🗑  پاک کردن کش وب", fontWeight = FontWeight.Bold, fontSize = 13.sp, color = textColor)
+            Text(stringResource(R.string.web_cache_clear_title), fontWeight = FontWeight.Bold, fontSize = 13.sp, color = textColor)
             Text(
-                "نتایج واکشی‌شده از اینترنت در حافظه ذخیره می‌شوند تا بار بعد سریع‌تر لود شوند. با پاک کردن، بار بعد دوباره از اینترنت دانلود می‌شوند.",
+                stringResource(R.string.web_cache_clear_desc),
                 style = MaterialTheme.typography.bodySmall,
                 color = textGrayColor,
                 fontSize = 11.sp
@@ -436,7 +436,7 @@ private fun DataTab(
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFE57373))
             ) {
-                Text("پاک کردن کش", fontSize = 12.sp)
+                Text(stringResource(R.string.web_cache_clear_button), fontSize = 12.sp)
             }
         }
     }
