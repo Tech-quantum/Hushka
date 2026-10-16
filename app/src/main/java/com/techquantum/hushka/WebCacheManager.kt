@@ -15,10 +15,19 @@ object WebCacheManager {
     private const val TAG = "WebCacheManager"
     private const val VALIDITY_MS = 24L * 60L * 60L * 1000L
 
+    // ⚡ in-memory cache برای دسترسی سریع در طول سشن
+    private val memoryCache = java.util.concurrent.ConcurrentHashMap<String, List<PromptEntity>>()
+
     private fun fileFor(context: Context, source: String): File =
         File(context.filesDir, "web_cache_$source.json")
 
     fun get(context: Context, source: String): List<PromptEntity>? = try {
+        // ⚡ اول چک کن توی حافظه هست یا نه
+        memoryCache[source]?.let {
+            Log.d(TAG, "memory hit: $source (${it.size} prompts)")
+            return it
+        }
+
         val f = fileFor(context, source)
         if (!f.exists()) {
             Log.d(TAG, "cache miss (file not exists): $source")
@@ -31,7 +40,9 @@ object WebCacheManager {
             } else {
                 val text = f.readText(Charsets.UTF_8)
                 val list = jsonToPrompts(text)
-                Log.d(TAG, "cache hit: $source (${list.size} prompts)")
+                // ⚡ ذخیره در حافظه برای دفعه بعد
+                memoryCache[source] = list
+                Log.d(TAG, "disk hit: $source (${list.size} prompts)")
                 list
             }
         }
@@ -42,6 +53,9 @@ object WebCacheManager {
 
     fun put(context: Context, source: String, prompts: List<PromptEntity>) {
         try {
+            // ⚡ ذخیره در حافظه
+            memoryCache[source] = prompts
+            // 💾 ذخیره در فایل
             val f = fileFor(context, source)
             f.writeText(promptsToJson(prompts), Charsets.UTF_8)
             Log.d(TAG, "cache write: $source (${prompts.size} prompts)")
@@ -52,11 +66,14 @@ object WebCacheManager {
 
     fun clearAll(context: Context) {
         try {
+            // ⚡ پاک کردن حافظه
+            memoryCache.clear()
+            // 💾 پاک کردن فایل‌ها
             val files = context.filesDir.listFiles { f ->
                 f.name.startsWith("web_cache_") && f.name.endsWith(".json")
             } ?: emptyArray()
             files.forEach { it.delete() }
-            Log.d(TAG, "cache cleared: ${files.size} files")
+            Log.d(TAG, "cache cleared: ${files.size} files + memory")
         } catch (e: Throwable) {
             Log.e(TAG, "cache clear failed", e)
         }
