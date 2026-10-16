@@ -17,11 +17,15 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.*
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -65,6 +69,7 @@ fun PromptCard(
     onLiveTestClick: () -> Unit,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
+    onSwipeToDelete: () -> Unit = {},
     itemIndex: Int = 0
 ) {
     val cardColor = MaterialTheme.colorScheme.surface
@@ -116,20 +121,62 @@ fun PromptCard(
         }
     }
 
-    Card(
+    // 🗑 Swipe-to-Delete state
+    val dismissState = rememberSwipeToDismissBoxState(
+        confirmValueChange = { value ->
+            if (value == SwipeToDismissBoxValue.EndToStart) {
+                onSwipeToDelete()
+            }
+            false
+        }
+    )
+
+    SwipeToDismissBox(
+        state = dismissState,
+        enableDismissFromStartToEnd = false,
+        enableDismissFromEndToStart = true,
+        backgroundContent = {
+            val isSwiping = dismissState.dismissDirection == SwipeToDismissBoxValue.EndToStart
+            val bgColor by animateColorAsState(
+                targetValue = if (isSwiping) Color(0xFFE53935) else Color.Transparent,
+                animationSpec = tween(200),
+                label = "swipeBg"
+            )
+            val iconTint by animateColorAsState(
+                targetValue = if (isSwiping) Color.White else Color.Transparent,
+                animationSpec = tween(200),
+                label = "swipeIcon"
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 8.dp, vertical = 6.dp)
+                    .background(bgColor, RoundedCornerShape(22.dp))
+                    .padding(horizontal = 24.dp),
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Delete,
+                    contentDescription = "حذف",
+                    tint = iconTint,
+                    modifier = Modifier.size(26.dp)
+                )
+            }
+        },
         modifier = Modifier
             .fillMaxWidth()
             .graphicsLayer {
-                // press scale
                 val baseScale = scale
-                // entrance scale: 0.85 → 1.0
                 val entranceScale = 0.85f + (0.15f * entrance.value)
                 scaleX = baseScale * entranceScale
                 scaleY = baseScale * entranceScale
-                // fade + slide up
                 alpha = entrance.value
                 translationY = (1f - entrance.value) * 40f
-            },
+            }
+    ) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(),
         shape = RoundedCornerShape(22.dp),
         colors = CardDefaults.cardColors(containerColor = cardColor),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
@@ -518,4 +565,5 @@ fun ActionButton(
             maxLines = 1
         )
     }
-}
+}    }
+
