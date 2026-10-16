@@ -517,24 +517,27 @@ fun HomeScreen(
 
 
         // 🚀 Scroll-to-Top FAB — همیشه چپ، مستقل از زبان
+        // Box داخلی با LTR اجباری برای اینکه align از والد RTL تأثیر نگیرد
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-            AnimatedVisibility(
-                visible = isScrolledDown,
-                enter = scaleIn() + fadeIn(),
-                exit = scaleOut() + fadeOut(),
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(start = 16.dp, bottom = 100.dp)
-            ) {
-                SmallFloatingActionButton(
-                    onClick = { scope.launch { listState.animateScrollToItem(0) } },
-                    containerColor = purplePrimary,
-                    contentColor = Color.White
+            Box(modifier = Modifier.fillMaxSize()) {
+                AnimatedVisibility(
+                    visible = isScrolledDown,
+                    enter = scaleIn() + fadeIn(),
+                    exit = scaleOut() + fadeOut(),
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(start = 16.dp, bottom = 100.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.KeyboardArrowUp,
-                        contentDescription = "برو به بالا"
-                    )
+                    SmallFloatingActionButton(
+                        onClick = { scope.launch { listState.animateScrollToItem(0) } },
+                        containerColor = purplePrimary,
+                        contentColor = Color.White
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.KeyboardArrowUp,
+                            contentDescription = "برو به بالا"
+                        )
+                    }
                 }
             }
         }
