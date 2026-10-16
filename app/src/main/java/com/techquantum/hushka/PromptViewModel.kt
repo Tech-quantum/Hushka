@@ -3,6 +3,7 @@ package com.techquantum.hushka
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CancellationException
@@ -237,6 +238,7 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
     fun fetchWebPrompts(forceRefresh: Boolean = false) {
         if (_isFetchingWeb.value) return
         val source = _selectedWebSource.value
+        val tStart = System.currentTimeMillis()
 
         viewModelScope.launch {
             // ⚡ اول کش را چک کن (بدون هیچ state change)
@@ -249,14 +251,25 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
                 }
                 if (!cached.isNullOrEmpty()) {
                     // ⚡ instant — بدون loading state
+                    val t = System.currentTimeMillis() - tStart
                     _webError.value = null
                     _webPrompts.value = cached
                     _loadingMessage.value = "loading_from_cache"
+                    android.widget.Toast.makeText(
+                        HushkaApplicationHolder.context.applicationContext,
+                        "⚡ CACHE HIT [$source]\n${cached.size} prompts in ${t}ms",
+                        android.widget.Toast.LENGTH_LONG
+                    ).show()
                     return@launch
                 }
             }
 
             // 🌐 فقط اگر کش نبود، وارد حالت loading شو
+            android.widget.Toast.makeText(
+                HushkaApplicationHolder.context.applicationContext,
+                "🌐 CACHE MISS [$source]\nFetching from web...",
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
             _isFetchingWeb.value = true
             _webError.value = null
             _webPrompts.value = emptyList()
@@ -341,6 +354,12 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
                     }
                 }
 
+                val tTotal = System.currentTimeMillis() - tStart
+                android.widget.Toast.makeText(
+                    HushkaApplicationHolder.context.applicationContext,
+                    "🌐 WEB FETCH [$source]\n${result.size} prompts in ${tTotal}ms",
+                    android.widget.Toast.LENGTH_LONG
+                ).show()
                 _webPrompts.value = result
                 if (result.isEmpty()) {
                     _webError.value = "no_prompts_found"
