@@ -526,7 +526,7 @@ fun HomeScreen(
                     exit = scaleOut() + fadeOut(),
                     modifier = Modifier
                         .align(Alignment.BottomStart)
-                        .padding(start = 16.dp, bottom = 100.dp)
+                        .padding(start = 16.dp, bottom = 140.dp)
                 ) {
                     SmallFloatingActionButton(
                         onClick = { scope.launch { listState.animateScrollToItem(0) } },
