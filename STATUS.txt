@@ -1,0 +1,234 @@
+═══════════════════════════════════════════════════════════
+📱 پروژه Hushka — گزارش کامل وضعیت
+═══════════════════════════════════════════════════════════
+
+📅 آخرین به‌روزرسانی: مهر ۱۴۰۵
+🌐 ریپو: https://github.com/Tech-quantum/Hushka
+📦 پکیج: com.techquantum.hushka
+
+
+═══════════════════════════════════════════════════════════
+🎯 هدف پروژه
+═══════════════════════════════════════════════════════════
+
+ساخت یک اپلیکیشن اندروید حرفه‌ای برای مدیریت، کاوش و خلق
+ایده‌های هوش مصنوعی.
+
+شعار: «هوشکا بستری برای کاوش، خلق و مدیریت ایده‌های AI»
+
+
+═══════════════════════════════════════════════════════════
+📊 آمار نهایی
+═══════════════════════════════════════════════════════════
+
+پرامپت‌های داخلی اپ:
+  🧠 روانشناسی         : 525
+  🌍 پرامپت‌های فارسی   : 1120
+  🏡 زندگی             : 80
+  📦 Catalog            : 94
+  🌱 Seed               : 22
+  🎯 OpenAI/Claude      : 30
+  💜 Lovable/DeepSeek   : 22
+  🎨 Midjourney         : 20
+  ────────────────────────────
+  جمع داخلی            : ~1913
+
+پرامپت‌های قابل واکشی:
+  🌐 همه (یکجا)         : ~1680
+  📦 GitHub             : ~200
+  🤗 Prompts.chat       : ~500
+  🎨 Stable Diffusion   : ~500
+  🔓 Jailbreak          : ~100
+  🇮🇷 Persian            : ~300
+  📋 Dolly 15k          : ~300
+  ✍️ WritingPrompts     : ~300
+  💻 CodeAlpaca         : ~300
+  🩺 Medical            : ~200
+
+  🚀 جمع کل در دسترس: ~3600 پرامپت
+
+
+═══════════════════════════════════════════════════════════
+✨ قابلیت‌های کلیدی
+═══════════════════════════════════════════════════════════
+
+🤖 چت با هوش مصنوعی
+   ├─ Gemini (رایگان)
+   ├─ Groq (رایگان و سریع)
+   ├─ OpenAI (شارژ)
+   └─ DeepSeek (شارژ)
+
+💾 کش هوشمند 24 ساعته
+   ├─ بار دوم واکشی < 1 ثانیه
+   ├─ کار در حالت آفلاین
+   ├─ دکمه به‌روزرسانی
+   └─ دکمه پاک کردن کش
+
+🌐 واکشی از 9 منبع وب
+   ├─ GitHub
+   ├─ Hugging Face (8 dataset)
+   └─ ~1680 پرامپت
+
+🌍 4 زبان کامل
+   ├─ فارسی (RTL)
+   ├─ English (LTR)
+   ├─ العربية (RTL)
+   └─ Türkçe (LTR)
+
+🎨 5 تم رنگی
+   ├─ بنفش
+   ├─ قرمز
+   ├─ سبز
+   ├─ آبی
+   └─ نارنجی
+
+✨ UI/UX
+   ├─ Splash Screen با انیمیشن
+   ├─ انیمیشن ورود کارت‌ها
+   ├─ Swipe-to-Delete
+   ├─ لوگوی LED درخشان
+   └─ انیمیشن press روی کارت‌ها
+
+
+═══════════════════════════════════════════════════════════
+🛠 تکنولوژی‌ها
+═══════════════════════════════════════════════════════════
+
+  Kotlin                  1.9.24
+  Jetpack Compose BOM     2024.09.03
+  Material 3              M3
+  Room Database           2.6.1
+  DataStore               1.1.1
+  Retrofit                2.11.0
+  OkHttp Logging          4.12.0
+  Vazirmatn Font          (فارسی)
+  Min SDK                 26 (Android 8)
+  Target SDK              35 (Android 15)
+
+
+═══════════════════════════════════════════════════════════
+📁 فایل‌های اصلی
+═══════════════════════════════════════════════════════════
+
+UI:
+  MainActivity.kt              نقطه ورود
+  SplashScreen.kt              صفحه آغازین
+  HomeScreen.kt                صفحه اصلی
+  HomeTopBar.kt                نوار بالا
+  PromptCard.kt                کارت پرامپت
+  SettingsDialog.kt            تنظیمات (4 تب)
+  StatisticsScreen.kt          آمار
+  TagColorManagerDialog.kt     مدیریت رنگ
+  HushkaLogo.kt                لوگوی LED
+  ModernChip.kt                چیپ مدرن
+
+AI Chat:
+  ChatScreen.kt                صفحه چت
+  ChatViewModel.kt             State چت
+  ChatMessage.kt               مدل داده
+  AiService.kt                 سرویس API
+  AiProvider.kt                enum
+
+Database:
+  PromptDatabase.kt            Room DB (v7)
+  PromptDao.kt                 DAO
+  PromptEntity.kt              Entity
+  PromptRepository.kt          Interface
+  PromptRepositoryImpl.kt      Impl
+  PromptViewModel.kt           State
+
+Web Fetch:
+  WebPromptsDialog.kt          دیالوگ واکشی
+  WebSource.kt                 enum منابع
+  WebCacheManager.kt           کش فایل‌محور
+
+Translation:
+  TranslationService.kt        سرویس ترجمه
+  TranslatedPromptDialog.kt    دیالوگ ترجمه
+  CategoryTranslator.kt
+  LanguageDetector.kt
+
+Config:
+  AppSettings.kt
+  ThemePreferences.kt
+  HushkaApplication.kt
+  HushkaApplicationHolder.kt
+
+
+═══════════════════════════════════════════════════════════
+📦 Assets (JSON)
+═══════════════════════════════════════════════════════════
+
+  prompts_catalog_v1.2.0.json          (94)
+  prompts_persian_v0.1.0.json          (1120)
+  prompts_life_v0.1.0.json             (80)
+  prompts_psychology_v0.2.0.json       (110)
+  prompts_psychology_v0.3.0.json       (127)
+  prompts_psychology_v0.4.0.json       (120)
+  prompts_psychology_v0.5.0.json       (123)
+  prompts_psychology_v0.6.0.json       (45)
+  prompts_seed_v0.1.0.json             (22)
+  prompts_openai_claude_v0.1.0.json    (30)
+  prompts_midjourney_v0.1.0.json       (20)
+  prompts_lovable_deepseek_v0.1.0.json (22)
+
+
+═══════════════════════════════════════════════════════════
+🔑 لینک دریافت کلید API
+═══════════════════════════════════════════════════════════
+
+  🔵 Gemini   → https://aistudio.google.com/app/apikey
+  ⚡ Groq     → https://console.groq.com/keys
+  🟢 OpenAI   → https://platform.openai.com/account/api-keys
+  🐋 DeepSeek → https://platform.deepseek.com/api_keys
+
+
+═══════════════════════════════════════════════════════════
+📝 Pull Requests
+═══════════════════════════════════════════════════════════
+
+  #2  Add AI Chat + Web Cache           ✅ merged
+  #3  Add Splash Screen                 ✅ merged
+  #4  Cache UI: refresh + clear         ✅ merged
+  #5  i18n: full translation            ✅ merged
+  —   Add card animation                ✅ merged
+  —   Add Swipe-to-Delete               ✅ merged
+
+
+═══════════════════════════════════════════════════════════
+🎯 لیست انتظار (پیشنهادات بعدی)
+═══════════════════════════════════════════════════════════
+
+  🎨 پاکسازی WebCacheEntity/Dao       20 دقیقه
+  🔔 اعلان روزانه                      1 ساعت
+  📊 آمار پیشرفته با نمودار            1.5 ساعت
+  🌐 ترجمه عنوان پرامپت‌ها             1 ساعت
+  🔍 جستجوی زنده در HF                 45 دقیقه
+  ⚙️ تنظیمات بیشتر                     30 دقیقه
+
+
+═══════════════════════════════════════════════════════════
+🏆 دستاورد کل پروژه
+═══════════════════════════════════════════════════════════
+
+  ✅ اپ حرفه‌ای با 4 زبان کامل
+  ✅ ~1913 پرامپت داخلی
+  ✅ ~1680 پرامپت قابل واکشی
+  ✅ ~3600 پرامپت در دسترس
+  ✅ چت با 4 سرویس AI
+  ✅ کش هوشمند 24 ساعته
+  ✅ ترجمه درون‌برنامه‌ای
+  ✅ UI/UX مدرن
+  ✅ 525 زیردسته روانشناسی
+  ✅ 9 منبع واکشی وب
+  ✅ Splash Screen
+  ✅ انیمیشن ورود کارت‌ها
+  ✅ Swipe-to-Delete
+  ✅ README کامل
+
+پروژه Hushka در سطح یک اپ حرفه‌ای کامله! 🚀
+
+
+═══════════════════════════════════════════════════════════
+📝 پایان فایل — تهیه شده در مهر ۱۴۰۵
+═══════════════════════════════════════════════════════════
