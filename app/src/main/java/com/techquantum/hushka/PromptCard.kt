@@ -121,7 +121,6 @@ fun PromptCard(
         }
     }
 
-    // 🗑 Swipe-to-Delete state
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = { value ->
             if (value == SwipeToDismissBoxValue.EndToStart) {
@@ -406,6 +405,7 @@ private fun formatLastUsed(lastUsedAt: Long): String? {
         days < 365 -> "${days / 30} ماه پیش"
         else -> "${days / 365} سال پیش"
     }
+    }
 }
 
 // ============================================================
@@ -565,5 +565,4 @@ fun ActionButton(
             maxLines = 1
         )
     }
-}    }
-
+}
