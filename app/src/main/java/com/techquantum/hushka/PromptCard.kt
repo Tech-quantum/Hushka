@@ -346,6 +346,7 @@ fun PromptCard(
             }
         }
     }
+    }
 }
 
 // ============================================================
@@ -404,7 +405,6 @@ private fun formatLastUsed(lastUsedAt: Long): String? {
         days < 30 -> "${days / 7} هفته پیش"
         days < 365 -> "${days / 30} ماه پیش"
         else -> "${days / 365} سال پیش"
-    }
     }
 }
 
