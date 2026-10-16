@@ -41,6 +41,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.techquantum.hushka.ChatScreen
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.SmallFloatingActionButton
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -142,6 +153,13 @@ fun HomeScreen(
     val borderColor = MaterialTheme.colorScheme.outline
     val purplePrimary = MaterialTheme.colorScheme.primary
 
+    val listState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+    val isScrolledDown by remember {
+        derivedStateOf { listState.canScrollBackward }
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
     Scaffold(
         containerColor = bgColor,
         topBar = {
@@ -210,6 +228,7 @@ fun HomeScreen(
         }
     ) { padding ->
         LazyColumn(
+            state = listState,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
@@ -491,6 +510,34 @@ fun HomeScreen(
                         onSwipeToDelete = { deletePrompt = prompt },
                         itemIndex = index
                     )
+                }
+            }
+        }
+    }
+
+
+        // 🚀 Scroll-to-Top FAB — همیشه چپ، مستقل از زبان
+        // Box داخلی با LTR اجباری برای اینکه align از والد RTL تأثیر نگیرد
+        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                AnimatedVisibility(
+                    visible = isScrolledDown,
+                    enter = scaleIn() + fadeIn(),
+                    exit = scaleOut() + fadeOut(),
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(start = 16.dp, bottom = 140.dp)
+                ) {
+                    SmallFloatingActionButton(
+                        onClick = { scope.launch { listState.animateScrollToItem(0) } },
+                        containerColor = purplePrimary,
+                        contentColor = Color.White
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.KeyboardArrowUp,
+                            contentDescription = "برو به بالا"
+                        )
+                    }
                 }
             }
         }
