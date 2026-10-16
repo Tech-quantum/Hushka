@@ -236,13 +236,10 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
 
     fun fetchWebPrompts(forceRefresh: Boolean = false) {
         if (_isFetchingWeb.value) return
-        _isFetchingWeb.value = true
-        _webError.value = null
-        _webPrompts.value = emptyList()
-        _loadingMessage.value = "loading_connecting"
         val source = _selectedWebSource.value
 
         viewModelScope.launch {
+            // ⚡ اول کش را چک کن (بدون هیچ state change)
             if (!forceRefresh) {
                 val cached: List<PromptEntity>? = withContext(Dispatchers.IO) {
                     WebCacheManager.get(
@@ -251,12 +248,19 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
                     )
                 }
                 if (!cached.isNullOrEmpty()) {
+                    // ⚡ instant — بدون loading state
+                    _webError.value = null
                     _webPrompts.value = cached
                     _loadingMessage.value = "loading_from_cache"
-                    _isFetchingWeb.value = false
                     return@launch
                 }
             }
+
+            // 🌐 فقط اگر کش نبود، وارد حالت loading شو
+            _isFetchingWeb.value = true
+            _webError.value = null
+            _webPrompts.value = emptyList()
+            _loadingMessage.value = "loading_connecting"
 
             val messageJob = launch {
                 delay(3_000)
