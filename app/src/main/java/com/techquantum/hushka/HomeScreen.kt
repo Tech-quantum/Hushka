@@ -516,23 +516,26 @@ fun HomeScreen(
     }
 
 
-        AnimatedVisibility(
-            visible = isScrolledDown,
-            enter = scaleIn() + fadeIn(),
-            exit = scaleOut() + fadeOut(),
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(start = 16.dp, bottom = 88.dp)
-        ) {
-            SmallFloatingActionButton(
-                onClick = { scope.launch { listState.animateScrollToItem(0) } },
-                containerColor = purplePrimary,
-                contentColor = Color.White
+        // 🚀 Scroll-to-Top FAB — همیشه چپ، مستقل از زبان
+        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+            AnimatedVisibility(
+                visible = isScrolledDown,
+                enter = scaleIn() + fadeIn(),
+                exit = scaleOut() + fadeOut(),
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(start = 16.dp, bottom = 100.dp)
             ) {
-                Icon(
-                    imageVector = Icons.Filled.KeyboardArrowUp,
-                    contentDescription = "برو به بالا"
-                )
+                SmallFloatingActionButton(
+                    onClick = { scope.launch { listState.animateScrollToItem(0) } },
+                    containerColor = purplePrimary,
+                    contentColor = Color.White
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.KeyboardArrowUp,
+                        contentDescription = "برو به بالا"
+                    )
+                }
             }
         }
     }
