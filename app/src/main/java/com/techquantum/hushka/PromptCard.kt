@@ -1,6 +1,8 @@
 package com.techquantum.hushka
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -23,6 +25,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -35,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
 
 @Composable
 fun PromptCard(
@@ -57,7 +64,8 @@ fun PromptCard(
     onAnalyzeClick: () -> Unit,
     onLiveTestClick: () -> Unit,
     onEditClick: () -> Unit,
-    onDeleteClick: () -> Unit
+    onDeleteClick: () -> Unit,
+    itemIndex: Int = 0
 ) {
     val cardColor = MaterialTheme.colorScheme.surface
     val cardLightColor = MaterialTheme.colorScheme.surfaceVariant
@@ -90,12 +98,37 @@ fun PromptCard(
         label = "cardScale"
     )
 
+    // ✨ انیمیشن ورود (فقط بار اول)
+    var hasAnimated by rememberSaveable { mutableStateOf(false) }
+    val entrance = remember { Animatable(if (hasAnimated) 1f else 0f) }
+
+    LaunchedEffect(Unit) {
+        if (!hasAnimated) {
+            delay(itemIndex * 40L)
+            entrance.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(
+                    durationMillis = 380,
+                    easing = FastOutSlowInEasing
+                )
+            )
+            hasAnimated = true
+        }
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .graphicsLayer {
-                scaleX = scale
-                scaleY = scale
+                // press scale
+                val baseScale = scale
+                // entrance scale: 0.85 → 1.0
+                val entranceScale = 0.85f + (0.15f * entrance.value)
+                scaleX = baseScale * entranceScale
+                scaleY = baseScale * entranceScale
+                // fade + slide up
+                alpha = entrance.value
+                translationY = (1f - entrance.value) * 40f
             },
         shape = RoundedCornerShape(22.dp),
         colors = CardDefaults.cardColors(containerColor = cardColor),
