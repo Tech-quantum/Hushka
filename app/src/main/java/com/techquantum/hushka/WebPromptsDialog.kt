@@ -43,6 +43,9 @@ fun WebPromptsDialog(
     onTranslate: (List<PromptEntity>) -> Unit,
     onImport: (List<PromptEntity>) -> Unit,
     onRefresh: () -> Unit = {},
+    webSearchResults: List<PromptEntity> = emptyList(),
+    isSearchingWeb: Boolean = false,
+    onSearchWeb: (String) -> Unit = {},
     onDismiss: () -> Unit
 ) {
     val cardColor = MaterialTheme.colorScheme.surface
@@ -53,6 +56,16 @@ fun WebPromptsDialog(
 
     val selected = remember { mutableStateListOf<PromptEntity>() }
     var searchQuery by remember { mutableStateOf("") }
+
+    // Debounce برای جستجوی زنده
+    LaunchedEffect(searchQuery) {
+        if (searchQuery.length >= 3) {
+            kotlinx.coroutines.delay(500)
+            onSearchWeb(searchQuery)
+        } else {
+            onSearchWeb("")
+        }
+    }
     var wasRefreshing by remember { mutableStateOf(false) }
 
     // 🔄 انیمیشن چرخش آیکون
@@ -133,12 +146,16 @@ fun WebPromptsDialog(
 
 
     // 🔍 فیلتر پرامپت‌ها بر اساس جستجو (case-insensitive، در title و text)
-    val filteredPrompts = remember(prompts, searchQuery) {
-        val q = searchQuery.trim()
-        if (q.isBlank()) prompts
-        else prompts.filter { p ->
-            p.title.contains(q, ignoreCase = true) ||
-            p.text.contains(q, ignoreCase = true)
+    val filteredPrompts = remember(prompts, searchQuery, webSearchResults) {
+        if (searchQuery.isNotBlank() && webSearchResults.isNotEmpty()) {
+            webSearchResults
+        } else {
+            val q = searchQuery.trim()
+            if (q.isBlank()) prompts
+            else prompts.filter { p ->
+                p.title.contains(q, ignoreCase = true) ||
+                p.text.contains(q, ignoreCase = true)
+            }
         }
     }
 
@@ -336,7 +353,9 @@ fun WebPromptsDialog(
                                 Text("🔍", fontSize = 14.sp)
                             },
                             trailingIcon = {
-                                if (searchQuery.isNotEmpty()) {
+                                if (isSearchingWeb) {
+                                    CircularProgressIndicator(modifier = Modifier.size(16.dp), strokeWidth = 2.dp)
+                                } else if (searchQuery.isNotEmpty()) {
                                     TextButton(onClick = { searchQuery = "" }) {
                                         Text("✕", fontSize = 14.sp, color = textGrayColor)
                                     }
