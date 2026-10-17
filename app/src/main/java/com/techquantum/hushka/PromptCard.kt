@@ -210,7 +210,7 @@ fun PromptCard(
                 verticalAlignment = Alignment.Top
             ) {
                 Text(
-                    title.ifBlank { stringResource(R.string.untitled) },
+                    displayTitle.ifBlank { stringResource(R.string.untitled) },
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f),
