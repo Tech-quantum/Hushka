@@ -524,8 +524,7 @@ fun HomeScreen(
                         onEditClick = { editingPrompt = prompt },
                         onDeleteClick = { deletePrompt = prompt },
                         onSwipeToDelete = { deletePrompt = prompt },
-                        itemIndex = index,
-                        currentLanguage = uiState.selectedLanguage
+                        itemIndex = index
                     )
                 }
             }

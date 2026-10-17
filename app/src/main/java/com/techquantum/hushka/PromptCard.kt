@@ -70,8 +70,7 @@ fun PromptCard(
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onSwipeToDelete: () -> Unit = {},
-    itemIndex: Int = 0,
-    currentLanguage: String = "fa"
+    itemIndex: Int = 0
 ) {
     var displayTitle by remember(title) { mutableStateOf(title) }
     
@@ -98,6 +97,14 @@ fun PromptCard(
     val appContext = LocalContext.current
     val tagColors = remember(tags) {
         AppSettings.getAllTagColors(appContext)
+    }
+
+    // 🌐 ترجمه خودکار عنوان بر اساس زبان اپ
+    val appLang = remember(appContext) { AppSettings.getLanguage(appContext) }
+    LaunchedEffect(title, appLang) {
+        if (title.isNotBlank()) {
+            displayTitle = TitleTranslationCache.translate(title, appLang)
+        }
     }
 
     // 📊 زمان آخرین استفاده
