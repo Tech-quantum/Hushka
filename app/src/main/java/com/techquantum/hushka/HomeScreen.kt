@@ -766,6 +766,9 @@ fun HomeScreen(
                 viewModel.translateWebPrompts(selected)
             },
             onRefresh = { viewModel.refreshWebPrompts() },
+            webSearchResults = webSearchResults,
+            isSearchingWeb = isSearchingWeb,
+            onSearchWeb = { viewModel.searchHuggingFaceWeb(it) },
             onImport = { selected ->
                 viewModel.importWebPrompts(selected)
                 showWebDialog = false

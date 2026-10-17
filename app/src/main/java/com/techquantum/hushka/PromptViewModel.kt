@@ -240,9 +240,84 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
     private val _webError = MutableStateFlow<String?>(null)
     val webError: StateFlow<String?> = _webError.asStateFlow()
 
+    private val _webSearchResults = MutableStateFlow<List<PromptEntity>>(emptyList())
+    val webSearchResults: StateFlow<List<PromptEntity>> = _webSearchResults.asStateFlow()
+
+    private val _isSearchingWeb = MutableStateFlow(false)
+    val isSearchingWeb: StateFlow<Boolean> = _isSearchingWeb.asStateFlow()
+
+    private var searchJob: Job? = null
+
     // 🆕 پیام پویا برای نمایش به کاربر هنگام لودینگ
     private val _loadingMessage = MutableStateFlow("loading_connecting")
     val loadingMessage: StateFlow<String> = _loadingMessage.asStateFlow()
+
+    fun searchHuggingFaceWeb(query: String) {
+        if (query.isBlank()) {
+            _webSearchResults.value = emptyList()
+            return
+        }
+        val source = _selectedWebSource.value
+        if (source == WebSource.GITHUB || source == WebSource.ALL) return
+
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch(Dispatchers.IO) {
+            _isSearchingWeb.value = true
+            try {
+                val config = when(source) {
+                    WebSource.HF_PROMPTS_CHAT -> Triple("fka/prompts.chat", "prompt", "act")
+                    WebSource.HF_STABLE_DIFFUSION -> Triple("Gustavosta/Stable-Diffusion-Prompts", "Prompt", null)
+                    WebSource.HF_JAILBREAK -> Triple("rubend18/ChatGPT-Jailbreak-Prompts", "Prompt", "name")
+                    WebSource.HF_PERSIAN -> Triple("kasranaqhdpur/persiandatasets2", "instruction", null)
+                    WebSource.HF_DOLLY -> Triple("databricks/databricks-dolly-15k", "instruction", null)
+                    WebSource.HF_WRITING -> Triple("euclaise/writingprompts", "prompt", null)
+                    WebSource.HF_CODE -> Triple("sahil2801/CodeAlpaca-20k", "instruction", null)
+                    WebSource.HF_MEDICAL -> Triple("medalpaca/medical_meadow_medical_flashcards", "instruction", null)
+                    else -> return@launch
+                }
+                
+                val dataset = config.first
+                val promptField = config.second
+                val titleField = config.third
+                
+                val encoded = URLEncoder.encode(dataset, "UTF-8")
+                val q = URLEncoder.encode(query, "UTF-8")
+                val url = "https://datasets-server.huggingface.co/search?dataset=$encoded&config=default&split=train&query=$q&offset=0&length=50"
+                val response = URL(url).readText()
+                val json = JSONObject(response)
+                val rows = json.optJSONArray("rows") ?: return@launch
+
+                val results = mutableListOf<PromptEntity>()
+                for (i in 0 until rows.length()) {
+                    val rowObj = rows.getJSONObject(i).getJSONObject("row")
+                    val mainText = rowObj.optString(promptField, "").trim()
+                    if (mainText.isBlank()) continue
+
+                    val title = if (titleField != null) {
+                        rowObj.optString(titleField, "").trim().take(100).ifBlank { mainText.take(60) }
+                    } else {
+                        mainText.take(60)
+                    }
+
+                    results.add(
+                        PromptEntity(
+                            title = title,
+                            category = "web_search",
+                            tags = "huggingface,$dataset",
+                            text = mainText,
+                            collection = "huggingface"
+                        )
+                    )
+                }
+                _webSearchResults.value = results
+            } catch (e: Exception) {
+                Log.e(TAG, "Live search failed", e)
+                _webSearchResults.value = emptyList() // اگر API پشتیبانی نکرد، به فیلتر محلی برمی‌گردیم
+            } finally {
+                _isSearchingWeb.value = false
+            }
+        }
+    }
 
     fun fetchWebPrompts(forceRefresh: Boolean = false) {
         if (_isFetchingWeb.value) return
