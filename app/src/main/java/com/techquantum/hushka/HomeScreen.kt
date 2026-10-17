@@ -377,6 +377,19 @@ fun HomeScreen(
                             leadingEmoji = emoji
                         )
                     }
+                    // 🏷️ چیپ فیلتر تگ‌ها
+                    item {
+                        val tagLabel = if (uiState.selectedTags.isEmpty()) 
+                            stringResource(R.string.tags_filter_title) 
+                        else 
+                            "${stringResource(R.string.tags_filter_title)} (${uiState.selectedTags.size})"
+                        ModernChip(
+                            label = tagLabel,
+                            selected = uiState.selectedTags.isNotEmpty(),
+                            onClick = { showTagFilterDialog = true },
+                            leadingEmoji = "🏷️"
+                        )
+                    }
                 }
             }
 
