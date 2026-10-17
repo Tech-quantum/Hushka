@@ -74,10 +74,7 @@ fun PromptCard(
 ) {
     var displayTitle by remember(title) { mutableStateOf(title) }
     
-    LaunchedEffect(title, currentLanguage) {
-        if (title.isNotBlank()) {
-            displayTitle = TitleTranslationCache.translate(title, currentLanguage)
-        }
+    
     }
 
     val cardColor = MaterialTheme.colorScheme.surface
