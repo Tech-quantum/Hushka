@@ -70,8 +70,17 @@ fun PromptCard(
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onSwipeToDelete: () -> Unit = {},
-    itemIndex: Int = 0
+    itemIndex: Int = 0,
+    currentLanguage: String = "fa"
 ) {
+    var displayTitle by remember(title) { mutableStateOf(title) }
+    
+    LaunchedEffect(title, currentLanguage) {
+        if (title.isNotBlank()) {
+            displayTitle = TitleTranslationCache.translate(title, currentLanguage)
+        }
+    }
+
     val cardColor = MaterialTheme.colorScheme.surface
     val cardLightColor = MaterialTheme.colorScheme.surfaceVariant
     val textColor = MaterialTheme.colorScheme.onSurface
