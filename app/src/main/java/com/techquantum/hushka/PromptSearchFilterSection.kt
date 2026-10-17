@@ -21,6 +21,8 @@ fun PromptSearchFilterSection(
     selectedDomain: String,
     selectedCategory: String,
     favoritesOnly: Boolean,
+    selectedTags: Set<String>,
+    onTagFilterClick: () -> Unit,
     sortMode: String,
     providers: List<String>,
     domains: List<String>,
@@ -282,6 +284,19 @@ fun PromptSearchFilterSection(
                 onClick = onFavoritesToggled,
                 leadingEmoji = "⭐",
                 accentColor = Color(0xFFFFB300)
+            )
+        }
+        item {
+            val tagLabel = if (selectedTags.isEmpty()) 
+                stringResource(R.string.tags_filter_title) 
+            else 
+                "${stringResource(R.string.tags_filter_title)} (${selectedTags.size})"
+            ModernChip(
+                label = tagLabel,
+                selected = selectedTags.isNotEmpty(),
+                onClick = onTagFilterClick,
+                leadingEmoji = "🏷️",
+                accentColor = Color(0xFF9C27B0)
             )
         }
         if (selectedCategories.isNotEmpty()) {

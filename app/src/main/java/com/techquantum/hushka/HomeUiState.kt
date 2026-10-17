@@ -13,6 +13,7 @@ data class HomeUiState(
     val recentOnly: Boolean = false,
     val favoritesOnly: Boolean = false,
     val selectedLanguage: String = ALL_LANGUAGE,
+    val allTags: List<String> = emptyList(),
     val selectedTags: Set<String> = emptySet(),
     val tagFilterMode: String = TAG_MODE_OR,
     val sortMode: String = SORT_LATEST,

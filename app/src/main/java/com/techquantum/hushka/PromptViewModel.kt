@@ -35,7 +35,13 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) { repository.initializeDefaults() }
         viewModelScope.launch {
             repository.prompts.collectLatest { prompts ->
-                updateState { it.copy(prompts = prompts) }
+                val allTags = withContext(Dispatchers.Default) {
+                    prompts.flatMap { it.tags.split(",").map { t -> t.trim() } }
+                        .filter { it.isNotEmpty() }
+                        .distinct()
+                        .sorted()
+                }
+                updateState { it.copy(prompts = prompts, allTags = allTags) }
             }
         }
     }

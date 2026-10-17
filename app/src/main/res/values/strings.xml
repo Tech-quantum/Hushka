@@ -374,4 +374,5 @@
     <string name="web_search_placeholder">جستجو در عنوان یا متن...</string>
     <string name="translation_same_language">متن پرامپت قبلاً به این زبان است</string>
     <string name="translation_empty_result">ترجمه‌ای یافت نشد</string>
+    <string name="tags_filter_title">تگ‌ها</string>
 </resources>
