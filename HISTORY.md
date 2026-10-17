@@ -6,18 +6,9 @@
 
 ---
 
-## 🎯 هدف پروژه
-
-ساخت یک اپلیکیشن اندروید حرفه‌ای برای مدیریت، کاوش و خلق ایده‌های هوش مصنوعی.
-
-**شعار:** «هوشکا بستری برای کاوش، خلق و مدیریت ایده‌های هوش مصنوعی»
-
----
-
 ## 📊 آمار نهایی پروژه
 
 ### پرامپت‌های داخلی اپ
-
 | دسته | تعداد |
 |---|---|
 | 🧠 روانشناسی | 525 |
@@ -31,7 +22,6 @@
 | **جمع داخلی** | **~1913** |
 
 ### پرامپت‌های قابل واکشی از وب
-
 | منبع | تعداد |
 |---|---|
 | 🌐 همه (یکجا) | ~1680 |
@@ -48,94 +38,34 @@
 
 ---
 
-## 🎨 UI/UX
+## 🚀 قابلیت‌های اضافه شده (طی PRهای اخیر)
 
-- ✅ 5 تم رنگی (بنفش، قرمز، سبز، آبی، نارنجی)
-- ✅ تم روشن/تیره/سیستم
-- ✅ 4 زبان (فارسی، انگلیسی، عربی، ترکی)
-- ✅ RTL/LTR خودکار
-- ✅ ModernChip با انیمیشن spring
-- ✅ chip های رنگی برند
-- ✅ گروه‌بندی دسته‌ها با header
-- ✅ کارت‌های پرامپت با گرادیان ملایم
-- ✅ تگ‌های رنگی
-- ✅ metadata (زمان آخرین استفاده)
-- ✅ انیمیشن press (scale 0.98)
-- ✅ دکمه‌های کارت مدرن
-- ✅ تنظیمات با 4 تب (ظاهر، داده، AI، درباره)
-- ✅ دو بار بک برای خروج
-- ✅ لوگوی LED درخشان 💎
-- ✅ Splash Screen با انیمیشن
-- ✅ انیمیشن ورود کارت‌ها (staggered)
-- ✅ Swipe-to-Delete
+### 🤖 چت با هوش مصنوعی (PR #2)
+- صفحه چت اختصاصی ChatScreen با UI مدرن.
+- ارسال خودکار پرامپت هنگام باز شدن صفحه (از طریق دکمه اشتراک‌گذاری).
+- پشتیبانی از ۴ سرویس‌دهنده: Gemini, Groq, OpenAI, DeepSeek.
+- تب اختصاصی AI در تنظیمات برای انتخاب سرویس، وارد کردن API Key و انتخاب مدل.
+- مدیریت خطاهای شبکه و API (401, 429, 402, ...).
 
----
+### 💾 کش هوشمند (PR #2, #8)
+- **نسخه اول**: پیاده‌سازی با Room DB (v7) با جدول web_cache که بعداً حذف شد.
+- **نسخه نهایی**: WebCacheManager فایل‌محور.
+- **بهینه‌سازی (PR #8)**: اضافه شدن **In-Memory Cache** برای دسترسی فوری (بار دوم <۱۰۰ میلی‌ثانیه).
+- دکمه به‌روزرسانی (🔄) در دیالوگ واکشی + پیام موفقیت مرکزی چندزبانه.
+- دکمه پاک کردن کش (🗑) در تنظیمات -> تب داده‌ها.
 
-## 🤖 چت با هوش مصنوعی
+### ✨ UI/UX (PR #3, #4, #5, #6, #7)
+- **Splash Screen**: انیمیشن لوگو با Fade + Scale.
+- **ترجمه کامل ۴ زبانه**: تمام متن‌های اپ (شامل دیالوگ‌ها و Toastها) به ۴ زبان.
+- **انیمیشن کارت‌ها**: ورود Staggered با Fade + Slide Up.
+- **Swipe-to-Delete**: کشیدن کارت به چپ و باز شدن دیالوگ تایید.
+- **Scroll-to-Top FAB**: دکمه شناور برای رفتن به بالای لیست (همیشه سمت چپ، مستقل از زبان).
+- **تب‌های تنظیمات**: ترتیب جدید (ظاهر، داده، AI، درباره) با طراحی Emoji + متن کوتاه.
 
-### سرویس‌های پشتیبانی‌شده
-
-| سرویس | Emoji | رایگان | لینک کلید |
-|---|---|---|---|
-| Google Gemini | 🔵 | ✅ | https://aistudio.google.com/app/apikey |
-| Groq | ⚡ | ✅ | https://console.groq.com/keys |
-| OpenAI | 🟢 | ❌ | https://platform.openai.com/account/api-keys |
-| DeepSeek | 🐋 | ❌ | https://platform.deepseek.com/api_keys |
-
-### قابلیت‌ها
-
-- ✅ صفحه چت با UI مدرن
-- ✅ ارسال خودکار پرامپت هنگام باز شدن
-- ✅ حباب‌های پیام (کاربر/هوشکا/خطا)
-- ✅ نشانگر تایپ
-- ✅ regenerate و clear chat
-- ✅ تب AI در تنظیمات (انتخاب Provider، کلید، مدل)
-- ✅ خطاهای کاربرپسند
-
----
-
-## 💾 کش هوشمند
-
-- ✅ کش فایل‌محور (WebCacheManager)
-- ✅ اعتبار 24 ساعته
-- ✅ دکمه 🔄 به‌روزرسانی در دیالوگ واکشی
-- ✅ پیام موفقیت مرکزی چندزبانه
-- ✅ دکمه 🗑 پاک کردن کش در تنظیمات
-- ✅ Fallback آفلاین
-
----
-
-## 🌐 واکشی از وب
-
-### منابع (9 منبع)
-
-1. 📦 GitHub: awesome-chatgpt-prompts (CSV)
-2. 🤗 Hugging Face - fka/prompts.chat (API)
-3. 🎨 Hugging Face - Stable-Diffusion-Prompts (API)
-4. 🔓 Hugging Face - ChatGPT-Jailbreak-Prompts (API)
-5. 🇮🇷 Hugging Face - Persian datasets (API)
-6. 📋 Hugging Face - Dolly 15k (API)
-7. ✍️ Hugging Face - WritingPrompts (API)
-8. 💻 Hugging Face - CodeAlpaca (API)
-9. 🩺 Hugging Face - Medical Flashcards (API)
-
-### قابلیت‌ها
-
-- ✅ لودینگ پویا با متن‌های زمان‌بندی شده
-- ✅ جستجوی زنده در نتایج
-- ✅ انتخاب همه / لغو انتخاب
-- ✅ ساب‌تایتل داینامیک
-- ✅ تحمل خطا (per-source try/catch)
-- ✅ Pagination (100 ردیف/درخواست)
-
----
-
-## 🌐 ترجمه
-
-- ✅ MyMemory API (رایگان، بدون توکن)
-- ✅ ترجمه درون‌برنامه‌ای پرامپت‌ها
-- ✅ حفاظت از markup ها
-- ✅ Chunked translation (480 کاراکتر/درخواست)
+### 🎨 پاکسازی کد (PR #8)
+- حذف WebCacheEntity و WebCacheDao (بی‌استفاده).
+- ارتقای دیتابیس به **نسخه ۸** با مایگریشن DROP TABLE web_cache.
+- حذف ۵۸ خط کد اضافی از PromptRepositoryImpl.
 
 ---
 
@@ -146,112 +76,35 @@
 | Kotlin | 1.9.24 |
 | Jetpack Compose BOM | 2024.09.03 |
 | Material 3 | M3 |
-| Room Database | 2.6.1 |
+| Room Database | 2.6.1 (v8) |
 | DataStore | 1.1.1 |
 | Retrofit | 2.11.0 |
 | OkHttp Logging | 4.12.0 |
-| Vazirmatn Font | - |
 | Min SDK | 26 |
 | Target SDK | 35 |
 
 ---
 
-## 📁 فایل‌های اصلی پروژه
+## 🐛 باگ‌های مهم که رفع شدند
 
-### صفحه اصلی و UI
-
-- `MainActivity.kt` — نقطه ورود
-- `HomeScreen.kt` — صفحه اصلی
-- `HomeTopBar.kt` / `HomeBottomBar.kt` / `HomeFloatingActionButton.kt`
-- `PromptCard.kt` — کارت پرامپت
-- `PromptFormDialog.kt` — فرم افزودن
-- `SettingsDialog.kt` — تنظیمات (4 تب)
-- `SplashScreen.kt` — صفحه آغازین
-- `HushkaLogo.kt` — لوگوی LED
-- `ModernChip.kt` — چیپ مدرن
-- `StatisticsScreen.kt` — آمار
-- `TagColorManagerDialog.kt`
-
-### چت AI
-
-- `ChatScreen.kt` — صفحه چت
-- `ChatViewModel.kt` — مدیریت State
-- `ChatMessage.kt` — مدل داده
-- `AiService.kt` — سرویس API
-- `AiProvider.kt` — enum
-
-### دیتابیس
-
-- `PromptDatabase.kt` — Room DB
-- `PromptDao.kt` / `WebCacheDao.kt`
-- `PromptEntity.kt` / `WebCacheEntity.kt`
-- `PromptRepository.kt` / `PromptRepositoryImpl.kt`
-- `PromptViewModel.kt` / `PromptViewModelFactory.kt`
-
-### وب
-
-- `WebPromptsDialog.kt`
-- `WebSource.kt`
-- `WebCacheManager.kt` — کش فایل‌محور
-
-### ترجمه
-
-- `TranslationService.kt`
-- `TranslatedPromptDialog.kt`
-- `CategoryTranslator.kt`
-- `LanguageDetector.kt`
+- ✅ **کرش بار دوم واکشی**: ناشی از Duplicate ID پرامپت‌های کش (حل با ID منفی).
+- ✅ **کرش در Migration**: ناشی از عدم سازگاری Room (حل با isInitialized).
+- ✅ **مشکل فایل‌های .bak**: اضافه شدن به .gitignore.
+- ✅ **عدم نمایش کش**: اضافه شدن In-Memory Cache و اصلاح منطق Loading.
+- ✅ **جایگاه FAB**: فیکس شدن در سمت چپ با CompositionLocalProvider(LTR).
+- ✅ **ترجمه ناقص تب‌ها**: فیکس شدن indent و اضافه شدن به strings.xml.
 
 ---
 
-## 📦 فایل‌های Assets (JSON)
+## 🎯 لیست انتظار (برای جلسه بعد)
 
-- `prompts_catalog_v1.2.0.json` (94)
-- `prompts_persian_v0.1.0.json` (1120)
-- `prompts_life_v0.1.0.json` (80)
-- `prompts_psychology_v0.2.0.json` (110)
-- `prompts_psychology_v0.3.0.json` (127)
-- `prompts_psychology_v0.4.0.json` (120)
-- `prompts_psychology_v0.5.0.json` (123)
-- `prompts_psychology_v0.6.0.json` (45)
-- `prompts_seed_v0.1.0.json` (22)
-- `prompts_openai_claude_v0.1.0.json` (30)
-- `prompts_midjourney_v0.1.0.json` (20)
-- `prompts_lovable_deepseek_v0.1.0.json` (22)
+- 🔔 اعلان روزانه (Daily Notification)
+- 📊 آمار پیشرفته با نمودار (Advanced Stats)
+- 🌐 ترجمه خودکار عنوان‌ها (Auto Translate Titles)
+- 🏷️ فیلتر پیشرفته تگ‌ها (Advanced Tag Filter)
+- 🔍 جستجوی زنده در Hugging Face
+- 🎨 تم‌های بیشتر
 
 ---
-
-## 🎯 Pull Requests Merge شده
-
-| # | عنوان | وضعیت |
-|---|---|---|
-| #2 | Add AI Chat + Web Cache | ✅ |
-| #3 | Add Splash Screen | ✅ |
-| #4 | Cache UI: refresh + clear | ✅ |
-| #5 | i18n: full translation | ✅ |
-| — | Add card animation | ✅ |
-| — | Add Swipe-to-Delete | ✅ |
-
----
-
-## 🏆 دستاورد کل پروژه
-
-- ✅ اپ حرفه‌ای با 4 زبان کامل
-- ✅ ~1913 پرامپت داخلی
-- ✅ ~1680 پرامپت قابل واکشی
-- ✅ ~3600 پرامپت در دسترس کاربر
-- ✅ چت با 4 سرویس AI
-- ✅ کش هوشمند 24 ساعته
-- ✅ ترجمه درون‌برنامه‌ای
-- ✅ UI/UX مدرن
-- ✅ 525 زیردسته روانشناسی
-- ✅ 9 منبع واکشی وب
-- ✅ Splash Screen با انیمیشن
-- ✅ انیمیشن ورود کارت‌ها
-- ✅ Swipe-to-Delete
-- ✅ README کامل
 
 **پروژه Hushka در سطح یک اپ حرفه‌ای کامله! 🚀**
-
----
-
-## 📝 پایان فایل — تهیه شده در مهر ۱۴۰۵
