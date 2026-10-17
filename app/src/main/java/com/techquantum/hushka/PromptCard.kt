@@ -72,11 +72,6 @@ fun PromptCard(
     onSwipeToDelete: () -> Unit = {},
     itemIndex: Int = 0
 ) {
-    var displayTitle by remember(title) { mutableStateOf(title) }
-    
-    
-    }
-
     val cardColor = MaterialTheme.colorScheme.surface
     val cardLightColor = MaterialTheme.colorScheme.surfaceVariant
     val textColor = MaterialTheme.colorScheme.onSurface
@@ -97,6 +92,7 @@ fun PromptCard(
     }
 
     // 🌐 ترجمه خودکار عنوان بر اساس زبان اپ
+    var displayTitle by remember(title) { mutableStateOf(title) }
     val appLang = remember(appContext) { AppSettings.getLanguage(appContext) }
     LaunchedEffect(title, appLang) {
         if (title.isNotBlank()) {
