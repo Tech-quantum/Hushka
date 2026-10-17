@@ -91,6 +91,15 @@ fun PromptCard(
         AppSettings.getAllTagColors(appContext)
     }
 
+    // 🌐 ترجمه خودکار عنوان بر اساس زبان اپ
+    var displayTitle by remember(title) { mutableStateOf(title) }
+    val appLang = remember(appContext) { AppSettings.getLanguage(appContext) }
+    LaunchedEffect(title, appLang) {
+        if (title.isNotBlank()) {
+            displayTitle = TitleTranslationCache.translate(title, appLang)
+        }
+    }
+
     // 📊 زمان آخرین استفاده
     val metadataText = remember(lastUsedAt) { formatLastUsed(lastUsedAt) }
 
@@ -201,7 +210,7 @@ fun PromptCard(
                 verticalAlignment = Alignment.Top
             ) {
                 Text(
-                    title.ifBlank { stringResource(R.string.untitled) },
+                    displayTitle.ifBlank { stringResource(R.string.untitled) },
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f),
