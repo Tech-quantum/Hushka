@@ -1,7 +1,7 @@
 name: Build Hushka APK
 on:
   push:
-    branches: [ main, feature/auto-translate-titles ]
+    branches: [ main, feature/hf-live-search ]
   workflow_dispatch:
 jobs:
   build:
