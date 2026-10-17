@@ -61,6 +61,8 @@ fun HomeScreen(
     onStartVoiceSearch: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val webSearchResults by viewModel.webSearchResults.collectAsStateWithLifecycle()
+    val isSearchingWeb by viewModel.isSearchingWeb.collectAsStateWithLifecycle()
     var showAddDialog by remember { mutableStateOf(false) }
     var editingPrompt by remember { mutableStateOf<PromptEntity?>(null) }
     var previewPrompt by remember { mutableStateOf<PromptEntity?>(null) }
