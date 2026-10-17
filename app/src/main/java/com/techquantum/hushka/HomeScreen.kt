@@ -72,6 +72,7 @@ fun HomeScreen(
     var showCategoryDialog by remember { mutableStateOf(false) }
     var showStats by remember { mutableStateOf(false) }
     var languageMenuExpanded by remember { mutableStateOf(false) }
+    var showTagFilterDialog by remember { mutableStateOf(false) }
     val appContext = LocalContext.current
 
     // ============ Statistics Screen ============
@@ -331,6 +332,18 @@ fun HomeScreen(
                                 }
                             }
                         }
+                    }
+
+                    // چیپ تگ‌ها
+                    item {
+                        val tagsCount = uiState.selectedTags.size
+                        val tagLabel = if (tagsCount == 0) "تگ‌ها" else "تگ‌ها ($tagsCount)"
+                        ModernChip(
+                            label = tagLabel,
+                            selected = tagsCount > 0,
+                            onClick = { showTagFilterDialog = true },
+                            leadingEmoji = "🏷️"
+                        )
                     }
                 }
             }
@@ -686,6 +699,26 @@ fun HomeScreen(
                     Text(stringResource(R.string.cancel), color = textGrayColor)
                 }
             }
+        )
+    }
+
+    // ============ Tag Filter Dialog ============
+    if (showTagFilterDialog) {
+        val allTags = viewModel.uiState.value.prompts
+            .flatMap { it.tags.split(",").map { t -> t.trim() } }
+            .filter { it.isNotEmpty() }
+            .distinct()
+            .sorted()
+
+        TagFilterDialog(
+            allTags = allTags,
+            initialSelectedTags = uiState.selectedTags,
+            initialMode = uiState.tagFilterMode,
+            onApply = { tags, mode ->
+                viewModel.onTagFilterChanged(tags, mode)
+                showTagFilterDialog = false
+            },
+            onDismiss = { showTagFilterDialog = false }
         )
     }
 

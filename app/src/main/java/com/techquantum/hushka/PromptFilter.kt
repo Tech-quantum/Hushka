@@ -33,7 +33,9 @@ object PromptFilter {
         sortMode: String,
         pinnedOnly: Boolean,
         recentOnly: Boolean,
-        selectedLanguage: String = ALL_LANGUAGE
+        selectedLanguage: String = ALL_LANGUAGE,
+        selectedTags: Set<String> = emptySet(),
+        tagFilterMode: String = TAG_MODE_OR
     ): List<PromptEntity> {
         var result = prompts
 
@@ -67,6 +69,19 @@ object PromptFilter {
 
         if (selectedCategories.isNotEmpty()) {
             result = result.filter { it.category in selectedCategories }
+        }
+
+        if (selectedTags.isNotEmpty()) {
+            result = result.filter { prompt ->
+                val promptTags = prompt.tags.split(",").map { it.trim().lowercase() }.filter { it.isNotEmpty() }
+                val selTagsLower = selectedTags.map { it.lowercase() }
+                
+                if (tagFilterMode == TAG_MODE_AND) {
+                    selTagsLower.all { promptTags.contains(it) }
+                } else {
+                    selTagsLower.any { promptTags.contains(it) }
+                }
+            }
         }
 
         if (favoritesOnly) {
