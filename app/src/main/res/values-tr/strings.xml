@@ -358,4 +358,5 @@
     <string name="web_search_placeholder">Başlık veya metinde ara...</string>
     <string name="translation_same_language">İstem zaten bu dilde</string>
     <string name="translation_empty_result">Çeviri bulunamadı</string>
+    <string name="tags_filter_title">Etiketler</string>
 </resources>

@@ -1,7 +1,7 @@
 name: Build Hushka APK
 on:
   push:
-    branches: [ main, feature/scroll-to-top ]
+    branches: [ main, feature/advanced-tag-filter ]
   workflow_dispatch:
 jobs:
   build:

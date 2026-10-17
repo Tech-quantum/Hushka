@@ -35,7 +35,13 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) { repository.initializeDefaults() }
         viewModelScope.launch {
             repository.prompts.collectLatest { prompts ->
-                updateState { it.copy(prompts = prompts) }
+                val allTags = withContext(Dispatchers.Default) {
+                    prompts.flatMap { it.tags.split(",").map { t -> t.trim() } }
+                        .filter { it.isNotEmpty() }
+                        .distinct()
+                        .sorted()
+                }
+                updateState { it.copy(prompts = prompts, allTags = allTags) }
             }
         }
     }
@@ -53,6 +59,7 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
     fun onFavoritesToggled() = updateState { it.copy(favoritesOnly = !it.favoritesOnly) }
     fun onSortSelected(value: String) = updateState { it.copy(sortMode = value) }
     fun onLanguageSelected(value: String) = updateState { it.copy(selectedLanguage = value) }
+    fun onTagFilterChanged(tags: Set<String>, mode: String) = updateState { it.copy(selectedTags = tags, tagFilterMode = mode) }
     fun clearNewPromptId() = updateState { it.copy(newPromptId = null) }
 
     fun updateLibrary() {
@@ -134,7 +141,9 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
         sortMode = state.sortMode,
         pinnedOnly = state.pinnedOnly,
         recentOnly = state.recentOnly,
-        selectedLanguage = state.selectedLanguage
+        selectedLanguage = state.selectedLanguage,
+        selectedTags = state.selectedTags,
+        tagFilterMode = state.tagFilterMode
     )
 
     // ==================== Export / Import ====================

@@ -72,6 +72,7 @@ fun HomeScreen(
     var showCategoryDialog by remember { mutableStateOf(false) }
     var showStats by remember { mutableStateOf(false) }
     var languageMenuExpanded by remember { mutableStateOf(false) }
+    var showTagFilterDialog by remember { mutableStateOf(false) }
     val appContext = LocalContext.current
 
     // ============ Statistics Screen ============
@@ -332,6 +333,8 @@ fun HomeScreen(
                             }
                         }
                     }
+
+
                 }
             }
 
@@ -372,6 +375,19 @@ fun HomeScreen(
                                 }
                             },
                             leadingEmoji = emoji
+                        )
+                    }
+                    // 🏷️ چیپ فیلتر تگ‌ها
+                    item {
+                        val tagLabel = if (uiState.selectedTags.isEmpty()) 
+                            stringResource(R.string.tags_filter_title) 
+                        else 
+                            "${stringResource(R.string.tags_filter_title)} (${uiState.selectedTags.size})"
+                        ModernChip(
+                            label = tagLabel,
+                            selected = uiState.selectedTags.isNotEmpty(),
+                            onClick = { showTagFilterDialog = true },
+                            leadingEmoji = "🏷️"
                         )
                     }
                 }
@@ -686,6 +702,20 @@ fun HomeScreen(
                     Text(stringResource(R.string.cancel), color = textGrayColor)
                 }
             }
+        )
+    }
+
+    // ============ Tag Filter Dialog ============
+    if (showTagFilterDialog) {
+        TagFilterDialog(
+            allTags = uiState.allTags,
+            initialSelectedTags = uiState.selectedTags,
+            initialMode = uiState.tagFilterMode,
+            onApply = { tags, mode ->
+                viewModel.onTagFilterChanged(tags, mode)
+                showTagFilterDialog = false
+            },
+            onDismiss = { showTagFilterDialog = false }
         )
     }
 
