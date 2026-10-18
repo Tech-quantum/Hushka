@@ -18,3 +18,5 @@ app/build/
 
 *.bak
 *.bak2
+app/src/main/assets/vosk-model-*/
+app/src/main/assets/vosk-model-*.*/
