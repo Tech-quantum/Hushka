@@ -45,6 +45,7 @@ fun SettingsDialog(
     val purplePrimary = MaterialTheme.colorScheme.primary
 
     var selectedTab by remember { mutableIntStateOf(0) }
+    var showHelpDialog by remember { mutableStateOf(false) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -162,13 +163,17 @@ fun SettingsDialog(
                             onClearWebCache
                         )
                         2 -> AiTab()
-                        else -> AboutTab()
+                        else -> AboutTab(onShowHelp = { showHelpDialog = true })
                     }
                 }
             }
         },
         confirmButton = {}
     )
+
+    if (showHelpDialog) {
+        HelpDialog(onDismiss = { showHelpDialog = false })
+    }
 }
 
 // ============================================================
@@ -446,7 +451,7 @@ private fun DataTab(
 // ℹ️ Tab 3: About
 // ============================================================
 @Composable
-private fun AboutTab() {
+private fun AboutTab(onShowHelp: () -> Unit = {}) {
     val cardColor = MaterialTheme.colorScheme.surfaceVariant
     val textColor = MaterialTheme.colorScheme.onSurface
     val textGrayColor = MaterialTheme.colorScheme.onSurfaceVariant
