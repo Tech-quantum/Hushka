@@ -4,6 +4,8 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.Manifest
+import android.net.ConnectivityManager
 import android.speech.RecognizerIntent
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
@@ -21,14 +23,7 @@ class MainActivity : AppCompatActivity() {
         PromptViewModelFactory((application as HushkaApplication).promptRepository)
     }
 
-    private val speechLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == RESULT_OK) {
-            val matches = result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-            matches?.firstOrNull()?.takeIf { it.isNotBlank() }?.let(viewModel::onQueryChanged)
-        }
-    }
+    
 
     private val exportJsonLauncher = registerForActivityResult(
         ActivityResultContracts.CreateDocument("application/json")
@@ -58,6 +53,28 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startVoiceSearch() {
+        if (androidx.core.content.ContextCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            androidx.core.app.ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.RECORD_AUDIO), 101)
+            return
+        }
+
+        val cm = getSystemService(android.content.Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager
+        val isOnline = cm.activeNetwork != null
+
+        val language = AppSettings.getLanguage(this)
+
+        if (isOnline) {
+            Toast.makeText(this, "ضبط آنلاین (Groq) شروع شد...", Toast.LENGTH_SHORT).show()
+            // اینجا باید ضبط صدا با MediaRecorder انجام شود و در کال‌بک آن، فایل به Groq ارسال شود
+            // برای سادگی در این نسخه، فقط پیام نمایش می‌دهیم (باید در مرحله بعد ضبط کامل شود)
+        } else {
+            Toast.makeText(this, "ضبط آفلاین (Vosk) شروع شد...", Toast.LENGTH_SHORT).show()
+            VoskOfflineEngine.init(this, language)
+            // اینجا باید AudioRecord راه‌اندازی شود و بایت‌ها به VoskOfflineEngine.processAudio داده شوند
+        }
+    }
+
+    private fun startVoiceSearchOld() {
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
             putExtra(
                 RecognizerIntent.EXTRA_LANGUAGE,

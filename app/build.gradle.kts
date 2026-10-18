@@ -12,6 +12,9 @@ android { namespace = "com.techquantum.hushka"; compileSdk = 35
     composeOptions { kotlinCompilerExtensionVersion = "1.5.14" }
 }
 dependencies {
+    implementation("com.alphacephei:vosk-android:0.3.47")
+    implementation("net.java.dev.jna:jna:5.13.0@aar")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
     val composeBom = platform("androidx.compose:compose-bom:2024.09.03")
     implementation(composeBom); androidTestImplementation(composeBom)
     implementation("androidx.core:core-ktx:1.13.1")
