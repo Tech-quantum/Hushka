@@ -5,6 +5,7 @@ import org.json.JSONObject
 import org.vosk.Model
 import org.vosk.Recognizer
 import java.io.File
+import java.util.zip.ZipInputStream
 
 object VoskOfflineEngine {
     private var model: Model? = null
@@ -15,11 +16,20 @@ object VoskOfflineEngine {
         if (currentLang == language && recognizer != null) return
         release()
         try {
-            val modelPath = "vosk-model-small-$language"
-            val destDir = File(context.filesDir, modelPath)
-            if (!destDir.exists()) {
-                copyAssetFolder(context, modelPath, destDir.absolutePath)
+            val zipName = when (language) {
+                "fa" -> "vosk-model-small-fa-0.4.zip"
+                "en" -> "vosk-model-small-en-us-0.15.zip"
+                "ar" -> "vosk-model-small-ar-0.3.zip"
+                "tr" -> "vosk-model-small-tr-0.3.zip"
+                else -> "vosk-model-small-en-us-0.15.zip"
             }
+            val folderName = zipName.replace(".zip", "")
+            val destDir = File(context.filesDir, folderName)
+            
+            if (!destDir.exists() || destDir.listFiles()?.isEmpty() == true) {
+                unzipFromAssets(context, zipName, context.filesDir)
+            }
+            
             model = Model(destDir.absolutePath)
             recognizer = Recognizer(model, 16000f)
             currentLang = language
@@ -40,14 +50,31 @@ object VoskOfflineEngine {
         recognizer = null; model = null; currentLang = null
     }
 
-    private fun copyAssetFolder(context: Context, src: String, dest: String) {
-        val assets = context.assets
-        val children = assets.list(src) ?: return
-        File(dest).mkdirs()
-        if (children.isEmpty()) {
-            assets.open(src).use { input -> File(dest).outputStream().use { output -> input.copyTo(output) } }
-        } else {
-            for (child in children) copyAssetFolder(context, "$src/$child", "$dest/$child")
+    private fun unzipFromAssets(context: Context, zipFile: String, targetDir: File) {
+        val zipInputStream = ZipInputStream(context.assets.open(zipFile))
+        var entry = zipInputStream.nextEntry
+        val buffer = ByteArray(4096)
+        val canonicalTargetDir = targetDir.canonicalFile
+
+        while (entry != null) {
+            val file = File(targetDir, entry.name)
+            if (!file.canonicalPath.startsWith(canonicalTargetDir.path + File.separator)) {
+                throw SecurityException("Zip entry outside target dir: " + entry.name)
+            }
+            if (entry.isDirectory) {
+                file.mkdirs()
+            } else {
+                file.parentFile?.mkdirs()
+                val fileOutputStream = file.outputStream()
+                var read: Int
+                while (zipInputStream.read(buffer).also { read = it } != -1) {
+                    fileOutputStream.write(buffer, 0, read)
+                }
+                fileOutputStream.close()
+            }
+            zipInputStream.closeEntry()
+            entry = zipInputStream.nextEntry
         }
+        zipInputStream.close()
     }
 }
