@@ -64,13 +64,27 @@ class MainActivity : AppCompatActivity() {
         val language = AppSettings.getLanguage(this)
 
         if (isOnline) {
-            Toast.makeText(this, "ضبط آنلاین (Groq) شروع شد...", Toast.LENGTH_SHORT).show()
-            // اینجا باید ضبط صدا با MediaRecorder انجام شود و در کال‌بک آن، فایل به Groq ارسال شود
-            // برای سادگی در این نسخه، فقط پیام نمایش می‌دهیم (باید در مرحله بعد ضبط کامل شود)
+            Toast.makeText(this, "ضبط آنلاین (Groq) شروع شد... (۵ ثانیه)", Toast.LENGTH_SHORT).show()
+            val apiKey = AppSettings.getAiApiKey(this)
+            if (apiKey.isBlank()) {
+                Toast.makeText(this, "کلید Groq در تنظیمات وارد نشده است", Toast.LENGTH_SHORT).show()
+                return
+            }
+            VoiceRecorderHelper.startGroqRecording(
+                context = this,
+                apiKey = apiKey,
+                language = language,
+                onResult = { text -> viewModel.onQueryChanged(text) },
+                onError = { err -> Toast.makeText(this, err, Toast.LENGTH_SHORT).show() }
+            )
         } else {
-            Toast.makeText(this, "ضبط آفلاین (Vosk) شروع شد...", Toast.LENGTH_SHORT).show()
-            VoskOfflineEngine.init(this, language)
-            // اینجا باید AudioRecord راه‌اندازی شود و بایت‌ها به VoskOfflineEngine.processAudio داده شوند
+            Toast.makeText(this, "ضبط آفلاین (Vosk) شروع شد... (۵ ثانیه)", Toast.LENGTH_SHORT).show()
+            VoiceRecorderHelper.startVoskRecording(
+                context = this,
+                language = language,
+                onResult = { text -> viewModel.onQueryChanged(text) },
+                onError = { err -> Toast.makeText(this, err, Toast.LENGTH_SHORT).show() }
+            )
         }
     }
 
