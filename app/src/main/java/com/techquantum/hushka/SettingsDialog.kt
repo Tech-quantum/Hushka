@@ -476,6 +476,14 @@ private fun AboutTab(onShowHelp: () -> Unit = {}) {
                 lineHeight = 16.sp
             )
             Spacer(Modifier.height(6.dp))
+            OutlinedButton(
+                onClick = onShowHelp,
+                modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text("📚 راهنمای کاربری هوشکا", fontWeight = FontWeight.Bold, color = purplePrimary)
+            }
+
             Surface(
                 shape = RoundedCornerShape(10.dp),
                 color = purplePrimary.copy(alpha = 0.15f)
