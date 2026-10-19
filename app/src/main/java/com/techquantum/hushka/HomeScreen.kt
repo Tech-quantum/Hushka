@@ -808,7 +808,7 @@ fun HomeScreen(
     promptForVariables?.let { p ->
         PromptVariablesDialog(
             prompt = p,
-            isRtl = isRtl,
+            isRtl = androidx.compose.ui.platform.LocalLayoutDirection.current == androidx.compose.ui.unit.LayoutDirection.Rtl,
             onConfirm = { finalText, action ->
                 if (action == "copy") {
                     val clipboard = appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
