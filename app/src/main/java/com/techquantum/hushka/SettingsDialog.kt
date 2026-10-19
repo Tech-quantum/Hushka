@@ -203,6 +203,7 @@ private fun AppearanceTab(
     listOf(
         Triple("light", "☀", stringResource(R.string.light)),
         Triple("dark", "☾", stringResource(R.string.dark)),
+        Triple("amoled", "🌑", "مشکی مطلق (AMOLED)"),
         Triple("system", "⚙", stringResource(R.string.system))
     ).forEach { (value, icon, label) ->
         Surface(

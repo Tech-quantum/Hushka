@@ -50,23 +50,38 @@ fun HushkaTheme(
     val darkTheme = when (themeMode) {
         "dark" -> true
         "light" -> false
+        "amoled" -> true
         else -> systemDark
     }
     val accent = accentFor(colorTheme)
 
     MaterialTheme(
         colorScheme = if (darkTheme) {
-            darkColorScheme(
-                primary = accent.darkPrimary,
-                onPrimary = accent.darkOnPrimary,
-                primaryContainer = accent.darkContainer,
-                onPrimaryContainer = accent.darkOnContainer,
-                secondary = Color(0xFFC5C3DC),
-                background = Color(0xFF121318),
-                surface = Color(0xFF1A1B20),
-                surfaceVariant = Color(0xFF45464F),
-                outline = Color(0xFF90919A)
-            )
+            if (themeMode == "amoled") {
+                darkColorScheme(
+                    primary = accent.darkPrimary,
+                    onPrimary = accent.darkOnPrimary,
+                    primaryContainer = accent.darkContainer,
+                    onPrimaryContainer = accent.darkOnContainer,
+                    secondary = Color(0xFFC5C3DC),
+                    background = Color(0xFF000000),      // مشکی مطلق
+                    surface = Color(0xFF000000),         // مشکی مطلق
+                    surfaceVariant = Color(0xFF1C1C1C),  // خاکستری تیره برای کارت‌ها
+                    outline = Color(0xFF90919A)
+                )
+            } else {
+                darkColorScheme(
+                    primary = accent.darkPrimary,
+                    onPrimary = accent.darkOnPrimary,
+                    primaryContainer = accent.darkContainer,
+                    onPrimaryContainer = accent.darkOnContainer,
+                    secondary = Color(0xFFC5C3DC),
+                    background = Color(0xFF121318),
+                    surface = Color(0xFF1A1B20),
+                    surfaceVariant = Color(0xFF45464F),
+                    outline = Color(0xFF90919A)
+                )
+            }
         } else {
             lightColorScheme(
                 primary = accent.lightPrimary,
