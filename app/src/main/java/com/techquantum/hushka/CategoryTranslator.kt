@@ -33,6 +33,11 @@ fun getLocalizedCategory(category: String): String {
 
 @Composable
 fun getDomainName(domain: String): String {
+    val lang = LocalConfiguration.current.locales[0].language
+
+    if (lang == "ar" && domain == "psychology") return "Ψ علم النفس"
+    if (lang == "tr" && domain == "psychology") return "Ψ Psikoloji"
+
     if (isPersian()) {
         return when (domain) {
             "agent" -> stringResource(R.string.domain_agent)
