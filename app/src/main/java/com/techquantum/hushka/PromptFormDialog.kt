@@ -150,6 +150,84 @@ fun PromptFormDialog(
                     )
                     
 
+
+                } // Close Box for Role
+
+                // ===== تگ‌ها =====
+                OutlinedTextField(
+                    value = tags,
+                    onValueChange = { tags = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text(stringResource(R.string.tags_label), fontSize = 12.sp) },
+                    placeholder = { Text(stringResource(R.string.tags_placeholder), fontSize = 11.sp, color = textGrayColor) },
+                    singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = purplePrimary,
+                        unfocusedBorderColor = textGrayColor.copy(alpha = 0.4f),
+                        focusedTextColor = textColor,
+                        unfocusedTextColor = textColor,
+                        focusedLabelColor = purplePrimary,
+                        unfocusedLabelColor = textGrayColor
+                    )
+                )
+
+                // ===== متن پرامپت =====
+                OutlinedTextField(
+                    value = text,
+                    onValueChange = { text = it },
+                    modifier = Modifier.fillMaxWidth().heightIn(min = 100.dp),
+                    label = { Text(stringResource(R.string.text_label), fontSize = 12.sp) },
+                    placeholder = { Text(stringResource(R.string.text_placeholder), fontSize = 11.sp, color = textGrayColor) },
+                    shape = RoundedCornerShape(12.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = purplePrimary,
+                        unfocusedBorderColor = textGrayColor.copy(alpha = 0.4f),
+                        focusedTextColor = textColor,
+                        unfocusedTextColor = textColor,
+                        focusedLabelColor = purplePrimary,
+                        unfocusedLabelColor = textGrayColor
+                    )
+                )
+
+                // ===== مجموعه =====
+                OutlinedTextField(
+                    value = collection,
+                    onValueChange = { collection = it },
+                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text(stringResource(R.string.collection_label), fontSize = 12.sp) },
+                    placeholder = { Text(stringResource(R.string.collection_placeholder), fontSize = 11.sp, color = textGrayColor) },
+                    singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = purplePrimary,
+                        unfocusedBorderColor = textGrayColor.copy(alpha = 0.4f),
+                        focusedTextColor = textColor,
+                        unfocusedTextColor = textColor,
+                        focusedLabelColor = purplePrimary,
+                        unfocusedLabelColor = textGrayColor
+                    )
+                )
+            } // Close Column
+        }, // Close text lambda
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    if (text.isNotBlank()) {
+                        onSave(promptTitle, category, tags, text, collection, role)
+                    }
+                }
+            ) {
+                Text(stringResource(R.string.save), color = purplePrimary, fontWeight = FontWeight.Bold)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel), color = textGrayColor)
+            }
+        }
+    ) // Close AlertDialog
+
     if (showRolePicker) {
         RolePickerDialog(
             onRoleSelected = { roleId -> role = roleId },
