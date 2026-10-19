@@ -66,6 +66,7 @@ class ChatViewModel(
     private fun sendToAi() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            
             val apiKey = AppSettings.getAiApiKey(context)
             if (apiKey.isBlank()) {
                 _uiState.value = _uiState.value.copy(
@@ -73,34 +74,42 @@ class ChatViewModel(
                 )
                 return@launch
             }
+            
             val provider = _uiState.value.provider
             val model = _uiState.value.model.ifBlank { provider.defaultModel }
-            val result = withContext(Dispatchers.IO) {
-                AiService.sendMessage(
+            
+            val assistantMsg = ChatMessage(role = ChatRole.ASSISTANT, content = "")
+            val currentMessages = _uiState.value.messages + assistantMsg
+            _uiState.value = _uiState.value.copy(messages = currentMessages)
+
+            try {
+                AiService.streamMessage(
                     provider = provider, apiKey = apiKey,
-                    model = model, messages = _uiState.value.messages
-                )
-            }
-            result.fold(
-                onSuccess = { response ->
-                    _uiState.value = _uiState.value.copy(
-                        messages = _uiState.value.messages + ChatMessage(
-                            role = ChatRole.ASSISTANT, content = response
-                        ),
-                        isLoading = false, error = null
-                    )
-                },
-                onFailure = { e ->
-                    _uiState.value = _uiState.value.copy(
-                        messages = _uiState.value.messages + ChatMessage(
-                            role = ChatRole.ASSISTANT,
-                            content = e.message ?: "Unknown error",
-                            isError = true
-                        ),
-                        isLoading = false, error = e.message
+                    model = model, messages = _uiState.value.messages.dropLast(1)
+                ).collect { chunk ->
+                    val msgs = _uiState.value.messages.toMutableList()
+                    if (msgs.isNotEmpty()) {
+                        val lastMsg = msgs.last()
+                        msgs[msgs.size - 1] = lastMsg.copy(content = lastMsg.content + chunk)
+                        _uiState.value = _uiState.value.copy(messages = msgs)
+                    }
+                }
+                
+                _uiState.value = _uiState.value.copy(isLoading = false, error = null)
+                
+            } catch (e: Exception) {
+                val msgs = _uiState.value.messages.toMutableList()
+                if (msgs.isNotEmpty() && msgs.last().role == ChatRole.ASSISTANT) {
+                    val lastMsg = msgs.last()
+                    msgs[msgs.size - 1] = lastMsg.copy(
+                        content = if (lastMsg.content.isBlank()) (e.message ?: "Unknown error") else lastMsg.content,
+                        isError = lastMsg.content.isBlank()
                     )
                 }
-            )
+                _uiState.value = _uiState.value.copy(
+                    messages = msgs, isLoading = false, error = e.message
+                )
+            }
         }
     }
 
