@@ -577,12 +577,10 @@ fun HomeScreen(
 
     // ============ Add Prompt Dialog ============
     if (showAddDialog) {
-        PromptFormDialog(
-            title = stringResource(R.string.add_prompt_title),
-            initialPrompt = null,
-            categories = listOf("عمومی", "تصویر", "ویدئو", "متن", "کد"),
+        AddDialog(
+            isRtl = isRtl,
             onDismiss = { showAddDialog = false },
-            onSave = { title, category, tags, text, collection, role ->
+            onSavePrompt = { title, category, tags, text, collection, role ->
                 viewModel.addPromptWithRole(title, category, tags, text, collection, role)
                 showAddDialog = false
             }
