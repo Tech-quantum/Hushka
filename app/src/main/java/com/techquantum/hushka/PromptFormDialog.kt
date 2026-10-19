@@ -32,7 +32,7 @@ fun PromptFormDialog(
     var collection by rememberSaveable(initialPrompt?.id) { mutableStateOf(initialPrompt?.collection.orEmpty()) }
 
     var categoryMenuExpanded by remember { mutableStateOf(false) }
-    var roleMenuExpanded by remember { mutableStateOf(false) }
+    var showRolePicker by remember { mutableStateOf(false) }
 
     val cardColor = MaterialTheme.colorScheme.surface
     val textColor = MaterialTheme.colorScheme.onSurface
@@ -135,7 +135,7 @@ fun PromptFormDialog(
                         singleLine = true,
                         shape = RoundedCornerShape(12.dp),
                         trailingIcon = {
-                            TextButton(onClick = { roleMenuExpanded = true }) {
+                            TextButton(onClick = { showRolePicker = true }) {
                                 Text("▼", fontSize = 10.sp, color = purplePrimary)
                             }
                         },
@@ -148,127 +148,12 @@ fun PromptFormDialog(
                             unfocusedLabelColor = textGrayColor
                         )
                     )
-                    DropdownMenu(
-                        expanded = roleMenuExpanded,
-                        onDismissRequest = { roleMenuExpanded = false },
-                        modifier = Modifier.heightIn(max = 400.dp)
-                    ) {
-                        RoleTemplates.all.forEach { template ->
-                            DropdownMenuItem(
-                                text = {
-                                    Text("${template.emoji}  ${template.displayName()}", fontSize = 13.sp)
-                                },
-                                onClick = {
-                                    role = template.id
-                                    roleMenuExpanded = false
-                                }
-                            )
-                        }
-                    }
-                }
+                    
 
-                // پیش‌نمایش متن Role
-                if (currentRole != null && currentRole.promptPrefix.isNotBlank()) {
-                    Surface(
-                        shape = RoundedCornerShape(8.dp),
-                        color = purplePrimary.copy(alpha = 0.1f),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            currentRole.promptPrefix,
-                            modifier = Modifier.padding(10.dp),
-                            fontSize = 10.sp,
-                            color = purplePrimary,
-                            lineHeight = 14.sp
-                        )
-                    }
-                }
-
-                // ===== برچسب‌ها =====
-                OutlinedTextField(
-                    value = tags,
-                    onValueChange = { tags = it },
-                    modifier = Modifier.fillMaxWidth(),
-                    label = { Text(stringResource(R.string.tags), fontSize = 12.sp) },
-                    placeholder = { Text(stringResource(R.string.tags_placeholder), fontSize = 11.sp, color = textGrayColor) },
-                    singleLine = true,
-                    shape = RoundedCornerShape(12.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = purplePrimary,
-                        unfocusedBorderColor = textGrayColor.copy(alpha = 0.4f),
-                        focusedTextColor = textColor,
-                        unfocusedTextColor = textColor,
-                        focusedLabelColor = purplePrimary,
-                        unfocusedLabelColor = textGrayColor
-                    )
-                )
-
-                // ===== مجموعه =====
-                OutlinedTextField(
-                    value = collection,
-                    onValueChange = { collection = it },
-                    modifier = Modifier.fillMaxWidth(),
-                    label = { Text(stringResource(R.string.collection), fontSize = 12.sp) },
-                    placeholder = { Text(stringResource(R.string.collection_placeholder), fontSize = 11.sp, color = textGrayColor) },
-                    singleLine = true,
-                    shape = RoundedCornerShape(12.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = purplePrimary,
-                        unfocusedBorderColor = textGrayColor.copy(alpha = 0.4f),
-                        focusedTextColor = textColor,
-                        unfocusedTextColor = textColor,
-                        focusedLabelColor = purplePrimary,
-                        unfocusedLabelColor = textGrayColor
-                    )
-                )
-
-                // ===== متن پرامپت =====
-                OutlinedTextField(
-                    value = text,
-                    onValueChange = { text = it },
-                    modifier = Modifier.fillMaxWidth().heightIn(min = 200.dp),
-                    label = { Text(stringResource(R.string.prompt_text), fontSize = 12.sp) },
-                    placeholder = { Text(stringResource(R.string.prompt_text_placeholder), fontSize = 11.sp, color = textGrayColor) },
-                    minLines = 8,
-                    maxLines = 20,
-                    shape = RoundedCornerShape(12.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = purplePrimary,
-                        unfocusedBorderColor = textGrayColor.copy(alpha = 0.4f),
-                        focusedTextColor = textColor,
-                        unfocusedTextColor = textColor,
-                        focusedLabelColor = purplePrimary,
-                        unfocusedLabelColor = textGrayColor
-                    )
-                )
-            }
-        },
-        confirmButton = {
-            Button(
-                onClick = {
-                    onSave(
-                        promptTitle.trim(),
-                        category.trim(),
-                        tags.trim(),
-                        text.trim(),
-                        collection.trim(),
-                        role.trim()
-                    )
-                },
-                enabled = promptTitle.isNotBlank() && text.isNotBlank(),
-                shape = RoundedCornerShape(10.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = purplePrimary,
-                    contentColor = Color.White
-                )
-            ) {
-                Text(stringResource(R.string.save), fontSize = 13.sp)
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.cancel), color = textGrayColor, fontSize = 13.sp)
-            }
-        }
-    )
+    if (showRolePicker) {
+        RolePickerDialog(
+            onRoleSelected = { roleId -> role = roleId },
+            onDismiss = { showRolePicker = false }
+        )
+    }
 }
