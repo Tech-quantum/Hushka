@@ -67,6 +67,8 @@ fun HomeScreen(
     var editingPrompt by remember { mutableStateOf<PromptEntity?>(null) }
     var previewPrompt by remember { mutableStateOf<PromptEntity?>(null) }
     var activeChatPrompt by remember { mutableStateOf<String?>(null) }
+    var promptForVariables by remember { mutableStateOf<PromptEntity?>(null) }
+    var variableAction by remember { mutableStateOf("chat") }
     var deletePrompt by remember { mutableStateOf<PromptEntity?>(null) }
     var analyzePrompt by remember { mutableStateOf<PromptEntity?>(null) }
     var liveTestPrompt by remember { mutableStateOf<PromptEntity?>(null) }
@@ -498,23 +500,35 @@ fun HomeScreen(
                         onCardClick = { editingPrompt = prompt },
                         onPreviewClick = { previewPrompt = prompt },
                         onCopyClick = {
-                            val clipboard = appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                            clipboard.setPrimaryClip(ClipData.newPlainText("Hushka Prompt", prompt.text))
-                            Toast.makeText(appContext, appContext.getString(R.string.toast_copied), Toast.LENGTH_SHORT).show()
                             viewModel.markUsed(prompt)
+                            val hasVars = Regex("\\[([^\\]]+)\\]|\\{([^}]+)\\}").containsMatchIn(prompt.text)
+                            if (hasVars) {
+                                promptForVariables = prompt
+                                variableAction = "copy"
+                            } else {
+                                val clipboard = appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                clipboard.setPrimaryClip(ClipData.newPlainText("Hushka Prompt", prompt.text))
+                                Toast.makeText(appContext, appContext.getString(R.string.toast_copied), Toast.LENGTH_SHORT).show()
+                            }
                         },
                         onShareClick = {
-                            activeChatPrompt = prompt.text
-                            try {
-                                val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                                    type = "text/plain"
-                                    putExtra(Intent.EXTRA_TEXT, prompt.text)
-                                    putExtra(Intent.EXTRA_SUBJECT, prompt.title)
+                            viewModel.markUsed(prompt)
+                            val hasVars = Regex("\\[([^\\]]+)\\]|\\{([^}]+)\\}").containsMatchIn(prompt.text)
+                            if (hasVars) {
+                                promptForVariables = prompt
+                                variableAction = "chat"
+                            } else {
+                                activeChatPrompt = prompt.text
+                                try {
+                                    val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                        type = "text/plain"
+                                        putExtra(Intent.EXTRA_TEXT, prompt.text)
+                                        putExtra(Intent.EXTRA_SUBJECT, prompt.title)
+                                    }
+                                    appContext.startActivity(Intent.createChooser(shareIntent, appContext.getString(R.string.share_chooser)))
+                                } catch (e: Exception) {
+                                    Toast.makeText(appContext, appContext.getString(R.string.no_app_found), Toast.LENGTH_SHORT).show()
                                 }
-                                appContext.startActivity(Intent.createChooser(shareIntent, appContext.getString(R.string.share_chooser)))
-                                viewModel.markUsed(prompt)
-                            } catch (e: Exception) {
-                                Toast.makeText(appContext, appContext.getString(R.string.no_app_found), Toast.LENGTH_SHORT).show()
                             }
                         },
                         onTranslateClick = {
@@ -788,6 +802,24 @@ fun HomeScreen(
             initialPrompt = promptText,
             isRtl = true,
             onDismiss = { activeChatPrompt = null }
+        )
+    }
+
+    promptForVariables?.let { p ->
+        PromptVariablesDialog(
+            prompt = p,
+            isRtl = isRtl,
+            onConfirm = { finalText, action ->
+                if (action == "copy") {
+                    val clipboard = appContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    clipboard.setPrimaryClip(ClipData.newPlainText("Hushka Prompt", finalText))
+                    Toast.makeText(appContext, appContext.getString(R.string.toast_copied), Toast.LENGTH_SHORT).show()
+                } else {
+                    activeChatPrompt = finalText
+                }
+                promptForVariables = null
+            },
+            onDismiss = { promptForVariables = null }
         )
     }
 }
