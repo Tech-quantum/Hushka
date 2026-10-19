@@ -359,4 +359,8 @@
     <string name="translation_same_language">İstem zaten bu dilde</string>
     <string name="translation_empty_result">Çeviri bulunamadı</string>
     <string name="tags_filter_title">Etiketler</string>
+    <string name="tags_label">Etiketler</string>
+    <string name="text_label">İstem Metni</string>
+    <string name="text_placeholder">İstem metnini girin...</string>
+    <string name="collection_label">Koleksiyon</string>
 </resources>

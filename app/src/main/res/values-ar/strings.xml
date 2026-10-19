@@ -359,4 +359,8 @@
     <string name="translation_same_language">النص بالفعل بهذه اللغة</string>
     <string name="translation_empty_result">لم يتم العثور على ترجمة</string>
     <string name="tags_filter_title">الوسوم</string>
+    <string name="tags_label">الوسوم</string>
+    <string name="text_label">نص المطالبة</string>
+    <string name="text_placeholder">أدخل نص المطالبة...</string>
+    <string name="collection_label">مجموعة</string>
 </resources>

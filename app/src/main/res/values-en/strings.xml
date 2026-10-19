@@ -359,4 +359,8 @@
     <string name="translation_same_language">The prompt is already in this language</string>
     <string name="translation_empty_result">No translation found</string>
     <string name="tags_filter_title">Tags</string>
+    <string name="tags_label">Tags</string>
+    <string name="text_label">Prompt Text</string>
+    <string name="text_placeholder">Enter prompt text...</string>
+    <string name="collection_label">Collection</string>
 </resources>
