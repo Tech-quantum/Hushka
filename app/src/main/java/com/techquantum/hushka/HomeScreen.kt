@@ -578,7 +578,7 @@ fun HomeScreen(
     // ============ Add Prompt Dialog ============
     if (showAddDialog) {
         AddDialog(
-            isRtl = isRtl,
+            isRtl = androidx.compose.ui.platform.LocalLayoutDirection.current == androidx.compose.ui.unit.LayoutDirection.Rtl,
             onDismiss = { showAddDialog = false },
             onSavePrompt = { title, category, tags, text, collection, role ->
                 viewModel.addPromptWithRole(title, category, tags, text, collection, role)
