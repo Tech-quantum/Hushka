@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -103,7 +104,7 @@ fun AnalyzeDialog(
                             modifier = Modifier.padding(vertical = 2.dp)
                         ) {
                             Text(
-                                "[$v]",
+                                "[${getLocalizedVarName(v)}]",
                                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
                                 fontSize = 11.sp,
                                 color = purplePrimary
@@ -338,4 +339,33 @@ fun LiveTestDialog(
             }
         }
     )
+}
+
+
+@Composable
+fun getLocalizedVarName(v: String): String {
+    val lang = LocalConfiguration.current.locales[0].language
+    
+    // ترجمه متغیرهای پرکاربرد در ۴ زبان
+    val translations = mapOf(
+        "ROLE" to mapOf("fa" to "نقش", "ar" to "الدور", "tr" to "Rol", "en" to "Role"),
+        "USER_TYPE" to mapOf("fa" to "نوع کاربر", "ar" to "نوع المستخدم", "tr" to "Kullanıcı Türü", "en" to "User Type"),
+        "OBJECTIVES" to mapOf("fa" to "اهداف", "ar" to "الأهداف", "tr" to "Hedefler", "en" to "Objectives"),
+        "TONE" to mapOf("fa" to "لحن", "ar" to "النبرة", "tr" to "Ton", "en" to "Tone"),
+        "CONSTRAINTS" to mapOf("fa" to "محدودیت‌ها", "ar" to "القيود", "tr" to "Kısıtlamalar", "en" to "Constraints"),
+        "PRIORITY" to mapOf("fa" to "اولویت", "ar" to "الأولوية", "tr" to "Öncelik", "en" to "Priority"),
+        "SUBJECT" to mapOf("fa" to "موضوع", "ar" to "الموضوع", "tr" to "Konu", "en" to "Subject"),
+        "CRITERIA" to mapOf("fa" to "معیارها", "ar" to "المعايير", "tr" to "Kriterler", "en" to "Criteria"),
+        "EVIDENCE" to mapOf("fa" to "شواهد", "ar" to "الأدلة", "tr" to "Kanıtlar", "en" to "Evidence"),
+        "SITUATION" to mapOf("fa" to "موقعیت", "ar" to "الموقف", "tr" to "Durum", "en" to "Situation"),
+        "NEGATIVE_THOUGHT" to mapOf("fa" to "فکر منفی", "ar" to "فكرة سلبية", "tr" to "Olumsuz Düşünce", "en" to "Negative Thought")
+    )
+
+    val upper = v.uppercase()
+    if (translations.containsKey(upper)) {
+        return translations[upper]?.get(lang) ?: translations[upper]?.get("en") ?: v
+    }
+    
+    // اگر متغیر در لیست نبود، فقط حروف اول را بزرگ و زیرخط را با فاصله جایگزین می‌کنیم
+    return v.lowercase().replace("_", " ").replaceFirstChar { it.uppercase() }
 }
