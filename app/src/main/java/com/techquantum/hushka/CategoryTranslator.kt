@@ -45,12 +45,12 @@ fun getDomainName(domain: String): String {
             "marketing" -> "بازاریابی"
             "other" -> "سایر"
             "ai" -> "هوش مصنوعی"
-            "psychology" -> "روانشناسی"
+            "psychology" -> "Ψ روانشناسی"
             "life" -> "زندگی"
             else -> toTitleCase(domain)
         }
     }
-    return toTitleCase(domain)
+    return if (domain == "psychology") "Ψ " + toTitleCase(domain) else toTitleCase(domain)
 }
 
 private fun toTitleCase(slug: String): String {
