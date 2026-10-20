@@ -193,13 +193,36 @@ fun HomeScreen(
                         modifier = Modifier.weight(1f),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
-                            "Hushka",
-                            fontSize = 26.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = textColor,
-                            textAlign = TextAlign.Center
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                "Hushka",
+                                fontSize = 26.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = textColor,
+                                textAlign = TextAlign.Center
+                            )
+                            if (currentStreak > 0) {
+                                Spacer(Modifier.width(8.dp))
+                                Surface(
+                                    shape = RoundedCornerShape(50),
+                                    color = Color(0xFFFF9800).copy(alpha = 0.15f)
+                                ) {
+                                    Row(
+                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text("🔥", fontSize = 13.sp)
+                                        Spacer(Modifier.width(3.dp))
+                                        Text(
+                                            text = "$currentStreak",
+                                            fontSize = 13.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = Color(0xFFFF9800)
+                                        )
+                                    }
+                                }
+                            }
+                        }
                         Spacer(Modifier.height(2.dp))
                         Text(
                             stringResource(R.string.app_subtitle),
