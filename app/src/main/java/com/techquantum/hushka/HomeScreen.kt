@@ -185,8 +185,32 @@ fun HomeScreen(
                         .padding(horizontal = 16.dp, vertical = 12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // 💎 لوگو — همیشه چپ (مستقل از زبان)
-                    HushkaLogo(size = 40.dp)
+                    // 🔥 استریک — سمت چپ، روبروی لوگو
+                    Box(
+                        modifier = Modifier.width(48.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        if (currentStreak > 0) {
+                            Surface(
+                                shape = RoundedCornerShape(50),
+                                color = Color(0xFFFF9800).copy(alpha = 0.15f)
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text("🔥", fontSize = 13.sp)
+                                    Spacer(Modifier.width(3.dp))
+                                    Text(
+                                        text = "$currentStreak",
+                                        fontSize = 13.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color(0xFFFF9800)
+                                    )
+                                }
+                            }
+                        }
+                    }
 
                     Spacer(Modifier.width(8.dp))
 
@@ -195,36 +219,13 @@ fun HomeScreen(
                         modifier = Modifier.weight(1f),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(
-                                "Hushka",
-                                fontSize = 26.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = textColor,
-                                textAlign = TextAlign.Center
-                            )
-                            if (currentStreak > 0) {
-                                Spacer(Modifier.width(8.dp))
-                                Surface(
-                                    shape = RoundedCornerShape(50),
-                                    color = Color(0xFFFF9800).copy(alpha = 0.15f)
-                                ) {
-                                    Row(
-                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        Text("🔥", fontSize = 13.sp)
-                                        Spacer(Modifier.width(3.dp))
-                                        Text(
-                                            text = "$currentStreak",
-                                            fontSize = 13.sp,
-                                            fontWeight = FontWeight.Bold,
-                                            color = Color(0xFFFF9800)
-                                        )
-                                    }
-                                }
-                            }
-                        }
+                        Text(
+                            "Hushka",
+                            fontSize = 26.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = textColor,
+                            textAlign = TextAlign.Center
+                        )
                         Spacer(Modifier.height(2.dp))
                         Text(
                             stringResource(R.string.app_subtitle),
