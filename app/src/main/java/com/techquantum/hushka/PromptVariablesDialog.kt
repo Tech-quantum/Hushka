@@ -20,9 +20,7 @@ fun PromptVariablesDialog(
     onDismiss: () -> Unit
 ) {
     val text = prompt.text
-    val bracketVars = Regex("\\[([^\\]]+)\\]").findAll(text).map { it.groupValues[1] }.toList().distinct()
-    val curlyVars = Regex("\\{([^}]+)\\}").findAll(text).map { it.groupValues[1] }.toList().distinct()
-    val allVars = (bracketVars + curlyVars).distinct()
+    val allVars = PromptVariables.extract(text)
 
     val values = remember { mutableStateMapOf<String, String>() }
 

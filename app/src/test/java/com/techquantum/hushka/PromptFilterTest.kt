@@ -1,6 +1,7 @@
 package com.techquantum.hushka
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class PromptFilterTest {
@@ -41,8 +42,7 @@ class PromptFilterTest {
         selectedCategories: Set<String> = emptySet(),
         selectedCollection: String = ALL_COLLECTION,
         pinnedOnly: Boolean = false,
-        recentOnly: Boolean = false,
-        nowMs: Long = 1_000_000L
+        recentOnly: Boolean = false
     ) = PromptFilter.apply(
         prompts = prompts,
         query = query,
@@ -54,8 +54,7 @@ class PromptFilterTest {
         favoritesOnly = favoritesOnly,
         pinnedOnly = pinnedOnly,
         recentOnly = recentOnly,
-        sortMode = sortMode,
-        nowMs = nowMs
+        sortMode = sortMode
     )
 
     @Test
@@ -68,6 +67,39 @@ class PromptFilterTest {
     fun searchesAcrossTitleTagsAndText() {
         val result = apply(query = "compose")
         assertEquals(listOf(3L), result.map { it.id })
+    }
+
+    @Test
+    fun searchToleratesTyposViaSmartEngine() {
+        // رگرسیون: جست‌وجوی قبلی یک contains ساده بود و غلط تایپی را تحمل نمی‌کرد.
+        // موتور برای کلمات ۸ حرفی و بیشتر، فاصله‌ی ویرایشی ۲ را می‌پذیرد.
+        val result = apply(query = "kotlinn", sortMode = SORT_RELEVANT)
+        assertEquals(listOf(1L), result.map { it.id })
+    }
+
+    @Test
+    fun searchDoesNotMatchSubstringsInsideOtherWords() {
+        // «اپ» نباید داخل «اپلیکیشن» یا کلمات دیگر بیفتد؛ فقط مرز کلمه‌ی درست.
+        val withAlpha = prompts + PromptEntity(
+            id = 4,
+            title = "Capital Market Analyst",
+            category = "Finance",
+            text = "Explain the capital markets crash"
+        )
+        val result = PromptFilter.apply(
+            prompts = withAlpha,
+            query = "api",
+            selectedProvider = ALL_PROVIDER,
+            selectedDomain = ALL_DOMAIN,
+            selectedCategory = ALL_CATEGORY,
+            selectedCategories = emptySet(),
+            selectedCollection = ALL_COLLECTION,
+            favoritesOnly = false,
+            pinnedOnly = false,
+            recentOnly = false,
+            sortMode = SORT_RELEVANT
+        )
+        assertTrue("capital نباید با api پیدا شود", result.none { it.id == 4L })
     }
 
     @Test
@@ -84,7 +116,7 @@ class PromptFilterTest {
 
     @Test
     fun recentOnlyReturnsPromptsUsedWithinSevenDays() {
-        val now = 1_000_000L
+        val now = System.currentTimeMillis()
         val recent = prompts[0].copy(lastUsedAt = now - 1_000L)
         val old = prompts[1].copy(lastUsedAt = now - 8L * 24L * 60L * 60L * 1000L)
         val neverUsed = prompts[2].copy(lastUsedAt = 0L)
@@ -100,8 +132,7 @@ class PromptFilterTest {
             favoritesOnly = false,
             pinnedOnly = false,
             recentOnly = true,
-            sortMode = SORT_LATEST,
-            nowMs = now
+            sortMode = SORT_LATEST
         )
 
         assertEquals(listOf(1L), result.map { it.id })

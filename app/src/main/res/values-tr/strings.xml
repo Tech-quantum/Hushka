@@ -45,6 +45,7 @@
     <string name="collection">Koleksiyon</string>
     <string name="prompt_text">İstem Metni</string>
     <string name="voice_search_prompt">Sorgunuzu söyleyin</string>
+    <string name="voice_model_unavailable">Çevrimdışı ses modeli kullanılamıyor (%1$s)</string>
     <string name="voice_search_unavailable">Bu cihazda sesli arama kullanılamıyor</string>
     <string name="cat_web">🌐 Web</string>
     <string name="cat_github">🐙 GitHub</string>

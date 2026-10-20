@@ -21,6 +21,9 @@ object PromptScoreCache {
 }
 
 object PromptFilter {
+    /** بازه‌ی «اخیراً استفاده‌شده»: هفت روز. */
+    const val RECENT_WINDOW_MS = 7L * 24L * 60L * 60L * 1000L
+
     fun apply(
         prompts: List<PromptEntity>,
         query: String,
@@ -40,13 +43,11 @@ object PromptFilter {
         var result = prompts
 
         // فیلترها
+        // جست‌وجوی متنی با موتور هوشمند: تحمل غلط تایپی، مترادف‌ها و مرز کلمه.
+        // موتور قبلاً نوشته شده بود ولی جست‌وجو از یک contains ساده استفاده می‌کرد،
+        // بنابراین «marketng» چیزی پیدا نمی‌کرد و «api» داخل «capital» هم match می‌شد.
         if (query.isNotBlank()) {
-            val q = query.lowercase()
-            result = result.filter {
-                it.title.lowercase().contains(q) ||
-                it.text.lowercase().contains(q) ||
-                it.tags.lowercase().contains(q)
-            }
+            result = SmartSearchEngine.rank(result, query)
         }
 
         if (selectedLanguage != ALL_LANGUAGE && selectedLanguage.isNotBlank()) {
@@ -92,24 +93,17 @@ object PromptFilter {
             result = result.filter { it.pinned }
         }
 
+        if (recentOnly) {
+            // پرامپت‌هایی که در ۷ روز گذشته استفاده شده‌اند.
+            val cutoff = System.currentTimeMillis() - RECENT_WINDOW_MS
+            result = result.filter { it.lastUsedAt >= cutoff }
+        }
+
         // مرتب‌سازی
         result = when (sortMode) {
             SORT_RELEVANT -> {
-                if (query.isNotBlank()) {
-                    val q = query.lowercase()
-                    result
-                        .map { p ->
-                            var score = 0
-                            if (p.title.lowercase().contains(q)) score += 3
-                            if (p.tags.lowercase().contains(q)) score += 2
-                            if (p.text.lowercase().contains(q)) score += 1
-                            p to score
-                        }
-                        .sortedByDescending { it.second }
-                        .map { it.first }
-                } else {
-                    result.sortedByDescending { it.id }
-                }
+                // نتیجه‌ی جست‌وجو از قبل بر اساس امتیاز مرتب شده است؛ دوباره مرتب نکن.
+                if (query.isNotBlank()) result else result.sortedByDescending { it.id }
             }
             SORT_MOST_VIEWED -> result.sortedByDescending { it.lastUsedAt }
             SORT_LATEST -> result.sortedByDescending { it.id }

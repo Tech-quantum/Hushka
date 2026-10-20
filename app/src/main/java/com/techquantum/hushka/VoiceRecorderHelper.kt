@@ -65,7 +65,16 @@ object VoiceRecorderHelper {
         onResult: (String) -> Unit,
         onError: (String) -> Unit
     ) {
-        VoskOfflineEngine.init(context, language)
+        val ready = VoskOfflineEngine.init(context, language)
+        if (!ready) {
+            onError(
+                context.getString(
+                    R.string.voice_model_unavailable,
+                    VoskOfflineEngine.lastError ?: ""
+                )
+            )
+            return
+        }
 
         val sampleRate = 16000
         val bufferSize = AudioRecord.getMinBufferSize(

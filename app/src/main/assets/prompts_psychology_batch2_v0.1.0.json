@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "dataset_version": "0.3.0",
+  "dataset_version": "0.1.0",
   "collected_at": "2026-10-14",
   "description": "Hushka psychology prompts batch 2 — 125 new subcategories (total 235). Groups: personality disorders, neurodivergence, positive psychology, developmental, intimacy, advanced addiction, advanced career, advanced practice, advanced cognitive, crisis.",
   "sources": [
@@ -2678,5 +2678,6 @@
         "hushka_psychology_v1"
       ]
     }
-  ]
+  ],
+  "batch": "batch2"
 }

@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "dataset_version": "0.6.0",
+  "dataset_version": "0.1.0",
   "collected_at": "2026-10-14",
   "description": "Hushka psychology prompts batch 5 (bonus) — 40 unique subcategories. Groups: neurological/medical, chronic pain/illness, social-political, special populations.",
   "sources": [
@@ -957,5 +957,6 @@
         "hushka_psychology_v1"
       ]
     }
-  ]
+  ],
+  "batch": "batch5"
 }

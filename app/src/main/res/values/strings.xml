@@ -59,6 +59,7 @@
     <string name="all_providers">همه ارائه‌دهندگان</string>
     <string name="all_providers_short">همه</string>
     <string name="all_domains">همه دسته‌های دامنه</string>
+    <string name="voice_model_unavailable">مدل صوتی آفلاین در دسترس نیست (%1$s)</string>
     <string name="voice_search_unavailable">جستجوی صوتی روی این دستگاه در دسترس نیست</string>
     <string name="voice_search_prompt">جستجوی صوتی</string>
     <string name="voice_search">جستجوی صوتی</string>
