@@ -16,6 +16,9 @@ object AppSettings {
     private const val AI_PROVIDER = "ai_provider"
     private const val AI_API_KEY = "ai_api_key"
     private const val AI_MODEL = "ai_model"
+    private val STREAK_KEY = androidx.datastore.preferences.core.longPreferencesKey("daily_streak")
+    private val LAST_LOGIN_KEY = androidx.datastore.preferences.core.longPreferencesKey("last_login_date")
+
 
     private fun prefs(context: Context) =
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
@@ -115,4 +118,29 @@ object AppSettings {
         prefs(context).edit().putString(TAG_COLORS, obj.toString()).apply()
     }
 
+
+    suspend fun updateAndGetStreak(context: Context): Int {
+        var streak = 1
+        val today = java.time.LocalDate.now().toEpochDay()
+        
+        context.dataStore.edit { prefs ->
+            val lastLogin = prefs[LAST_LOGIN_KEY] ?: 0L
+            val currentStreak = prefs[STREAK_KEY] ?: 0L
+            
+            if (lastLogin == today) {
+                // امروز قبلاً وارد شده، استریک تغییر نمی‌کند
+                streak = currentStreak.toInt().coerceAtLeast(1)
+            } else if (lastLogin == today - 1) {
+                // دیروز وارد شده، استریک +1 می‌شود
+                streak = (currentStreak + 1).toInt()
+                prefs[STREAK_KEY] = streak.toLong()
+            } else {
+                // چند روز وارد نشده، استریک ریست می‌شود
+                streak = 1
+                prefs[STREAK_KEY] = 1L
+            }
+            prefs[LAST_LOGIN_KEY] = today
+        }
+        return streak
+    }
 }

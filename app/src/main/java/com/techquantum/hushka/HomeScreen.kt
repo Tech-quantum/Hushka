@@ -63,6 +63,10 @@ fun HomeScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val webSearchResults by viewModel.webSearchResults.collectAsStateWithLifecycle()
     val isSearchingWeb by viewModel.isSearchingWeb.collectAsStateWithLifecycle()
+    var currentStreak by remember { mutableIntStateOf(0) }
+    LaunchedEffect(Unit) {
+        currentStreak = AppSettings.updateAndGetStreak(context)
+    }
     var showAddDialog by remember { mutableStateOf(false) }
     var editingPrompt by remember { mutableStateOf<PromptEntity?>(null) }
     var previewPrompt by remember { mutableStateOf<PromptEntity?>(null) }
