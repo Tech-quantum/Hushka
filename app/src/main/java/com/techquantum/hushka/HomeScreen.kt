@@ -185,31 +185,12 @@ fun HomeScreen(
                         .padding(horizontal = 16.dp, vertical = 12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // 🔥 استریک — سمت چپ، روبروی لوگو
+                    // 💎 لوگو — همیشه چپ (مستقل از زبان)
                     Box(
                         modifier = Modifier.width(48.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        if (currentStreak > 0) {
-                            Surface(
-                                shape = RoundedCornerShape(50),
-                                color = Color(0xFFFF9800).copy(alpha = 0.15f)
-                            ) {
-                                Row(
-                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text("🔥", fontSize = 13.sp)
-                                    Spacer(Modifier.width(3.dp))
-                                    Text(
-                                        text = "$currentStreak",
-                                        fontSize = 13.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = Color(0xFFFF9800)
-                                    )
-                                }
-                            }
-                        }
+                        HushkaLogo(size = 40.dp)
                     }
 
                     Spacer(Modifier.width(8.dp))
@@ -237,7 +218,7 @@ fun HomeScreen(
                         )
                     }
 
-                    // Spacer تقارن (به اندازه لوگو + فاصله)
+                    // 🔥 استریک — سمت راست، دقیقاً روبروی لوگو و هم‌اندازه‌ی آن
                     Box(
                         modifier = Modifier.width(48.dp),
                         contentAlignment = Alignment.Center
