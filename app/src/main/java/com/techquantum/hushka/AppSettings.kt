@@ -1,7 +1,15 @@
 package com.techquantum.hushka
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
+
+import android.content.Context
 import org.json.JSONObject
+
+
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "hushka_settings")
 
 object AppSettings {
     private const val PREFS = "promptvault_settings"

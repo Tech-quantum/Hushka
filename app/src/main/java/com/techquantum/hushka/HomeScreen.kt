@@ -65,7 +65,7 @@ fun HomeScreen(
     val isSearchingWeb by viewModel.isSearchingWeb.collectAsStateWithLifecycle()
     var currentStreak by remember { mutableIntStateOf(0) }
     LaunchedEffect(Unit) {
-        currentStreak = AppSettings.updateAndGetStreak(context)
+        currentStreak = AppSettings.updateAndGetStreak(androidx.compose.ui.platform.LocalContext.current)
     }
     var showAddDialog by remember { mutableStateOf(false) }
     var editingPrompt by remember { mutableStateOf<PromptEntity?>(null) }
