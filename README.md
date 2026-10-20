@@ -22,3 +22,21 @@
 
 ## 🛠 تکنولوژی‌ها
 Kotlin 1.9.24 | Compose BOM 2024.09.03 | Room 2.6.1 | Vosk 0.3.47 | Coil | OkHttp
+
+## 🚀 ساخت پروژه
+پیش‌نیازها: JDK 17 و دسترسی به اینترنت برای بار اول.
+
+```bash
+# مدل‌های صوتی Vosk با Git-LFS نگه‌داری می‌شوند؛ بدون این دستور ZIPها ناقص‌اند
+git lfs install && git lfs pull
+
+# بررسی سلامت مدل‌های صوتی (اگر LFS انجام نشده باشد، با پیام واضح خطا می‌دهد)
+python3 check_voice_models.py
+
+# تست‌ها و ساخت APK دیباگ
+./gradlew testDebugUnitTest
+./gradlew assembleDebug
+```
+
+> ⚠️ اگر `check_voice_models.py` خطا داد، جست‌وجوی صوتی آفلاین کار نمی‌کند (اپ به‌جای سکوت، پیام خطا نشان می‌دهد).
+

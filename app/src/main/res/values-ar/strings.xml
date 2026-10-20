@@ -45,6 +45,7 @@
     <string name="collection">المجموعة</string>
     <string name="prompt_text">نص المطالبة</string>
     <string name="voice_search_prompt">تحدث استعلامك</string>
+    <string name="voice_model_unavailable">نموذج الصوت دون اتصال غير متوفر (%1$s)</string>
     <string name="voice_search_unavailable">البحث الصوتي غير متاح على هذا الجهاز</string>
     <string name="cat_web">🌐 الويب</string>
     <string name="cat_github">🐙 جيت هاب</string>

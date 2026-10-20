@@ -39,9 +39,6 @@ data class PromptAnalysis(
 )
 
 // الگوها یک بار ساخته می‌شوند (ساختن Regex در هر بار آنالیز هزینه‌ی زیادی دارد)
-private val BRACKET_VAR_REGEX = Regex("\\[([A-Z_]+)\\]")
-private val CURLY_VAR_REGEX = Regex("\\{([^}]+)\\}")
-
 private fun countWords(text: String): Int {
     var count = 0
     var inWord = false
@@ -58,8 +55,7 @@ private fun countWords(text: String): Int {
 
 fun analyzePromptAdvanced(text: String): PromptAnalysis {
     val wordCount = countWords(text)
-    val varCount = BRACKET_VAR_REGEX.findAll(text).count() +
-        CURLY_VAR_REGEX.findAll(text).count()
+    val varCount = PromptVariables.count(text)
 
     val clarity = when {
         wordCount in 30..200 -> 19

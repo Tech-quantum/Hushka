@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "dataset_version": "0.4.0",
+  "dataset_version": "0.1.0",
   "collected_at": "2026-10-14",
   "description": "Hushka psychology prompts batch 3 — 130 new subcategories. Groups: neuropsychology, cultural, spiritual, digital, environmental, health, sport, forensic, consumer, research.",
   "sources": [
@@ -2532,5 +2532,6 @@
         "hushka_psychology_v1"
       ]
     }
-  ]
+  ],
+  "batch": "batch3"
 }

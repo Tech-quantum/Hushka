@@ -23,27 +23,53 @@ object SmartSearchEngine {
         val text = normalize(prompt.text)
         var score = 0
         if (title == query) score += 120
-        if (title.contains(query)) score += 80
-        if (category.contains(query)) score += 70
-        if (tags.contains(query)) score += 60
-        if (text.contains(query)) score += 45
+        if (containsPhrase(title, query)) score += 80
+        if (containsPhrase(category, query)) score += 70
+        if (containsPhrase(tags, query)) score += 60
+        if (containsPhrase(text, query)) score += 45
+        // توکن‌ها با مرز کلمه سنجیده می‌شوند تا «api» داخل «capital» نیفتد.
         for (token in queryTokens) when {
-            title.contains(token) -> score += 28
-            category.contains(token) -> score += 24
-            tags.contains(token) -> score += 20
-            text.contains(token) -> score += 10
+            containsWord(title, token) -> score += 28
+            containsWord(category, token) -> score += 24
+            containsWord(tags, token) -> score += 20
+            containsWord(text, token) -> score += 10
         }
         for (phrase in queryPhrases) {
-            if (category.contains(phrase)) score += 45
-            if (tags.contains(phrase)) score += 35
-            if (title.contains(phrase)) score += 30
-            if (text.contains(phrase)) score += 15
+            // تک‌کلمه‌ای‌ها همان توکن‌ها هستند و بالاتر حساب شده‌اند.
+            if (phrase.split(WS_REGEX).size < 2) continue
+            if (containsPhrase(category, phrase)) score += 45
+            if (containsPhrase(tags, phrase)) score += 35
+            if (containsPhrase(title, phrase)) score += 30
+            if (containsPhrase(text, phrase)) score += 15
         }
         for (token in queryTokens.filter { it.length >= 4 }) {
             if (similar(token, title) || similar(token, category) || similar(token, tags)) score += 8
         }
         return score
     }
+
+    /**
+     * آیا عبارت در متن هست؟ هم برای عبارت‌های چندکلمه‌ای و هم تک‌کلمه‌ای،
+     * تطبیق باید روی مرز کلمه باشد تا «api» داخل «capital» نیفتد.
+     */
+    private fun containsPhrase(field: String, phrase: String): Boolean {
+        if (phrase.isBlank()) return false
+        val words = field.split(WS_REGEX)
+        val phraseWords = phrase.split(WS_REGEX).filter { it.isNotBlank() }
+        if (phraseWords.isEmpty()) return false
+        if (phraseWords.size == 1) return words.any { it == phraseWords[0] }
+        outer@ for (i in 0..words.size - phraseWords.size) {
+            for (j in phraseWords.indices) {
+                if (words[i + j] != phraseWords[j]) continue@outer
+            }
+            return true
+        }
+        return false
+    }
+
+    /** آیا توکن به‌عنوان یک کلمه‌ی کامل (نه بخشی از کلمه‌ی دیگر) در متن هست؟ */
+    private fun containsWord(field: String, token: String): Boolean =
+        token.isNotBlank() && field.split(WS_REGEX).any { it == token }
 
     private fun similar(token: String, field: String): Boolean =
         field.split(WS_REGEX).any { word ->

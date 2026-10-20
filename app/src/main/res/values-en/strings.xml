@@ -45,6 +45,7 @@
     <string name="collection">Collection</string>
     <string name="prompt_text">Prompt Text</string>
     <string name="voice_search_prompt">Speak your query</string>
+    <string name="voice_model_unavailable">Offline voice model is unavailable (%1$s)</string>
     <string name="voice_search_unavailable">Voice search is not available on this device</string>
     <string name="cat_web">🌐 Web</string>
     <string name="cat_github">🐙 GitHub</string>
