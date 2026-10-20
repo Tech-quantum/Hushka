@@ -64,9 +64,10 @@ fun HomeScreen(
     val webSearchResults by viewModel.webSearchResults.collectAsStateWithLifecycle()
     val isSearchingWeb by viewModel.isSearchingWeb.collectAsStateWithLifecycle()
 
+    val streakContext = androidx.compose.ui.platform.LocalContext.current
     var currentStreak by remember { mutableIntStateOf(0) }
     LaunchedEffect(Unit) {
-        currentStreak = AppSettings.updateAndGetStreak(androidx.compose.ui.platform.LocalContext.current)
+        currentStreak = AppSettings.updateAndGetStreak(streakContext)
     }
 
     var showAddDialog by remember { mutableStateOf(false) }
