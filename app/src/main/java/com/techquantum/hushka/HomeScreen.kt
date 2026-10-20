@@ -62,7 +62,14 @@ fun HomeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val webSearchResults by viewModel.webSearchResults.collectAsStateWithLifecycle()
-    val isSearchingWeb by viewModel.isSearchingWeb.collectAsStateWithLifecycle()    var showAddDialog by remember { mutableStateOf(false) }
+    val isSearchingWeb by viewModel.isSearchingWeb.collectAsStateWithLifecycle()
+
+    var currentStreak by remember { mutableIntStateOf(0) }
+    LaunchedEffect(Unit) {
+        currentStreak = AppSettings.updateAndGetStreak(androidx.compose.ui.platform.LocalContext.current)
+    }
+
+    var showAddDialog by remember { mutableStateOf(false) }
     var editingPrompt by remember { mutableStateOf<PromptEntity?>(null) }
     var previewPrompt by remember { mutableStateOf<PromptEntity?>(null) }
     var activeChatPrompt by remember { mutableStateOf<String?>(null) }
