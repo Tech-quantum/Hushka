@@ -64,18 +64,35 @@ class MainActivity : AppCompatActivity() {
         val language = AppSettings.getLanguage(this)
 
         if (isOnline) {
-            Toast.makeText(this, "ضبط آنلاین (Groq) شروع شد... (۵ ثانیه)", Toast.LENGTH_SHORT).show()
-            val apiKey = AppSettings.getAiApiKey(this)
-            if (apiKey.isBlank()) {
-                Toast.makeText(this, "کلید Groq در تنظیمات وارد نشده است", Toast.LENGTH_SHORT).show()
+            // موتور تشخیص گفتار آنلاین: اول Groq، بعد Gemini.
+            // کلید اختصاصی گفتار مقدم است؛ اگر خالی بود از کلید هوش مصنوعی استفاده می‌کنیم.
+            val speechKey = AppSettings.getSpeechApiKey(this)
+            val aiKey = AppSettings.getAiApiKey(this)
+            val provider = AppSettings.getAiProvider(this)
+
+            val engine: OnlineSpeechEngine
+            val apiKey: String
+            if (speechKey.isNotBlank()) {
+                // کاربر کلید گفتار را جدا وارد کرده؛ نوعش را از provider حدس می‌زنیم.
+                engine = if (provider == "gemini") OnlineSpeechEngine.GEMINI else OnlineSpeechEngine.GROQ
+                apiKey = speechKey
+            } else if (aiKey.isNotBlank()) {
+                // بدون کلید اختصاصی، از کلید هوش مصنوعی فعلی استفاده کن.
+                engine = OnlineSpeechEngine.fromId(provider)
+                apiKey = aiKey
+            } else {
+                Toast.makeText(this, "برای جستجوی صوتی آنلاین کلید API را در تنظیمات وارد کن", Toast.LENGTH_SHORT).show()
                 return
             }
+
+            Toast.makeText(this, "ضبط آنلاین (${engine.displayName}) شروع شد...", Toast.LENGTH_SHORT).show()
             VoiceRecorderHelper.startGroqRecording(
                 context = this,
                 apiKey = apiKey,
                 language = language,
                 onResult = { text -> viewModel.onQueryChanged(text) },
-                onError = { err -> Toast.makeText(this, err, Toast.LENGTH_SHORT).show() }
+                onError = { err -> Toast.makeText(this, err, Toast.LENGTH_SHORT).show() },
+                engine = engine
             )
         } else {
             Toast.makeText(this, "ضبط آفلاین (Vosk) شروع شد... (۵ ثانیه)", Toast.LENGTH_SHORT).show()

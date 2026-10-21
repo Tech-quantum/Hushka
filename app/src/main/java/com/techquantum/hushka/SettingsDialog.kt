@@ -522,6 +522,10 @@ private fun AiTab() {
         mutableStateOf(AppSettings.getAiModel(context))
     }
     var keyVisible by remember { mutableStateOf(false) }
+    var speechKey by remember {
+        mutableStateOf(AppSettings.getSpeechApiKey(context))
+    }
+    var speechKeyVisible by remember { mutableStateOf(false) }
     var providerMenuOpen by remember { mutableStateOf(false) }
     var modelMenuOpen by remember { mutableStateOf(false) }
     var savedToast by remember { mutableStateOf(false) }
@@ -610,6 +614,40 @@ private fun AiTab() {
                 text = "🔗 دریافت کلید از: ${provider.keyUrl}",
                 fontSize = 10.sp,
                 color = primary
+            )
+        }
+
+        // ─── کلید تشخیص گفتار (اختیاری) ───
+        Column {
+            Text("کلید تشخیص گفتار (اختیاری)", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = textColor)
+            Spacer(Modifier.height(4.dp))
+            Text(
+                text = "برای جستجوی صوتی آنلاین. خالی بگذاری، از همان کلید بالا استفاده می‌شود. برای Gemini از کلید Google AI Studio استفاده کن.",
+                fontSize = 10.sp,
+                color = grayColor
+            )
+            Spacer(Modifier.height(6.dp))
+            OutlinedTextField(
+                value = speechKey,
+                onValueChange = {
+                    speechKey = it
+                    AppSettings.setSpeechApiKey(context, it)
+                },
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text("خالی = استفاده از کلید بالا", fontSize = 11.sp) },
+                singleLine = true,
+                shape = RoundedCornerShape(12.dp),
+                visualTransformation = if (speechKeyVisible) VisualTransformation.None
+                                       else PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(onClick = { speechKeyVisible = !speechKeyVisible }) {
+                        Icon(
+                            imageVector = if (speechKeyVisible) Icons.Filled.VisibilityOff
+                                          else Icons.Filled.Visibility,
+                            contentDescription = null
+                        )
+                    }
+                }
             )
         }
 
