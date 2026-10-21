@@ -18,9 +18,12 @@ import java.util.zip.ZipInputStream
 object VoskOfflineEngine {
     private const val TAG = "VoskOfflineEngine"
 
+    // مدل سنگین است و لودش ۱-۳ ثانیه طول می‌کشد؛ بین ضبط‌ها نگه داشته می‌شود.
     private var model: Model? = null
+    private var modelLang: String? = null
+
+    // recognizer سبک است ولی state دارد؛ هر ضبط یک نسخه‌ی تازه می‌سازد.
     private var recognizer: Recognizer? = null
-    private var currentLang: String? = null
 
     @Volatile
     var lastError: String? = null
@@ -31,28 +34,41 @@ object VoskOfflineEngine {
 
     /** آخرین پیام خطای آماده‌سازی مدل، یا null اگر مدل درست بارگذاری شده باشد. */
     fun init(context: Context, language: String): Boolean {
-        if (currentLang == language && recognizer != null) return true
-        release()
         lastError = null
         return try {
-            val zipName = zipAssetFor(language)
-            val folderName = zipName.removeSuffix(".zip")
-            val destDir = File(context.filesDir, folderName)
-
-            if (!isExtracted(destDir)) {
-                unzipFromAssets(context, zipName, context.filesDir)
-            }
-
-            model = Model(destDir.absolutePath)
+            ensureModel(context, language)
+            // هر شروع ضبط یک recognizer تازه می‌خواهد (state قبلی مصرف شده است).
+            runCatching { recognizer?.close() }
             recognizer = Recognizer(model, 16000f)
-            currentLang = language
             true
         } catch (e: Exception) {
             lastError = e.message ?: e.javaClass.simpleName
             Log.e(TAG, "Failed to load Vosk model for '$language'", e)
-            release()
+            runCatching { recognizer?.close() }
+            recognizer = null
             false
         }
+    }
+
+    /** مدل را فقط وقتی لود می‌کند که هنوز لود نشده یا زبان عوض شده باشد. */
+    private fun ensureModel(context: Context, language: String) {
+        if (model != null && modelLang == language) return
+
+        // زبان عوض شده؛ مدل قبلی را آزاد کن.
+        runCatching { model?.close() }
+        model = null
+        modelLang = null
+
+        val zipName = zipAssetFor(language)
+        val folderName = zipName.removeSuffix(".zip")
+        val destDir = File(context.filesDir, folderName)
+
+        if (!isExtracted(destDir)) {
+            unzipFromAssets(context, zipName, context.filesDir)
+        }
+
+        model = Model(destDir.absolutePath)
+        modelLang = language
     }
 
     fun processAudio(buffer: ByteArray): String? {
@@ -75,10 +91,20 @@ object VoskOfflineEngine {
         }.getOrNull()
     }
 
+    /**
+     * پایان جلسه‌ی ضبط: فقط recognizer آزاد می‌شود و **مدل در حافظه می‌ماند**
+     * تا ضبط بعدی سریع شروع شود (لود مدل ۱-۳ ثانیه طول می‌کشد).
+     */
     fun release() {
         runCatching { recognizer?.close() }
+        recognizer = null
+    }
+
+    /** پاک‌سازی کامل (مدل + recognizer) — مثلاً هنگام تغییر زبان یا خروج از اپ. */
+    fun releaseAll() {
+        runCatching { recognizer?.close() }
         runCatching { model?.close() }
-        recognizer = null; model = null; currentLang = null
+        recognizer = null; model = null; modelLang = null
     }
 
     private fun zipAssetFor(language: String): String = when (language) {
