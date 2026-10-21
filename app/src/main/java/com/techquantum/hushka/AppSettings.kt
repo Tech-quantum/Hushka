@@ -27,6 +27,9 @@ object AppSettings {
     private const val AI_PROVIDER = "ai_provider"
     private const val AI_API_KEY = "ai_api_key"
     private const val AI_MODEL = "ai_model"
+
+    // Online speech-to-text settings (independent from the chat provider key)
+    private const val SPEECH_API_KEY = "speech_api_key"
     private val STREAK_KEY = androidx.datastore.preferences.core.longPreferencesKey("daily_streak")
     private val LAST_LOGIN_KEY = androidx.datastore.preferences.core.longPreferencesKey("last_login_date")
 
@@ -121,6 +124,19 @@ object AppSettings {
 
     fun setAiModel(context: Context, value: String) {
         prefs(context).edit().putString(AI_MODEL, value).apply()
+    }
+
+    /**
+     * کلید اختصاصی تشخیص گفتار آنلاین.
+     *
+     * عمداً از `AI_API_KEY` جدا است، چون آن کلید وابسته به provider انتخابی
+     * چت است و ممکن است برای سرویس گفتار کار نکند.
+     */
+    fun getSpeechApiKey(context: Context): String =
+        prefs(context).getString(SPEECH_API_KEY, "") ?: ""
+
+    fun setSpeechApiKey(context: Context, value: String) {
+        prefs(context).edit().putString(SPEECH_API_KEY, value).apply()
     }
 
     private fun saveTagColors(context: Context, map: Map<String, String>) {

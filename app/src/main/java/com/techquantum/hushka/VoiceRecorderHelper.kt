@@ -65,7 +65,8 @@ object VoiceRecorderHelper {
         apiKey: String,
         language: String,
         onResult: (String) -> Unit,
-        onError: (String) -> Unit
+        onError: (String) -> Unit,
+        engine: OnlineSpeechEngine = OnlineSpeechEngine.GROQ
     ) {
         try {
             val audioFile = File(context.cacheDir, "voice_input.m4a")
@@ -87,9 +88,12 @@ object VoiceRecorderHelper {
                     mediaRecorder = null
 
                     CoroutineScope(Dispatchers.Main).launch {
-                        val text = GroqWhisperEngine.transcribe(apiKey, audioFile, language)
+                        val text = when (engine) {
+                            OnlineSpeechEngine.GROQ -> GroqWhisperEngine.transcribe(apiKey, audioFile, language)
+                            OnlineSpeechEngine.GEMINI -> GeminiSpeechEngine.transcribe(apiKey, audioFile, language)
+                        }
                         if (text != null) onResult(text)
-                        else onError("خطا در تبدیل صوت به متن (Groq)")
+                        else onError("خطا در تبدیل صوت به متن (${engine.displayName})")
                     }
                 } catch (e: Exception) {
                     onError("خطا در توقف ضبط: ${e.message}")
