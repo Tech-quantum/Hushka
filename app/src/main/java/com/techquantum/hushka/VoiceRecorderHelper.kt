@@ -104,16 +104,28 @@ object VoiceRecorderHelper {
         // اجرای ضبط در پس‌زمینه (به مدت ۵ ثانیه)
         CoroutineScope(Dispatchers.IO).launch {
             val startTime = System.currentTimeMillis()
+            var gotResult = false
             while (isRecordingVosk && System.currentTimeMillis() - startTime < 5000) {
                 val read = audioRecord?.read(buffer, 0, buffer.size) ?: 0
                 if (read > 0) {
                     val result = VoskOfflineEngine.processAudio(buffer)
                     if (result != null) {
+                        gotResult = true
                         CoroutineScope(Dispatchers.Main).launch { onResult(result) }
                         break
                     }
                 }
             }
+
+            // اگر تا پایان زمان هیچ جمله‌ی کاملی تشخیص داده نشد (مثلاً کاربر پیوسته
+            // و بدون مکث حرف زد)، نتیجه‌ی نهایی را می‌گیریم تا گفتار از دست نرود.
+            if (!gotResult) {
+                val finalText = VoskOfflineEngine.finalResult()
+                if (finalText != null) {
+                    CoroutineScope(Dispatchers.Main).launch { onResult(finalText) }
+                }
+            }
+
             stopVoskRecording()
         }
     }

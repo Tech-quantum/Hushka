@@ -62,6 +62,19 @@ object VoskOfflineEngine {
         } else null
     }
 
+    /**
+     * پایان ضبط: نتیجه‌ی نهایی (final result) را استخراج می‌کند.
+     *
+     * اگر کاربر پیوسته (بدون مکث) حرف بزند، ممکن است [processAudio] هیچ‌وقت
+     * نتیجه ندهد؛ در آن صورت بدون این متد تمام گفتار از دست می‌رفت.
+     */
+    fun finalResult(): String? {
+        val rec = recognizer ?: return null
+        return runCatching {
+            JSONObject(rec.finalResult).optString("text", "").takeIf { it.isNotBlank() }
+        }.getOrNull()
+    }
+
     fun release() {
         runCatching { recognizer?.close() }
         runCatching { model?.close() }
@@ -76,9 +89,17 @@ object VoskOfflineEngine {
         else -> "vosk-model-small-en-us-0.15.zip"
     }
 
-    /** مدل استخراج‌شده وقتی سالم است که پوشه‌ی مدل داخلش پیدا شود. */
+    /**
+     * مدل استخراج‌شده وقتی سالم است که فایل‌های کلیدی مدل داخلش پیدا شوند.
+     *
+     * فقط چک کردن پوشه‌ی `am` کافی نیست: اگر استخراج وسط کار قطع شود، پوشه
+     * ساخته می‌شود ولی فایل‌ها ناقص می‌مانند و بعداً مدل خراب لود می‌شود.
+     */
     private fun isExtracted(destDir: File): Boolean =
-        destDir.isDirectory && File(destDir, "am").exists()
+        destDir.isDirectory &&
+            File(destDir, "am/final.mdl").exists() &&
+            File(destDir, "conf/mfcc.conf").exists() &&
+            File(destDir, "graph/HCLG.fst").exists()
 
     private fun unzipFromAssets(context: Context, zipFile: String, targetDir: File) {
         val zipInputStream = ZipInputStream(context.assets.open(zipFile))
