@@ -155,6 +155,9 @@ class MainActivity : AppCompatActivity() {
                         onLanguageChange = { newLang ->
                             language = newLang
                             AppSettings.setLanguage(this@MainActivity, newLang)
+                            // مدل Vosk مختص زبان است؛ با تغییر زبان آزادش می‌کنیم
+                            // تا فضای رم نگه داشته نشود.
+                            VoskOfflineEngine.releaseAll()
                             AppCompatDelegate.setApplicationLocales(
                                 LocaleListCompat.forLanguageTags(newLang)
                             )
@@ -201,5 +204,11 @@ class MainActivity : AppCompatActivity() {
                 }  // close else (showSplash)
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // مدل سنگین Vosk را آزاد می‌کنیم تا رم بعد از بستن اپ نگه داشته نشود.
+        VoskOfflineEngine.releaseAll()
     }
 }
