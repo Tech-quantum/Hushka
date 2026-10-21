@@ -223,26 +223,7 @@ fun HomeScreen(
                         modifier = Modifier.width(48.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        if (currentStreak > 0) {
-                            Surface(
-                                shape = RoundedCornerShape(50),
-                                color = Color(0xFFFF9800).copy(alpha = 0.15f)
-                            ) {
-                                Row(
-                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text("🔥", fontSize = 11.sp)
-                                    Spacer(Modifier.width(2.dp))
-                                    Text(
-                                        text = "$currentStreak",
-                                        fontSize = 11.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = Color(0xFFFF9800)
-                                    )
-                                }
-                            }
-                        }
+                        AnimatedStreakBadge(streak = currentStreak)
                     }
                 }
             }
