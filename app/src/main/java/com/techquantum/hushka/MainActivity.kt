@@ -106,7 +106,9 @@ class MainActivity : AppCompatActivity() {
             var showSplash by remember { mutableStateOf(true) }
 
             LaunchedEffect(Unit) {
-                delay(2200)
+                // انیمیشن Splash حدود ۱.۳ ثانیه طول می‌کشد؛ ۱۴۰۰ms کمی فرصت نفس می‌دهد
+                // تا انیمیشن کامل دیده شود و بعد صفحه اصلی بیاید.
+                delay(1400)
                 showSplash = false
             }
 
