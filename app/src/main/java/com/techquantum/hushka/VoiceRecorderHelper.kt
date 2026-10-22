@@ -66,7 +66,9 @@ object VoiceRecorderHelper {
         language: String,
         onResult: (String) -> Unit,
         onError: (String) -> Unit,
-        engine: OnlineSpeechEngine = OnlineSpeechEngine.GROQ
+        engine: OnlineSpeechEngine = OnlineSpeechEngine.GROQ,
+        fallbackEngine: OnlineSpeechEngine? = null,
+        fallbackApiKey: String? = null
     ) {
         try {
             val audioFile = File(context.cacheDir, "voice_input.m4a")
@@ -92,8 +94,21 @@ object VoiceRecorderHelper {
                             OnlineSpeechEngine.GROQ -> GroqWhisperEngine.transcribe(apiKey, audioFile, language)
                             OnlineSpeechEngine.GEMINI -> GeminiSpeechEngine.transcribe(apiKey, audioFile, language)
                         }
-                        if (text != null) onResult(text)
-                        else onError("خطا در تبدیل صوت به متن (${engine.displayName})")
+                        if (text != null) {
+                            onResult(text)
+                            return@launch
+                        }
+
+                        // فالبک خودکار: اگر Groq شکست خورد، بدون ضبط مجدد با Gemini امتحان کن
+                        if (engine == OnlineSpeechEngine.GROQ && fallbackEngine == OnlineSpeechEngine.GEMINI && !fallbackApiKey.isNullOrBlank()) {
+                            val fallbackText = GeminiSpeechEngine.transcribe(fallbackApiKey, audioFile, language)
+                            if (fallbackText != null) {
+                                onResult(fallbackText)
+                                return@launch
+                            }
+                        }
+
+                        onError("خطا در تبدیل صوت به متن (${engine.displayName})")
                     }
                 } catch (e: Exception) {
                     onError("خطا در توقف ضبط: ${e.message}")
