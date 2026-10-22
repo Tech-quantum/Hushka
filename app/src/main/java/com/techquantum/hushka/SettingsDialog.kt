@@ -622,7 +622,7 @@ private fun AiTab() {
             Text("کلید تشخیص گفتار (اختیاری)", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = textColor)
             Spacer(Modifier.height(4.dp))
             Text(
-                text = "برای جستجوی صوتی آنلاین. خالی بگذاری، از همان کلید بالا استفاده می‌شود. برای Gemini از کلید Google AI Studio استفاده کن.",
+                text = "برای جستجوی صوتی آنلاین. اگر کلید جداگانه وارد شود، موتور بر اساس «سرویس هوش مصنوعی» انتخاب‌شده در بالا تعیین می‌گردد (Groq یا Gemini). در صورت خالی بودن، از کلید API بالایی استفاده می‌شود.",
                 fontSize = 10.sp,
                 color = grayColor
             )
@@ -632,6 +632,7 @@ private fun AiTab() {
                 onValueChange = {
                     speechKey = it
                     AppSettings.setSpeechApiKey(context, it)
+                    savedToast = true
                 },
                 modifier = Modifier.fillMaxWidth(),
                 placeholder = { Text("خالی = استفاده از کلید بالا", fontSize = 11.sp) },
