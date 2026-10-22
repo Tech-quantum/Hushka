@@ -85,6 +85,23 @@ class MainActivity : AppCompatActivity() {
                 return
             }
 
+            // فالبک خودکار: اگر موتور اول Groq باشد، در صورت فشار یا خطا، بدون ضبط مجدد با Gemini امتحان کن
+            var fallbackEngine: OnlineSpeechEngine? = null
+            var fallbackApiKey: String? = null
+            if (engine == OnlineSpeechEngine.GROQ) {
+                if (speechKey.isNotBlank() && provider == "gemini") {
+                    fallbackEngine = OnlineSpeechEngine.GEMINI
+                    fallbackApiKey = speechKey
+                } else if (aiKey.isNotBlank() && provider == "gemini") {
+                    fallbackEngine = OnlineSpeechEngine.GEMINI
+                    fallbackApiKey = aiKey
+                } else if (speechKey.isNotBlank() && provider != "gemini") {
+                    // کاربر ممکن است کلید Gemini را در فیلد کلید تشخیص گفتار وارد کرده باشد
+                    fallbackEngine = OnlineSpeechEngine.GEMINI
+                    fallbackApiKey = speechKey
+                }
+            }
+
             Toast.makeText(this, "ضبط آنلاین (${engine.displayName}) شروع شد...", Toast.LENGTH_SHORT).show()
             VoiceRecorderHelper.startGroqRecording(
                 context = this,
@@ -92,7 +109,9 @@ class MainActivity : AppCompatActivity() {
                 language = language,
                 onResult = { text -> viewModel.onQueryChanged(text) },
                 onError = { err -> Toast.makeText(this, err, Toast.LENGTH_SHORT).show() },
-                engine = engine
+                engine = engine,
+                fallbackEngine = fallbackEngine,
+                fallbackApiKey = fallbackApiKey
             )
         } else {
             Toast.makeText(this, "ضبط آفلاین (Vosk) شروع شد... (۵ ثانیه)", Toast.LENGTH_SHORT).show()
