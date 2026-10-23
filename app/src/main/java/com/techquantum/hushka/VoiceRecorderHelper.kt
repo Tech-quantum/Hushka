@@ -10,6 +10,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
+import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
+import java.io.FileOutputStream
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import java.util.ArrayList
+import kotlin.math.sqrt
 
 object VoiceRecorderHelper {
     private var mediaRecorder: MediaRecorder? = null
@@ -59,7 +66,70 @@ object VoiceRecorderHelper {
         return false
     }
 
-    // ─── ۱. ضبط برای Groq (آنلاین) ───
+    // ─── کمک‌کننده‌های ساخت فایل WAV ───
+
+    private fun writeWavFile(file: File, pcmData: ByteArray) {
+        val sampleRate = ONLINE_SAMPLE_RATE
+        val channels = 1
+        val bitsPerSample = 16
+        val byteRate = sampleRate * channels * bitsPerSample / 8
+        val blockAlign = ((channels * bitsPerSample) / 8).toShort()
+        val dataSize = pcmData.size
+        val totalSize = 36 + dataSize
+
+        FileOutputStream(file).use { out ->
+            out.write("RIFF".toByteArray())
+            out.write(intToLE(totalSize))
+            out.write("WAVE".toByteArray())
+            out.write("fmt ".toByteArray())
+            out.write(intToLE(16))
+            out.write(shortToLE(1))
+            out.write(shortToLE(channels.toShort()))
+            out.write(intToLE(sampleRate))
+            out.write(intToLE(byteRate))
+            out.write(shortToLE(blockAlign))
+            out.write(shortToLE(bitsPerSample.toShort()))
+            out.write("data".toByteArray())
+            out.write(intToLE(dataSize))
+            out.write(pcmData)
+        }
+    }
+
+    private fun intToLE(value: Int): ByteArray {
+        val bb = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN)
+        bb.putInt(value)
+        return bb.array()
+    }
+
+    private fun shortToLE(value: Short): ByteArray {
+        val bb = ByteBuffer.allocate(2).order(ByteOrder.LITTLE_ENDIAN)
+        bb.putShort(value)
+        return bb.array()
+    }
+
+    private fun calculateRms(data: ByteArray): Double {
+        if (data.isEmpty()) return 0.0
+        var sum = 0.0
+        var i = 0
+        val size = data.size
+        while (i + 1 < size) {
+            val low = data[i].toInt() and 0xFF
+            val high = data[i + 1].toInt() shl 8
+            val sample = (high or low).toShort()
+            val s = sample.toDouble()
+            sum += s * s
+            i += 2
+        }
+        val count = size / 2
+        return if (count == 0) 0.0 else Math.sqrt(sum / count)
+    }
+
+    // ─── ۱. ضبط برای آنلاین (Groq / Gemini) با تشخیص سکوت ───
+    //
+    // از AudioRecord + RMS استفاده می‌کنیم (مشابه مسیر آفلاین).
+    // فایل خروجی: voice_input.wav (PCM 16-bit mono 16kHz) که هم Groq و هم Gemini پشتیبانی می‌کنند.
+    // در صورت شکست Groq و در دسترس بودن کلید Gemini، بدون ضبط مجدد از همان فایل WAV فالبک انجام می‌شود.
+
     fun startGroqRecording(
         context: Context,
         apiKey: String,
@@ -70,53 +140,169 @@ object VoiceRecorderHelper {
         fallbackEngine: OnlineSpeechEngine? = null,
         fallbackApiKey: String? = null
     ) {
+        if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            onError("دسترسی به میکروفون داده نشده است")
+            return
+        }
+
         try {
-            val audioFile = File(context.cacheDir, "voice_input.m4a")
-            mediaRecorder = MediaRecorder().apply {
-                setAudioSource(MediaRecorder.AudioSource.MIC)
-                setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-                setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-                setAudioSamplingRate(16000)
-                setOutputFile(audioFile.absolutePath)
-                prepare()
-                start()
+            audioRecord?.release()
+        } catch (_: Exception) {
+        }
+        audioRecord = null
+        isRecordingOnline = false
+
+        val audioFile = File(context.cacheDir, "voice_input.wav")
+        if (audioFile.exists()) {
+            audioFile.delete()
+        }
+
+        val bufferSize = AudioRecord.getMinBufferSize(
+            ONLINE_SAMPLE_RATE,
+            ONLINE_CHANNEL_CONFIG,
+            ONLINE_AUDIO_FORMAT
+        )
+        if (bufferSize <= 0) {
+            onError("خطا در آماده‌سازی ضبط آنلاین")
+            return
+        }
+
+        try {
+            audioRecord = AudioRecord(
+                MediaRecorder.AudioSource.MIC,
+                ONLINE_SAMPLE_RATE,
+                ONLINE_CHANNEL_CONFIG,
+                ONLINE_AUDIO_FORMAT,
+                bufferSize * 2
+            )
+
+            val record = audioRecord ?: run {
+                onError("خطا در ایجاد نمونه ضبط آنلاین")
+                return
             }
 
-            // ضبط به مدت ۵ ثانیه
-            Handler(Looper.getMainLooper()).postDelayed({
+            if (record.state != AudioRecord.STATE_INITIALIZED) {
                 try {
-                    mediaRecorder?.stop()
-                    mediaRecorder?.release()
-                    mediaRecorder = null
+                    record.release()
+                } catch (_: Exception) {
+                }
+                audioRecord = null
+                onError("خطا در مقداردهی اولیه ضبط آنلاین")
+                return
+            }
 
-                    CoroutineScope(Dispatchers.Main).launch {
-                        val text = when (engine) {
-                            OnlineSpeechEngine.GROQ -> GroqWhisperEngine.transcribe(apiKey, audioFile, language)
-                            OnlineSpeechEngine.GEMINI -> GeminiSpeechEngine.transcribe(apiKey, audioFile, language)
-                        }
-                        if (text != null) {
-                            onResult(text)
-                            return@launch
+            val pcmBuffer = ByteArray(bufferSize)
+            val pcmList = ArrayList<Byte>(bufferSize * 32)
+            val startTime = System.currentTimeMillis()
+            var speechStartTime: Long = -1L
+            var lastSpeechTime: Long = -1L
+
+            record.startRecording()
+            isRecordingOnline = true
+
+            Thread {
+                try {
+                    while (isRecordingOnline) {
+                        val now = System.currentTimeMillis()
+                        val elapsed = now - startTime
+                        if (elapsed >= ONLINE_MAX_RECORD_MS) {
+                            break
                         }
 
-                        // فالبک خودکار: اگر Groq شکست خورد، بدون ضبط مجدد با Gemini امتحان کن
-                        if (engine == OnlineSpeechEngine.GROQ && fallbackEngine == OnlineSpeechEngine.GEMINI && !fallbackApiKey.isNullOrBlank()) {
-                            val fallbackText = GeminiSpeechEngine.transcribe(fallbackApiKey, audioFile, language)
-                            if (fallbackText != null) {
-                                onResult(fallbackText)
-                                return@launch
+                        val readCount = record.read(pcmBuffer, 0, pcmBuffer.size)
+                        if (readCount > 0) {
+                            var i = 0
+                            while (i < readCount) {
+                                pcmList.add(pcmBuffer[i])
+                                i++
+                            }
+
+                            val chunk = pcmBuffer.copyOf(readCount)
+                            val rms = calculateRms(chunk)
+                            if (rms >= ONLINE_RMS_THRESHOLD) {
+                                if (speechStartTime == -1L) {
+                                    speechStartTime = now
+                                }
+                                lastSpeechTime = now
+                            }
+
+                            if (speechStartTime != -1L && lastSpeechTime != -1L) {
+                                val hasEnoughSpeech = elapsed >= ONLINE_MIN_SPEECH_MS
+                                val silenceDuration = now - lastSpeechTime
+                                if (hasEnoughSpeech && silenceDuration >= ONLINE_SILENCE_STOP_MS) {
+                                    break
+                                }
                             }
                         }
+                        Thread.sleep(10)
+                    }
 
-                        onError("خطا در تبدیل صوت به متن (${engine.displayName})")
+                    isRecordingOnline = false
+                    try {
+                        if (record.recordingState == AudioRecord.RECORDSTATE_RECORDING) {
+                            record.stop()
+                        }
+                    } catch (_: Exception) {
+                    }
+                    try {
+                        record.release()
+                    } catch (_: Exception) {
+                    }
+                    audioRecord = null
+
+                    val pcmBytes = ByteArray(pcmList.size)
+                    for (j in pcmList.indices) {
+                        pcmBytes[j] = pcmList[j]
+                    }
+                    writeWavFile(audioFile, pcmBytes)
+
+                    Handler(Looper.getMainLooper()).post {
+                        CoroutineScope(Dispatchers.Main).launch {
+                            val primaryText = when (engine) {
+                                OnlineSpeechEngine.GROQ -> GroqWhisperEngine.transcribe(apiKey, audioFile, language)
+                                OnlineSpeechEngine.GEMINI -> GeminiSpeechEngine.transcribe(apiKey, audioFile, language)
+                            }
+
+                            if (!primaryText.isNullOrBlank()) {
+                                onResult(primaryText)
+                                return@launch
+                            }
+
+                            if (engine == OnlineSpeechEngine.GROQ && fallbackEngine == OnlineSpeechEngine.GEMINI && !fallbackApiKey.isNullOrBlank()) {
+                                val fallbackText = GeminiSpeechEngine.transcribe(fallbackApiKey, audioFile, language)
+                                if (!fallbackText.isNullOrBlank()) {
+                                    onResult(fallbackText)
+                                    return@launch
+                                }
+                            }
+
+                            onError("خطا در تبدیل صوت به متن (${engine.displayName})")
+                        }
                     }
                 } catch (e: Exception) {
-                    onError("خطا در توقف ضبط: ${e.message}")
+                    isRecordingOnline = false
+                    try {
+                        val r = audioRecord
+                        if (r?.recordingState == AudioRecord.RECORDSTATE_RECORDING) {
+                            r.stop()
+                        }
+                        r?.release()
+                    } catch (_: Exception) {
+                    }
+                    audioRecord = null
+                    Handler(Looper.getMainLooper()).post {
+                        onError("خطا در ضبط آنلاین: ${e.message}")
+                    }
                 }
-            }, 5000) // 5 ثانیه
-
+            }.start()
         } catch (e: Exception) {
-            onError("خطا در شروع ضبط: ${e.message}")
+            try {
+                audioRecord?.release()
+            } catch (_: Exception) {
+            }
+            audioRecord = null
+            isRecordingOnline = false
+            onError("خطا در شروع ضبط آنلاین: ${e.message}")
         }
     }
 
