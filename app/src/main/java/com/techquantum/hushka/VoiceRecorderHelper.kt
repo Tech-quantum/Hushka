@@ -1,18 +1,3 @@
-
-// --- متغیرهای مورد نیاز برای ضبط آنلاین ---
-private val ONLINE_SAMPLE_RATE = 16000
-private val ONLINE_CHANNEL_CONFIG = android.media.AudioFormat.CHANNEL_IN_MONO
-private val ONLINE_AUDIO_FORMAT = android.media.AudioFormat.ENCODING_PCM_16BIT
-
-private val ONLINE_MAX_RECORD_MS = 5000L
-private val ONLINE_RMS_THRESHOLD = 800.0
-private val ONLINE_MIN_SPEECH_MS = 1000L
-private val ONLINE_SILENCE_STOP_MS = 1200L
-
-@Volatile
-private var isRecordingOnline = false
-// -------------------------------------------package com.techquantum.hushka
-
 import android.content.Context
 import android.media.AudioFormat
 import android.media.AudioRecord
@@ -30,6 +15,21 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.util.ArrayList
 import kotlin.math.sqrt
+
+// --- متغیرهای مورد نیاز برای ضبط آنلاین ---
+private val ONLINE_SAMPLE_RATE = 16000
+private val ONLINE_CHANNEL_CONFIG = android.media.AudioFormat.CHANNEL_IN_MONO
+private val ONLINE_AUDIO_FORMAT = android.media.AudioFormat.ENCODING_PCM_16BIT
+
+private val ONLINE_MAX_RECORD_MS = 5000L
+private val ONLINE_RMS_THRESHOLD = 800.0
+private val ONLINE_MIN_SPEECH_MS = 1000L
+private val ONLINE_SILENCE_STOP_MS = 1200L
+
+@Volatile
+private var isRecordingOnline = false
+// -------------------------------------------package com.techquantum.hushka
+
 
 object VoiceRecorderHelper {
     private var mediaRecorder: MediaRecorder? = null
