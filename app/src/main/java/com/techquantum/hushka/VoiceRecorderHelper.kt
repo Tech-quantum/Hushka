@@ -1,5 +1,7 @@
 package com.techquantum.hushka
 
+import com.techquantum.hushka.audio.SilenceDetector
+
 import android.content.Context
 import android.media.AudioFormat
 import android.media.AudioRecord
@@ -208,9 +210,13 @@ object VoiceRecorderHelper {
 
             val pcmBuffer = ByteArray(bufferSize)
             val pcmList = ArrayList<Byte>(bufferSize * 32)
-            val startTime = System.currentTimeMillis()
-            var speechStartTime: Long = -1L
-            var lastSpeechTime: Long = -1L
+            // استفاده از الگوریتم تطبیقی جدید SilenceDetector
+            val silenceDetector = com.techquantum.hushka.audio.SilenceDetector(
+                sampleRate = ONLINE_SAMPLE_RATE,
+                minSpeechMs = ONLINE_MIN_SPEECH_MS,
+                silenceStopMs = ONLINE_SILENCE_STOP_MS,
+                maxRecordMs = ONLINE_MAX_RECORD_MS
+            )
 
             record.startRecording()
             isRecordingOnline = true
@@ -218,12 +224,6 @@ object VoiceRecorderHelper {
             Thread {
                 try {
                     while (isRecordingOnline) {
-                        val now = System.currentTimeMillis()
-                        val elapsed = now - startTime
-                        if (elapsed >= ONLINE_MAX_RECORD_MS) {
-                            break
-                        }
-
                         val readCount = record.read(pcmBuffer, 0, pcmBuffer.size)
                         if (readCount > 0) {
                             var i = 0
@@ -233,20 +233,10 @@ object VoiceRecorderHelper {
                             }
 
                             val chunk = pcmBuffer.copyOf(readCount)
-                            val rms = calculateRms(chunk)
-                            if (rms >= ONLINE_RMS_THRESHOLD) {
-                                if (speechStartTime == -1L) {
-                                    speechStartTime = now
-                                }
-                                lastSpeechTime = now
-                            }
-
-                            if (speechStartTime != -1L && lastSpeechTime != -1L) {
-                                val hasEnoughSpeech = elapsed >= ONLINE_MIN_SPEECH_MS
-                                val silenceDuration = now - lastSpeechTime
-                                if (hasEnoughSpeech && silenceDuration >= ONLINE_SILENCE_STOP_MS) {
-                                    break
-                                }
+                            val snapshot = silenceDetector.feed(chunk)
+                            
+                            if (snapshot.shouldStop) {
+                                break
                             }
                         }
                         Thread.sleep(10)
