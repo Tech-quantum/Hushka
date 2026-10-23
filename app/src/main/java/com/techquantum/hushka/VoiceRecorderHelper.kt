@@ -274,6 +274,7 @@ object VoiceRecorderHelper {
                             val primaryText = when (engine) {
                                 OnlineSpeechEngine.GROQ -> GroqWhisperEngine.transcribe(apiKey, audioFile, language)
                                 OnlineSpeechEngine.GEMINI -> GeminiSpeechEngine.transcribe(apiKey, audioFile, language)
+                                else -> null
                             }
 
                             if (!primaryText.isNullOrBlank()) {
