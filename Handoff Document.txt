@@ -5,7 +5,7 @@
 - **پلتفرم**: اندروید (Kotlin + Jetpack Compose)
 - **پکیج اصلی**: `com.techquantum.hushka`
 - **ریپوی گیت‌هاب**: https://github.com/Tech-quantum/Hushka
-- **ساختار فایل‌ها**: تخت (Flat) و همه در یک پکیج (`com.techquantum.hushka`)
+- **ساختار فایل‌ها**: تخت (Flat) و همه در یک پکیج (`com.techquantum.hushka`)؛ تنها استثنا زیرپکیج `audio/` است (`audio/SilenceDetector.kt`).
 - **وضعیت فعلی**: شاخه‌ی کاری `main` است. تغییرات از طریق شاخه‌های `feature/*` و Pull Request روی GitHub انجام می‌شود (شاخه‌ی قدیمی `dev` بازنشسته شده است).
 
 ## 🛠 تکنولوژی‌ها
@@ -26,6 +26,8 @@
    - آنلاین با **Google Gemini** (`gemini-3.5-transcribe`) — مسیر دوم، پشتیبانی رسمی فارسی (`fa-IR`).
    - آفلاین با Vosk (مدل‌های زیپ‌شده فارسی، انگلیسی، عربی، ترکی در پوشه assets).
    - انتخاب موتور در `MainActivity.startVoiceSearch()` و بر پایه‌ی کلید «تشخیص گفتار» انجام می‌شود.
+   - ضبط آنلاین: `AudioRecord` (PCM 16-bit mono 16kHz) با خروجی `voice_input.wav` + تشخیص سکوت تطبیقی (`audio/SilenceDetector.kt`).
+   - فالبک خودکار: اگر Groq شکست بخورد، همان فایل WAV بدون ضبط مجدد به Gemini ارسال می‌شود.
 4. **متغیرگذاری هوشمند (Smart Variables)**: تشخیص خودکار `[VARIABLE]` و باز کردن فرم پر کردن مقادیر با ترجمه ۴ زبانه.
 5. **دسته‌بندی نقش‌ها (Roles)**: ۴۰+ نقش تخصصی (عمومی و روانشناسی) با دیالوگ انتخاب مدرن.
 6. **استریک روزانه (Daily Streak)**: شمارش روزهای متوالی استفاده از اپ (با DataStore).
@@ -50,15 +52,15 @@
 3. 💬 ساخت چت‌روم با Firebase
 4. ⚙️ تغییر حجم فونت
 5. 🎨 سایر پیشنهادات (ویجت، QR Code، و...)
-6. 🎤 **fallback خودکار** Groq → Gemini هنگام خطای rate-limit (پس از خطای Groq، همان فایل صوتی با Gemini دوباره تلاش شود)
-7. 🎤 **مهاجرت مسیر آنلاین** به `AudioRecord` + WAV + تشخیص سکوت (مثل مسیر آفلاین Vosk)
+6. ~~🎤 fallback خودکار Groq → Gemini~~ — **حل شد** (PR #29)
+7. ~~🎤 مهاجرت مسیر آنلاین به `AudioRecord` + WAV + تشخیص سکوت~~ — **حل شد** (PR #30–#35)
 
 ## 🔧 اطلاعات فنی برای من (هوش مصنوعی جدید)
 - جهت تشخیص زبان: `LocalConfiguration.current.locales[0].language`
 - برای دیالوگ‌ها از `AlertDialog` با `shape = RoundedCornerShape(24.dp)` استفاده می‌شود.
 - تمام حالت‌های UI باید با تم‌های AMOLED و ۴ زبان سازگار باشند.
 - هوشکا از پوشه `assets` برای فایل‌های JSON (پرامپت‌ها) و مدل‌های Vosk (به صورت ZIP با Git-LFS) استفاده می‌کند.
-- ماژول‌های کلیدی: `PromptVariables` (تشخیص متغیر مشترک)، `SmartSearchEngine` (جست‌وجوی تحمل‌پذیر)، `AnimatedStreakBadge` (شعله‌ی متحرک)، `HushkaLogo` (لوگوی LED متحرک).
+- ماژول‌های کلیدی: `PromptVariables` (تشخیص متغیر مشترک)، `SmartSearchEngine` (جست‌وجوی تحمل‌پذیر)، `AnimatedStreakBadge` (شعله‌ی متحرک)، `HushkaLogo` (لوگوی LED متحرک)، `audio/SilenceDetector` (تشخیص سکوت تطبیقی ضبط آنلاین).
 - **شخصی‌سازی شعله**: الگوی `rememberInfiniteTransition` در `HushkaLogo.kt` و `AnimatedStreakBadge.kt` استفاده شده است.
 
 ## 🧭 تاریخچه‌ی اخیر PRها (برای درک وضعیت)
@@ -74,11 +76,21 @@
 - **#24** (`perf/vosk-silence-detection`): تشخیص سکوت با RMS — ضبط آفلاین در سکوت ~۱.۲ ثانیه‌ای تمام می‌شود به‌جای ۵ ثانیه.
 - **#25** (`docs/vosk-improvements`): ثبت مستندات سه بهبود Vosk (نتیجه‌ی نهایی، مدل کش‌شده، تشخیص سکوت).
 - **#26** (`feat/gemini-speech-engine`): افزودن **Gemini** به‌عنوان مسیر دوم تشخیص گفتار آنلاین (Groq اول) + کلید مستقل `speech_api_key` + فیلد «کلید تشخیص گفتار (اختیاری)» در تب AI.
+- **#27** (`docs/gemini-speech-engine`): ثبت مستندات موتور دوم گفتار آنلاین.
+- **#28** (`fix/ai-settings-speech-key`): شفاف‌سازی نگاشت کلید گفتار در تنظیمات AI + بازخورد ذخیره.
+- **#29** (`fix/groq-gemini-fallback`): فالبک خودکار Groq → Gemini بدون ضبط مجدد.
+- **#30** (`perf/online-silence-wav`): نسخه‌ی اول ضبط آنلاین با `AudioRecord` + WAV.
+- **#31** (`perf/online-silence-wav`): تعریف ثابت‌های جاافتاده‌ی `ONLINE_*`.
+- **#32** (`perf/online-silence-wav`): مرتب‌سازی importها در `VoiceRecorderHelper`.
+- **#33** (`perf/online-silence-wav`): افزودن شاخه‌ی `else` برای `when` روی موتور.
+- **#34** (`perf/online-silence-wav`): بازگرداندن `package` گم‌شده در `VoiceRecorderHelper`.
+- **#35** (`perf/online-silence-wav`): اتصال `SilenceDetector` تطبیقی به حلقه‌ی ضبط آنلاین.
 
 ## ⚠️ بدهی فنی شناخته‌شده
 - تاریخچه‌ی گیت هنوز بایت‌های ZIPهای Vosk (۲۳۱MB) را در کامیت‌های قدیمی دارد؛ هر کلون ~۳۱۹MB دانلود می‌کند. برای کوچک کردن واقعی نیاز به بازنویسی تاریخچه (`git filter-repo`) + force-push است که پرریسک و انجام‌نشده باقی مانده.
 - ~~تأخیر ثابت ۲.۲ ثانیه‌ی Splash~~ — **حل شد** (۱۴۰۰ms، PR #20).
 - ~~مسیر آفلاین Vosk~~ — **حل شد** (PR #22، #23، #24): نتیجه‌ی نهایی تخلیه می‌شود، مدل کش می‌شود و سکوت تشخیص داده می‌شود.
-- پنجره‌ی ثابت ۵ ثانیه‌ی ضبط **آنلاین (Groq)** — کاندید بهبود (تشخیص سکوت مشابه یا افزایش زمان).
-- مسیر آنلاین **هنوز** از `MediaRecorder` و فایل `m4a` استفاده می‌کند (برخلاف مسیر آفلاین که `AudioRecord` + WAV + تشخیص سکوت دارد). بازآوری همان الگو برای آنلاین — گام بعدی پیشنهادی.
-- **fallback خودکار** از Groq به Gemini هنوز پیاده نشده؛ در حال حاضر موتور فقط از روی کلید انتخاب می‌شود.
+- ~~پنجره‌ی ثابت ۵ ثانیه‌ی ضبط آنلاین~~ — **حل شد** (PR #30–#35): تشخیص سکوت تطبیقی زودتر ضبط را تمام می‌کند.
+- ~~مسیر آنلاین با `MediaRecorder` و `m4a`~~ — **حل شد** (PR #30–#35): اکنون `AudioRecord` + PCM 16-bit mono 16kHz + فایل `voice_input.wav`.
+- ~~فالبک خودکار Groq → Gemini~~ — **حل شد** (PR #29).
+- سقف ۵ ثانیه‌ای ضبط آنلاین برای جمله‌های طولانی کم است؛ افزایش یا حذف این سقف — کاندید بهبود بعدی.
