@@ -60,7 +60,7 @@
 - برای دیالوگ‌ها از `AlertDialog` با `shape = RoundedCornerShape(24.dp)` استفاده می‌شود.
 - تمام حالت‌های UI باید با تم‌های AMOLED و ۴ زبان سازگار باشند.
 - هوشکا از پوشه `assets` برای فایل‌های JSON (پرامپت‌ها) و مدل‌های Vosk (به صورت ZIP با Git-LFS) استفاده می‌کند.
-- ماژول‌های کلیدی: `PromptVariables` (تشخیص متغیر مشترک)، `SmartSearchEngine` (جست‌وجوی تحمل‌پذیر)، `AnimatedStreakBadge` (شعله‌ی متحرک)، `HushkaLogo` (لوگوی LED متحرک)، `audio/SilenceDetector` (تشخیص سکوت تطبیقی ضبط آنلاین)، `SettingsFab` (FAB تنظیمات شناور) و `FabGeometry` (منطق خالص موقعیت‌دهی، تست‌شده در `FabPositionTest`).
+- ماژول‌های کلیدی: `PromptVariables` (تشخیص متغیر مشترک)، `SmartSearchEngine` (جست‌وجوی تحمل‌پذیر)، `AnimatedStreakBadge` (شعله‌ی متحرک)، `HushkaLogo` (لوگوی LED متحرک)، `audio/SilenceDetector` (تشخیص سکوت تطبیقی ضبط آنلاین)، `SettingsFab` (FAB تنظیمات شناور؛ حرکت فقط بین هدر و فوتر) و `FabGeometry` (منطق خالص موقعیت‌دهی، تست‌شده در `FabPositionTest`).
 - **شخصی‌سازی شعله**: الگوی `rememberInfiniteTransition` در `HushkaLogo.kt` و `AnimatedStreakBadge.kt` استفاده شده است.
 
 ## 🧭 تاریخچه‌ی اخیر PRها (برای درک وضعیت)

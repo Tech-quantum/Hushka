@@ -29,6 +29,7 @@
 【 وضعیت فنی 】
 - تشخیص سکوت آنلاین: `audio/SilenceDetector.kt` (کالیبراسیون نویز + آستانه‌ی تطبیقی)
 - FAB تنظیمات: `SettingsFab.kt` (UI) + `FabGeometry.kt` (منطق خالص) — موقعیت به‌صورت کسری ۰..۱ در `AppSettings` ذخیره می‌شود، نه پیکسل
+- محدوده‌ی حرکت FAB: از زیر هدر (اندازه‌گیری‌شده با `onSizeChanged`) تا بالای فوتر، با حاشیه‌ی ۱۲dp از لبه‌های کناری
 - هینت FAB: یک‌بار در عمر نصب (`settings_fab_hint_shown`) و با احترام به `ANIMATOR_DURATION_SCALE`
 - Room Database: نسخه ۸
 - پرامپت‌ها: ۱۱ فایل JSON (شامل ۵ بسته‌ی روانشناسی batch1..batch5)
