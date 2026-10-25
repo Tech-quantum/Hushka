@@ -53,7 +53,7 @@ private val FabButtonSize = 56.dp
 private val FabFootprint = 68.dp
 
 /**
- * FAB تنظیمات، قابل جابه‌جایی در کل صفحه.
+ * FAB تنظیمات، قابل جابه‌جایی در فضای محتوا؛ نه روی هدر و نه روی فوتر.
  *
  * سه لایه‌ی بصری دارد:
  * ۱. دو حلقه‌ی ثابت دور دکمه (کمک به دیده‌شدن روی پس‌زمینه‌ی شلوغ)
@@ -65,7 +65,7 @@ fun DraggableSettingsFab(
     onClick: () -> Unit,
     containerWidth: Float,
     containerHeight: Float,
-    topInset: Float,
+    topBoundary: Float,
     bottomInset: Float,
     initialFraction: Pair<Float, Float>?,
     showFirstRunHint: Boolean,
@@ -84,10 +84,10 @@ fun DraggableSettingsFab(
     // حلقه‌ی تزئینی به لبه‌ی نمایشگر جلوگیری می‌کند.
     val edgeMarginPx = with(LocalDensity.current) { 12.dp.toPx() }
     val maxX = (containerWidth - footprintPx - edgeMarginPx).coerceAtLeast(0f)
-    val minY = (topInset + edgeMarginPx).coerceAtLeast(0f)
+    val minY = (topBoundary + edgeMarginPx).coerceAtLeast(0f)
     val maxY = (containerHeight - bottomInset - footprintPx - edgeMarginPx).coerceAtLeast(minY)
 
-    var position by remember(containerWidth, containerHeight, topInset, bottomInset) {
+    var position by remember(containerWidth, containerHeight, topBoundary, bottomInset) {
         mutableStateOf(initialFabPosition(initialFraction, maxX, minY, maxY))
     }
     var dragging by remember { mutableStateOf(false) }
@@ -172,7 +172,7 @@ fun DraggableSettingsFab(
                     }
                 }
             }
-            .pointerInput(containerWidth, containerHeight, topInset, bottomInset) {
+            .pointerInput(containerWidth, containerHeight, topBoundary, bottomInset) {
                 detectDragGestures(
                     onDragStart = {
                         dragging = true

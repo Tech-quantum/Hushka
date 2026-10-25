@@ -30,7 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.text.style.TextAlign
@@ -177,9 +176,8 @@ fun HomeScreen(
     }
 
     // ---- FAB تنظیمات قابل جابه‌جایی ----
-    val density = LocalDensity.current
-    val statusBarInset = WindowInsets.statusBars.getTop(density).toFloat()
     var containerSize by remember { mutableStateOf(IntSize.Zero) }
+    var topBarHeightPx by remember { mutableFloatStateOf(0f) }
     var bottomBarHeightPx by remember { mutableFloatStateOf(0f) }
     var fabFraction by remember { mutableStateOf(AppSettings.getFabPosition(appContext)) }
     var showFabHint by remember { mutableStateOf(!AppSettings.isFabHintShown(appContext)) }
@@ -192,7 +190,11 @@ fun HomeScreen(
         topBar = {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                 Row(
+                    // ارتفاع کل هدر (به‌همراه پدینگ نوار وضعیت) اندازه‌گیری می‌شود
+                    // تا FAB تنظیمات هرگز روی لوگو/عنوان/جستجو نیفتد.
+                    // onSizeChanged باید اولین modifier باشد تا پدینگ‌های بعدی را هم بشمارد.
                     modifier = Modifier
+                        .onSizeChanged { topBarHeightPx = it.height.toFloat() }
                         .fillMaxWidth()
                         .statusBarsPadding()
                         .padding(horizontal = 16.dp, vertical = 12.dp),
@@ -609,15 +611,15 @@ fun HomeScreen(
             }
         }
 
-        // ⚙️ FAB تنظیمات — قابل جابه‌جایی در کل صفحه
+        // ⚙️ FAB تنظیمات — آزاد در فضای محتوا (بین هدر و فوتر)
         // LTR اجباری است تا مختصات با تغییر زبان آینه نشود
-        if (containerSize != IntSize.Zero && bottomBarHeightPx > 0f) {
+        if (containerSize != IntSize.Zero && bottomBarHeightPx > 0f && topBarHeightPx > 0f) {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                 DraggableSettingsFab(
                     onClick = onSettingsClick,
                     containerWidth = containerSize.width.toFloat(),
                     containerHeight = containerSize.height.toFloat(),
-                    topInset = statusBarInset,
+                    topBoundary = topBarHeightPx,
                     bottomInset = bottomBarHeightPx,
                     initialFraction = fabFraction,
                     showFirstRunHint = showFabHint,
