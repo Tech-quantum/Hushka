@@ -29,6 +29,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.draw.clip
@@ -173,7 +176,17 @@ fun HomeScreen(
         derivedStateOf { listState.canScrollBackward }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    // ---- FAB تنظیمات قابل جابه‌جایی ----
+    val density = LocalDensity.current
+    val statusBarInset = WindowInsets.statusBars.getTop(density).toFloat()
+    var containerSize by remember { mutableStateOf(IntSize.Zero) }
+    var bottomBarHeightPx by remember { mutableFloatStateOf(0f) }
+    var fabFraction by remember { mutableStateOf(AppSettings.getFabPosition(appContext)) }
+    var showFabHint by remember { mutableStateOf(!AppSettings.isFabHintShown(appContext)) }
+    // اگر کاربر FAB را گوشه‌ی چپ-پایین گذاشته باشد، FAB اسکرول رویش می‌افتد
+    val settingsFabNearScroll = fabFraction?.let { it.first < 0.35f && it.second > 0.5f } == true
+
+    Box(modifier = Modifier.fillMaxSize().onSizeChanged { containerSize = it }) {
     Scaffold(
         containerColor = bgColor,
         topBar = {
@@ -229,26 +242,29 @@ fun HomeScreen(
             }
         },
         bottomBar = {
-            HomeBottomBar(
-                categoriesActive = uiState.selectedCategory != ALL_CATEGORY,
-                favoritesActive = uiState.favoritesOnly,
-                isOnline = isOnline,
-                isUpdating = uiState.isUpdating,
-                onCategories = { showCategoryDialog = true },
-                onFavorites = { viewModel.onFavoritesToggled() },
-                onAdd = { showAddDialog = true },
-                onUpdate = {
-                    if (!uiState.isUpdating) {
-                        if (isOnline) {
-                            viewModel.updateLibrary()
-                        } else {
-                            Toast.makeText(appContext, appContext.getString(R.string.toast_offline), Toast.LENGTH_SHORT).show()
+            // ارتفاع نوار پایین برای محدودکردن FAB تنظیمات اندازه‌گیری می‌شود
+            Box(Modifier.onSizeChanged { bottomBarHeightPx = it.height.toFloat() }) {
+                HomeBottomBar(
+                    categoriesActive = uiState.selectedCategory != ALL_CATEGORY,
+                    favoritesActive = uiState.favoritesOnly,
+                    isOnline = isOnline,
+                    isUpdating = uiState.isUpdating,
+                    onCategories = { showCategoryDialog = true },
+                    onFavorites = { viewModel.onFavoritesToggled() },
+                    onAdd = { showAddDialog = true },
+                    onUpdate = {
+                        if (!uiState.isUpdating) {
+                            if (isOnline) {
+                                viewModel.updateLibrary()
+                            } else {
+                                Toast.makeText(appContext, appContext.getString(R.string.toast_offline), Toast.LENGTH_SHORT).show()
+                            }
                         }
-                    }
-                },
-                onStats = { showStats = true },
-                onSettings = onSettingsClick
-            )
+                    },
+                    onStats = { showStats = true },
+                    onSettings = onSettingsClick
+                )
+            }
         }
     ) { padding ->
         LazyColumn(
@@ -572,7 +588,7 @@ fun HomeScreen(
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
             Box(modifier = Modifier.fillMaxSize()) {
                 AnimatedVisibility(
-                    visible = isScrolledDown,
+                    visible = isScrolledDown && !settingsFabNearScroll,
                     enter = scaleIn() + fadeIn(),
                     exit = scaleOut() + fadeOut(),
                     modifier = Modifier
@@ -590,6 +606,30 @@ fun HomeScreen(
                         )
                     }
                 }
+            }
+        }
+
+        // ⚙️ FAB تنظیمات — قابل جابه‌جایی در کل صفحه
+        // LTR اجباری است تا مختصات با تغییر زبان آینه نشود
+        if (containerSize != IntSize.Zero && bottomBarHeightPx > 0f) {
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                DraggableSettingsFab(
+                    onClick = onSettingsClick,
+                    containerWidth = containerSize.width.toFloat(),
+                    containerHeight = containerSize.height.toFloat(),
+                    topInset = statusBarInset,
+                    bottomInset = bottomBarHeightPx,
+                    initialFraction = fabFraction,
+                    showFirstRunHint = showFabHint,
+                    onHintShown = {
+                        showFabHint = false
+                        AppSettings.setFabHintShown(appContext)
+                    },
+                    onCommit = { fx, fy ->
+                        fabFraction = fx to fy
+                        AppSettings.setFabPosition(appContext, fx, fy)
+                    }
+                )
             }
         }
     }

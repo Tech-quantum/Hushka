@@ -30,6 +30,11 @@ object AppSettings {
 
     // Online speech-to-text settings (independent from the chat provider key)
     private const val SPEECH_API_KEY = "speech_api_key"
+
+    // Floating settings button (position is stored as 0..1 fractions, not pixels)
+    private const val FAB_X = "settings_fab_x"
+    private const val FAB_Y = "settings_fab_y"
+    private const val FAB_HINT_SHOWN = "settings_fab_hint_shown"
     private val STREAK_KEY = androidx.datastore.preferences.core.longPreferencesKey("daily_streak")
     private val LAST_LOGIN_KEY = androidx.datastore.preferences.core.longPreferencesKey("last_login_date")
 
@@ -137,6 +142,39 @@ object AppSettings {
 
     fun setSpeechApiKey(context: Context, value: String) {
         prefs(context).edit().putString(SPEECH_API_KEY, value).apply()
+    }
+
+    // ==================== Floating Settings Button ====================
+
+    /**
+     * موقعیت ذخیره‌شده‌ی FAB تنظیمات به‌صورت کسر ۰..۱ از محدوده‌ی حرکت.
+     *
+     * کسری ذخیره می‌شود (نه پیکسل) تا بعد از چرخش صفحه یا تغییر رزولوشن،
+     * دکمه بیرون از صفحه نیفتد. `null` یعنی کاربر هنوز آن را جابه‌جا نکرده است.
+     */
+    fun getFabPosition(context: Context): Pair<Float, Float>? {
+        val p = prefs(context)
+        if (!p.contains(FAB_X) || !p.contains(FAB_Y)) return null
+        return p.getFloat(FAB_X, 1f) to p.getFloat(FAB_Y, 1f)
+    }
+
+    fun setFabPosition(context: Context, fractionX: Float, fractionY: Float) {
+        prefs(context).edit()
+            .putFloat(FAB_X, fractionX.coerceIn(0f, 1f))
+            .putFloat(FAB_Y, fractionY.coerceIn(0f, 1f))
+            .apply()
+    }
+
+    fun clearFabPosition(context: Context) {
+        prefs(context).edit().remove(FAB_X).remove(FAB_Y).apply()
+    }
+
+    /** هینت چرخشی فقط یک‌بار در عمر نصب اجرا می‌شود. */
+    fun isFabHintShown(context: Context): Boolean =
+        prefs(context).getBoolean(FAB_HINT_SHOWN, false)
+
+    fun setFabHintShown(context: Context) {
+        prefs(context).edit().putBoolean(FAB_HINT_SHOWN, true).apply()
     }
 
     private fun saveTagColors(context: Context, map: Map<String, String>) {
