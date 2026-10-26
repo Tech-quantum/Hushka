@@ -63,6 +63,15 @@
 - ماژول‌های کلیدی: `PromptVariables` (تشخیص متغیر مشترک)، `SmartSearchEngine` (جست‌وجوی تحمل‌پذیر)، `AnimatedStreakBadge` (شعله‌ی متحرک)، `HushkaLogo` (لوگوی LED متحرک)، `audio/SilenceDetector` (تشخیص سکوت تطبیقی ضبط آنلاین)، `SettingsFab` (FAB تنظیمات شناور؛ حرکت فقط بین هدر و فوتر) و `FabGeometry` (منطق خالص موقعیت‌دهی، تست‌شده در `FabPositionTest`).
 - **شخصی‌سازی شعله**: الگوی `rememberInfiniteTransition` در `HushkaLogo.kt` و `AnimatedStreakBadge.kt` استفاده شده است.
 
+## 📦 انتشار APK برای تست (CI)
+- ورک‌فلو `.github/workflows/build-apk.yml` علاوه بر artifact، برای هر push روی `main` یک Release عمومی با تگ `test-latest` می‌سازد.
+- محتوای Release: `app-debug.apk` (کامل)، `app-debug.apk.sha256`، `apk-parts.sha256` و تکه‌های ~۴۸ مگابایتی `apk.part-00…`.
+- دانلود کامل و قابل ادامه:
+  `curl -L -C - -o app-debug.apk https://github.com/Tech-quantum/Hushka/releases/download/test-latest/app-debug.apk`
+- دانلود تکه‌تکه (شبکه‌ی ناپایدار): هر تکه جدا دانلود می‌شود، سپس `cat apk.part-* > app-debug.apk` و تأیید با `sha256sum -c apk-parts.sha256`.
+- برای این مرحله `permissions: contents: write` لازم است؛ اگر در تنظیمات ریپو دسترسی نوشتن `GITHUB_TOKEN` بسته باشد، مرحله‌ی Release شکست می‌خورد.
+- **نصب:** هر بیلد CI با کلید debug تازه امضا می‌شود؛ قبل از نصب نسخه‌ی جدید باید اپ قبلی Uninstall شود، وگرنه «App not installed» می‌دهد.
+
 ## 🧭 تاریخچه‌ی اخیر PRها (برای درک وضعیت)
 - **#15** (`fix/catalog-search-voice`): رفع ۷ باگ (نام‌گذاری assets، متغیرهای فارسی، جست‌وجوی هوشمند، `recentOnly`، خطای Vosk) + Gradle Wrapper. مدل‌های Vosk به Git-LFS منتقل شدند.
 - **#16** (`ui-streak-badge-left2`): استریک به چپ — چیدمان اشتباه (لوگو حذف شد).
@@ -85,6 +94,10 @@
 - **#33** (`perf/online-silence-wav`): افزودن شاخه‌ی `else` برای `when` روی موتور.
 - **#34** (`perf/online-silence-wav`): بازگرداندن `package` گم‌شده در `VoiceRecorderHelper`.
 - **#35** (`perf/online-silence-wav`): اتصال `SilenceDetector` تطبیقی به حلقه‌ی ضبط آنلاین.
+- **#36** (`docs/online-wav-silence`): ثبت مستندات ضبط آنلاین با WAV و تشخیص سکوت تطبیقی.
+- **#37** (`feat/draggable-settings-fab`): FAB تنظیمات شناور و قابل جابه‌جایی (حلقه‌ی دولایه، هینت چرخشی یک‌باره، ذخیره‌ی موقعیت کسری، هندسه‌ی خالص در `FabGeometry`).
+- **#38** (`fix/fab-header-bounds`): کفِ حرکت FAB از زیر نوار وضعیت به **زیر هدر** منتقل شد (اندازه‌گیری ارتفاع هدر با `onSizeChanged`).
+- **#39** (`ci/publish-test-apk-release`): انتشار APK تست به‌صورت Release عمومی + تکه‌های ۴۸MB + SHA-256 برای دانلود قابل ادامه.
 
 ## ⚠️ بدهی فنی شناخته‌شده
 - تاریخچه‌ی گیت هنوز بایت‌های ZIPهای Vosk (۲۳۱MB) را در کامیت‌های قدیمی دارد؛ هر کلون ~۳۱۹MB دانلود می‌کند. برای کوچک کردن واقعی نیاز به بازنویسی تاریخچه (`git filter-repo`) + force-push است که پرریسک و انجام‌نشده باقی مانده.

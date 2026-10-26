@@ -5,6 +5,11 @@ on:
   pull_request:
     branches: [ main, dev ]
   workflow_dispatch:
+
+# برای انتشار APK در Release عمومی لازم است
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-22.04
@@ -30,3 +35,55 @@ jobs:
           name: Hushka-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+
+      # ---- APK برای دانلود عمومی و قابل ادامه (Resume) ----
+      - name: Prepare checksum and split parts
+        run: |
+          set -euo pipefail
+          mkdir -p build/apk-parts
+          (cd app/build/outputs/apk/debug && sha256sum app-debug.apk) > build/app-debug.apk.sha256
+          cat build/app-debug.apk.sha256
+          # تکه‌های ۴۸ مگابایتی: دانلود هر تکه روی موبایل پایدارتر است
+          split -b 48M -d -a 2 app/build/outputs/apk/debug/app-debug.apk build/apk-parts/apk.part-
+          (cd build/apk-parts && sha256sum apk.part-* > ../apk-parts.sha256)
+          ls -l build/apk-parts
+
+      - name: Publish test build to GitHub Releases
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          HASH=$(cut -d' ' -f1 build/app-debug.apk.sha256)
+          BASE="https://github.com/${GITHUB_REPOSITORY}/releases/download/test-latest"
+          {
+            echo "Test build from \`main\` at \`${GITHUB_SHA:0:7}\`"
+            echo
+            echo "### دانلود کامل (قابل ادامه)"
+            echo '```'
+            echo "curl -L -C - -o app-debug.apk ${BASE}/app-debug.apk"
+            echo '```'
+            echo
+            echo "### یا دانلود تکه‌تکه (هر تکه ~۴۸ مگابایت)"
+            echo '```'
+            echo "mkdir -p parts && cd parts"
+            echo "for i in 00 01 02 03 04 05 06 07 08 09; do"
+            echo "  curl -L -f -C - -O ${BASE}/apk.part-\$i || break"
+            echo "done"
+            echo "cat apk.part-* > app-debug.apk"
+            echo '```'
+            echo
+            echo "SHA-256 فایل نهایی \`app-debug.apk\`:"
+            echo '```'
+            echo "${HASH}"
+            echo '```'
+          } > build/release-notes.md
+          gh release delete test-latest --yes --cleanup-tag 2>/dev/null || true
+          gh release create test-latest \
+            --title "Test APK (main)" \
+            --notes-file build/release-notes.md \
+            --prerelease \
+            app/build/outputs/apk/debug/app-debug.apk \
+            build/app-debug.apk.sha256 \
+            build/apk-parts.sha256 \
+            build/apk-parts/apk.part-*
