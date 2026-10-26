@@ -615,23 +615,28 @@ fun HomeScreen(
         // LTR اجباری است تا مختصات با تغییر زبان آینه نشود
         if (containerSize != IntSize.Zero && bottomBarHeightPx > 0f && topBarHeightPx > 0f) {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                DraggableSettingsFab(
-                    onClick = onSettingsClick,
-                    containerWidth = containerSize.width.toFloat(),
-                    containerHeight = containerSize.height.toFloat(),
-                    topBoundary = topBarHeightPx,
-                    bottomInset = bottomBarHeightPx,
-                    initialFraction = fabFraction,
-                    showFirstRunHint = showFabHint,
-                    onHintShown = {
-                        showFabHint = false
-                        AppSettings.setFabHintShown(appContext)
-                    },
-                    onCommit = { fx, fy ->
-                        fabFraction = fx to fy
-                        AppSettings.setFabPosition(appContext, fx, fy)
-                    }
-                )
+                // Box پرکننده لازم است: بدون آن، والدِ RTL دکمه را از لبه‌ی راست
+                // می‌چیند و offsetِ مثبت هم رویش اضافه می‌شود؛ نتیجه اینکه FAB
+                // بیرون از صفحه می‌افتد و هیچ‌وقت دیده نمی‌شد.
+                Box(Modifier.fillMaxSize()) {
+                    DraggableSettingsFab(
+                        onClick = onSettingsClick,
+                        containerWidth = containerSize.width.toFloat(),
+                        containerHeight = containerSize.height.toFloat(),
+                        topBoundary = topBarHeightPx,
+                        bottomInset = bottomBarHeightPx,
+                        initialFraction = fabFraction,
+                        showFirstRunHint = showFabHint,
+                        onHintShown = {
+                            showFabHint = false
+                            AppSettings.setFabHintShown(appContext)
+                        },
+                        onCommit = { fx, fy ->
+                            fabFraction = fx to fy
+                            AppSettings.setFabPosition(appContext, fx, fy)
+                        }
+                    )
+                }
             }
         }
     }
