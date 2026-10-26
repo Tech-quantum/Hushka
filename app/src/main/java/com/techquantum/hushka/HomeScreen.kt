@@ -264,8 +264,7 @@ fun HomeScreen(
                             }
                         }
                     },
-                    onStats = { showStats = true },
-                    onSettings = onSettingsClick
+                    onStats = { showStats = true }
                 )
             }
         }

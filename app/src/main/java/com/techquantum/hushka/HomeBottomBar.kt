@@ -24,7 +24,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Cloud
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material3.HorizontalDivider
@@ -56,8 +55,7 @@ fun HomeBottomBar(
     onFavorites: () -> Unit,
     onAdd: () -> Unit,
     onUpdate: () -> Unit,
-    onStats: () -> Unit,
-    onSettings: () -> Unit
+    onStats: () -> Unit
 ) {
     val active = MaterialTheme.colorScheme.primary
     val idle = MaterialTheme.colorScheme.onSurfaceVariant
@@ -163,13 +161,6 @@ fun HomeBottomBar(
                     label = stringResource(R.string.nav_stats),
                     tint = idle,
                     onClick = onStats
-                )
-                BarItem(
-                    modifier = Modifier.weight(1f),
-                    icon = Icons.Default.Settings,
-                    label = stringResource(R.string.settings),
-                    tint = idle,
-                    onClick = onSettings
                 )
             }
         }
