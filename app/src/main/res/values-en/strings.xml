@@ -364,4 +364,8 @@
     <string name="text_label">Prompt Text</string>
     <string name="text_placeholder">Enter prompt text...</string>
     <string name="collection_label">Collection</string>
+    <string name="fab_reset_title">Floating settings button</string>
+    <string name="fab_reset_desc">If you moved the gear button, this puts it back in the bottom-right corner.</string>
+    <string name="fab_reset_button">Reset position</string>
+    <string name="fab_reset_done">Button position reset</string>
 </resources>

@@ -140,6 +140,8 @@ class MainActivity : AppCompatActivity() {
             var backPressedTime by remember { mutableLongStateOf(0L) }
             var showTagColorManager by remember { mutableStateOf(false) }
             var showSplash by remember { mutableStateOf(true) }
+            // با هر بار «بازنشانی موقعیت» یک واحد اضافه می‌شود تا FAB به گوشه‌ی پیش‌فرض برگردد
+            var fabResetToken by remember { mutableIntStateOf(0) }
 
             LaunchedEffect(Unit) {
                 // انیمیشن Splash حدود ۱.۳ ثانیه طول می‌کشد؛ ۱۴۰۰ms کمی فرصت نفس می‌دهد
@@ -172,7 +174,8 @@ class MainActivity : AppCompatActivity() {
                 HomeScreen(
                     viewModel = viewModel,
                     onSettingsClick = { showSettings = true },
-                    onStartVoiceSearch = ::startVoiceSearch
+                    onStartVoiceSearch = ::startVoiceSearch,
+                    fabResetToken = fabResetToken
                 )
 
                 if (showSettings) {
@@ -222,6 +225,10 @@ class MainActivity : AppCompatActivity() {
                                 getString(R.string.web_cache_cleared_toast),
                                 Toast.LENGTH_SHORT
                             ).show()
+                        },
+                        onResetFabPosition = {
+                            AppSettings.clearFabPosition(this@MainActivity)
+                            fabResetToken++
                         },
                         onDismiss = { showSettings = false }
                     )

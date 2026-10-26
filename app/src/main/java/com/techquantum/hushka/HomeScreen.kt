@@ -62,7 +62,8 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     viewModel: PromptViewModel,
     onSettingsClick: () -> Unit = {},
-    onStartVoiceSearch: () -> Unit = {}
+    onStartVoiceSearch: () -> Unit = {},
+    fabResetToken: Int = 0
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val webSearchResults by viewModel.webSearchResults.collectAsStateWithLifecycle()
@@ -179,7 +180,7 @@ fun HomeScreen(
     var containerSize by remember { mutableStateOf(IntSize.Zero) }
     var topBarHeightPx by remember { mutableFloatStateOf(0f) }
     var bottomBarHeightPx by remember { mutableFloatStateOf(0f) }
-    var fabFraction by remember { mutableStateOf(AppSettings.getFabPosition(appContext)) }
+    var fabFraction by remember(fabResetToken) { mutableStateOf(AppSettings.getFabPosition(appContext)) }
     var showFabHint by remember { mutableStateOf(!AppSettings.isFabHintShown(appContext)) }
     // اگر کاربر FAB را گوشه‌ی چپ-پایین گذاشته باشد، FAB اسکرول رویش می‌افتد
     val settingsFabNearScroll = fabFraction?.let { it.first < 0.35f && it.second > 0.5f } == true
@@ -627,6 +628,7 @@ fun HomeScreen(
                         bottomInset = bottomBarHeightPx,
                         initialFraction = fabFraction,
                         showFirstRunHint = showFabHint,
+                        resetKey = fabResetToken,
                         onHintShown = {
                             showFabHint = false
                             AppSettings.setFabHintShown(appContext)

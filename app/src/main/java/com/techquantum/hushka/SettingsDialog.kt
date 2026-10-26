@@ -1,5 +1,6 @@
 package com.techquantum.hushka
 
+import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -39,6 +40,7 @@ fun SettingsDialog(
     onBrowseWeb: () -> Unit,
     onManageColors: () -> Unit,
     onClearWebCache: () -> Unit = {},
+    onResetFabPosition: () -> Unit = {},
     onDismiss: () -> Unit
 ) {
     val textColor = MaterialTheme.colorScheme.onSurface
@@ -156,7 +158,7 @@ fun SettingsDialog(
                         0 -> AppearanceTab(
                             themeMode, colorTheme, language,
                             onThemeChange, onColorThemeChange, onLanguageChange,
-                            onManageColors
+                            onManageColors, onResetFabPosition
                         )
                         1 -> DataTab(
                             onExportJson, onExportMarkdown, onImportJson, onBrowseWeb,
@@ -187,7 +189,8 @@ private fun AppearanceTab(
     onThemeChange: (String) -> Unit,
     onColorThemeChange: (String) -> Unit,
     onLanguageChange: (String) -> Unit,
-    onManageColors: () -> Unit
+    onManageColors: () -> Unit,
+    onResetFabPosition: () -> Unit = {}
 ) {
     val cardColor = MaterialTheme.colorScheme.surfaceVariant
     val textColor = MaterialTheme.colorScheme.onSurface
@@ -337,6 +340,36 @@ private fun AppearanceTab(
                 colors = ButtonDefaults.buttonColors(containerColor = purplePrimary)
             ) {
                 Text(stringResource(R.string.manage_colors), fontSize = 12.sp, color = Color.White)
+            }
+        }
+    }
+
+    Spacer(Modifier.height(4.dp))
+
+    // ===== بازنشانی موقعیت FAB تنظیمات =====
+    val fabContext = LocalContext.current
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(14.dp),
+        colors = CardDefaults.cardColors(containerColor = cardColor)
+    ) {
+        Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text("🎯  " + stringResource(R.string.fab_reset_title), fontWeight = FontWeight.Bold, fontSize = 13.sp, color = textColor)
+            Text(
+                stringResource(R.string.fab_reset_desc),
+                style = MaterialTheme.typography.bodySmall,
+                color = textGrayColor,
+                fontSize = 11.sp
+            )
+            OutlinedButton(
+                onClick = {
+                    onResetFabPosition()
+                    Toast.makeText(fabContext, fabContext.getString(R.string.fab_reset_done), Toast.LENGTH_SHORT).show()
+                },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(10.dp)
+            ) {
+                Text(stringResource(R.string.fab_reset_button), fontSize = 12.sp, color = textColor)
             }
         }
     }
