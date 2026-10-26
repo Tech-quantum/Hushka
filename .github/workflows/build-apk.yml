@@ -36,17 +36,39 @@ jobs:
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
 
-      # ---- APK برای دانلود عمومی و قابل ادامه (Resume) ----
-      - name: Prepare checksum and split parts
+      # ---- نسخه‌ی سبک: بدون مدل‌های صوتی (برای دانلود سریع و تست UI) ----
+      - name: Build lite debug APK (voice models excluded)
         run: |
           set -euo pipefail
+          mkdir -p build/full build/lite
+          cp app/build/outputs/apk/debug/app-debug.apk build/full/app-debug.apk
+          rm -f app/src/main/assets/vosk-model-*.zip
+          ./gradlew assembleDebug --stacktrace
+          cp app/build/outputs/apk/debug/app-debug.apk build/lite/app-debug-lite.apk
+          FULL=$(stat -c%s build/full/app-debug.apk)
+          LITE=$(stat -c%s build/lite/app-debug-lite.apk)
+          echo "full=${FULL} bytes / lite=${LITE} bytes"
+          # اگر Gradle کش کرده باشد و APK سبک ساخته نشود، بیلد باید شکست بخورد
+          [ "${LITE}" -lt "${FULL}" ] || { echo "lite APK is not smaller than full APK"; exit 1; }
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Hushka-debug-apk-lite
+          path: build/lite/app-debug-lite.apk
+          if-no-files-found: error
+
+      # ---- APK برای دانلود عمومی و قابل ادامه (Resume) ----
+      - name: Prepare checksums and split parts
+        run: |
+          set -euo pipefail
+          (cd build/full && sha256sum app-debug.apk > ../app-debug.apk.sha256)
+          (cd build/lite && sha256sum app-debug-lite.apk > ../app-debug-lite.apk.sha256)
+          cat build/app-debug.apk.sha256 build/app-debug-lite.apk.sha256
+          # تکه‌های ۴۸ مگابایتی فقط برای نسخه‌ی کامل
           mkdir -p build/apk-parts
-          (cd app/build/outputs/apk/debug && sha256sum app-debug.apk) > build/app-debug.apk.sha256
-          cat build/app-debug.apk.sha256
-          # تکه‌های ۴۸ مگابایتی: دانلود هر تکه روی موبایل پایدارتر است
-          split -b 48M -d -a 2 app/build/outputs/apk/debug/app-debug.apk build/apk-parts/apk.part-
+          split -b 48M -d -a 2 build/full/app-debug.apk build/apk-parts/apk.part-
           (cd build/apk-parts && sha256sum apk.part-* > ../apk-parts.sha256)
-          ls -l build/apk-parts
+          ls -l build/lite build/apk-parts
 
       - name: Publish test build to GitHub Releases
         if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
@@ -54,17 +76,23 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          HASH=$(cut -d' ' -f1 build/app-debug.apk.sha256)
+          HASH_FULL=$(cut -d' ' -f1 build/app-debug.apk.sha256)
+          HASH_LITE=$(cut -d' ' -f1 build/app-debug-lite.apk.sha256)
           BASE="https://github.com/${GITHUB_REPOSITORY}/releases/download/test-latest"
           {
             echo "Test build from \`main\` at \`${GITHUB_SHA:0:7}\`"
             echo
-            echo "### دانلود کامل (قابل ادامه)"
+            echo "### سبک — بدون مدل صوتی (برای تست UI)"
+            echo '```'
+            echo "curl -L -C - -O ${BASE}/app-debug-lite.apk"
+            echo '```'
+            echo
+            echo "### کامل — با مدل صوتی آفلاین"
             echo '```'
             echo "curl -L -C - -o app-debug.apk ${BASE}/app-debug.apk"
             echo '```'
             echo
-            echo "### یا دانلود تکه‌تکه (هر تکه ~۴۸ مگابایت)"
+            echo "### یا دانلود تکه‌تکه نسخه‌ی کامل (هر تکه ~۴۸ مگابایت)"
             echo '```'
             echo "mkdir -p parts && cd parts"
             echo "for i in 00 01 02 03 04 05 06 07 08 09; do"
@@ -73,9 +101,14 @@ jobs:
             echo "cat apk.part-* > app-debug.apk"
             echo '```'
             echo
-            echo "SHA-256 فایل نهایی \`app-debug.apk\`:"
+            echo "SHA-256 \`app-debug-lite.apk\`:"
             echo '```'
-            echo "${HASH}"
+            echo "${HASH_LITE}"
+            echo '```'
+            echo
+            echo "SHA-256 \`app-debug.apk\`:"
+            echo '```'
+            echo "${HASH_FULL}"
             echo '```'
           } > build/release-notes.md
           gh release delete test-latest --yes --cleanup-tag 2>/dev/null || true
@@ -83,7 +116,9 @@ jobs:
             --title "Test APK (main)" \
             --notes-file build/release-notes.md \
             --prerelease \
-            app/build/outputs/apk/debug/app-debug.apk \
+            build/lite/app-debug-lite.apk \
+            build/app-debug-lite.apk.sha256 \
+            build/full/app-debug.apk \
             build/app-debug.apk.sha256 \
             build/apk-parts.sha256 \
             build/apk-parts/apk.part-*
