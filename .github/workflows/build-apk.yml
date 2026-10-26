@@ -43,13 +43,26 @@ jobs:
           mkdir -p build/full build/lite
           cp app/build/outputs/apk/debug/app-debug.apk build/full/app-debug.apk
           rm -f app/src/main/assets/vosk-model-*.zip
+          # بسته‌بندی افزایشی AGP مدل‌های حذف‌شده را فقط از central directory
+          # برمی‌دارد و بایت‌هایشان را به‌صورت زباله داخل فایل نگه می‌دارد؛
+          # نتیجه، یک «APK سبک» ۲۷۴ مگابایتی بود که نصبش هم شکست می‌خورد.
+          # کش بسته‌بندی را پاک می‌کنیم تا APK از صفر نوشته شود.
+          rm -rf app/build/intermediates/assets \
+                 app/build/intermediates/merged_assets \
+                 app/build/outputs/apk/debug
           ./gradlew assembleDebug --stacktrace
           cp app/build/outputs/apk/debug/app-debug.apk build/lite/app-debug-lite.apk
           FULL=$(stat -c%s build/full/app-debug.apk)
           LITE=$(stat -c%s build/lite/app-debug-lite.apk)
           echo "full=${FULL} bytes / lite=${LITE} bytes"
+          if unzip -l build/lite/app-debug-lite.apk | grep -q "vosk-model"; then
+            echo "voice models are still packaged into the lite APK"
+            exit 1
+          fi
           # اگر Gradle کش کرده باشد و APK سبک ساخته نشود، بیلد باید شکست بخورد
           [ "${LITE}" -lt "${FULL}" ] || { echo "lite APK is not smaller than full APK"; exit 1; }
+          # مدل‌ها ~۲۲۸ مگابایت‌اند؛ نسخه‌ی سبک باید واقعاً زیر ۱۰۰ مگابایت باشد
+          [ "${LITE}" -lt 100000000 ] || { echo "lite APK is unexpectedly large: ${LITE} bytes"; exit 1; }
 
       - uses: actions/upload-artifact@v4
         with:
