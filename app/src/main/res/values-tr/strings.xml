@@ -364,4 +364,8 @@
     <string name="text_label">İstem Metni</string>
     <string name="text_placeholder">İstem metnini girin...</string>
     <string name="collection_label">Koleksiyon</string>
+    <string name="fab_reset_title">Yüzen ayarlar düğmesi</string>
+    <string name="fab_reset_desc">Dişli düğmesini taşıdıysanız bu, onu sağ alt köşeye geri getirir.</string>
+    <string name="fab_reset_button">Konumu sıfırla</string>
+    <string name="fab_reset_done">Düğme konumu sıfırlandı</string>
 </resources>

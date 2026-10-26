@@ -380,4 +380,8 @@
     <string name="text_label">متن پرامپت</string>
     <string name="text_placeholder">متن پرامپت را وارد کنید...</string>
     <string name="collection_label">مجموعه</string>
+    <string name="fab_reset_title">دکمه‌ی شناور تنظیمات</string>
+    <string name="fab_reset_desc">اگر چرخ‌دنده را جابه‌جا کرده‌اید، با این دکمه به گوشه‌ی راست-پایین برمی‌گردد.</string>
+    <string name="fab_reset_button">بازنشانی موقعیت</string>
+    <string name="fab_reset_done">موقعیت دکمه بازنشانی شد</string>
 </resources>

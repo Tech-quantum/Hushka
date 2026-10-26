@@ -364,4 +364,8 @@
     <string name="text_label">نص المطالبة</string>
     <string name="text_placeholder">أدخل نص المطالبة...</string>
     <string name="collection_label">مجموعة</string>
+    <string name="fab_reset_title">زر الإعدادات العائم</string>
+    <string name="fab_reset_desc">إذا قمت بتحريك زر الترس فسيعيده هذا إلى الزاوية السفلية اليمنى.</string>
+    <string name="fab_reset_button">إعادة تعيين الموضع</string>
+    <string name="fab_reset_done">تمت إعادة تعيين موضع الزر</string>
 </resources>

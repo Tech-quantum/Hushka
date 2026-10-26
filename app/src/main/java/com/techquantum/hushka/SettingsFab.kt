@@ -71,6 +71,7 @@ fun DraggableSettingsFab(
     showFirstRunHint: Boolean,
     onHintShown: () -> Unit,
     onCommit: (Float, Float) -> Unit,
+    resetKey: Int = 0,
 ) {
     val primary = MaterialTheme.colorScheme.primary
     val onPrimary = MaterialTheme.colorScheme.onPrimary
@@ -87,7 +88,7 @@ fun DraggableSettingsFab(
     val minY = (topBoundary + edgeMarginPx).coerceAtLeast(0f)
     val maxY = (containerHeight - bottomInset - footprintPx - edgeMarginPx).coerceAtLeast(minY)
 
-    var position by remember(containerWidth, containerHeight, topBoundary, bottomInset) {
+    var position by remember(containerWidth, containerHeight, topBoundary, bottomInset, resetKey) {
         mutableStateOf(initialFabPosition(initialFraction, maxX, minY, maxY))
     }
     var dragging by remember { mutableStateOf(false) }
