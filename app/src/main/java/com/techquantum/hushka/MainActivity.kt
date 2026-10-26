@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.SystemClock
 import android.Manifest
 import android.net.ConnectivityManager
 import android.speech.RecognizerIntent
@@ -16,7 +17,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.*
 import androidx.core.os.LocaleListCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import kotlinx.coroutines.delay
+
+// بعد از این مدت حضور در پس‌زمینه، اپ هنگام برگشت دوباره قفل می‌شود
+private const val BACKGROUND_LOCK_TIMEOUT_MS = 30_000L
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: PromptViewModel by viewModels {
@@ -143,11 +150,50 @@ class MainActivity : AppCompatActivity() {
             // با هر بار «بازنشانی موقعیت» یک واحد اضافه می‌شود تا FAB به گوشه‌ی پیش‌فرض برگردد
             var fabResetToken by remember { mutableIntStateOf(0) }
 
+            // === 🔒 قفل بیومتریک ===
+            var biometricLock by remember { mutableStateOf(AppSettings.isBiometricLockEnabled(this@MainActivity)) }
+            var locked by remember { mutableStateOf(AppSettings.isBiometricLockEnabled(this@MainActivity)) }
+            var lockError by remember { mutableStateOf(false) }
+            var backgroundedAt by remember { mutableLongStateOf(0L) }
+            val biometricAvailable = remember { BiometricGate.isAvailable(this@MainActivity) }
+
             LaunchedEffect(Unit) {
                 // انیمیشن Splash حدود ۱.۳ ثانیه طول می‌کشد؛ ۱۴۰۰ms کمی فرصت نفس می‌دهد
                 // تا انیمیشن کامل دیده شود و بعد صفحه اصلی بیاید.
                 delay(1400)
                 showSplash = false
+            }
+
+            // اگر اپ بیش از ۳۰ ثانیه در پس‌زمینه بماند، هنگام برگشت دوباره قفل می‌شود.
+            val lifecycleOwner = LocalLifecycleOwner.current
+            DisposableEffect(lifecycleOwner, biometricLock) {
+                val observer = LifecycleEventObserver { _, event ->
+                    when (event) {
+                        Lifecycle.Event.ON_STOP -> backgroundedAt = SystemClock.elapsedRealtime()
+                        Lifecycle.Event.ON_START -> {
+                            if (biometricLock && backgroundedAt > 0L &&
+                                SystemClock.elapsedRealtime() - backgroundedAt >= BACKGROUND_LOCK_TIMEOUT_MS
+                            ) {
+                                lockError = false
+                                locked = true
+                            }
+                        }
+                        else -> Unit
+                    }
+                }
+                lifecycleOwner.lifecycle.addObserver(observer)
+                onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+            }
+
+            // بعد از اسپلش، اگر اپ قفل است یک‌بار خودکار اثر انگشت می‌خواهیم.
+            LaunchedEffect(showSplash, locked) {
+                if (!showSplash && locked) {
+                    BiometricGate.prompt(
+                        activity = this@MainActivity,
+                        onSuccess = { locked = false; lockError = false },
+                        onFailure = { lockError = true }
+                    )
+                }
             }
 
             // === 🚪 دو بار بک برای خروج ===
@@ -170,6 +216,17 @@ class MainActivity : AppCompatActivity() {
             HushkaTheme(themeMode = themeMode, colorTheme = colorTheme) {
                 if (showSplash) {
                     SplashScreen()
+                } else if (locked) {
+                    BiometricLockScreen(
+                        showError = lockError,
+                        onUnlock = {
+                            BiometricGate.prompt(
+                                activity = this@MainActivity,
+                                onSuccess = { locked = false; lockError = false },
+                                onFailure = { lockError = true }
+                            )
+                        }
+                    )
                 } else {
                 HomeScreen(
                     viewModel = viewModel,
@@ -229,6 +286,36 @@ class MainActivity : AppCompatActivity() {
                         onResetFabPosition = {
                             AppSettings.clearFabPosition(this@MainActivity)
                             fabResetToken++
+                        },
+                        biometricLockEnabled = biometricLock,
+                        biometricAvailable = biometricAvailable,
+                        onBiometricLockChange = { wanted ->
+                            if (!wanted) {
+                                AppSettings.setBiometricLockEnabled(this@MainActivity, false)
+                                biometricLock = false
+                            } else {
+                                // فعال‌سازی فقط بعد از یک تأیید موفق انجام می‌شود
+                                // تا کاربر خودش را بیرون قفل نکند.
+                                BiometricGate.prompt(
+                                    activity = this@MainActivity,
+                                    onSuccess = {
+                                        AppSettings.setBiometricLockEnabled(this@MainActivity, true)
+                                        biometricLock = true
+                                        Toast.makeText(
+                                            this@MainActivity,
+                                            getString(R.string.lock_enabled_toast),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    },
+                                    onFailure = {
+                                        Toast.makeText(
+                                            this@MainActivity,
+                                            getString(R.string.lock_failed_toast),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                )
+                            }
                         },
                         onDismiss = { showSettings = false }
                     )

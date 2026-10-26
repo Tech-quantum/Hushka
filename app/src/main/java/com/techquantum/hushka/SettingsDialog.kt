@@ -41,6 +41,9 @@ fun SettingsDialog(
     onManageColors: () -> Unit,
     onClearWebCache: () -> Unit = {},
     onResetFabPosition: () -> Unit = {},
+    biometricLockEnabled: Boolean = false,
+    biometricAvailable: Boolean = false,
+    onBiometricLockChange: (Boolean) -> Unit = {},
     onDismiss: () -> Unit
 ) {
     val textColor = MaterialTheme.colorScheme.onSurface
@@ -158,7 +161,8 @@ fun SettingsDialog(
                         0 -> AppearanceTab(
                             themeMode, colorTheme, language,
                             onThemeChange, onColorThemeChange, onLanguageChange,
-                            onManageColors, onResetFabPosition
+                            onManageColors, onResetFabPosition,
+                            biometricLockEnabled, biometricAvailable, onBiometricLockChange
                         )
                         1 -> DataTab(
                             onExportJson, onExportMarkdown, onImportJson, onBrowseWeb,
@@ -190,7 +194,10 @@ private fun AppearanceTab(
     onColorThemeChange: (String) -> Unit,
     onLanguageChange: (String) -> Unit,
     onManageColors: () -> Unit,
-    onResetFabPosition: () -> Unit = {}
+    onResetFabPosition: () -> Unit = {},
+    biometricLockEnabled: Boolean = false,
+    biometricAvailable: Boolean = false,
+    onBiometricLockChange: (Boolean) -> Unit = {}
 ) {
     val cardColor = MaterialTheme.colorScheme.surfaceVariant
     val textColor = MaterialTheme.colorScheme.onSurface
@@ -371,6 +378,45 @@ private fun AppearanceTab(
             ) {
                 Text(stringResource(R.string.fab_reset_button), fontSize = 12.sp, color = textColor)
             }
+        }
+    }
+
+    Spacer(Modifier.height(4.dp))
+
+    // ===== قفل بیومتریک =====
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(14.dp),
+        colors = CardDefaults.cardColors(containerColor = cardColor)
+    ) {
+        Row(
+            modifier = Modifier.padding(14.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    "🔒  " + stringResource(R.string.lock_settings_title),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 13.sp,
+                    color = textColor
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    stringResource(
+                        if (biometricAvailable) R.string.lock_settings_desc
+                        else R.string.lock_unavailable
+                    ),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = textGrayColor,
+                    fontSize = 11.sp
+                )
+            }
+            Spacer(Modifier.width(10.dp))
+            Switch(
+                checked = biometricLockEnabled,
+                onCheckedChange = onBiometricLockChange,
+                enabled = biometricAvailable || biometricLockEnabled
+            )
         }
     }
 }

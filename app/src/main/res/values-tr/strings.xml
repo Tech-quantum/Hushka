@@ -368,4 +368,14 @@
     <string name="fab_reset_desc">Dişli düğmesini taşıdıysanız bu, onu sağ alt köşeye geri getirir.</string>
     <string name="fab_reset_button">Konumu sıfırla</string>
     <string name="fab_reset_done">Düğme konumu sıfırlandı</string>
+    <string name="lock_title">Hushka kilitli</string>
+    <string name="lock_subtitle">Devam etmek için parmak izinizi veya cihaz kilidinizi doğrulayın.</string>
+    <string name="lock_button">Kilidi aç</string>
+    <string name="lock_error">Doğrulanamadı. Tekrar deneyin.</string>
+    <string name="lock_cancel">İptal</string>
+    <string name="lock_settings_title">Biyometrik kilit</string>
+    <string name="lock_settings_desc">Uygulama her açıldığında ve 30 saniye arka planda kaldıktan sonra parmak izi ister.</string>
+    <string name="lock_unavailable">Bu cihaz biyometrik kilidi desteklemiyor.</string>
+    <string name="lock_enabled_toast">Biyometrik kilit etkinleştirildi</string>
+    <string name="lock_failed_toast">Doğrulanamadı. Kilit etkinleştirilmedi.</string>
 </resources>

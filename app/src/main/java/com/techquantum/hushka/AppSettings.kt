@@ -35,6 +35,9 @@ object AppSettings {
     private const val FAB_X = "settings_fab_x"
     private const val FAB_Y = "settings_fab_y"
     private const val FAB_HINT_SHOWN = "settings_fab_hint_shown"
+
+    // Biometric app lock
+    private const val BIOMETRIC_LOCK = "biometric_lock_enabled"
     private val STREAK_KEY = androidx.datastore.preferences.core.longPreferencesKey("daily_streak")
     private val LAST_LOGIN_KEY = androidx.datastore.preferences.core.longPreferencesKey("last_login_date")
 
@@ -175,6 +178,14 @@ object AppSettings {
 
     fun setFabHintShown(context: Context) {
         prefs(context).edit().putBoolean(FAB_HINT_SHOWN, true).apply()
+    }
+
+    /** قفل بیومتریک؛ پیش‌فرض خاموش است تا کاربر خودش روشنش کند. */
+    fun isBiometricLockEnabled(context: Context): Boolean =
+        prefs(context).getBoolean(BIOMETRIC_LOCK, false)
+
+    fun setBiometricLockEnabled(context: Context, enabled: Boolean) {
+        prefs(context).edit().putBoolean(BIOMETRIC_LOCK, enabled).apply()
     }
 
     private fun saveTagColors(context: Context, map: Map<String, String>) {
