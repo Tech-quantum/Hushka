@@ -368,4 +368,14 @@
     <string name="fab_reset_desc">إذا قمت بتحريك زر الترس فسيعيده هذا إلى الزاوية السفلية اليمنى.</string>
     <string name="fab_reset_button">إعادة تعيين الموضع</string>
     <string name="fab_reset_done">تمت إعادة تعيين موضع الزر</string>
+    <string name="lock_title">هوشكا مقفلة</string>
+    <string name="lock_subtitle">أكّد بصمة إصبعك أو قفل الجهاز للمتابعة.</string>
+    <string name="lock_button">فتح القفل</string>
+    <string name="lock_error">لم يتم التحقق. حاول مرة أخرى.</string>
+    <string name="lock_cancel">إلغاء</string>
+    <string name="lock_settings_title">القفل البيومتري</string>
+    <string name="lock_settings_desc">يطلب بصمة إصبعك عند كل فتح للتطبيق، وبعد 30 ثانية في الخلفية.</string>
+    <string name="lock_unavailable">هذا الجهاز لا يدعم القفل البيومتري.</string>
+    <string name="lock_enabled_toast">تم تفعيل القفل البيومتري</string>
+    <string name="lock_failed_toast">لم يتم التحقق. لم يتم تفعيل القفل.</string>
 </resources>

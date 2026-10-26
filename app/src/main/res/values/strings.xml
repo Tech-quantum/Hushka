@@ -384,4 +384,14 @@
     <string name="fab_reset_desc">اگر چرخ‌دنده را جابه‌جا کرده‌اید، با این دکمه به گوشه‌ی راست-پایین برمی‌گردد.</string>
     <string name="fab_reset_button">بازنشانی موقعیت</string>
     <string name="fab_reset_done">موقعیت دکمه بازنشانی شد</string>
+    <string name="lock_title">هوشکا قفل است</string>
+    <string name="lock_subtitle">برای ادامه، اثر انگشت یا قفل دستگاه را تأیید کنید.</string>
+    <string name="lock_button">باز کردن قفل</string>
+    <string name="lock_error">تأیید نشد؛ دوباره تلاش کنید.</string>
+    <string name="lock_cancel">انصراف</string>
+    <string name="lock_settings_title">قفل بیومتریک</string>
+    <string name="lock_settings_desc">هر بار باز کردن اپ اثر انگشت می‌خواهد؛ بعد از ۳۰ ثانیه پس‌زمینه هم دوباره قفل می‌شود.</string>
+    <string name="lock_unavailable">این دستگاه از قفل بیومتریک پشتیبانی نمی‌کند.</string>
+    <string name="lock_enabled_toast">قفل بیومتریک فعال شد</string>
+    <string name="lock_failed_toast">تأیید نشد؛ قفل فعال نشد</string>
 </resources>

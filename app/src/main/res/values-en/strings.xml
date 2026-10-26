@@ -368,4 +368,14 @@
     <string name="fab_reset_desc">If you moved the gear button, this puts it back in the bottom-right corner.</string>
     <string name="fab_reset_button">Reset position</string>
     <string name="fab_reset_done">Button position reset</string>
+    <string name="lock_title">Hushka is locked</string>
+    <string name="lock_subtitle">Confirm your fingerprint or device lock to continue.</string>
+    <string name="lock_button">Unlock</string>
+    <string name="lock_error">Not verified. Try again.</string>
+    <string name="lock_cancel">Cancel</string>
+    <string name="lock_settings_title">Biometric lock</string>
+    <string name="lock_settings_desc">Asks for your fingerprint each time the app opens, and again after 30 seconds in the background.</string>
+    <string name="lock_unavailable">This device does not support biometric lock.</string>
+    <string name="lock_enabled_toast">Biometric lock enabled</string>
+    <string name="lock_failed_toast">Not verified. Lock was not enabled.</string>
 </resources>
