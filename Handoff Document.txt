@@ -65,7 +65,8 @@
 
 ## 📦 انتشار APK برای تست (CI)
 - ورک‌فلو `.github/workflows/build-apk.yml` علاوه بر artifact، برای هر push روی `main` یک Release عمومی با تگ `test-latest` می‌سازد.
-- محتوای Release: `app-debug.apk` (کامل)، `app-debug.apk.sha256`، `apk-parts.sha256` و تکه‌های ~۴۸ مگابایتی `apk.part-00…`.
+- محتوای Release: `app-debug.apk` (کامل، ~۲۷۴MB)، `app-debug-lite.apk` (بدون مدل صوتی، ~۴۰MB)، `app-debug.apk.sha256`، `app-debug-lite.apk.sha256`، `apk-parts.sha256` و تکه‌های ~۴۸ مگابایتی `apk.part-00…`.
+- نسخه‌ی سبک برای تست UI و شبکه‌ی ضعیف است؛ **جست‌وجوی آفلاین در آن کار نمی‌کند** (مدل‌ها قبل از بیلد دوم حذف می‌شوند و `VoskOfflineEngine` خطای شفاف می‌دهد، بدون کرش).
 - دانلود کامل و قابل ادامه:
   `curl -L -C - -o app-debug.apk https://github.com/Tech-quantum/Hushka/releases/download/test-latest/app-debug.apk`
 - دانلود تکه‌تکه (شبکه‌ی ناپایدار): هر تکه جدا دانلود می‌شود، سپس `cat apk.part-* > app-debug.apk` و تأیید با `sha256sum -c apk-parts.sha256`.
