@@ -390,9 +390,13 @@ private fun AppearanceTab(
     val isLegacyAndroid = Build.VERSION.SDK_INT < Build.VERSION_CODES.R
     val noBiometricEnrolled = remember(biometricAvailable, isLegacyAndroid) {
         if (!isLegacyAndroid) false
-        else {
+        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val res = BiometricManager.from(lockContext)
                 .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK)
+            res == BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED
+        } else {
+            @Suppress("DEPRECATION")
+            val res = BiometricManager.from(lockContext).canAuthenticate()
             res == BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED
         }
     }
