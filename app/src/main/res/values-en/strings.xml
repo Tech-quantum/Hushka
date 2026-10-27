@@ -378,5 +378,5 @@
     <string name="lock_unavailable">This device does not support biometric lock.</string>
     <string name="lock_enabled_toast">Biometric lock enabled</string>
     <string name="lock_failed_toast">Not verified. Lock was not enabled.</string>
-    <string name="lock_legacy_warning">On Android 9–10, there\'s no device PIN/pattern fallback. If you remove all enrolled fingerprints, you won't be able to unlock the app and will need to clear app data. Make sure you have at least one biometric enrolled before enabling this.</string>
+    <string name="lock_legacy_warning">On Android 9–10, there\'s no device PIN/pattern fallback. If you remove all enrolled fingerprints, you won\'t be able to unlock the app and will need to clear app data. Make sure you have at least one biometric enrolled before enabling this.</string>
 </resources>
