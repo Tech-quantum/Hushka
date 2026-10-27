@@ -1,6 +1,8 @@
 package com.techquantum.hushka
 
 import android.widget.Toast
+import android.os.Build
+import androidx.biometric.BiometricManager
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -384,39 +386,61 @@ private fun AppearanceTab(
     Spacer(Modifier.height(4.dp))
 
     // ===== قفل بیومتریک =====
+    val lockContext = LocalContext.current
+    val isLegacyAndroid = Build.VERSION.SDK_INT < Build.VERSION_CODES.R
+    val noBiometricEnrolled = remember(biometricAvailable, isLegacyAndroid) {
+        if (!isLegacyAndroid) false
+        else {
+            val res = BiometricManager.from(lockContext)
+                .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK)
+            res == BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED
+        }
+    }
+    val showLegacyWarning = isLegacyAndroid && (!biometricAvailable || biometricLockEnabled || noBiometricEnrolled)
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
         colors = CardDefaults.cardColors(containerColor = cardColor)
     ) {
-        Row(
-            modifier = Modifier.padding(14.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    "🔒  " + stringResource(R.string.lock_settings_title),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 13.sp,
-                    color = textColor
-                )
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    stringResource(
-                        if (biometricAvailable) R.string.lock_settings_desc
-                        else R.string.lock_unavailable
-                    ),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = textGrayColor,
-                    fontSize = 11.sp
+        Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        "🔒  " + stringResource(R.string.lock_settings_title),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 13.sp,
+                        color = textColor
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        stringResource(
+                            if (biometricAvailable) R.string.lock_settings_desc
+                            else R.string.lock_unavailable
+                        ),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = textGrayColor,
+                        fontSize = 11.sp
+                    )
+                }
+                Spacer(Modifier.width(10.dp))
+                Switch(
+                    checked = biometricLockEnabled,
+                    onCheckedChange = onBiometricLockChange,
+                    enabled = biometricAvailable || biometricLockEnabled
                 )
             }
-            Spacer(Modifier.width(10.dp))
-            Switch(
-                checked = biometricLockEnabled,
-                onCheckedChange = onBiometricLockChange,
-                enabled = biometricAvailable || biometricLockEnabled
-            )
+            if (showLegacyWarning) {
+                Text(
+                    stringResource(R.string.lock_legacy_warning),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error.copy(alpha = 0.9f),
+                    fontSize = 10.sp,
+                    lineHeight = 14.sp
+                )
+            }
         }
     }
 }

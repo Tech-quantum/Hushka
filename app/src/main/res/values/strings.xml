@@ -394,4 +394,5 @@
     <string name="lock_unavailable">این دستگاه از قفل بیومتریک پشتیبانی نمی‌کند.</string>
     <string name="lock_enabled_toast">قفل بیومتریک فعال شد</string>
     <string name="lock_failed_toast">تأیید نشد؛ قفل فعال نشد</string>
+    <string name="lock_legacy_warning">روی اندروید ۱۰ و پایین‌تر، در صورت حذف همهٔ اثرانگشت‌های ثبت‌شده، قفل دیگر باز نخواهد شد و تنها راه، پاک کردن داده‌های اپ است. پیش از فعال‌سازی مطمئن شوید اثرانگشت یا احراز هویت دستگاه شما فعال است.</string>
 </resources>

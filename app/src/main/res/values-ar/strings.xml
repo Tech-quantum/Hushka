@@ -378,4 +378,5 @@
     <string name="lock_unavailable">هذا الجهاز لا يدعم القفل البيومتري.</string>
     <string name="lock_enabled_toast">تم تفعيل القفل البيومتري</string>
     <string name="lock_failed_toast">لم يتم التحقق. لم يتم تفعيل القفل.</string>
+    <string name="lock_legacy_warning">على Android 10 وأقل، لا يوجد بديل برمز الجهاز أو النمط. إذا قمت بإزالة جميع البصمات المسجلة، فلن تتمكن من فتح القفل وسيتعين مسح بيانات التطبيق. تأكد من وجود بصمة مسجلة قبل التفعيل.</string>
 </resources>
