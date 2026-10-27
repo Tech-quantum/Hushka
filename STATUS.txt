@@ -61,5 +61,6 @@
 🔲 رمزنگاری کلیدهای API (EncryptedSharedPreferences یا exclude از backup)
 🔲 افزایش/حذف سقف ۵ ثانیه‌ای ضبط آنلاین
 🔲 تصریح استراتژی Room migration (نسخه ۸ بدون Migration مستند)
+🔲 بازبینی فیکس Biometric روی Android < Q (PR #48 در PR #50 revert شد — قفل اصلی PR #45 سالم است)
 
 ═══════════════════════════════════════════════════════════
