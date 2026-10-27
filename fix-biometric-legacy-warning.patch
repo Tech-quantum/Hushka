@@ -1,0 +1,159 @@
+From d94a33556dfcd96976a267c33e1bdfc8696dcaed Mon Sep 17 00:00:00 2001
+From: Hushka Dev <dev@hushka.local>
+Date: Tue, 27 Oct 2026 13:09:26 +0000
+Subject: [PATCH] fix(security): use legacy BiometricManager API on Android < Q
+
+---
+ .../com/techquantum/hushka/SettingsDialog.kt  | 75 +++++++++++++------
+ app/src/main/res/values-ar/strings.xml        |  1 +
+ app/src/main/res/values-en/strings.xml        |  1 +
+ app/src/main/res/values-tr/strings.xml        |  1 +
+ app/src/main/res/values/strings.xml           |  1 +
+ 5 files changed, 56 insertions(+), 23 deletions(-)
+
+diff --git a/app/src/main/java/com/techquantum/hushka/SettingsDialog.kt b/app/src/main/java/com/techquantum/hushka/SettingsDialog.kt
+index 4192792..9942927 100644
+--- a/app/src/main/java/com/techquantum/hushka/SettingsDialog.kt
++++ b/app/src/main/java/com/techquantum/hushka/SettingsDialog.kt
+@@ -1,6 +1,8 @@
+ package com.techquantum.hushka
+ 
+ import android.widget.Toast
++import android.os.Build
++import androidx.biometric.BiometricManager
+ import androidx.compose.foundation.border
+ import androidx.compose.foundation.layout.*
+ import androidx.compose.foundation.rememberScrollState
+@@ -384,39 +386,66 @@ private fun AppearanceTab(
+     Spacer(Modifier.height(4.dp))
+ 
+     // ===== قفل بیومتریک =====
++    val lockContext = LocalContext.current
++    val isLegacyAndroid = Build.VERSION.SDK_INT < Build.VERSION_CODES.R
++    val noBiometricEnrolled = remember(biometricAvailable, isLegacyAndroid) {
++        if (!isLegacyAndroid) false
++        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
++            val res = BiometricManager.from(lockContext)
++                .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK)
++            res == BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED
++        } else {
++            @Suppress("DEPRECATION")
++            val res = BiometricManager.from(lockContext).canAuthenticate()
++            @Suppress("DEPRECATION")
++            res == BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED
++        }
++    }
++    val showLegacyWarning = isLegacyAndroid && (!biometricAvailable || biometricLockEnabled || noBiometricEnrolled)
++
+     Card(
+         modifier = Modifier.fillMaxWidth(),
+         shape = RoundedCornerShape(14.dp),
+         colors = CardDefaults.cardColors(containerColor = cardColor)
+     ) {
+-        Row(
+-            modifier = Modifier.padding(14.dp),
+-            verticalAlignment = Alignment.CenterVertically
+-        ) {
+-            Column(modifier = Modifier.weight(1f)) {
+-                Text(
+-                    "🔒  " + stringResource(R.string.lock_settings_title),
+-                    fontWeight = FontWeight.Bold,
+-                    fontSize = 13.sp,
+-                    color = textColor
++        Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
++            Row(
++                verticalAlignment = Alignment.CenterVertically
++            ) {
++                Column(modifier = Modifier.weight(1f)) {
++                    Text(
++                        "🔒  " + stringResource(R.string.lock_settings_title),
++                        fontWeight = FontWeight.Bold,
++                        fontSize = 13.sp,
++                        color = textColor
++                    )
++                    Spacer(Modifier.height(4.dp))
++                    Text(
++                        stringResource(
++                            if (biometricAvailable) R.string.lock_settings_desc
++                            else R.string.lock_unavailable
++                        ),
++                        style = MaterialTheme.typography.bodySmall,
++                        color = textGrayColor,
++                        fontSize = 11.sp
++                    )
++                }
++                Spacer(Modifier.width(10.dp))
++                Switch(
++                    checked = biometricLockEnabled,
++                    onCheckedChange = onBiometricLockChange,
++                    enabled = biometricAvailable || biometricLockEnabled
+                 )
+-                Spacer(Modifier.height(4.dp))
++            }
++            if (showLegacyWarning) {
+                 Text(
+-                    stringResource(
+-                        if (biometricAvailable) R.string.lock_settings_desc
+-                        else R.string.lock_unavailable
+-                    ),
++                    stringResource(R.string.lock_legacy_warning),
+                     style = MaterialTheme.typography.bodySmall,
+-                    color = textGrayColor,
+-                    fontSize = 11.sp
++                    color = MaterialTheme.colorScheme.error.copy(alpha = 0.9f),
++                    fontSize = 10.sp,
++                    lineHeight = 14.sp
+                 )
+             }
+-            Spacer(Modifier.width(10.dp))
+-            Switch(
+-                checked = biometricLockEnabled,
+-                onCheckedChange = onBiometricLockChange,
+-                enabled = biometricAvailable || biometricLockEnabled
+-            )
+         }
+     }
+ }
+diff --git a/app/src/main/res/values-ar/strings.xml b/app/src/main/res/values-ar/strings.xml
+index 8b86911..74d5033 100644
+--- a/app/src/main/res/values-ar/strings.xml
++++ b/app/src/main/res/values-ar/strings.xml
+@@ -378,4 +378,5 @@
+     <string name="lock_unavailable">هذا الجهاز لا يدعم القفل البيومتري.</string>
+     <string name="lock_enabled_toast">تم تفعيل القفل البيومتري</string>
+     <string name="lock_failed_toast">لم يتم التحقق. لم يتم تفعيل القفل.</string>
++    <string name="lock_legacy_warning">على Android 10 وأقل، لا يوجد بديل برمز الجهاز أو النمط. إذا قمت بإزالة جميع البصمات المسجلة، فلن تتمكن من فتح القفل وسيتعين مسح بيانات التطبيق. تأكد من وجود بصمة مسجلة قبل التفعيل.</string>
+ </resources>
+diff --git a/app/src/main/res/values-en/strings.xml b/app/src/main/res/values-en/strings.xml
+index 9767ba1..1addf06 100644
+--- a/app/src/main/res/values-en/strings.xml
++++ b/app/src/main/res/values-en/strings.xml
+@@ -378,4 +378,5 @@
+     <string name="lock_unavailable">This device does not support biometric lock.</string>
+     <string name="lock_enabled_toast">Biometric lock enabled</string>
+     <string name="lock_failed_toast">Not verified. Lock was not enabled.</string>
++    <string name="lock_legacy_warning">On Android 9–10, there's no device PIN/pattern fallback. If you remove all enrolled fingerprints, you won't be able to unlock the app and will need to clear app data. Make sure you have at least one biometric enrolled before enabling this.</string>
+ </resources>
+diff --git a/app/src/main/res/values-tr/strings.xml b/app/src/main/res/values-tr/strings.xml
+index ff7e958..6e2c5b7 100644
+--- a/app/src/main/res/values-tr/strings.xml
++++ b/app/src/main/res/values-tr/strings.xml
+@@ -378,4 +378,5 @@
+     <string name="lock_unavailable">Bu cihaz biyometrik kilidi desteklemiyor.</string>
+     <string name="lock_enabled_toast">Biyometrik kilit etkinleştirildi</string>
+     <string name="lock_failed_toast">Doğrulanamadı. Kilit etkinleştirilmedi.</string>
++    <string name="lock_legacy_warning">Android 10 ve altı sürümlerde cihaz PIN/desen yedeği yoktur. Kayıtlı tüm parmak izlerini kaldırırsanız kilidi açamazsınız ve uygulama verilerini temizlemeniz gerekir. Etkinleştirmeden önce en az bir biyometrik kaydının olduğundan emin olun.</string>
+ </resources>
+diff --git a/app/src/main/res/values/strings.xml b/app/src/main/res/values/strings.xml
+index 16eec9d..fe77465 100644
+--- a/app/src/main/res/values/strings.xml
++++ b/app/src/main/res/values/strings.xml
+@@ -394,4 +394,5 @@
+     <string name="lock_unavailable">این دستگاه از قفل بیومتریک پشتیبانی نمی‌کند.</string>
+     <string name="lock_enabled_toast">قفل بیومتریک فعال شد</string>
+     <string name="lock_failed_toast">تأیید نشد؛ قفل فعال نشد</string>
++    <string name="lock_legacy_warning">روی اندروید ۱۰ و پایین‌تر، در صورت حذف همهٔ اثرانگشت‌های ثبت‌شده، قفل دیگر باز نخواهد شد و تنها راه، پاک کردن داده‌های اپ است. پیش از فعال‌سازی مطمئن شوید اثرانگشت یا احراز هویت دستگاه شما فعال است.</string>
+ </resources>
+-- 
+2.43.0
+
