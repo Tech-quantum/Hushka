@@ -14,6 +14,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -50,6 +51,11 @@ fun ChatScreen(
     }
     val viewModel: ChatViewModel = viewModel(factory = factory)
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val ttsHelper = remember { TtsHelper(context) }
+    
+    DisposableEffect(Unit) {
+        onDispose { ttsHelper.shutdown() }
+    }
     val listState = rememberLazyListState()
 
     LaunchedEffect(uiState.messages.size, uiState.isLoading) {
@@ -142,7 +148,8 @@ fun ChatScreen(
                         ChatBubble(
                             message = message,
                             isRtl = isRtl,
-                            onCopy = { clipboard.setText(AnnotatedString(message.content)) }
+                            onCopy = { clipboard.setText(AnnotatedString(message.content)) },
+                            onSpeak = { ttsHelper.speak(message.content, AppSettings.getLanguage(context)) }
                         )
                     }
                     if (uiState.isLoading) {
@@ -202,7 +209,8 @@ fun ChatScreen(
 private fun ChatBubble(
     message: ChatMessage,
     isRtl: Boolean,
-    onCopy: () -> Unit
+    onCopy: () -> Unit,
+    onSpeak: () -> Unit
 ) {
     val isUser = message.role == ChatRole.USER
     val isError = message.isError
@@ -255,8 +263,24 @@ private fun ChatBubble(
         }
 
         if (!isUser && !isError) {
-            TextButton(
-                onClick = onCopy,
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                TextButton(
+                    onClick = onSpeak,
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                ) {
+                    Icon(Icons.AutoMirrored.Filled.VolumeUp, null, modifier = Modifier.size(12.dp))
+                    Spacer(Modifier.width(4.dp))
+                    Text(if (isRtl) "پخش" else "Speak", fontSize = 10.sp)
+                }
+                TextButton(
+                    onClick = onCopy,
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                ) {
+                    Icon(Icons.Filled.ContentCopy, null, modifier = Modifier.size(12.dp))
+                    Spacer(Modifier.width(4.dp))
+                    Text(if (isRtl) "کپی" else "Copy", fontSize = 10.sp)
+                }
+            }
                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
             ) {
                 Icon(Icons.Filled.ContentCopy, null, modifier = Modifier.size(12.dp))
