@@ -1,4 +1,7 @@
 package com.techquantum.hushka
+import androidx.compose.foundation.layout.Row
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.remember
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -219,9 +222,6 @@ fun PromptFormDialog(
         }, // Close text lambda
         confirmButton = {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                TextButton(onClick = { ttsHelper.speak(text, AppSettings.getLanguage(context)) }) {
-                    Text("🔊", fontSize = 20.sp)
-                }
                 TextButton(onClick = onDismiss) {
                     Text(stringResource(R.string.close), color = textGrayColor)
                 }
@@ -234,10 +234,10 @@ fun PromptFormDialog(
                 ) {
                     Text(stringResource(R.string.save), color = purplePrimary, fontWeight = FontWeight.Bold)
                 }
+                TextButton(onClick = { ttsHelper.speak(text, AppSettings.getLanguage(context)) }) {
+                    Text("🔊", fontSize = 20.sp)
+                }
             }
-        },
-        dismissButton = null,
-            onDismiss = { showRolePicker = false }
-        )
-    }
+        }
+    )
 }
