@@ -21,12 +21,6 @@ fun PromptVariablesDialog(
     onConfirm: (String, String) -> Unit, // (finalText, action)
     onDismiss: () -> Unit
 ) {
-
-    val context = LocalContext.current
-    val ttsHelper = remember { TtsHelper(context) }
-    DisposableEffect(Unit) {
-        onDispose { ttsHelper.shutdown() }
-    }
     val text = prompt.text
     val allVars = PromptVariables.extract(text)
 

@@ -222,6 +222,9 @@ fun PromptFormDialog(
                 TextButton(onClick = { ttsHelper.speak(text, AppSettings.getLanguage(context)) }) {
                     Text("🔊", fontSize = 20.sp)
                 }
+                TextButton(onClick = onDismiss) {
+                    Text(stringResource(R.string.close), color = textGrayColor)
+                }
                 TextButton(
                     onClick = {
                         if (text.isNotBlank()) {
@@ -233,16 +236,7 @@ fun PromptFormDialog(
                 }
             }
         },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.cancel), color = textGrayColor)
-            }
-        }
-    ) // Close AlertDialog
-
-    if (showRolePicker) {
-        RolePickerDialog(
-            onRoleSelected = { roleId -> role = roleId },
+        dismissButton = null,
             onDismiss = { showRolePicker = false }
         )
     }
