@@ -72,6 +72,21 @@ fun PromptVariablesDialog(
             }
         },
         confirmButton = {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button(
+                    onClick = { onConfirm(buildFinalText(), "copy") },
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(if (isRtl) "کپی 📋" else "Copy 📋", fontWeight = FontWeight.Bold)
+                }
+                Button(
+                    onClick = { onConfirm(buildFinalText(), "chat") },
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(if (isRtl) "چت 💬" else "Chat 💬", fontWeight = FontWeight.Bold)
+                }
+            }
+        }nfirmButton = {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                 TextButton(onClick = { ttsHelper.speak(buildFinalText(), AppSettings.getLanguage(context)) }) {
                     Text("🔊", fontSize = 20.sp)

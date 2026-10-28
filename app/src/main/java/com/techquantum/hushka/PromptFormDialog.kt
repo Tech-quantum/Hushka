@@ -235,6 +235,24 @@ fun PromptFormDialog(
                     Text(stringResource(R.string.save), color = purplePrimary, fontWeight = FontWeight.Bold)
                 }
             }
+        }nfirmButton = {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                TextButton(onClick = { ttsHelper.speak(text, AppSettings.getLanguage(context)) }) {
+                    Text("🔊", fontSize = 20.sp)
+                }
+                TextButton(onClick = onDismiss) {
+                    Text(stringResource(R.string.close), color = textGrayColor)
+                }
+                TextButton(
+                    onClick = {
+                        if (text.isNotBlank()) {
+                            onSave(promptTitle, category, tags, text, collection, role)
+                        }
+                    }
+                ) {
+                    Text(stringResource(R.string.save), color = purplePrimary, fontWeight = FontWeight.Bold)
+                }
+            }
         },
         dismissButton = null,
             onDismiss = { showRolePicker = false }
