@@ -1,4 +1,7 @@
 package com.techquantum.hushka
+import androidx.compose.foundation.layout.Row
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.platform.LocalContext
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -24,6 +27,12 @@ fun PromptFormDialog(
     onDismiss: () -> Unit,
     onSave: (String, String, String, String, String, String) -> Unit
 ) {
+
+    val context = LocalContext.current
+    val ttsHelper = remember { TtsHelper(context) }
+    DisposableEffect(Unit) {
+        onDispose { ttsHelper.shutdown() }
+    }
     var promptTitle by rememberSaveable(initialPrompt?.id) { mutableStateOf(initialPrompt?.title.orEmpty()) }
     var category by rememberSaveable(initialPrompt?.id) { mutableStateOf(initialPrompt?.category.orEmpty()) }
     var role by rememberSaveable(initialPrompt?.id) { mutableStateOf(initialPrompt?.role.orEmpty()) }
