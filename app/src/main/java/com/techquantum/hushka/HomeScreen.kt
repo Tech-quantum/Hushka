@@ -67,8 +67,18 @@ fun HomeScreen(
     viewModel: PromptViewModel,
     onSettingsClick: () -> Unit = {},
     onStartVoiceSearch: () -> Unit = {},
-    fabResetToken: Int = 0
+    fabResetToken: Int = 0,
+    sharedText: String? = null,
+    onSharedTextConsumed: () -> Unit = {}
 ) {
+    // === 📤 اعمال متنِ دریافت‌شده از Share Sheet ===
+    LaunchedEffect(sharedText) {
+        if (!sharedText.isNullOrBlank()) {
+            viewModel.onQueryChanged(sharedText)
+            onSharedTextConsumed()
+        }
+    }
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val webSearchResults by viewModel.webSearchResults.collectAsStateWithLifecycle()
     val isSearchingWeb by viewModel.isSearchingWeb.collectAsStateWithLifecycle()

@@ -30,6 +30,9 @@ class MainActivity : AppCompatActivity() {
         PromptViewModelFactory((application as HushkaApplication).promptRepository)
     }
 
+    // === 📤 قابلیت Share Sheet (متغیر سطح کلاس) ===
+    private val sharedTextState = mutableStateOf<String?>(null)
+
     
 
     private val exportJsonLauncher = registerForActivityResult(
@@ -139,6 +142,9 @@ class MainActivity : AppCompatActivity() {
             AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(savedLanguage))
         }
 
+        // === 📤 بررسی اینکه آیا اپ از طریق Share باز شده است ===
+        handleIntent(intent)
+
         setContent {
             var showSettings by remember { mutableStateOf(false) }
             var themeMode by remember { mutableStateOf(AppSettings.getTheme(this@MainActivity)) }
@@ -156,6 +162,9 @@ class MainActivity : AppCompatActivity() {
             var lockError by remember { mutableStateOf(false) }
             var backgroundedAt by remember { mutableLongStateOf(0L) }
             val biometricAvailable = remember { BiometricGate.isAvailable(this@MainActivity) }
+
+            // === 📤 خواندن استیت متنِ Share شده ===
+            val sharedText by sharedTextState
 
             LaunchedEffect(Unit) {
                 // انیمیشن Splash حدود ۱.۳ ثانیه طول می‌کشد؛ ۱۴۰۰ms کمی فرصت نفس می‌دهد
@@ -232,7 +241,10 @@ class MainActivity : AppCompatActivity() {
                     viewModel = viewModel,
                     onSettingsClick = { showSettings = true },
                     onStartVoiceSearch = ::startVoiceSearch,
-                    fabResetToken = fabResetToken
+                    fabResetToken = fabResetToken,
+                    // === 📤 پاس دادن متن به صفحه اصلی ===
+                    sharedText = sharedText,
+                    onSharedTextConsumed = { sharedTextState.value = null }
                 )
 
                 if (showSettings) {
@@ -335,6 +347,23 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    // === 📤 توابع مربوط به Share Sheet ===
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: Intent?) {
+        if (intent?.action == Intent.ACTION_SEND && intent.type == "text/plain") {
+            val text = intent.getStringExtra(Intent.EXTRA_TEXT)
+            if (!text.isNullOrBlank()) {
+                sharedTextState.value = text
+            }
+        }
+    }
+    // ==========================================
 
     override fun onDestroy() {
         super.onDestroy()
