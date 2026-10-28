@@ -1,8 +1,5 @@
 package com.techquantum.hushka
 
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.DisposableEffect
-
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -38,11 +35,6 @@ fun TranslatedPromptDialog(
     onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
-
-    val ttsHelper = remember { TtsHelper(context) }
-    DisposableEffect(Unit) {
-        onDispose { ttsHelper.shutdown() }
-    }
     val cardColor = MaterialTheme.colorScheme.surface
     val cardLightColor = MaterialTheme.colorScheme.surfaceVariant
     val textColor = MaterialTheme.colorScheme.onSurface
@@ -179,11 +171,6 @@ fun TranslatedPromptDialog(
                         }
                     }) {
                         Text("📤 " + stringResource(R.string.card_share), color = Color(0xFF4CAF50), fontSize = 12.sp)
-                    }
-                    TextButton(onClick = {
-                        ttsHelper.speak(translatedText, AppSettings.getLanguage(context))
-                    }) {
-                        Text("🔊 پخش", color = Color(0xFF03A9F4), fontSize = 12.sp)
                     }
                 }
             } else if (error != null) {
