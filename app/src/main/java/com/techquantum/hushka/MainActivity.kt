@@ -10,6 +10,10 @@ import android.net.ConnectivityManager
 import android.speech.RecognizerIntent
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.draw.blur
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Box
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -238,15 +242,22 @@ class MainActivity : AppCompatActivity() {
                         }
                     )
                 } else {
-                HomeScreen(
-                    viewModel = viewModel,
-                    onSettingsClick = { showSettings = true },
-                    onStartVoiceSearch = ::startVoiceSearch,
-                    fabResetToken = fabResetToken,
-                    // === 📤 پاس دادن متن به صفحه اصلی ===
-                    sharedText = sharedText,
-                    onSharedTextConsumed = { sharedTextState.value = null }
-                )
+                // === 🎨 افکت بلور (Frosted Glass) وقتی تنظیمات باز است ===
+                Box(
+                    modifier = Modifier.fillMaxSize().then(
+                        if (showSettings) Modifier.blur(16.dp) else Modifier
+                    )
+                ) {
+                    HomeScreen(
+                        viewModel = viewModel,
+                        onSettingsClick = { showSettings = true },
+                        onStartVoiceSearch = ::startVoiceSearch,
+                        fabResetToken = fabResetToken,
+                        // === 📤 پاس دادن متن به صفحه اصلی ===
+                        sharedText = sharedText,
+                        onSharedTextConsumed = { sharedTextState.value = null }
+                    )
+                }
 
                 if (showSettings) {
                     SettingsDialog(
