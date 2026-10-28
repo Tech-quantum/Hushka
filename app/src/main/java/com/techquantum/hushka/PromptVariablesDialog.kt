@@ -1,5 +1,6 @@
-import androidx.compose.ui.platform.LocalContext
 package com.techquantum.hushka
+
+import androidx.compose.ui.platform.LocalContext
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
