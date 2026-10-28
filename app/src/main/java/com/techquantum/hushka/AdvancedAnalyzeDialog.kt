@@ -139,14 +139,12 @@ fun AdvancedAnalyzeDialog(
     onSaveAsNew: () -> Unit,
     onTestInSimulator: () -> Unit,
     onApplyRole: (String) -> Unit = {}
-
+) {
     val context = LocalContext.current
     val ttsHelper = remember { TtsHelper(context) }
     DisposableEffect(Unit) {
         onDispose { ttsHelper.shutdown() }
     }
-) {
-    val context = LocalContext.current
     val analysis = remember(prompt.text) { analyzePromptAdvanced(prompt.text) }
     // برای همه‌ی پرامپت‌هایی که نقش ندارند یک نقش پیشنهاد می‌شود
     val suggestion = remember(prompt.id, prompt.text) {
