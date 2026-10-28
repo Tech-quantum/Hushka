@@ -281,12 +281,6 @@ private fun ChatBubble(
                     Text(if (isRtl) "کپی" else "Copy", fontSize = 10.sp)
                 }
             }
-                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
-            ) {
-                Icon(Icons.Filled.ContentCopy, null, modifier = Modifier.size(12.dp))
-                Spacer(Modifier.width(4.dp))
-                Text(if (isRtl) "کپی" else "Copy", fontSize = 10.sp)
-            }
         }
     }
 }
