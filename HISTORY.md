@@ -1,5 +1,17 @@
 # 📱 پروژه Hushka — تاریخچه کامل تغییرات
 
+## 📤 قابلیت Share Sheet (دریافت متن از سایر اپ‌ها)
+
+### ۱. چه چیزی اضافه شد
+- کاربران حالا می‌توانند متنی را در هر اپلیکیشنی (مثل تلگرام یا مرورگر) انتخاب کرده و با زدن Share، «هوشکا» را انتخاب کنند. اپ باز می‌شود و متن مستقیماً در باکس تایپ چت قرار می‌گیرد.
+
+### ۲. نکات پیاده‌سازی
+- در `AndroidManifest.xml` یک `<intent-filter>` برای `ACTION_SEND` (نوع `text/plain`) به `MainActivity` اضافه شد.
+- در `MainActivity`، متغیر `sharedTextState` (از نوع `mutableStateOf`) برای عبور داده به UI تعریف شد و `handleIntent` هم در `onCreate` و هم در `onNewIntent` فراخوانی می‌شود.
+- در Compose، از `LaunchedEffect(sharedText)` برای قرار دادن متن در `chatInput` استفاده شد و پس از مصرف، state با کال‌بک `onSharedTextConsumed` پاک می‌شود.
+
+---
+
 ## 🐞 رفع باگ CI: خطای AAPT2 در values-en (آپاستروف‌ها)
 
 ### ۱. نشانه
