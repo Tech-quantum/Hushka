@@ -38,11 +38,11 @@ fun TranslatedPromptDialog(
     onDismiss: () -> Unit
 ) {
 
+    val context = LocalContext.current
     val ttsHelper = remember { TtsHelper(context) }
     DisposableEffect(Unit) {
         onDispose { ttsHelper.shutdown() }
     }
-    val context = LocalContext.current
     val cardColor = MaterialTheme.colorScheme.surface
     val cardLightColor = MaterialTheme.colorScheme.surfaceVariant
     val textColor = MaterialTheme.colorScheme.onSurface
