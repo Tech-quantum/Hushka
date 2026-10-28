@@ -1,3 +1,4 @@
+import androidx.compose.ui.platform.LocalContext
 package com.techquantum.hushka
 
 import androidx.compose.foundation.layout.*
@@ -19,6 +20,12 @@ fun PromptVariablesDialog(
     onConfirm: (String, String) -> Unit, // (finalText, action)
     onDismiss: () -> Unit
 ) {
+
+    val context = LocalContext.current
+    val ttsHelper = remember { TtsHelper(context) }
+    DisposableEffect(Unit) {
+        onDispose { ttsHelper.shutdown() }
+    }
     val text = prompt.text
     val allVars = PromptVariables.extract(text)
 
@@ -70,7 +77,10 @@ fun PromptVariablesDialog(
             }
         },
         confirmButton = {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                TextButton(onClick = { ttsHelper.speak(buildFinalText(), AppSettings.getLanguage(context)) }) {
+                    Text("🔊", fontSize = 20.sp)
+                }
                 Button(
                     onClick = { onConfirm(buildFinalText(), "copy") },
                     shape = RoundedCornerShape(12.dp)

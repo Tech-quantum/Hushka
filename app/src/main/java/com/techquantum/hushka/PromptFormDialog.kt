@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -24,6 +25,12 @@ fun PromptFormDialog(
     onDismiss: () -> Unit,
     onSave: (String, String, String, String, String, String) -> Unit
 ) {
+
+    val context = LocalContext.current
+    val ttsHelper = remember { TtsHelper(context) }
+    DisposableEffect(Unit) {
+        onDispose { ttsHelper.shutdown() }
+    }
     var promptTitle by rememberSaveable(initialPrompt?.id) { mutableStateOf(initialPrompt?.title.orEmpty()) }
     var category by rememberSaveable(initialPrompt?.id) { mutableStateOf(initialPrompt?.category.orEmpty()) }
     var role by rememberSaveable(initialPrompt?.id) { mutableStateOf(initialPrompt?.role.orEmpty()) }
@@ -211,14 +218,19 @@ fun PromptFormDialog(
             } // Close Column
         }, // Close text lambda
         confirmButton = {
-            TextButton(
-                onClick = {
-                    if (text.isNotBlank()) {
-                        onSave(promptTitle, category, tags, text, collection, role)
-                    }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                TextButton(onClick = { ttsHelper.speak(text, AppSettings.getLanguage(context)) }) {
+                    Text("🔊", fontSize = 20.sp)
                 }
-            ) {
-                Text(stringResource(R.string.save), color = purplePrimary, fontWeight = FontWeight.Bold)
+                TextButton(
+                    onClick = {
+                        if (text.isNotBlank()) {
+                            onSave(promptTitle, category, tags, text, collection, role)
+                        }
+                    }
+                ) {
+                    Text(stringResource(R.string.save), color = purplePrimary, fontWeight = FontWeight.Bold)
+                }
             }
         },
         dismissButton = {

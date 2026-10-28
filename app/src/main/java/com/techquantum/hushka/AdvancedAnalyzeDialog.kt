@@ -139,6 +139,12 @@ fun AdvancedAnalyzeDialog(
     onSaveAsNew: () -> Unit,
     onTestInSimulator: () -> Unit,
     onApplyRole: (String) -> Unit = {}
+
+    val context = LocalContext.current
+    val ttsHelper = remember { TtsHelper(context) }
+    DisposableEffect(Unit) {
+        onDispose { ttsHelper.shutdown() }
+    }
 ) {
     val context = LocalContext.current
     val analysis = remember(prompt.text) { analyzePromptAdvanced(prompt.text) }
@@ -410,6 +416,12 @@ fun AdvancedAnalyzeDialog(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        TextButton(
+                            onClick = { ttsHelper.speak(prompt.text, AppSettings.getLanguage(context)) },
+                            contentPadding = PaddingValues(horizontal = 4.dp, vertical = 4.dp)
+                        ) {
+                            Text("🔊", fontSize = 20.sp)
+                        }
                         Button(
                             onClick = {
                                 onReplace()
