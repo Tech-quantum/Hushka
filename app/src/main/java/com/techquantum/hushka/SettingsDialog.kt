@@ -56,7 +56,13 @@ fun SettingsDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor = MaterialTheme.colorScheme.surface,
+        modifier = Modifier.border(
+            width = 1.dp,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f),
+            shape = androidx.compose.foundation.shape.RoundedCornerShape(28.dp)
+        ),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(28.dp),
+        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.88f),
         title = {
             Row(
                 modifier = Modifier.fillMaxWidth(),
