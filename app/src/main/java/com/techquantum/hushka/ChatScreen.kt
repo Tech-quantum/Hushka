@@ -147,9 +147,9 @@ fun ChatScreen(
 
                 // === 📊 نوار انتخاب سریع مدل ===
                 ModelSelectorChips(
-                    selectedProvider = uiState.provider.name.lowercase(),
+                    selectedProvider = uiState.provider.id,
                     onProviderSelected = { 
-                        viewModel.onProviderSelected(it) 
+                        viewModel.updateProvider(AiProvider.fromId(it)) 
                     },
                     isRtl = isRtl,
                     onLocalLanguageSelected = { lang ->
