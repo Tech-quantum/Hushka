@@ -1,6 +1,6 @@
 package com.techquantum.hushka
-
 import androidx.compose.runtime.remember
+import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.DisposableEffect
 
 import android.content.ClipData
@@ -37,8 +37,8 @@ fun TranslatedPromptDialog(
     onRetry: () -> Unit,
     onDismiss: () -> Unit
 ) {
-    val context = LocalContext.current
 
+    val context = LocalContext.current
     val ttsHelper = remember { TtsHelper(context) }
     DisposableEffect(Unit) {
         onDispose { ttsHelper.shutdown() }
@@ -156,7 +156,10 @@ fun TranslatedPromptDialog(
         },
         confirmButton = {
             if (translatedText != null) {
-                Row {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    TextButton(onClick = { ttsHelper.speak(translatedText, AppSettings.getLanguage(context)) }) {
+                        Text("🔊", fontSize = 18.sp)
+                    }
                     TextButton(onClick = {
                         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         clipboard.setPrimaryClip(ClipData.newPlainText("Hushka Prompt", translatedText))
@@ -179,11 +182,6 @@ fun TranslatedPromptDialog(
                         }
                     }) {
                         Text("📤 " + stringResource(R.string.card_share), color = Color(0xFF4CAF50), fontSize = 12.sp)
-                    }
-                    TextButton(onClick = {
-                        ttsHelper.speak(translatedText, AppSettings.getLanguage(context))
-                    }) {
-                        Text("🔊 پخش", color = Color(0xFF03A9F4), fontSize = 12.sp)
                     }
                 }
             } else if (error != null) {
