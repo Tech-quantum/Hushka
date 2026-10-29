@@ -1,4 +1,6 @@
 package com.techquantum.hushka
+import androidx.compose.material3.TabRow
+import androidx.compose.material.icons.filled.CompareArrows
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -66,6 +68,7 @@ fun ChatScreen(
         onDispose { ttsHelper.shutdown() }
     }
     val listState = rememberLazyListState()
+    var selectedTabIndex by remember { mutableIntStateOf(0) }
 
     // === 🔄 همگام‌سازی مدل با تنظیمات (رفع باگ دیالوگ و چت) ===
     LaunchedEffect(Unit) {
@@ -119,6 +122,13 @@ fun ChatScreen(
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
                             )
                         }
+                        IconButton(onClick = { viewModel.toggleCompareMode() }) {
+                            Icon(
+                                Icons.Filled.CompareArrows, 
+                                contentDescription = "مقایسه",
+                                tint = if (uiState.isCompareMode) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                            )
+                        }
                         if (uiState.messages.isNotEmpty()) {
                             IconButton(onClick = { viewModel.regenerate() }) {
                                 Icon(Icons.Filled.Refresh, contentDescription = "تولید مجدد")
@@ -155,7 +165,17 @@ fun ChatScreen(
                 }
 
                 // === 📊 نوار انتخاب سریع مدل ===
-                ModelSelectorChips(
+                Mo
+
+                if (uiState.isCompareMode) {
+                    ModelSelectorChips(
+                        selectedProvider = uiState.secondaryProvider.id,
+                        onProviderSelected = {
+                            viewModel.updateSecondaryProvider(AiProvider.fromId(it))
+                        },
+                        isRtl = isRtl
+                    )
+                }delSelectorChips(
                     selectedProvider = uiState.provider.id,
                     onProviderSelected = { 
                         viewModel.updateProvider(AiProvider.fromId(it)) 
@@ -167,6 +187,31 @@ fun ChatScreen(
                     }
                 )
 
+                if (uiState.isCompareMode) {
+                    TabRow(
+                        selectedTabIndex = selectedTabIndex,
+                        containerColor = Color.Transparent,
+                        contentColor = MaterialTheme.colorScheme.primary
+                    ) {
+                        Tab(
+                            selected = selectedTabIndex == 0,
+                            onClick = { selectedTabIndex = 0 },
+                            text = { Text(uiState.provider.displayName, fontSize = 12.sp) }
+                        )
+                        Tab(
+                            selected = selectedTabIndex == 1,
+                            onClick = { selectedTabIndex = 1 },
+                            text = { Text(uiState.secondaryProvider.displayName, fontSize = 12.sp) }
+                        )
+                    }
+                }
+
+                val messagesToDisplay = if (uiState.isCompareMode && selectedTabIndex == 1) {
+                    uiState.secondaryMessages
+                } else {
+                    uiState.messages
+                }
+
                 LazyColumn(
                     state = listState,
                     modifier = Modifier
@@ -175,7 +220,7 @@ fun ChatScreen(
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    items(items = uiState.messages, key = { it.id }) { message ->
+                    items(items = messagesToDisplay, key = { it.id }) { message ->
                         ChatBubble(
                             message = message,
                             isRtl = isRtl,
