@@ -153,6 +153,7 @@ class MainActivity : AppCompatActivity() {
         setContent {
             var showSettings by remember { mutableStateOf(false) }
             var themeMode by remember { mutableStateOf(AppSettings.getTheme(this@MainActivity)) }
+            var fontScale by remember { mutableStateOf(AppSettings.getFontScale(this@MainActivity)) }
             var language by remember { mutableStateOf(savedLanguage) }
             var colorTheme by remember { mutableStateOf(AppSettings.getColorTheme(this@MainActivity)) }
             var backPressedTime by remember { mutableLongStateOf(0L) }
@@ -227,7 +228,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            HushkaTheme(themeMode = themeMode, colorTheme = colorTheme) {
+            HushkaTheme(themeMode = themeMode, colorTheme = colorTheme, fontScale = fontScale) {
                 if (showSplash) {
                     SplashScreen()
                 } else if (locked) {
@@ -263,6 +264,8 @@ class MainActivity : AppCompatActivity() {
                     SettingsDialog(
                         themeMode = themeMode,
                         colorTheme = colorTheme,
+                        fontScale = fontScale,
+                        onFontScaleChange = { newScale -> fontScale = newScale; AppSettings.setFontScale(this@MainActivity, newScale) },
                         language = language,
                         onThemeChange = { newMode ->
                             themeMode = newMode
