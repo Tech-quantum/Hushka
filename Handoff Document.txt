@@ -37,6 +37,7 @@
    - شعله‌ی **متحرک** با ضربان، لرزش و هاله‌ی درخشان (`AnimatedStreakBadge`).
 7. **UI/UX مدرن**: Splash Screen، انیمیشن‌ها، Swipe-to-Delete، تم AMOLED (مشکی مطلق)، ۴ زبان زنده دنیا.
    - **افکت مات (Frosted Glass Blur)**: پس‌زمینه هنگام باز شدن تنظیمات مات می‌شود.
+   - **نوارهای شیشه‌ای**: TopBar و BottomBar با `Modifier.background(alpha)` و `Modifier.border` نیمه‌شفاف شدند.
 8. **آمار پیشرفته**: نمودارهای دایره‌ای و ستونی با Compose Canvas.
 9. **ترجمه خودکار عنوان‌ها**: با API MyMemory.
 
