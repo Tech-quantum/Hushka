@@ -60,7 +60,7 @@ fun HomeBottomBar(
     val active = MaterialTheme.colorScheme.primary
     val idle = MaterialTheme.colorScheme.onSurfaceVariant
 
-    Surface(color = MaterialTheme.colorScheme.surface, tonalElevation = 3.dp) {
+    Surface(color = Color.Transparent, tonalElevation = 3.dp) {
         Column(Modifier.navigationBarsPadding()) {
             HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
             Row(
