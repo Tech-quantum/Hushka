@@ -53,14 +53,19 @@ class ChatViewModel(
     fun sendMessage() {
         val text = _uiState.value.inputText.trim()
         if (text.isBlank() || _uiState.value.isLoading) return
+        
+        val userMsg = ChatMessage(role = ChatRole.USER, content = text)
+        
         _uiState.value = _uiState.value.copy(
-            messages = _uiState.value.messages + ChatMessage(
-                role = ChatRole.USER, content = text
-            ),
+            messages = _uiState.value.messages + userMsg,
+            secondaryMessages = if (_uiState.value.isCompareMode) _uiState.value.secondaryMessages + userMsg else _uiState.value.secondaryMessages,
             inputText = "",
             error = null
         )
         sendToAi()
+        if (_uiState.value.isCompareMode) {
+            sendToSecondaryAi()
+        }
     }
 
     private fun sendToAi() {
@@ -137,5 +142,45 @@ class ChatViewModel(
             provider = provider, model = provider.defaultModel,
             hasApiKey = AppSettings.getAiApiKey(context).isNotBlank()
         )
+    }
+
+    fun toggleCompareMode() {
+        _uiState.value = _uiState.value.copy(isCompareMode = !_uiState.value.isCompareMode)
+    }
+
+    fun updateSecondaryProvider(provider: AiProvider) {
+        _uiState.value = _uiState.value.copy(
+            secondaryProvider = provider,
+            secondaryModel = provider.defaultModel
+        )
+    }
+
+    private fun sendToSecondaryAi() {
+        viewModelScope.launch {
+            val apiKey = AppSettings.getAiApiKey(context)
+            if (apiKey.isBlank()) return@launch
+
+            val provider = _uiState.value.secondaryProvider
+            val model = _uiState.value.secondaryModel.ifBlank { provider.defaultModel }
+            val assistantMsg = ChatMessage(role = ChatRole.ASSISTANT, content = "")
+            val currentMessages = _uiState.value.secondaryMessages + assistantMsg
+            _uiState.value = _uiState.value.copy(secondaryMessages = currentMessages)
+
+            try {
+                AiService.streamMessage(
+                    provider = provider, apiKey = apiKey,
+                    model = model, messages = _uiState.value.secondaryMessages.dropLast(1)
+                ).collect { chunk ->
+                    val msgs = _uiState.value.secondaryMessages.toMutableList()
+                    if (msgs.isNotEmpty()) {
+                        val lastMsg = msgs.last()
+                        msgs[msgs.size - 1] = lastMsg.copy(content = lastMsg.content + chunk)
+                        _uiState.value = _uiState.value.copy(secondaryMessages = msgs)
+                    }
+                }
+            } catch (e: Exception) {
+                // مدیریت خطا (اختیاری)
+            }
+        }
     }
 }

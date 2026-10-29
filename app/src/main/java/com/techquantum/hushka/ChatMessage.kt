@@ -30,5 +30,11 @@ data class ChatUiState(
     val error: String? = null,
     val provider: AiProvider = AiProvider.GEMINI,
     val model: String = "",
-    val hasApiKey: Boolean = false
+    val hasApiKey: Boolean = false,
+    
+    // === ⚖️ حالت مقایسه ===
+    val isCompareMode: Boolean = false,
+    val secondaryProvider: AiProvider = AiProvider.OPENAI,
+    val secondaryModel: String = "",
+    val secondaryMessages: List<ChatMessage> = emptyList()
 )
