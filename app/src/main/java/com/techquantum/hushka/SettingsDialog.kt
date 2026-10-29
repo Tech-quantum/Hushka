@@ -32,9 +32,11 @@ import androidx.compose.ui.unit.sp
 fun SettingsDialog(
     themeMode: String,
     colorTheme: String,
+    fontScale: Float,
     language: String,
     onThemeChange: (String) -> Unit,
     onColorThemeChange: (String) -> Unit,
+    onFontScaleChange: (Float) -> Unit,
     onLanguageChange: (String) -> Unit,
     onExportJson: () -> Unit,
     onExportMarkdown: () -> Unit,
@@ -170,7 +172,8 @@ fun SettingsDialog(
                             themeMode, colorTheme, language,
                             onThemeChange, onColorThemeChange, onLanguageChange,
                             onManageColors, onResetFabPosition,
-                            biometricLockEnabled, biometricAvailable, onBiometricLockChange
+                            biometricLockEnabled, biometricAvailable, onBiometricLockChange,
+                            fontScale, onFontScaleChange
                         )
                         1 -> DataTab(
                             onExportJson, onExportMarkdown, onImportJson, onBrowseWeb,
