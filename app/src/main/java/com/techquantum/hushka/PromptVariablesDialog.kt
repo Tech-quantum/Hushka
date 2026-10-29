@@ -1,4 +1,13 @@
 package com.techquantum.hushka
+import android.widget.Toast
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.Icons
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -19,6 +28,8 @@ fun PromptVariablesDialog(
     onConfirm: (String, String) -> Unit, // (finalText, action)
     onDismiss: () -> Unit
 ) {
+    val context = LocalContext.current
+    var showModelMenu by remember { mutableStateOf(false) }
     val text = prompt.text
     val allVars = PromptVariables.extract(text)
 
@@ -37,13 +48,46 @@ fun PromptVariablesDialog(
         containerColor = MaterialTheme.colorScheme.surface,
         shape = RoundedCornerShape(24.dp),
         title = {
-            Text(
-                text = if (isRtl) "تکمیل متغیرهای پرامپت" else "Fill Prompt Variables",
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center
-            )
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = if (isRtl) "تکمیل متغیرهای پرامپت" else "Fill Prompt Variables",
+                    fontWeight = FontWeight.Bold
+                )
+                Box {
+                    IconButton(onClick = { showModelMenu = true }) {
+                        Icon(Icons.Default.Menu, contentDescription = "Select Model")
+                    }
+                    DropdownMenu(
+                        expanded = showModelMenu,
+                        onDismissRequest = { showModelMenu = false }
+                    ) {
+                        val providers = listOf(
+                            "gemini" to "Gemini 💎",
+                            "openai" to "OpenAI 🟢",
+                            "deepseek" to "DeepSeek 🟣",
+                            "groq" to "Groq ⚡",
+                            "anthropic" to "Anthropic 🟠",
+                            "mistral" to "Mistral 🌪",
+                            "xai" to "XAI 🚀",
+                            "local" to "بومی 🏠"
+                        )
+                        providers.forEach { (id, label) ->
+                            DropdownMenuItem(
+                                text = { Text(label) },
+                                onClick = {
+                                    AppSettings.setAiProvider(context, id)
+                                    showModelMenu = false
+                                    Toast.makeText(context, "مدل: $label", Toast.LENGTH_SHORT).show()
+                                }
+                            )
+                        }
+                    }
+                }
+            }
         },
         text = {
             Column(
