@@ -345,20 +345,29 @@ fun HomeScreen(
 
             // ===== Provider Chips =====
             item {
-                val providerKeys = listOf("all", "anthropic", "deepseek", "gemini", "openai")
+                val providerItems = listOf(
+                    Triple("all", stringResource(R.string.all_providers_short), "✨"),
+                    Triple("gemini", "Gemini", "💎"),
+                    Triple("openai", "OpenAI", "🟢"),
+                    Triple("deepseek", "DeepSeek", "🟣"),
+                    Triple("groq", "Groq", "⚡"),
+                    Triple("anthropic", "Anthropic", "🟠"),
+                    Triple("mistral", "Mistral", "🌪"),
+                    Triple("xai", "XAI", "🚀"),
+                    Triple("local", "بومی", "🏠")
+                )
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(horizontal = 4.dp)
                 ) {
-                    items(providerKeys) { key ->
+                    items(providerItems) { (key, label, emoji) ->
                         val value = if (key == "all") ALL_PROVIDER else key
-                        val label = if (key == "all") stringResource(R.string.all_providers_short) else key
                         val isSelected = uiState.selectedProvider == value
                         ModernChip(
                             label = label,
                             selected = isSelected,
                             onClick = { viewModel.onProviderSelected(value) },
-                            leadingEmoji = if (key == "all") "✨" else null
+                            leadingEmoji = emoji
                         )
                     }
                     // ===== چیپ بومی (فیلتر زبان) =====
