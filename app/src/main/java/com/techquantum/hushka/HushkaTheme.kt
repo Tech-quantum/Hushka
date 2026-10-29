@@ -1,4 +1,7 @@
 package com.techquantum.hushka
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.platform.LocalDensity
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -47,8 +50,6 @@ fun HushkaTheme(
     fontScale: Float = 1.0f,
     content: @Composable () -> Unit
 ) {
-    val density = LocalDensity.current
-    CompositionLocalProvider(LocalDensity provides Density(density.density, fontScale)) {
     val systemDark = isSystemInDarkTheme()
     val darkTheme = when (themeMode) {
         "dark" -> true
@@ -100,4 +101,5 @@ fun HushkaTheme(
         },
         content = content
     )
+    } // close CompositionLocalProvider
 }
