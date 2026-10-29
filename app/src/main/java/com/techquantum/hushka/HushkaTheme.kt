@@ -1,7 +1,4 @@
 package com.techquantum.hushka
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.platform.LocalDensity
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -47,7 +44,6 @@ private fun accentFor(colorTheme: String): Accent = when (colorTheme) {
 fun HushkaTheme(
     themeMode: String,
     colorTheme: String = "purple",
-    fontScale: Float = 1.0f,
     content: @Composable () -> Unit
 ) {
     val systemDark = isSystemInDarkTheme()
@@ -101,5 +97,4 @@ fun HushkaTheme(
         },
         content = content
     )
-    } // close CompositionLocalProvider
 }

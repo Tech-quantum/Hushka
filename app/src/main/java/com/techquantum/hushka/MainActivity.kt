@@ -1,4 +1,7 @@
 package com.techquantum.hushka
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.runtime.CompositionLocalProvider
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -228,7 +231,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            HushkaTheme(themeMode = themeMode, colorTheme = colorTheme, fontScale = fontScale) {
+    CompositionLocalProvider(LocalDensity provides Density(LocalDensity.current.density, fontScale)) {
+            HushkaTheme(themeMode = themeMode, colorTheme = colorTheme) {
                 if (showSplash) {
                     SplashScreen()
                 } else if (locked) {
@@ -360,6 +364,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 }  // close else (showSplash)
             }
+    } // close CompositionLocalProvider
         }
     }
 
