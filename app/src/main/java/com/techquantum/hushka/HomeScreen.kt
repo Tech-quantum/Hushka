@@ -1,4 +1,5 @@
 package com.techquantum.hushka
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.foundation.border
 
 import android.content.Intent
@@ -312,8 +313,8 @@ fun HomeScreen(
                 .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp),
             contentPadding = PaddingValues(
-                top = with(density) { topBarHeightPx.toDp() } + 8.dp,
-                bottom = with(density) { bottomBarHeightPx.toDp() } + 16.dp
+                top = (topBarHeightPx / density.density).dp + 8.dp,
+                bottom = (bottomBarHeightPx / density.density).dp + 16.dp
             )
         ) {
             // ===== Search Bar =====
