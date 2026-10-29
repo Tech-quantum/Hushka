@@ -1,4 +1,5 @@
 package com.techquantum.hushka
+import androidx.compose.foundation.border
 
 import android.content.Intent
 import android.content.ClipData
@@ -185,7 +186,6 @@ fun HomeScreen(
     val purplePrimary = MaterialTheme.colorScheme.primary
 
     val listState = rememberLazyListState()
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val scope = rememberCoroutineScope()
     val isScrolledDown by remember {
         derivedStateOf { listState.canScrollBackward }
@@ -202,29 +202,26 @@ fun HomeScreen(
 
     Box(modifier = Modifier.fillMaxSize().onSizeChanged { containerSize = it }) {
     Scaffold(
-            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-            containerColor = bgColor,
-topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            "Hushka",
-                            fontSize = 26.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = textColor
-                        )
-                        Spacer(Modifier.height(2.dp))
-                        Text(
-                            stringResource(R.string.app_subtitle),
-                            fontSize = 11.sp,
-                            color = textGrayColor,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                },
-                navigationIcon = {
+            containerColor = Color.Transparent,
+        containerColor = bgColor,
+        topBar = {
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                Row(
+                    // ارتفاع کل هدر (به‌همراه پدینگ نوار وضعیت) اندازه‌گیری می‌شود
+                    // تا FAB تنظیمات هرگز روی لوگو/عنوان/جستجو نیفتد.
+                    // onSizeChanged باید اولین modifier باشد تا پدینگ‌های بعدی را هم بشمارد.
+                    modifier = Modifier
+                        .onSizeChanged { topBarHeightPx = it.height.toFloat() }
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
+                        .border(0.5.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+                        .statusBarsPadding()
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // 💎 لوگو — همیشه چپ (مستقل از زبان)
+                    // نگه‌داشتن انگشت روی لوگو = راه پشتیبان باز کردن تنظیمات
+                    // (اگر FAB روزی در دسترس نباشد، دسترسی به تنظیمات قطع نمی‌شود)
                     val headerHaptic = LocalHapticFeedback.current
                     Box(
                         modifier = Modifier
@@ -241,25 +238,50 @@ topBar = {
                     ) {
                         HushkaLogo(size = 40.dp)
                     }
-                },
-                actions = {
+
+                    Spacer(Modifier.width(8.dp))
+
+                    // عنوان + زیرنویس — وسط‌چین
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            "Hushka",
+                            fontSize = 26.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = textColor,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(Modifier.height(2.dp))
+                        Text(
+                            stringResource(R.string.app_subtitle),
+                            fontSize = 11.sp,
+                            color = textGrayColor,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                    // 🔥 استریک — سمت راست، دقیقاً روبروی لوگو و هم‌اندازه‌ی آن
                     Box(
                         modifier = Modifier.width(48.dp),
                         contentAlignment = Alignment.Center
                     ) {
                         AnimatedStreakBadge(streak = currentStreak)
                     }
-                },
-                scrollBehavior = scrollBehavior,
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background
-                )
-            )
-        }
+                }
+            }
         },
         bottomBar = {
             // ارتفاع نوار پایین برای محدودکردن FAB تنظیمات اندازه‌گیری می‌شود
-            Box(Modifier.onSizeChanged { bottomBarHeightPx = it.height.toFloat() }) {
+            Box(
+                Modifier
+                    .onSizeChanged { bottomBarHeightPx = it.height.toFloat() }
+                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
+                    .border(0.5.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+            ) {
                 HomeBottomBar(
                     categoriesActive = uiState.selectedCategory != ALL_CATEGORY,
                     favoritesActive = uiState.favoritesOnly,
