@@ -429,7 +429,7 @@ fun ModelSelectorChips(
     onLocalLanguageSelected: (String) -> Unit = {}
 ) {
     val context = LocalContext.current
-    val providers = listOf(
+        val providers = listOf(
         "gemini" to "Gemini 💎",
         "openai" to "OpenAI 🟢",
         "deepseek" to "DeepSeek 🟣",
