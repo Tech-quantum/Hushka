@@ -374,6 +374,7 @@ fun ModelSelectorChips(
     isRtl: Boolean,
     onLocalLanguageSelected: (String) -> Unit = {}
 ) {
+    val context = LocalContext.current
     val providers = listOf(
         "gemini" to "Gemini 💎",
         "openai" to "OpenAI 🟢",
@@ -410,7 +411,12 @@ fun ModelSelectorChips(
                         if (id == "local") {
                             showLocalLangMenu = true
                         }
-                        onProviderSelected(id)
+                        val unsupported = listOf("anthropic", "mistral", "xai")
+                        if (id in unsupported) {
+                            Toast.makeText(context, "این مدل به‌زودی پیاده‌سازی می‌شود", Toast.LENGTH_SHORT).show()
+                        } else {
+                            onProviderSelected(id)
+                        }
                     },
                     label = {
                         Text(
