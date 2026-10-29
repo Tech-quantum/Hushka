@@ -1,4 +1,5 @@
 package com.techquantum.hushka
+import androidx.compose.foundation.border
 
 import android.content.Intent
 import android.content.ClipData
@@ -201,7 +202,7 @@ fun HomeScreen(
 
     Box(modifier = Modifier.fillMaxSize().onSizeChanged { containerSize = it }) {
     Scaffold(
-        containerColor = bgColor,
+            containerColor = Color.Transparent,
         topBar = {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                 Row(
@@ -211,6 +212,8 @@ fun HomeScreen(
                     modifier = Modifier
                         .onSizeChanged { topBarHeightPx = it.height.toFloat() }
                         .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
+                        .border(0.5.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
                         .statusBarsPadding()
                         .padding(horizontal = 16.dp, vertical = 12.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -272,7 +275,12 @@ fun HomeScreen(
         },
         bottomBar = {
             // ارتفاع نوار پایین برای محدودکردن FAB تنظیمات اندازه‌گیری می‌شود
-            Box(Modifier.onSizeChanged { bottomBarHeightPx = it.height.toFloat() }) {
+            Box(
+                Modifier
+                    .onSizeChanged { bottomBarHeightPx = it.height.toFloat() }
+                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
+                    .border(0.5.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+            ) {
                 HomeBottomBar(
                     categoriesActive = uiState.selectedCategory != ALL_CATEGORY,
                     favoritesActive = uiState.favoritesOnly,
