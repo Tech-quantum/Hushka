@@ -203,7 +203,6 @@ fun HomeScreen(
     Box(modifier = Modifier.fillMaxSize().onSizeChanged { containerSize = it }) {
     Scaffold(
             containerColor = Color.Transparent,
-        containerColor = bgColor,
         topBar = {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                 Row(
