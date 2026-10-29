@@ -165,17 +165,7 @@ fun ChatScreen(
                 }
 
                 // === 📊 نوار انتخاب سریع مدل ===
-                Mo
-
-                if (uiState.isCompareMode) {
-                    ModelSelectorChips(
-                        selectedProvider = uiState.secondaryProvider.id,
-                        onProviderSelected = {
-                            viewModel.updateSecondaryProvider(AiProvider.fromId(it))
-                        },
-                        isRtl = isRtl
-                    )
-                }delSelectorChips(
+                ModelSelectorChips(
                     selectedProvider = uiState.provider.id,
                     onProviderSelected = { 
                         viewModel.updateProvider(AiProvider.fromId(it)) 
@@ -186,6 +176,16 @@ fun ChatScreen(
                         Toast.makeText(context, "زبان بومی: $lang", Toast.LENGTH_SHORT).show()
                     }
                 )
+
+                if (uiState.isCompareMode) {
+                    ModelSelectorChips(
+                        selectedProvider = uiState.secondaryProvider.id,
+                        onProviderSelected = {
+                            viewModel.updateSecondaryProvider(AiProvider.fromId(it))
+                        },
+                        isRtl = isRtl
+                    )
+                }
 
                 if (uiState.isCompareMode) {
                     TabRow(
