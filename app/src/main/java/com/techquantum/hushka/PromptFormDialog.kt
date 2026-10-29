@@ -1,7 +1,7 @@
 package com.techquantum.hushka
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.remember
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -220,27 +221,23 @@ fun PromptFormDialog(
             } // Close Column
         }, // Close text lambda
         confirmButton = {
-            TextButton(
-                onClick = {
-                    if (text.isNotBlank()) {
-                        onSave(promptTitle, category, tags, text, collection, role)
-                    }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                TextButton(onClick = onDismiss) {
+                    Text(stringResource(R.string.close), color = textGrayColor)
                 }
-            ) {
-                Text(stringResource(R.string.save), color = purplePrimary, fontWeight = FontWeight.Bold)
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.cancel), color = textGrayColor)
+                TextButton(
+                    onClick = {
+                        if (text.isNotBlank()) {
+                            onSave(promptTitle, category, tags, text, collection, role)
+                        }
+                    }
+                ) {
+                    Text(stringResource(R.string.save), color = purplePrimary, fontWeight = FontWeight.Bold)
+                }
+                TextButton(onClick = { ttsHelper.speak(text, AppSettings.getLanguage(context)) }) {
+                    Text("🔊", fontSize = 20.sp)
+                }
             }
         }
-    ) // Close AlertDialog
-
-    if (showRolePicker) {
-        RolePickerDialog(
-            onRoleSelected = { roleId -> role = roleId },
-            onDismiss = { showRolePicker = false }
-        )
-    }
+    )
 }
