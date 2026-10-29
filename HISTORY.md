@@ -1,5 +1,15 @@
 # 📱 پروژه Hushka — تاریخچه کامل تغییرات
 
+## 🔐 رمزنگاری کلیدهای API (EncryptedSharedPreferences)
+
+### ۱. چه چیزی تغییر کرد
+- کلیدهای AI و Speech دیگر در `DataStore` به صورت Plaintext ذخیره نمی‌شوند.
+- فایل جدید `SecureSettings.kt` ساخته شد که از `EncryptedSharedPreferences` (استاندارد AES-256) استفاده می‌کند.
+- **مهاجرت خودکار:** اگر کاربری کلید API خود را در نسخه‌های قبلی وارد کرده بود، اپ در اولین اجرا آن را به صورت خودکار از `DataStore` می‌خواند، در بخش امن ذخیره می‌کند و از `DataStore` پاک می‌کند (بدون نیاز به ورود مجدد).
+- وابستگی `androidx.security:security-crypto` به `build.gradle.kts` اضافه شد.
+
+---
+
 ## 🛡️ بازگرداندن فیکس Legacy Biometric (بستن Issue #54)
 
 ### ۱. چه چیزی تغییر کرد

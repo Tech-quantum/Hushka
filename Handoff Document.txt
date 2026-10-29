@@ -13,7 +13,7 @@
 - **minSdk 26 (Android 8.0) / targetSdk 34 (Android 14)** — نیاز به تأیید نهایی از `app/build.gradle.kts`
 - Room Database (نسخه ۸) — Migrationها باید در `HushkaDatabase.kt` مستند شوند
 - Retrofit, OkHttp (برای ارتباط با APIها)
-- DataStore (برای تنظیمات) — ⚠️ کلیدهای API فعلاً plaintext؛ کاندید رمزنگاری
+- DataStore (برای تنظیمات) — کلیدهای API حالا با `SecureSettings.kt` (EncryptedSharedPreferences) رمزنگاری می‌شوند.
 - Coil (برای نمایش تصاویر)
 - Vosk (برای تشخیص گفتار آفلاین) — مدل‌های ZIP با **Git-LFS** نگه‌داری می‌شوند
 
@@ -130,7 +130,6 @@
 - سقف ۵ ثانیه‌ای ضبط آنلاین برای جمله‌های طولانی کم است؛ افزایش یا حذف این سقف — کاندید بهبود بعدی.
 
 ### 🛡 امنیت
-- **کلیدهای API plaintext**: `ai_api_key` و `speech_api_key` بدون رمزنگاری در DataStore ذخیره می‌شوند و در `Auto Backup` اندروید ممکن است به ابر بروند. کاندید: EncryptedSharedPreferences یا exclude از `backup_rules.xml`.
 - **Room migration**: نسخه ۸ است ولی Migration صریحی مستند نشده؛ اگر `fallbackToDestructiveMigration` فعال باشد، آپدیت DB تاریخچه‌ی کاربر را پاک می‌کند — برای قابلیت «تاریخچه چت» در roadmap ریسک جدی است.
 
 ### 📱 سازگاری بیومتریک
