@@ -1,4 +1,13 @@
 package com.techquantum.hushka
+import android.widget.Toast
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.FilterChip
+import androidx.compose.foundation.lazy.LazyRow
 
 import android.app.Application
 import androidx.compose.animation.core.*
@@ -135,6 +144,19 @@ fun ChatScreen(
                         }
                     }
                 }
+
+                // === 📊 نوار انتخاب سریع مدل ===
+                ModelSelectorChips(
+                    selectedProvider = uiState.provider.name.lowercase(),
+                    onProviderSelected = { 
+                        viewModel.onProviderSelected(it) 
+                    },
+                    isRtl = isRtl,
+                    onLocalLanguageSelected = { lang ->
+                        AppSettings.setLanguage(context, lang)
+                        Toast.makeText(context, "زبان بومی: $lang", Toast.LENGTH_SHORT).show()
+                    }
+                )
 
                 LazyColumn(
                     state = listState,
@@ -341,5 +363,92 @@ class ChatViewModelFactory(
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return ChatViewModel(application, initialPrompt) as T
+    }
+}
+
+
+@Composable
+fun ModelSelectorChips(
+    selectedProvider: String,
+    onProviderSelected: (String) -> Unit,
+    isRtl: Boolean,
+    onLocalLanguageSelected: (String) -> Unit = {}
+) {
+    val providers = listOf(
+        "gemini" to "Gemini 💎",
+        "openai" to "OpenAI 🟢",
+        "deepseek" to "DeepSeek 🟣",
+        "groq" to "Groq ⚡",
+        "local" to "بومی 🏠",
+        "anthropic" to "Anthropic 🟠",
+        "mistral" to "Mistral 🌪",
+        "xai" to "XAI 🚀"
+    )
+
+    val localLanguages = listOf(
+        "fa" to "فارسی 🇮🇷",
+        "en" to "English 🇬🇧",
+        "ar" to "العربية 🇸🇦",
+        "tr" to "Türkçe 🇹🇷"
+    )
+
+    var showLocalLangMenu by remember { mutableStateOf(false) }
+
+    LazyRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(horizontal = 4.dp)
+    ) {
+        items(providers) { (id, label) ->
+            val isSelected = selectedProvider == id
+            Box {
+                FilterChip(
+                    selected = isSelected,
+                    onClick = {
+                        if (id == "local") {
+                            showLocalLangMenu = true
+                        }
+                        onProviderSelected(id)
+                    },
+                    label = {
+                        Text(
+                            text = label,
+                            fontSize = 12.sp,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                        )
+                    },
+                    trailingIcon = if (id == "local") {
+                        { Icon(Icons.Filled.ArrowDropDown, contentDescription = "Select Language") }
+                    } else if (isSelected) {
+                        { Icon(Icons.Filled.Check, contentDescription = "Selected", modifier = Modifier.size(16.dp)) }
+                    } else null,
+                    colors = FilterChipDefaults.filterChipColors(
+                        selectedContainerColor = MaterialTheme.colorScheme.primary,
+                        selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                        selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimary,
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+                    )
+                )
+                
+                if (id == "local") {
+                    DropdownMenu(
+                        expanded = showLocalLangMenu,
+                        onDismissRequest = { showLocalLangMenu = false }
+                    ) {
+                        localLanguages.forEach { (langId, langName) ->
+                            DropdownMenuItem(
+                                text = { Text(langName) },
+                                onClick = {
+                                    onLocalLanguageSelected(langId)
+                                    showLocalLangMenu = false
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 }
