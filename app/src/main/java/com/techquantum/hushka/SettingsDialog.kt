@@ -10,8 +10,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,11 +32,9 @@ import androidx.compose.ui.unit.sp
 fun SettingsDialog(
     themeMode: String,
     colorTheme: String,
-    fontScale: Float,
     language: String,
     onThemeChange: (String) -> Unit,
     onColorThemeChange: (String) -> Unit,
-    onFontScaleChange: (Float) -> Unit,
     onLanguageChange: (String) -> Unit,
     onExportJson: () -> Unit,
     onExportMarkdown: () -> Unit,
@@ -171,8 +167,8 @@ fun SettingsDialog(
                 ) {
                     when (selectedTab) {
                         0 -> AppearanceTab(
-                            themeMode, colorTheme, fontScale, language,
-                            onThemeChange, onColorThemeChange, onFontScaleChange, onLanguageChange,
+                            themeMode, colorTheme, language,
+                            onThemeChange, onColorThemeChange, onLanguageChange,
                             onManageColors, onResetFabPosition,
                             biometricLockEnabled, biometricAvailable, onBiometricLockChange
                         )
@@ -201,24 +197,24 @@ fun SettingsDialog(
 private fun AppearanceTab(
     themeMode: String,
     colorTheme: String,
-    fontScale: Float,
     language: String,
     onThemeChange: (String) -> Unit,
     onColorThemeChange: (String) -> Unit,
-    onFontScaleChange: (Float) -> Unit,
     onLanguageChange: (String) -> Unit,
     onManageColors: () -> Unit,
     onResetFabPosition: () -> Unit = {},
     biometricLockEnabled: Boolean = false,
     biometricAvailable: Boolean = false,
-    onBiometricLockChange: (Boolean) -> Unit = {}
+    onBiometricLockChange: (Boolean) -> Unit = {},
+    fontScale: Float,
+    onFontScaleChange: (Float) -> Unit
 ) {
     val cardColor = MaterialTheme.colorScheme.surfaceVariant
-    
+
     // --- اسلایدر حجم فونت ---
     Text(
         text = "حجم فونت: ${(fontScale * 100).toInt()}%",
-        color = textColor,
+        color = MaterialTheme.colorScheme.onSurface,
         fontSize = 14.sp,
         fontWeight = FontWeight.Bold,
         modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
@@ -233,7 +229,6 @@ private fun AppearanceTab(
             activeTrackColor = MaterialTheme.colorScheme.primary
         )
     )
-
     val textColor = MaterialTheme.colorScheme.onSurface
     val textGrayColor = MaterialTheme.colorScheme.onSurfaceVariant
     val purplePrimary = MaterialTheme.colorScheme.primary
