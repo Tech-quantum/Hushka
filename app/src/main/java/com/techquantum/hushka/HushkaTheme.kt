@@ -47,9 +47,8 @@ fun HushkaTheme(
     fontScale: Float = 1.0f,
     content: @Composable () -> Unit
 ) {
-    val currentDensity = LocalDensity.current
-    val customDensity = Density(currentDensity.density, fontScale)
-    CompositionLocalProvider(LocalDensity provides customDensity) {
+    val density = LocalDensity.current
+    CompositionLocalProvider(LocalDensity provides Density(density.density, fontScale)) {
     val systemDark = isSystemInDarkTheme()
     val darkTheme = when (themeMode) {
         "dark" -> true
@@ -101,6 +100,4 @@ fun HushkaTheme(
         },
         content = content
     )
-}
-}
 }
