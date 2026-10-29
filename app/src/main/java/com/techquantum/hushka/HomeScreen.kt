@@ -1,9 +1,4 @@
 package com.techquantum.hushka
-import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
-import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.foundation.border
@@ -192,7 +187,7 @@ fun HomeScreen(
     val borderColor = MaterialTheme.colorScheme.outline
     val purplePrimary = MaterialTheme.colorScheme.primary
 
-    val listState = rememberLazyStaggeredGridState()
+    val listState = rememberLazyListState()
     val density = LocalDensity.current
     val scope = rememberCoroutineScope()
     val isScrolledDown by remember {
@@ -312,21 +307,19 @@ fun HomeScreen(
             }
         }
     ) { padding ->
-        LazyVerticalStaggeredGrid(
-            columns = StaggeredGridCells.Fixed(2),
+        LazyColumn(
             state = listState,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            verticalItemSpacing = 14.dp,
+            verticalArrangement = Arrangement.spacedBy(14.dp),
             contentPadding = PaddingValues(
                 top = (topBarHeightPx / density.density).dp + 8.dp,
                 bottom = (bottomBarHeightPx / density.density).dp + 16.dp
             )
         ) {
             // ===== Search Bar =====
-            item(span = StaggeredGridItemSpan.FullLine) {
+            item {
                 OutlinedTextField(
                     value = uiState.query,
                     onValueChange = { viewModel.onQueryChanged(it) },
@@ -351,7 +344,7 @@ fun HomeScreen(
             }
 
             // ===== Provider Chips =====
-            item(span = StaggeredGridItemSpan.FullLine) {
+            item {
                 val providerKeys = listOf("all", "anthropic", "deepseek", "gemini", "openai")
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -427,7 +420,7 @@ fun HomeScreen(
             }
 
             // ===== Tab Chips =====
-            item(span = StaggeredGridItemSpan.FullLine) {
+            item {
                 val tabKeys = listOf("recent", "pinned", "favorites")
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -482,7 +475,7 @@ fun HomeScreen(
             }
 
             // ===== Sort Dropdown =====
-            item(span = StaggeredGridItemSpan.FullLine) {
+            item {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                     Box {
                         val sortLabel = when (uiState.sortMode) {
@@ -531,7 +524,7 @@ fun HomeScreen(
             }
 
             // ===== Section Header =====
-            item(span = StaggeredGridItemSpan.FullLine) {
+            item {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
