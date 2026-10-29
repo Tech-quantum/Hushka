@@ -186,6 +186,7 @@ fun HomeScreen(
     val purplePrimary = MaterialTheme.colorScheme.primary
 
     val listState = rememberLazyListState()
+    val density = LocalDensity.current
     val scope = rememberCoroutineScope()
     val isScrolledDown by remember {
         derivedStateOf { listState.canScrollBackward }
@@ -202,7 +203,7 @@ fun HomeScreen(
 
     Box(modifier = Modifier.fillMaxSize().onSizeChanged { containerSize = it }) {
     Scaffold(
-            containerColor = Color.Transparent,
+            containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                 Row(
@@ -212,7 +213,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .onSizeChanged { topBarHeightPx = it.height.toFloat() }
                         .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
+                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f))
                         .border(0.5.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
                         .statusBarsPadding()
                         .padding(horizontal = 16.dp, vertical = 12.dp),
@@ -278,7 +279,7 @@ fun HomeScreen(
             Box(
                 Modifier
                     .onSizeChanged { bottomBarHeightPx = it.height.toFloat() }
-                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))
+                    .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f))
                     .border(0.5.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
             ) {
                 HomeBottomBar(
@@ -307,10 +308,13 @@ fun HomeScreen(
             state = listState,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
+                // حذف پدینگ پیش‌فرض تا محتوا از زیر نوارها رد شود
                 .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp),
-            contentPadding = PaddingValues(bottom = 16.dp)
+            contentPadding = PaddingValues(
+                top = with(density) { topBarHeightPx.toDp() } + 8.dp,
+                bottom = with(density) { bottomBarHeightPx.toDp() } + 16.dp
+            )
         ) {
             // ===== Search Bar =====
             item {
