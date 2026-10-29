@@ -353,8 +353,7 @@ fun HomeScreen(
                     Triple("groq", "Groq", "⚡"),
                     Triple("anthropic", "Anthropic", "🟠"),
                     Triple("mistral", "Mistral", "🌪"),
-                    Triple("xai", "XAI", "🚀"),
-                    Triple("local", "بومی", "🏠")
+                    Triple("xai", "XAI", "🚀")
                 )
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
