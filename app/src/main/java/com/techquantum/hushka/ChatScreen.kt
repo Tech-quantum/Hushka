@@ -67,6 +67,15 @@ fun ChatScreen(
     }
     val listState = rememberLazyListState()
 
+    // === 🔄 همگام‌سازی مدل با تنظیمات (رفع باگ دیالوگ و چت) ===
+    LaunchedEffect(Unit) {
+        val savedProviderId = AppSettings.getAiProvider(context)
+        if (viewModel.uiState.value.provider.id != savedProviderId) {
+            viewModel.updateProvider(AiProvider.fromId(savedProviderId))
+        }
+    }
+
+
     LaunchedEffect(uiState.messages.size, uiState.isLoading) {
         if (uiState.messages.isNotEmpty()) {
             delay(60)
