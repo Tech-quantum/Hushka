@@ -1,4 +1,5 @@
 package com.techquantum.hushka
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.foundation.border
 
@@ -214,7 +215,8 @@ fun HomeScreen(
                     modifier = Modifier
                         .onSizeChanged { topBarHeightPx = it.height.toFloat() }
                         .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f))
+                        .shadow(4.dp)
+                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.92f))
                         .border(0.5.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
                         .statusBarsPadding()
                         .padding(horizontal = 16.dp, vertical = 12.dp),
@@ -280,7 +282,7 @@ fun HomeScreen(
             Box(
                 Modifier
                     .onSizeChanged { bottomBarHeightPx = it.height.toFloat() }
-                    .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f))
+                    .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.92f))
                     .border(0.5.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
             ) {
                 HomeBottomBar(
