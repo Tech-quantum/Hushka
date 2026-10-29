@@ -12,6 +12,7 @@ android { namespace = "com.techquantum.hushka"; compileSdk = 35
     composeOptions { kotlinCompilerExtensionVersion = "1.5.14" }
 }
 dependencies {
+    implementation("androidx.security:security-crypto:1.1.0-alpha06")
     implementation("com.alphacephei:vosk-android:0.3.47")
     implementation("net.java.dev.jna:jna:5.13.0@aar")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")

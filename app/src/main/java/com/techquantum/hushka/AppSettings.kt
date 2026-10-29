@@ -120,11 +120,25 @@ object AppSettings {
         prefs(context).edit().putString(AI_PROVIDER, value).apply()
     }
 
-    fun getAiApiKey(context: Context): String =
-        prefs(context).getString(AI_API_KEY, "") ?: ""
+    fun getAiApiKey(context: Context): String {
+        SecureSettings.init(context)
+        val encrypted = SecureSettings.getString(AI_API_KEY, "")
+        if (encrypted.isNotBlank()) return encrypted
+
+        // مهاجرت از DataStore به SecureSettings
+        val legacy = prefs(context).getString(AI_API_KEY, "") ?: ""
+        if (legacy.isNotBlank()) {
+            SecureSettings.putString(AI_API_KEY, legacy)
+            prefs(context).edit().remove(AI_API_KEY).apply()
+            return legacy
+        }
+        return ""
+    }
 
     fun setAiApiKey(context: Context, value: String) {
-        prefs(context).edit().putString(AI_API_KEY, value).apply()
+        SecureSettings.init(context)
+        SecureSettings.putString(AI_API_KEY, value)
+        prefs(context).edit().remove(AI_API_KEY).apply()
     }
 
     fun getAiModel(context: Context): String =
@@ -140,11 +154,24 @@ object AppSettings {
      * عمداً از `AI_API_KEY` جدا است، چون آن کلید وابسته به provider انتخابی
      * چت است و ممکن است برای سرویس گفتار کار نکند.
      */
-    fun getSpeechApiKey(context: Context): String =
-        prefs(context).getString(SPEECH_API_KEY, "") ?: ""
+    fun getSpeechApiKey(context: Context): String {
+        SecureSettings.init(context)
+        val encrypted = SecureSettings.getString(SPEECH_API_KEY, "")
+        if (encrypted.isNotBlank()) return encrypted
+
+        val legacy = prefs(context).getString(SPEECH_API_KEY, "") ?: ""
+        if (legacy.isNotBlank()) {
+            SecureSettings.putString(SPEECH_API_KEY, legacy)
+            prefs(context).edit().remove(SPEECH_API_KEY).apply()
+            return legacy
+        }
+        return ""
+    }
 
     fun setSpeechApiKey(context: Context, value: String) {
-        prefs(context).edit().putString(SPEECH_API_KEY, value).apply()
+        SecureSettings.init(context)
+        SecureSettings.putString(SPEECH_API_KEY, value)
+        prefs(context).edit().remove(SPEECH_API_KEY).apply()
     }
 
     // ==================== Floating Settings Button ====================
