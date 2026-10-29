@@ -326,7 +326,7 @@ fun HomeScreen(
             )
         ) {
             // ===== Search Bar =====
-            item(span = { StaggeredGridItemSpan.FullLine }) {
+            item(span = StaggeredGridItemSpan.FullLine) {
                 OutlinedTextField(
                     value = uiState.query,
                     onValueChange = { viewModel.onQueryChanged(it) },
@@ -351,7 +351,7 @@ fun HomeScreen(
             }
 
             // ===== Provider Chips =====
-            item(span = { StaggeredGridItemSpan.FullLine }) {
+            item(span = StaggeredGridItemSpan.FullLine) {
                 val providerKeys = listOf("all", "anthropic", "deepseek", "gemini", "openai")
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -427,7 +427,7 @@ fun HomeScreen(
             }
 
             // ===== Tab Chips =====
-            item(span = { StaggeredGridItemSpan.FullLine }) {
+            item(span = StaggeredGridItemSpan.FullLine) {
                 val tabKeys = listOf("recent", "pinned", "favorites")
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -482,7 +482,7 @@ fun HomeScreen(
             }
 
             // ===== Sort Dropdown =====
-            item(span = { StaggeredGridItemSpan.FullLine }) {
+            item(span = StaggeredGridItemSpan.FullLine) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                     Box {
                         val sortLabel = when (uiState.sortMode) {
@@ -531,7 +531,7 @@ fun HomeScreen(
             }
 
             // ===== Section Header =====
-            item(span = { StaggeredGridItemSpan.FullLine }) {
+            item(span = StaggeredGridItemSpan.FullLine) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
