@@ -214,7 +214,6 @@ private fun AppearanceTab(
     onBiometricLockChange: (Boolean) -> Unit = {}
 ) {
     val cardColor = MaterialTheme.colorScheme.surfaceVariant
-    val textColor = MaterialTheme.colorScheme.onSurface
     
     // --- اسلایدر حجم فونت ---
     Text(
