@@ -380,10 +380,10 @@ fun ModelSelectorChips(
         "openai" to "OpenAI 🟢",
         "deepseek" to "DeepSeek 🟣",
         "groq" to "Groq ⚡",
-        "local" to "بومی 🏠",
         "anthropic" to "Anthropic 🟠",
         "mistral" to "Mistral 🌪",
-        "xai" to "XAI 🚀"
+        "xai" to "XAI 🚀",
+        "local" to "بومی 🏠"
     )
 
     val localLanguages = listOf(
