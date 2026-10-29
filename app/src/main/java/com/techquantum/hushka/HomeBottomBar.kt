@@ -60,7 +60,8 @@ fun HomeBottomBar(
     val active = MaterialTheme.colorScheme.primary
     val idle = MaterialTheme.colorScheme.onSurfaceVariant
 
-    Surface(color = MaterialTheme.colorScheme.surface, tonalElevation = 3.dp) {
+    Surface(
+        color = Color.Transparent,color = MaterialTheme.colorScheme.surface, tonalElevation = 3.dp) {
         Column(Modifier.navigationBarsPadding()) {
             HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f))
             Row(
@@ -98,7 +99,7 @@ fun HomeBottomBar(
                         modifier = Modifier
                             .size(40.dp)
                             .clip(CircleShape)
-                            .background(active),
+                            .background(Color.Transparent),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
@@ -148,7 +149,7 @@ fun HomeBottomBar(
                                     .offset(x = 3.dp, y = (-1).dp)
                                     .size(9.dp)
                                     .clip(CircleShape)
-                                    .background(if (isOnline) Color(0xFF4CAF50) else Color(0xFFE57373))
+                                    .background(Color.Transparent) Color(0xFF4CAF50) else Color(0xFFE57373))
                             )
                         }
                     }
