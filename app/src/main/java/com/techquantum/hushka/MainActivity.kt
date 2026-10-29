@@ -1,4 +1,7 @@
 package com.techquantum.hushka
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.runtime.CompositionLocalProvider
 
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -153,6 +156,7 @@ class MainActivity : AppCompatActivity() {
         setContent {
             var showSettings by remember { mutableStateOf(false) }
             var themeMode by remember { mutableStateOf(AppSettings.getTheme(this@MainActivity)) }
+            var fontScale by remember { mutableStateOf(AppSettings.getFontScale(this@MainActivity)) }
             var language by remember { mutableStateOf(savedLanguage) }
             var colorTheme by remember { mutableStateOf(AppSettings.getColorTheme(this@MainActivity)) }
             var backPressedTime by remember { mutableLongStateOf(0L) }
@@ -227,6 +231,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+    CompositionLocalProvider(LocalDensity provides Density(LocalDensity.current.density, fontScale)) {
             HushkaTheme(themeMode = themeMode, colorTheme = colorTheme) {
                 if (showSplash) {
                     SplashScreen()
@@ -263,6 +268,8 @@ class MainActivity : AppCompatActivity() {
                     SettingsDialog(
                         themeMode = themeMode,
                         colorTheme = colorTheme,
+                        fontScale = fontScale,
+                        onFontScaleChange = { newScale -> fontScale = newScale; AppSettings.setFontScale(this@MainActivity, newScale) },
                         language = language,
                         onThemeChange = { newMode ->
                             themeMode = newMode
@@ -357,6 +364,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 }  // close else (showSplash)
             }
+    } // close CompositionLocalProvider
         }
     }
 

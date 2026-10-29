@@ -64,6 +64,13 @@ object AppSettings {
             .apply()
     }
 
+    fun getFontScale(context: Context): Float =
+        prefs(context).getFloat("FONT_SCALE", 1.0f)
+
+    fun setFontScale(context: Context, value: Float) {
+        prefs(context).edit().putFloat("FONT_SCALE", value).apply()
+    }
+
     fun getTheme(context: Context): String =
         prefs(context).getString(THEME, "system") ?: "system"
 

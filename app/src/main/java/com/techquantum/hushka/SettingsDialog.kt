@@ -32,9 +32,11 @@ import androidx.compose.ui.unit.sp
 fun SettingsDialog(
     themeMode: String,
     colorTheme: String,
+    fontScale: Float,
     language: String,
     onThemeChange: (String) -> Unit,
     onColorThemeChange: (String) -> Unit,
+    onFontScaleChange: (Float) -> Unit,
     onLanguageChange: (String) -> Unit,
     onExportJson: () -> Unit,
     onExportMarkdown: () -> Unit,
@@ -170,7 +172,8 @@ fun SettingsDialog(
                             themeMode, colorTheme, language,
                             onThemeChange, onColorThemeChange, onLanguageChange,
                             onManageColors, onResetFabPosition,
-                            biometricLockEnabled, biometricAvailable, onBiometricLockChange
+                            biometricLockEnabled, biometricAvailable, onBiometricLockChange,
+                            fontScale, onFontScaleChange
                         )
                         1 -> DataTab(
                             onExportJson, onExportMarkdown, onImportJson, onBrowseWeb,
@@ -205,9 +208,30 @@ private fun AppearanceTab(
     onResetFabPosition: () -> Unit = {},
     biometricLockEnabled: Boolean = false,
     biometricAvailable: Boolean = false,
-    onBiometricLockChange: (Boolean) -> Unit = {}
+    onBiometricLockChange: (Boolean) -> Unit = {},
+    fontScale: Float,
+    onFontScaleChange: (Float) -> Unit
 ) {
     val cardColor = MaterialTheme.colorScheme.surfaceVariant
+
+    // --- اسلایدر حجم فونت ---
+    Text(
+        text = "حجم فونت: ${(fontScale * 100).toInt()}%",
+        color = MaterialTheme.colorScheme.onSurface,
+        fontSize = 14.sp,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
+    )
+    Slider(
+        value = fontScale,
+        onValueChange = onFontScaleChange,
+        valueRange = 0.8f..1.5f,
+        steps = 6,
+        colors = SliderDefaults.colors(
+            thumbColor = MaterialTheme.colorScheme.primary,
+            activeTrackColor = MaterialTheme.colorScheme.primary
+        )
+    )
     val textColor = MaterialTheme.colorScheme.onSurface
     val textGrayColor = MaterialTheme.colorScheme.onSurfaceVariant
     val purplePrimary = MaterialTheme.colorScheme.primary
