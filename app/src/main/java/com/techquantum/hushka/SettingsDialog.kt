@@ -1,4 +1,7 @@
 package com.techquantum.hushka
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.foundation.layout.heightIn
 
 import android.widget.Toast
 import android.os.Build
@@ -643,8 +646,30 @@ private fun AboutTab(onShowHelp: () -> Unit = {}) {
 // 🤖 Tab 4: AI Settings
 // ═══════════════════════════════════════════════════════════
 @Composable
+private fun AiTab() {
+    val context = LocalContext.current
+    val textColor = MaterialTheme.colorScheme.onSurface
+    val grayColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val primary = MaterialTheme.colorScheme.primary
 
-    
+    var providerId by remember {
+        mutableStateOf(AppSettings.getAiProvider(context))
+    }
+    var apiKey by remember {
+        mutableStateOf(AppSettings.getAiApiKey(context))
+    }
+    var model by remember {
+        mutableStateOf(AppSettings.getAiModel(context))
+    }
+    var keyVisible by remember { mutableStateOf(false) }
+    var speechKey by remember {
+        mutableStateOf(AppSettings.getSpeechApiKey(context))
+    }
+    var speechKeyVisible by remember { mutableStateOf(false) }
+    var providerMenuOpen by remember { mutableStateOf(false) }
+    var systemPrompt by remember { mutableStateOf(AppSettings.getSystemPrompt(context)) }
+
+
     Spacer(modifier = Modifier.height(16.dp))
     Text(
         text = "پرسونا (دستور سیستمی)",
@@ -671,28 +696,7 @@ private fun AboutTab(onShowHelp: () -> Unit = {}) {
             unfocusedLabelColor = grayColor
         )
     )
-private fun AiTab() {
-    val context = LocalContext.current
-    val textColor = MaterialTheme.colorScheme.onSurface
-    val grayColor = MaterialTheme.colorScheme.onSurfaceVariant
-    val primary = MaterialTheme.colorScheme.primary
 
-    var providerId by remember {
-        mutableStateOf(AppSettings.getAiProvider(context))
-    }
-    var apiKey by remember {
-        mutableStateOf(AppSettings.getAiApiKey(context))
-    }
-    var model by remember {
-        mutableStateOf(AppSettings.getAiModel(context))
-    }
-    var keyVisible by remember { mutableStateOf(false) }
-    var speechKey by remember {
-        mutableStateOf(AppSettings.getSpeechApiKey(context))
-    }
-    var speechKeyVisible by remember { mutableStateOf(false) }
-    var providerMenuOpen by remember { mutableStateOf(false) }
-    var systemPrompt by remember { mutableStateOf(AppSettings.getSystemPrompt(context)) }
     var modelMenuOpen by remember { mutableStateOf(false) }
     var savedToast by remember { mutableStateOf(false) }
 
