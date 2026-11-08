@@ -789,4 +789,48 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
     private companion object {
         const val TAG = "HushkaViewModel"
     }
+
+    fun improveTextWithAi(
+        context: android.content.Context,
+        originalText: String,
+        onResult: (String) -> Unit,
+        onError: (String) -> Unit
+    ) {
+        if (originalText.isBlank()) return
+        
+        val apiKey = AppSettings.getAiApiKey(context)
+        if (apiKey.isBlank()) {
+            onError("کلید API در تنظیمات وارد نشده است.")
+            return
+        }
+        
+        val provider = AiProvider.fromId(AppSettings.getAiProvider(context))
+        val model = AppSettings.getAiModel(context).ifBlank { provider.defaultModel }
+        
+        val systemInstruction = "You are a professional prompt engineer. Improve the following text for clarity, grammar, and structure. Return ONLY the improved text without any extra explanations or quotes.\n\nOriginal text:\n"
+        val finalPrompt = systemInstruction + originalText
+        
+        viewModelScope.launch {
+            try {
+                val responseBuilder = StringBuilder()
+                val userMsg = ChatMessage(role = ChatRole.USER, content = finalPrompt)
+                
+                AiService.streamMessage(
+                    provider = provider,
+                    apiKey = apiKey,
+                    model = model,
+                    messages = listOf(userMsg)
+                ).collect { chunk ->
+                    responseBuilder.append(chunk)
+                }
+                
+                // پاک‌سازی نقل‌قول‌های اضافی که AI ممکن است برگرداند
+                val improvedText = responseBuilder.toString().trim()
+                    .removePrefix("\"").removeSuffix("\"")
+                onResult(improvedText)
+            } catch (e: Exception) {
+                onError(e.message ?: "خطا در ارتباط با هوش مصنوعی")
+            }
+        }
+    }
 }

@@ -1,4 +1,8 @@
 package com.techquantum.hushka
+import androidx.compose.foundation.layout.size
+import android.widget.Toast
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
@@ -25,6 +29,7 @@ fun PromptFormDialog(
     title: String,
     initialPrompt: PromptEntity?,
     categories: List<String>,
+    onImproveText: (String, (String) -> Unit, (String) -> Unit) -> Unit = { _, _, _ -> },
     onDismiss: () -> Unit,
     onSave: (String, String, String, String, String, String) -> Unit
 ) {
@@ -190,6 +195,23 @@ fun PromptFormDialog(
                     label = { Text(stringResource(R.string.text_label), fontSize = 12.sp) },
                     placeholder = { Text(stringResource(R.string.text_placeholder), fontSize = 11.sp, color = textGrayColor) },
                     shape = RoundedCornerShape(12.dp),
+                    trailingIcon = {
+                        if (isImproving) {
+                            CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp, color = purplePrimary)
+                        } else {
+                            IconButton(onClick = {
+                                if (text.isNotBlank()) {
+                                    isImproving = true
+                                    onImproveText(text, 
+                                        { improved -> text = improved; isImproving = false },
+                                        { error -> Toast.makeText(context, error, Toast.LENGTH_SHORT).show(); isImproving = false }
+                                    )
+                                }
+                            }) {
+                                Icon(Icons.Filled.AutoAwesome, contentDescription = "Improve with AI", tint = purplePrimary)
+                            }
+                        }
+                    },
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedBorderColor = purplePrimary,
                         unfocusedBorderColor = textGrayColor.copy(alpha = 0.4f),

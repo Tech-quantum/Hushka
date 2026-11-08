@@ -708,6 +708,9 @@ fun HomeScreen(
             title = stringResource(R.string.edit_prompt_title),
             initialPrompt = prompt,
             categories = listOf("عمومی", "تصویر", "ویدئو", "متن", "کد"),
+            onImproveText = { textToImprove, onSuccess, onError ->
+                viewModel.improveTextWithAi(appContext, textToImprove, onSuccess, onError)
+            },
             onDismiss = { editingPrompt = null },
             onSave = { title, category, tags, text, collection, role ->
                 viewModel.updatePrompt(
