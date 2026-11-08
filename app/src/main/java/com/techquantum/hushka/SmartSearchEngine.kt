@@ -82,7 +82,15 @@ object SmartSearchEngine {
 
     private fun expandTokens(tokens: List<String>): Set<String> {
         val result = tokens.toMutableSet()
-        tokens.forEach { token -> SYNONYMS[token]?.let(result::addAll) }
+        tokens.forEach { token -> 
+            SYNONYMS[token]?.let { synonyms ->
+                result.addAll(synonyms)
+                // جستجوی زنجیره‌ای برای پیدا کردن مترادفِ مترادف‌ها
+                synonyms.forEach { syn -> 
+                    SYNONYMS[syn]?.let { result.addAll(it) }
+                }
+            } 
+        }
         return result
     }
 
@@ -151,15 +159,63 @@ object SmartSearchEngine {
     )
 
     private val SYNONYMS = mapOf(
-        "عکس" to setOf("تصویر", "image", "photo"), "تصویر" to setOf("عکس", "image", "photo"),
-        "ساخت" to setOf("تولید", "ایجاد", "generate", "create"),
-        "تولید" to setOf("ساخت", "ایجاد", "generate", "create"),
-        "ایجاد" to setOf("ساخت", "تولید", "generate", "create"),
-        "کد" to setOf("برنامه", "برنامه نویسی", "code", "programming"),
-        "برنامه" to setOf("کد", "programming", "code"),
-        "ویدیو" to setOf("ویدئو", "فیلم", "video"), "ویدئو" to setOf("ویدیو", "فیلم", "video"),
-        "فیلم" to setOf("ویدیو", "ویدئو", "video"), "محتوا" to setOf("content"),
-        "نویسندگی" to setOf("نوشتن", "writing"), "نوشتن" to setOf("نویسندگی", "writing"),
-        "بازاریابی" to setOf("مارکتینگ", "marketing"), "مارکتینگ" to setOf("بازاریابی", "marketing")
+        // --- تصویر و طراحی ---
+        "عکس" to setOf("تصویر", "image", "photo", "picture", "تصاویر", "عکس‌ها"),
+        "تصویر" to setOf("عکس", "image", "photo", "picture", "تصاویر", "نقاشی", "طراحی"),
+        "طراحی" to setOf("دیزاین", "design", "drawing", "رسم", "نقاشی"),
+        "دیزاین" to setOf("طراحی", "design", "ui", "ux"),
+        "لوگو" to setOf("logo", "نشان", "آرم"),
+        "بنر" to setOf("banner", "پوستر", "poster"),
+
+        // --- ویدیو و صدا ---
+        "ویدیو" to setOf("ویدئو", "فیلم", "video", "movie", "clip", "کلیپ"),
+        "ویدئو" to setOf("ویدیو", "فیلم", "video", "movie", "clip", "کلیپ"),
+        "فیلم" to setOf("ویدیو", "ویدئو", "video", "movie", "سینما"),
+        "صدا" to setOf("موسیقی", "audio", "sound", "voice", "صوت"),
+        "موسیقی" to setOf("صدا", "music", "audio", "آهنگ", "نوا"),
+
+        // --- برنامه‌نویسی و فنی ---
+        "کد" to setOf("برنامه", "برنامه نویسی", "code", "programming", "coding", "اسکریپت", "script"),
+        "برنامه" to setOf("کد", "programming", "code", "app", "application", "اپلیکیشن"),
+        "برنامه نویسی" to setOf("کد", "کدنویسی", "programming", "coding", "developer", "توسعه"),
+        "باگ" to setOf("bug", "خطا", "error", "مشکل", "issue"),
+        "خطا" to setOf("باگ", "error", "bug", "exception"),
+        "دیتابیس" to setOf("database", "db", "داده", "data"),
+
+        // --- نوشتن و محتوا ---
+        "نویسندگی" to setOf("نوشتن", "writing", "متن", "text", "مقاله", "article", "blog", "بلاگ"),
+        "نوشتن" to setOf("نویسندگی", "writing", "تایپ", "type", "متن"),
+        "متن" to setOf("نوشته", "text", "content", "محتوا", "مقاله"),
+        "محتوا" to setOf("content", "متن", "مطلب", "پست", "post"),
+        "ترجمه" to setOf("translate", "translation", "برگردان", "interpret"),
+
+        // --- بازاریابی و کسب و کار ---
+        "بازاریابی" to setOf("مارکتینگ", "marketing", "تبلیغات", "advertising", "تبلیغ"),
+        "تبلیغات" to setOf("بازاریابی", "advertising", "marketing", "کمپین", "campaign"),
+        "فروش" to setOf("sale", "sales", "فروشنده", "خرید", "buy", "purchase"),
+        "کسب و کار" to setOf("کسب‌وکار", "business", "بیزینس", "شرکت", "company", "استارتاپ", "startup"),
+        "سئو" to setOf("seo", "search engine optimization", "بهینه سازی"),
+
+        // --- تحصیل و شغل ---
+        "آموزش" to setOf("education", "یادگیری", "learning", "درس", "lesson", "تدریس", "teaching"),
+        "یادگیری" to setOf("آموزش", "learning", "education", "مطالعه", "study"),
+        "رزومه" to setOf("resume", "cv", "کارنامه", "سوابق"),
+        "شغل" to setOf("job", "کار", "کاریابی", "استخدام", "employment", "حرفه", "career"),
+        "مصاحبه" to setOf("interview", "مصاحبه کاری", "گفتگو"),
+
+        // --- عمومی و متفرقه ---
+        "ماشین" to setOf("خودرو", "اتومبیل", "car", "automobile", "vehicle", "وسیله نقلیه"),
+        "خودرو" to setOf("ماشین", "اتومبیل", "car", "vehicle"),
+        "خانه" to setOf("منزل", "house", "home", "آپارتمان", "apartment"),
+        "غذا" to setOf("food", "خوراک", "آشپزی", "cooking", "دستور پخت", "recipe"),
+        "آشپزی" to setOf("غذا", "cooking", "food", "پخت", "baking"),
+        "سفر" to setOf("travel", "گردشگری", "tourism", "مسافرت", "trip"),
+        "سلامتی" to setOf("health", "بهداشت", "درمان", "treatment", "پزشکی", "medical"),
+        "ورزش" to setOf("sport", "exercise", "تمرین", "fitness", "تناسب اندام"),
+        "روانشناسی" to setOf("psychology", "روان", "ذهن", "mind", "روح", "soul"),
+        "پول" to setOf("money", "مالی", "finance", "سرمایه", "investment", "اقتصاد", "economy"),
+        "تحقیق" to setOf("research", "پژوهش", "بررسی", "study", "جستجو", "search"),
+        "داستان" to setOf("story", "قصه", "حکایت", "روایت", "narrative"),
+        "شعر" to setOf("poem", "poetry", "شاعر", "poet")
     )
 }
