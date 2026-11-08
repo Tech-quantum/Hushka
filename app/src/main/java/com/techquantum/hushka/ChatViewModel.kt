@@ -88,9 +88,17 @@ class ChatViewModel(
             _uiState.value = _uiState.value.copy(messages = currentMessages)
 
             try {
+                val systemPrompt = AppSettings.getSystemPrompt(context)
+                val baseMessages = _uiState.value.messages.dropLast(1)
+                val messagesToSend = if (systemPrompt.isNotBlank()) {
+                    listOf(ChatMessage(role = ChatRole.SYSTEM, content = systemPrompt)) + baseMessages
+                } else {
+                    baseMessages
+                }
+
                 AiService.streamMessage(
                     provider = provider, apiKey = apiKey,
-                    model = model, messages = _uiState.value.messages.dropLast(1)
+                    model = model, messages = messagesToSend
                 ).collect { chunk ->
                     val msgs = _uiState.value.messages.toMutableList()
                     if (msgs.isNotEmpty()) {
@@ -167,9 +175,17 @@ class ChatViewModel(
             _uiState.value = _uiState.value.copy(secondaryMessages = currentMessages)
 
             try {
+                val systemPrompt = AppSettings.getSystemPrompt(context)
+                val baseMessages = _uiState.value.secondaryMessages.dropLast(1)
+                val messagesToSend = if (systemPrompt.isNotBlank()) {
+                    listOf(ChatMessage(role = ChatRole.SYSTEM, content = systemPrompt)) + baseMessages
+                } else {
+                    baseMessages
+                }
+
                 AiService.streamMessage(
                     provider = provider, apiKey = apiKey,
-                    model = model, messages = _uiState.value.secondaryMessages.dropLast(1)
+                    model = model, messages = messagesToSend
                 ).collect { chunk ->
                     val msgs = _uiState.value.secondaryMessages.toMutableList()
                     if (msgs.isNotEmpty()) {
