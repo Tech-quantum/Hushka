@@ -89,9 +89,21 @@ class ChatViewModel(
 
             try {
                 val systemPrompt = AppSettings.getSystemPrompt(context)
+                val lastUserMsg = _uiState.value.messages.lastOrNull { it.role == ChatRole.USER }?.content ?: ""
+                
+                var webContext = ""
+                if (_uiState.value.isWebSearchEnabled && lastUserMsg.isNotBlank()) {
+                    val searchResult = WebSearchService.search(lastUserMsg)
+                    if (!searchResult.isNullOrBlank()) {
+                        webContext = "اطلاعات مرتبط از وب:\n$searchResult\n\nبر اساس این اطلاعات پاسخ بده.\n"
+                    }
+                }
+                
+                val finalSystemPrompt = (systemPrompt + "\n" + webContext).trim()
                 val baseMessages = _uiState.value.messages.dropLast(1)
-                val messagesToSend = if (systemPrompt.isNotBlank()) {
-                    listOf(ChatMessage(role = ChatRole.SYSTEM, content = systemPrompt)) + baseMessages
+                
+                val messagesToSend = if (finalSystemPrompt.isNotBlank()) {
+                    listOf(ChatMessage(role = ChatRole.SYSTEM, content = finalSystemPrompt)) + baseMessages
                 } else {
                     baseMessages
                 }
@@ -200,3 +212,8 @@ class ChatViewModel(
         }
     }
 }
+
+    
+    fun toggleWebSearch() {
+        _uiState.value = _uiState.value.copy(isWebSearchEnabled = !_uiState.value.isWebSearchEnabled)
+    }
