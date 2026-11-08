@@ -34,6 +34,7 @@ data class ChatUiState(
     
     // === ⚖️ حالت مقایسه ===
     val isCompareMode: Boolean = false,
+    val isWebSearchEnabled: Boolean = false,
     val secondaryProvider: AiProvider = AiProvider.OPENAI,
     val secondaryModel: String = "",
     val secondaryMessages: List<ChatMessage> = emptyList()
