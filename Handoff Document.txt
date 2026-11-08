@@ -8,6 +8,8 @@
 - **ساختار فایل‌ها**: تخت (Flat) و همه در یک پکیج (`com.techquantum.hushka`)؛ تنها استثنا زیرپکیج `audio/` است (`audio/SilenceDetector.kt`).
 - **وضعیت فعلی**: شاخه‌ی کاری `main` است. تغییرات از طریق شاخه‌های `feature/*` و Pull Request روی GitHub انجام می‌شود (شاخه‌ی قدیمی `dev` بازنشسته شده است).
 
+- **دستیار نوشتن**: تابع `improveTextWithAi` در `PromptViewModel` و دکمه ✨ در `PromptFormDialog`.
+
 ## 🛠 تکنولوژی‌ها
 - Kotlin 1.9.24, Compose BOM 2024.09.03, Material 3
 - **minSdk 26 (Android 8.0) / targetSdk 34 (Android 14)** — نیاز به تأیید نهایی از `app/build.gradle.kts`
