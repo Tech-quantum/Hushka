@@ -1,4 +1,5 @@
 package com.techquantum.hushka
+import androidx.compose.material.icons.Icons
 import androidx.compose.foundation.layout.size
 import android.widget.Toast
 import androidx.compose.material3.CircularProgressIndicator
@@ -33,6 +34,8 @@ fun PromptFormDialog(
     onDismiss: () -> Unit,
     onSave: (String, String, String, String, String, String) -> Unit
 ) {
+    
+    var isImproving by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
     val ttsHelper = remember { TtsHelper(context) }
