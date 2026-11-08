@@ -211,9 +211,8 @@ class ChatViewModel(
             }
         }
     }
-}
 
-    
     fun toggleWebSearch() {
         _uiState.value = _uiState.value.copy(isWebSearchEnabled = !_uiState.value.isWebSearchEnabled)
     }
+}
