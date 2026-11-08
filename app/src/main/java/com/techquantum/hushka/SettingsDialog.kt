@@ -643,6 +643,34 @@ private fun AboutTab(onShowHelp: () -> Unit = {}) {
 // 🤖 Tab 4: AI Settings
 // ═══════════════════════════════════════════════════════════
 @Composable
+
+    
+    Spacer(modifier = Modifier.height(16.dp))
+    Text(
+        text = "پرسونا (دستور سیستمی)",
+        fontSize = 12.sp,
+        fontWeight = FontWeight.Bold,
+        color = textColor
+    )
+    Spacer(modifier = Modifier.height(4.dp))
+    OutlinedTextField(
+        value = systemPrompt,
+        onValueChange = { 
+            systemPrompt = it
+            AppSettings.setSystemPrompt(context, it)
+        },
+        modifier = Modifier.fillMaxWidth().heightIn(min = 80.dp),
+        placeholder = { Text("مثال: تو یک مترجم حرفه‌ای هستی...", fontSize = 11.sp, color = grayColor) },
+        shape = RoundedCornerShape(12.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = primary,
+            unfocusedBorderColor = grayColor.copy(alpha = 0.4f),
+            focusedTextColor = textColor,
+            unfocusedTextColor = textColor,
+            focusedLabelColor = primary,
+            unfocusedLabelColor = grayColor
+        )
+    )
 private fun AiTab() {
     val context = LocalContext.current
     val textColor = MaterialTheme.colorScheme.onSurface
@@ -664,6 +692,7 @@ private fun AiTab() {
     }
     var speechKeyVisible by remember { mutableStateOf(false) }
     var providerMenuOpen by remember { mutableStateOf(false) }
+    var systemPrompt by remember { mutableStateOf(AppSettings.getSystemPrompt(context)) }
     var modelMenuOpen by remember { mutableStateOf(false) }
     var savedToast by remember { mutableStateOf(false) }
 

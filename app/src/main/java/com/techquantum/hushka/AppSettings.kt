@@ -142,6 +142,13 @@ object AppSettings {
         return ""
     }
 
+    fun getSystemPrompt(context: Context): String =
+        prefs(context).getString("SYSTEM_PROMPT", "") ?: ""
+
+    fun setSystemPrompt(context: Context, value: String) {
+        prefs(context).edit().putString("SYSTEM_PROMPT", value).apply()
+    }
+
     fun setAiApiKey(context: Context, value: String) {
         SecureSettings.init(context)
         SecureSettings.putString(AI_API_KEY, value)
