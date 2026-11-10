@@ -1,5 +1,19 @@
 # 📱 پروژه Hushka — تاریخچه کامل تغییرات
 
+## ✨ انیمیشن انتقال (Shared Element Transition) - PR #97 تا #101
+
+### ۱. چه چیزی اضافه شد
+- پیاده‌سازی انیمیشن انتقال نرم بین کارت پرامپت در صفحه اصلی و صفحه چت (به سبک Shared Element در Compose).
+- در `MainActivity`، کل اپ در `SharedTransitionLayout` پیچیده شد و `CompositionLocal` برای ارسال Scope به بدنه‌ی اپ اضافه شد.
+- در `HomeScreen`، به کارت‌های پرامپت `Modifier.sharedElement` با کلید یکتا داده شد.
+- در بخش Overlay چت، صفحه چت با `Modifier.sharedBounds` و انیمیشن Fade + Scale باز و بسته می‌شود.
+
+### ۲. چالش‌های فنی حل‌شده
+- ناسازگاری نام پارامترها در APIهای مختلف Compose: `sharedElement` از `state` استفاده می‌کند، اما `sharedBounds` از `sharedContentState`.
+- نیاز به `@OptIn(ExperimentalSharedTransitionApi::class)` در فایل‌های درگیر.
+
+---
+
 ## 📝 پشتیبانی از Markdown در چت (PR #96)
 
 ### ۱. چه چیزی اضافه شد
