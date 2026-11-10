@@ -70,7 +70,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
     viewModel: PromptViewModel,
-    onSettingsClick: () -> Unit = {
+    onSettingsClick: () -> Unit = {},
     onStartVoiceSearch: () -> Unit = {},
     fabResetToken: Int = 0,
     sharedText: String? = null,
