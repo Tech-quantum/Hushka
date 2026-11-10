@@ -241,6 +241,7 @@ private fun AppearanceTab(
     val textColor = MaterialTheme.colorScheme.onSurface
     val textGrayColor = MaterialTheme.colorScheme.onSurfaceVariant
 
+    val context = LocalContext.current
     
     // --- حالت حریم خصوصی (Ghost) ---
     androidx.compose.foundation.layout.Spacer(androidx.compose.ui.Modifier.height(16.dp))
