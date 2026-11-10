@@ -1,4 +1,6 @@
 package com.techquantum.hushka
+import com.mikepenz.markdown.model.rememberMarkdownState
+import com.mikepenz.markdown.m3.Markdown
 import androidx.compose.material3.TabRow
 import androidx.compose.material.icons.filled.CompareArrows
 import android.widget.Toast
@@ -328,11 +330,12 @@ private fun ChatBubble(
             modifier = Modifier.widthIn(max = 320.dp).clip(shape)
         ) {
             SelectionContainer {
-                Text(
-                    text = message.content,
-                    color = textColor,
-                    fontSize = 14.sp,
-                    lineHeight = 22.sp,
+                val markdownState = rememberMarkdownState(
+                    content = message.content,
+                    retainState = true
+                )
+                Markdown(
+                    markdownState = markdownState,
                     modifier = Modifier.padding(12.dp)
                 )
             }

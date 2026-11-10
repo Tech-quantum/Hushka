@@ -13,6 +13,7 @@ android { namespace = "com.techquantum.hushka"; compileSdk = 35
 }
 dependencies {
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
+    implementation("com.mikepenz:multiplatform-markdown-renderer-m3:0.43.0")
     implementation("com.alphacephei:vosk-android:0.3.47")
     implementation("net.java.dev.jna:jna:5.13.0@aar")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
