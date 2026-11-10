@@ -1,4 +1,6 @@
 package com.techquantum.hushka
+import android.widget.VideoView
+import androidx.compose.ui.viewinterop.AndroidView
 
 import android.app.DownloadManager
 import android.content.Context
@@ -49,6 +51,9 @@ fun AddDialog(
     var imagePrompt by remember { mutableStateOf("") }
     var imageUrl by remember { mutableStateOf<String?>(null) }
     var errorMsg by remember { mutableStateOf<String?>(null) }
+    var videoPrompt by remember { mutableStateOf("") }
+    var videoUrl by remember { mutableStateOf<String?>(null) }
+    var videoErrorMsg by remember { mutableStateOf<String?>(null) }
 
     // Colors
     val textColor = MaterialTheme.colorScheme.onSurface
@@ -61,7 +66,7 @@ fun AddDialog(
         shape = RoundedCornerShape(24.dp),
         title = {
             Text(
-                text = if (selectedTab == 0) (if (isRtl) "افزودن پرامپت" else "Add Prompt") else (if (isRtl) "تولید تصویر" else "Generate Image"),
+                text = when (selectedTab) { 0 -> if (isRtl) "افزودن پرامپت" else "Add Prompt"; 1 -> if (isRtl) "تولید تصویر" else "Generate Image"; else -> if (isRtl) "تولید ویدیو" else "Generate Video" },
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center
@@ -79,6 +84,11 @@ fun AddDialog(
                         selected = selectedTab == 1,
                         onClick = { selectedTab = 1 },
                         text = { Text(if (isRtl) "تولید تصویر 🎨" else "Image Gen 🎨", fontWeight = if (selectedTab == 1) FontWeight.Bold else FontWeight.Normal) }
+                    )
+                    Tab(
+                        selected = selectedTab == 2,
+                        onClick = { selectedTab = 2 },
+                        text = { Text(if (isRtl) "تولید ویدیو 🎬" else "Video Gen 🎬", fontWeight = if (selectedTab == 2) FontWeight.Bold else FontWeight.Normal) }
                     )
                 }
                 Spacer(Modifier.height(16.dp))
@@ -141,7 +151,7 @@ fun AddDialog(
                             colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = purplePrimary, unfocusedBorderColor = textGrayColor.copy(alpha = 0.4f))
                         )
                     }
-                } else {
+                } else if (selectedTab == 1) {
                     // ==================== TAB 2: IMAGE GEN ====================
                     Column(
                         modifier = Modifier.fillMaxWidth(),
@@ -163,6 +173,32 @@ fun AddDialog(
                             )
                         }
                     }
+                } else {
+                    // ==================== TAB 3: VIDEO GEN ====================
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        OutlinedTextField(
+                            value = videoPrompt, onValueChange = { videoPrompt = it },
+                            modifier = Modifier.fillMaxWidth(),
+                            placeholder = { Text(if (isRtl) "توصیف ویدیو (ترجیحاً انگلیسی)..." else "Video description (preferably English)...", fontSize = 12.sp) },
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        videoErrorMsg?.let { Text(it, color = MaterialTheme.colorScheme.error, fontSize = 11.sp) }
+                        videoUrl?.let { url ->
+                            AndroidView(
+                                factory = { ctx ->
+                                    VideoView(ctx).apply {
+                                        setVideoURI(Uri.parse(url))
+                                        setOnPreparedListener { it.isLooping = true; start() }
+                                    }
+                                },
+                                modifier = Modifier.fillMaxWidth().height(250.dp).padding(top = 8.dp)
+                            )
+                        }
+                    }
                 }
             }
         },
@@ -172,7 +208,7 @@ fun AddDialog(
                     onClick = { if (text.isNotBlank()) onSavePrompt(promptTitle, category, tags, text, collection, role) },
                     shape = RoundedCornerShape(12.dp)
                 ) { Text(stringResource(R.string.save), fontWeight = FontWeight.Bold) }
-            } else {
+            } else if (selectedTab == 1) {
                 if (imageUrl == null) {
                     Button(
                         onClick = {
@@ -190,6 +226,31 @@ fun AddDialog(
                                 .setTitle("Hushka AI Image").setDescription("Downloaded from Hushka")
                                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                                 .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "Hushka_${System.currentTimeMillis()}.png")
+                            val dm = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                            dm.enqueue(request)
+                            Toast.makeText(context, if (isRtl) "دانلود شروع شد..." else "Downloading...", Toast.LENGTH_SHORT).show()
+                        },
+                        shape = RoundedCornerShape(12.dp)
+                    ) { Text(if (isRtl) "دانلود" else "Download", fontWeight = FontWeight.Bold) }
+                }
+            } else {
+                if (videoUrl == null) {
+                    Button(
+                        onClick = {
+                            if (videoPrompt.isBlank()) { videoErrorMsg = if (isRtl) "توضیح را وارد کنید" else "Enter description"; return@Button }
+                            videoErrorMsg = null
+                            val encoded = java.net.URLEncoder.encode(videoPrompt, "UTF-8")
+                            videoUrl = "https://gen.pollinations.ai/video/$encoded"
+                        },
+                        shape = RoundedCornerShape(12.dp)
+                    ) { Text(if (isRtl) "تولید ویدیو" else "Generate Video", fontWeight = FontWeight.Bold) }
+                } else {
+                    Button(
+                        onClick = {
+                            val request = DownloadManager.Request(Uri.parse(videoUrl))
+                                .setTitle("Hushka AI Video").setDescription("Downloaded from Hushka")
+                                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                                .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "Hushka_${System.currentTimeMillis()}.mp4")
                             val dm = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
                             dm.enqueue(request)
                             Toast.makeText(context, if (isRtl) "دانلود شروع شد..." else "Downloading...", Toast.LENGTH_SHORT).show()
