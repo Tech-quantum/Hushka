@@ -1,7 +1,8 @@
-import android.media.MediaPlayer
-import androidx.compose.runtime.DisposableEffect
-import java.io.File
 package com.techquantum.hushka
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material3.CircularProgressIndicator
+import android.media.MediaPlayer
 import android.widget.VideoView
 import androidx.compose.ui.viewinterop.AndroidView
 
@@ -51,7 +52,6 @@ fun AddDialog(
 
     // --- Image Gen State ---
     val context = LocalContext.current
-    val coroutineScope = androidx.compose.runtime.rememberCoroutineScope()
     var imagePrompt by remember { mutableStateOf("") }
     var imageUrl by remember { mutableStateOf<String?>(null) }
     var errorMsg by remember { mutableStateOf<String?>(null) }
@@ -63,6 +63,7 @@ fun AddDialog(
     var isMusicLoading by remember { mutableStateOf(false) }
     var musicErrorMsg by remember { mutableStateOf<String?>(null) }
     var mediaPlayer by remember { mutableStateOf<MediaPlayer?>(null) }
+    val coroutineScope = rememberCoroutineScope()
 
     // Colors
     val textColor = MaterialTheme.colorScheme.onSurface
