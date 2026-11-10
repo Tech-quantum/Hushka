@@ -328,9 +328,16 @@ private fun ChatBubble(
             modifier = Modifier.widthIn(max = 320.dp).clip(shape)
         ) {
             SelectionContainer {
+                val codeBgColor = MaterialTheme.colorScheme.surfaceVariant
+                val renderedContent = remember(message.content, textColor, codeBgColor) {
+                    MarkdownHelper.render(
+                        text = message.content,
+                        textColor = textColor,
+                        codeBgColor = codeBgColor
+                    )
+                }
                 Text(
-                    text = message.content,
-                    color = textColor,
+                    text = renderedContent,
                     fontSize = 14.sp,
                     lineHeight = 22.sp,
                     modifier = Modifier.padding(12.dp)
