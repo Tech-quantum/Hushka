@@ -1,3 +1,6 @@
+import android.media.MediaPlayer
+import androidx.compose.runtime.DisposableEffect
+import java.io.File
 package com.techquantum.hushka
 import android.widget.VideoView
 import androidx.compose.ui.viewinterop.AndroidView
@@ -48,12 +51,18 @@ fun AddDialog(
 
     // --- Image Gen State ---
     val context = LocalContext.current
+    val coroutineScope = androidx.compose.runtime.rememberCoroutineScope()
     var imagePrompt by remember { mutableStateOf("") }
     var imageUrl by remember { mutableStateOf<String?>(null) }
     var errorMsg by remember { mutableStateOf<String?>(null) }
     var videoPrompt by remember { mutableStateOf("") }
     var videoUrl by remember { mutableStateOf<String?>(null) }
     var videoErrorMsg by remember { mutableStateOf<String?>(null) }
+    var musicPrompt by remember { mutableStateOf("") }
+    var musicUrl by remember { mutableStateOf<String?>(null) }
+    var isMusicLoading by remember { mutableStateOf(false) }
+    var musicErrorMsg by remember { mutableStateOf<String?>(null) }
+    var mediaPlayer by remember { mutableStateOf<MediaPlayer?>(null) }
 
     // Colors
     val textColor = MaterialTheme.colorScheme.onSurface
@@ -66,7 +75,7 @@ fun AddDialog(
         shape = RoundedCornerShape(24.dp),
         title = {
             Text(
-                text = when (selectedTab) { 0 -> if (isRtl) "افزودن پرامپت" else "Add Prompt"; 1 -> if (isRtl) "تولید تصویر" else "Generate Image"; else -> if (isRtl) "تولید ویدیو" else "Generate Video" },
+                text = when (selectedTab) { 0 -> if (isRtl) "افزودن پرامپت" else "Add Prompt"; 1 -> if (isRtl) "تولید تصویر" else "Generate Image"; 2 -> if (isRtl) "تولید ویدیو" else "Generate Video"; else -> if (isRtl) "تولید موسیقی" else "Generate Music" },
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center
@@ -89,6 +98,11 @@ fun AddDialog(
                         selected = selectedTab == 2,
                         onClick = { selectedTab = 2 },
                         text = { Text(if (isRtl) "تولید ویدیو 🎬" else "Video Gen 🎬", fontWeight = if (selectedTab == 2) FontWeight.Bold else FontWeight.Normal) }
+                    )
+                    Tab(
+                        selected = selectedTab == 3,
+                        onClick = { selectedTab = 3 },
+                        text = { Text(if (isRtl) "تولید موسیقی 🎵" else "Music Gen 🎵", fontWeight = if (selectedTab == 3) FontWeight.Bold else FontWeight.Normal) }
                     )
                 }
                 Spacer(Modifier.height(16.dp))
@@ -173,7 +187,7 @@ fun AddDialog(
                             )
                         }
                     }
-                } else {
+                } else if (selectedTab == 2) {
                     // ==================== TAB 3: VIDEO GEN ====================
                     Column(
                         modifier = Modifier.fillMaxWidth(),
@@ -197,6 +211,38 @@ fun AddDialog(
                                 },
                                 modifier = Modifier.fillMaxWidth().height(250.dp).padding(top = 8.dp)
                             )
+                        }
+                    }
+                } else {
+                    // ==================== TAB 4: MUSIC GEN ====================
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        OutlinedTextField(
+                            value = musicPrompt, onValueChange = { musicPrompt = it },
+                            modifier = Modifier.fillMaxWidth(),
+                            placeholder = { Text(if (isRtl) "توصیف موسیقی (ترجیحاً انگلیسی)..." else "Music description (preferably English)...", fontSize = 12.sp) },
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        musicErrorMsg?.let { Text(it, color = MaterialTheme.colorScheme.error, fontSize = 11.sp) }
+                        
+                        if (isMusicLoading) {
+                            CircularProgressIndicator(color = purplePrimary)
+                        }
+                        
+                        musicUrl?.let { url ->
+                            Button(
+                                onClick = {
+                                    if (mediaPlayer?.isPlaying == true) {
+                                        mediaPlayer?.pause()
+                                    } else {
+                                        mediaPlayer?.start()
+                                    }
+                                },
+                                shape = RoundedCornerShape(12.dp)
+                            ) { Text("پخش / توقف", fontWeight = FontWeight.Bold) }
                         }
                     }
                 }
@@ -233,7 +279,7 @@ fun AddDialog(
                         shape = RoundedCornerShape(12.dp)
                     ) { Text(if (isRtl) "دانلود" else "Download", fontWeight = FontWeight.Bold) }
                 }
-            } else {
+            } else if (selectedTab == 2) {
                 if (videoUrl == null) {
                     Button(
                         onClick = {

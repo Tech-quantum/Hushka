@@ -145,6 +145,13 @@ object AppSettings {
     fun getSystemPrompt(context: Context): String =
         prefs(context).getString("SYSTEM_PROMPT", "") ?: ""
 
+    fun getMusicApiKey(context: Context): String =
+        prefs(context).getString("MUSIC_API_KEY", "") ?: ""
+
+    fun setMusicApiKey(context: Context, value: String) {
+        prefs(context).edit().putString("MUSIC_API_KEY", value).apply()
+    }
+
     fun setSystemPrompt(context: Context, value: String) {
         prefs(context).edit().putString("SYSTEM_PROMPT", value).apply()
     }

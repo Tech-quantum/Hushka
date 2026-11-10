@@ -668,6 +668,7 @@ private fun AiTab() {
     var speechKeyVisible by remember { mutableStateOf(false) }
     var providerMenuOpen by remember { mutableStateOf(false) }
     var systemPrompt by remember { mutableStateOf(AppSettings.getSystemPrompt(context)) }
+    var musicKey by remember { mutableStateOf(AppSettings.getMusicApiKey(context)) }
 
 
     Spacer(modifier = Modifier.height(16.dp))
@@ -676,6 +677,35 @@ private fun AiTab() {
         fontSize = 12.sp,
         fontWeight = FontWeight.Bold,
         color = textColor
+    )
+
+    
+    Spacer(modifier = Modifier.height(16.dp))
+    Text(
+        text = "کلید هوش مصنوعی موسیقی (Hugging Face)",
+        fontSize = 12.sp,
+        fontWeight = FontWeight.Bold,
+        color = textColor
+    )
+    Spacer(modifier = Modifier.height(4.dp))
+    OutlinedTextField(
+        value = musicKey,
+        onValueChange = { 
+            musicKey = it
+            AppSettings.setMusicApiKey(context, it)
+        },
+        modifier = Modifier.fillMaxWidth(),
+        placeholder = { Text("hf_xxxxxxxxxxxxxxxxx", fontSize = 11.sp, color = grayColor) },
+        singleLine = true,
+        shape = RoundedCornerShape(12.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = primary,
+            unfocusedBorderColor = grayColor.copy(alpha = 0.4f),
+            focusedTextColor = textColor,
+            unfocusedTextColor = textColor,
+            focusedLabelColor = primary,
+            unfocusedLabelColor = grayColor
+        )
     )
     Spacer(modifier = Modifier.height(4.dp))
     OutlinedTextField(
