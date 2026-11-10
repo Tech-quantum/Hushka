@@ -49,6 +49,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun PromptCard(
+    modifier: Modifier = Modifier,
     title: String,
     description: String,
     mainTag: String,
