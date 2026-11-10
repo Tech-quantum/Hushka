@@ -602,7 +602,7 @@ fun HomeScreen(
                         modifier = if (sharedScope != null && animatedScope != null) {
                             with(sharedScope) {
                                 Modifier.sharedElement(
-                                    sharedContentState = rememberSharedContentState(key = "prompt_${prompt.id}"),
+                                    state = rememberSharedContentState(key = "prompt_${prompt.id}"),
                                     animatedVisibilityScope = animatedScope
                                 )
                             }
