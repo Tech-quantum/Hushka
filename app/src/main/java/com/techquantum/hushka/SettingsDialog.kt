@@ -211,37 +211,7 @@ private fun AppearanceTab(
     onColorThemeChange: (String) -> Unit,
     onLanguageChange: (String) -> Unit,
     onManageColors: () -> Unit,
-    onResetFabPosition: () -> Unit = {
-    val context = LocalContext.current
-    
-    // --- حالت حریم خصوصی (Ghost) ---
-    androidx.compose.foundation.layout.Spacer(androidx.compose.ui.Modifier.height(16.dp))
-    androidx.compose.foundation.layout.Row(
-        modifier = androidx.compose.ui.Modifier.fillMaxWidth(),
-        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-        horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween
-    ) {
-        androidx.compose.foundation.layout.Column {
-            androidx.compose.material3.Text(
-                text = "حالت حریم خصوصی (Ghost) 🕵️",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                color = textColor
-            )
-            androidx.compose.material3.Text(
-                text = "پرامپت‌های استفاده‌شده در آمار ثبت نمی‌شوند",
-                fontSize = 11.sp,
-                color = textGrayColor
-            )
-        }
-        androidx.compose.material3.Switch(
-            checked = AppSettings.isGhostMode(context),
-            onCheckedChange = { 
-                AppSettings.setGhostMode(context, it)
-            }
-        )
-    }
-},
+    onResetFabPosition: () -> Unit = {},
     biometricLockEnabled: Boolean = false,
     biometricAvailable: Boolean = false,
     onBiometricLockChange: (Boolean) -> Unit = {},
@@ -270,6 +240,35 @@ private fun AppearanceTab(
     )
     val textColor = MaterialTheme.colorScheme.onSurface
     val textGrayColor = MaterialTheme.colorScheme.onSurfaceVariant
+
+    
+    // --- حالت حریم خصوصی (Ghost) ---
+    androidx.compose.foundation.layout.Spacer(androidx.compose.ui.Modifier.height(16.dp))
+    androidx.compose.foundation.layout.Row(
+        modifier = androidx.compose.ui.Modifier.fillMaxWidth(),
+        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+        horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween
+    ) {
+        androidx.compose.foundation.layout.Column {
+            androidx.compose.material3.Text(
+                text = "حالت حریم خصوصی (Ghost) 🕵️",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            androidx.compose.material3.Text(
+                text = "پرامپت‌های استفاده‌شده در آمار ثبت نمی‌شوند",
+                fontSize = 11.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        androidx.compose.material3.Switch(
+            checked = AppSettings.isGhostMode(context),
+            onCheckedChange = { 
+                AppSettings.setGhostMode(context, it)
+            }
+        )
+    }
     val purplePrimary = MaterialTheme.colorScheme.primary
 
     Text(
