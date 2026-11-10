@@ -29,6 +29,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
+import androidx.compose.material3.SuggestionChip
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -320,7 +321,31 @@ fun HomeScreen(
         ) {
             // ===== Search Bar =====
             item {
-                OutlinedTextField(
+  
+
+                // === 🧠 پیشنهاد هوشمند پرامپت (Auto-complete) ===
+                if (uiState.query.length >= 2 && uiState.prompts.isNotEmpty()) {
+                    val suggestions = uiState.prompts
+                        .filter { it.title.contains(uiState.query, ignoreCase = true) && it.title != uiState.query }
+                        .map { it.title }
+                        .distinct()
+                        .take(5)
+                    
+                    if (suggestions.isNotEmpty()) {
+                        LazyRow(
+                            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            items(suggestions) { suggestion ->
+                                SuggestionChip(
+                                    onClick = { viewModel.onQueryChanged(suggestion) },
+                                    label = { Text(suggestion, fontSize = 11.sp) }
+                                )
+                            }
+                        }
+                    }
+                }
+              OutlinedTextField(
                     value = uiState.query,
                     onValueChange = { viewModel.onQueryChanged(it) },
                     modifier = Modifier.fillMaxWidth(),
