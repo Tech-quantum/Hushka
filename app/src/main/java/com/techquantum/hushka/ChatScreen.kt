@@ -49,6 +49,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun ChatScreen(
+    modifier: Modifier = Modifier,
     initialPrompt: String,
     isRtl: Boolean = true,
     onDismiss: () -> Unit = {}
@@ -89,7 +90,7 @@ fun ChatScreen(
     CompositionLocalProvider(
         LocalLayoutDirection provides if (isRtl) LayoutDirection.Rtl else LayoutDirection.Ltr
     ) {
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+        Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
