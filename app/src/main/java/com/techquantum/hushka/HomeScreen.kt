@@ -69,7 +69,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
     viewModel: PromptViewModel,
-    onSettingsClick: () -> Unit = {},
+    onSettingsClick: () -> Unit = {
+    val sharedScope = LocalSharedTransitionScope.current
+    val animatedScope = LocalNavAnimatedVisibilityScope.current},
     onStartVoiceSearch: () -> Unit = {},
     fabResetToken: Int = 0,
     sharedText: String? = null,
@@ -596,6 +598,14 @@ fun HomeScreen(
             } else {
                 itemsIndexed(uiState.filteredPrompts, key = { _, item -> item.id }) { index, prompt ->
                     PromptCard(
+                        modifier = if (sharedScope != null && animatedScope != null) {
+                            with(sharedScope) {
+                                Modifier.sharedElement(
+                                    sharedContentState = rememberSharedContentState(key = "prompt_${prompt.id}"),
+                                    animatedVisibilityScope = animatedScope
+                                )
+                            }
+                        } else Modifier,
                         title = prompt.title,
                         description = prompt.text,
                         mainTag = prompt.category,

@@ -1,4 +1,7 @@
 package com.techquantum.hushka
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.ui.unit.Density
@@ -257,15 +260,22 @@ class MainActivity : AppCompatActivity() {
                         if (showSettings) Modifier.blur(16.dp) else Modifier
                     )
                 ) {
-                    HomeScreen(
-                        viewModel = viewModel,
-                        onSettingsClick = { showSettings = true },
-                        onStartVoiceSearch = ::startVoiceSearch,
-                        fabResetToken = fabResetToken,
-                        // === 📤 پاس دادن متن به صفحه اصلی ===
-                        sharedText = sharedText,
-                        onSharedTextConsumed = { sharedTextState.value = null }
-                    )
+                    AnimatedVisibility(
+                        visible = true,
+                        enter = EnterTransition.None,
+                        exit = ExitTransition.None
+                    ) {
+                        CompositionLocalProvider(LocalNavAnimatedVisibilityScope provides this) {
+                            HomeScreen(
+                                viewModel = viewModel,
+                                onSettingsClick = { showSettings = true },
+                                onStartVoiceSearch = ::startVoiceSearch,
+                                fabResetToken = fabResetToken,
+                                sharedText = sharedText,
+                                onSharedTextConsumed = { sharedTextState.value = null }
+                            )
+                        }
+                    }
                 }
 
                 if (showSettings) {
