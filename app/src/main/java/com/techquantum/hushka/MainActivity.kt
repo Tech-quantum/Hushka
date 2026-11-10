@@ -1,4 +1,6 @@
 package com.techquantum.hushka
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.runtime.CompositionLocalProvider
@@ -142,6 +144,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @OptIn(ExperimentalSharedTransitionApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val savedLanguage = AppSettings.getLanguage(this)
@@ -154,6 +157,7 @@ class MainActivity : AppCompatActivity() {
         handleIntent(intent)
 
         setContent {
+            SharedTransitionLayout {
             var showSettings by remember { mutableStateOf(false) }
             var themeMode by remember { mutableStateOf(AppSettings.getTheme(this@MainActivity)) }
             var fontScale by remember { mutableStateOf(AppSettings.getFontScale(this@MainActivity)) }
@@ -366,7 +370,8 @@ class MainActivity : AppCompatActivity() {
             }
     } // close CompositionLocalProvider
         }
-    }
+        } // Close SharedTransitionLayout
+}
 
     // === 📤 توابع مربوط به Share Sheet ===
     override fun onNewIntent(intent: Intent) {
