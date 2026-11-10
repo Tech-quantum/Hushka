@@ -610,7 +610,7 @@ fun HomeScreen(
                         onCardClick = { editingPrompt = prompt },
                         onPreviewClick = { previewPrompt = prompt },
                         onCopyClick = {
-                            viewModel.markUsed(prompt)
+                            if (!AppSettings.isGhostMode(appContext)) viewModel.markUsed(prompt)
                             val hasVars = Regex("\\[([^\\]]+)\\]|\\{([^}]+)\\}").containsMatchIn(prompt.text)
                             if (hasVars) {
                                 promptForVariables = prompt
@@ -622,7 +622,7 @@ fun HomeScreen(
                             }
                         },
                         onShareClick = {
-                            viewModel.markUsed(prompt)
+                            if (!AppSettings.isGhostMode(appContext)) viewModel.markUsed(prompt)
                             val hasVars = Regex("\\[([^\\]]+)\\]|\\{([^}]+)\\}").containsMatchIn(prompt.text)
                             if (hasVars) {
                                 promptForVariables = prompt

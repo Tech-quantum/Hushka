@@ -64,6 +64,13 @@ object AppSettings {
             .apply()
     }
 
+    fun isGhostMode(context: Context): Boolean =
+        prefs(context).getBoolean("GHOST_MODE", false)
+
+    fun setGhostMode(context: Context, enabled: Boolean) {
+        prefs(context).edit().putBoolean("GHOST_MODE", enabled).apply()
+    }
+
     fun getFontScale(context: Context): Float =
         prefs(context).getFloat("FONT_SCALE", 1.0f)
 
