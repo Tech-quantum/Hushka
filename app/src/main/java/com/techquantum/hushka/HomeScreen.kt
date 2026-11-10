@@ -1,4 +1,5 @@
 package com.techquantum.hushka
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.foundation.border
@@ -65,7 +66,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Surface
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun HomeScreen(
     viewModel: PromptViewModel,
@@ -75,6 +76,8 @@ fun HomeScreen(
     sharedText: String? = null,
     onSharedTextConsumed: () -> Unit = {}
 ) {
+    val sharedScope = LocalSharedTransitionScope.current
+    val animatedScope = LocalNavAnimatedVisibilityScope.current
     // === 📤 اعمال متنِ دریافت‌شده از Share Sheet ===
     LaunchedEffect(sharedText) {
         if (!sharedText.isNullOrBlank()) {
@@ -596,6 +599,14 @@ fun HomeScreen(
             } else {
                 itemsIndexed(uiState.filteredPrompts, key = { _, item -> item.id }) { index, prompt ->
                     PromptCard(
+                        modifier = if (sharedScope != null && animatedScope != null) {
+                            with(sharedScope) {
+                                Modifier.sharedElement(
+                                    state = rememberSharedContentState(key = "prompt_${prompt.id}"),
+                                    animatedVisibilityScope = animatedScope
+                                )
+                            }
+                        } else Modifier,
                         title = prompt.title,
                         description = prompt.text,
                         mainTag = prompt.category,
