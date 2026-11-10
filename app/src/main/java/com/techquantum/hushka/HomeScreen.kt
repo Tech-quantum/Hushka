@@ -1,5 +1,4 @@
 package com.techquantum.hushka
-import androidx.compose.animation.rememberSharedContentState
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalDensity
@@ -72,13 +71,13 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     viewModel: PromptViewModel,
     onSettingsClick: () -> Unit = {
-    val sharedScope = LocalSharedTransitionScope.current
-    val animatedScope = LocalNavAnimatedVisibilityScope.current},
     onStartVoiceSearch: () -> Unit = {},
     fabResetToken: Int = 0,
     sharedText: String? = null,
     onSharedTextConsumed: () -> Unit = {}
 ) {
+    val sharedScope = LocalSharedTransitionScope.current
+    val animatedScope = LocalNavAnimatedVisibilityScope.current
     // === 📤 اعمال متنِ دریافت‌شده از Share Sheet ===
     LaunchedEffect(sharedText) {
         if (!sharedText.isNullOrBlank()) {
