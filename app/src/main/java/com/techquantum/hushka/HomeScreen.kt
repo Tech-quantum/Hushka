@@ -100,6 +100,7 @@ fun HomeScreen(
     var editingPrompt by remember { mutableStateOf<PromptEntity?>(null) }
     var previewPrompt by remember { mutableStateOf<PromptEntity?>(null) }
     var activeChatPrompt by remember { mutableStateOf<String?>(null) }
+    var activeChatPromptId by remember { mutableStateOf<Long?>(null) }
     var promptForVariables by remember { mutableStateOf<PromptEntity?>(null) }
     var variableAction by remember { mutableStateOf("chat") }
     var deletePrompt by remember { mutableStateOf<PromptEntity?>(null) }
@@ -640,6 +641,7 @@ fun HomeScreen(
                                 variableAction = "chat"
                             } else {
                                 activeChatPrompt = prompt.text
+                                        activeChatPromptId = prompt.id
                                 try {
                                     val shareIntent = Intent(Intent.ACTION_SEND).apply {
                                         type = "text/plain"
@@ -949,12 +951,34 @@ fun HomeScreen(
     }
 
     // ═══════ ChatScreen Overlay ═══════
-    activeChatPrompt?.let { promptText ->
-        ChatScreen(
-            initialPrompt = promptText,
-            isRtl = true,
-            onDismiss = { activeChatPrompt = null }
-        )
+    val chatSharedScope = LocalSharedTransitionScope.current
+    AnimatedVisibility(
+        visible = activeChatPrompt != null,
+        enter = fadeIn() + scaleIn(initialScale = 0.92f),
+        exit = fadeOut()
+    ) {
+        val animatedScope = this
+        val chatPrompt = activeChatPrompt
+        if (chatPrompt != null) {
+            val promptId = activeChatPromptId
+            val finalMod = if (chatSharedScope != null && promptId != null) {
+                with(chatSharedScope) {
+                    Modifier.sharedBounds(
+                        sharedContentState = rememberSharedContentState(key = "prompt_$promptId"),
+                        animatedVisibilityScope = animatedScope
+                    )
+                }
+            } else Modifier
+            ChatScreen(
+                modifier = finalMod,
+                initialPrompt = chatPrompt,
+                isRtl = true,
+                onDismiss = {
+                    activeChatPrompt = null
+                    activeChatPromptId = null
+                }
+            )
+        }
     }
 
     promptForVariables?.let { p ->
