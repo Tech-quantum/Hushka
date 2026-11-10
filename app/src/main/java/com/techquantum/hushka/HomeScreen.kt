@@ -964,7 +964,7 @@ fun HomeScreen(
             val finalMod = if (chatSharedScope != null && promptId != null) {
                 with(chatSharedScope) {
                     Modifier.sharedBounds(
-                        state = rememberSharedContentState(key = "prompt_$promptId"),
+                        sharedContentState = rememberSharedContentState(key = "prompt_$promptId"),
                         animatedVisibilityScope = animatedScope
                     )
                 }
