@@ -1,4 +1,6 @@
 package com.techquantum.hushka
+import androidx.compose.animation.rememberSharedContentState
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.foundation.border
@@ -65,7 +67,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Surface
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun HomeScreen(
     viewModel: PromptViewModel,
