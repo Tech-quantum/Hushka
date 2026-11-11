@@ -1,4 +1,6 @@
 package com.techquantum.hushka
+import androidx.compose.foundation.background
+import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.pager.HorizontalPager
 import kotlinx.coroutines.launch
