@@ -161,8 +161,7 @@ fun TranslatedPromptDialog(
                         Text("🔊", fontSize = 18.sp)
                     }
                     TextButton(onClick = {
-                        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                        clipboard.setPrimaryClip(ClipData.newPlainText("Hushka Prompt", translatedText))
+                        ClipboardHelper.copyWithAutoClear(context, translatedText)
                         Toast.makeText(context, context.getString(R.string.toast_copied), Toast.LENGTH_SHORT).show()
                     }) {
                         Text("📋 " + stringResource(R.string.copy), color = purplePrimary, fontSize = 12.sp)

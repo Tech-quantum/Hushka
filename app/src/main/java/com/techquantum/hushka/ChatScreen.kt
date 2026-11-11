@@ -292,7 +292,7 @@ fun ChatScreen(
                         ChatBubble(
                             message = message,
                             isRtl = isRtl,
-                            onCopy = { clipboard.setText(AnnotatedString(message.content)) },
+                            onCopy = { ClipboardHelper.copyWithAutoClear(context, message.content) },
                             onSpeak = { ttsHelper.speak(message.content, AppSettings.getLanguage(context)) }
                         )
                     }

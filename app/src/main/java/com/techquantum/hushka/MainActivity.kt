@@ -150,6 +150,9 @@ class MainActivity : AppCompatActivity() {
     @OptIn(ExperimentalSharedTransitionApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (AppSettings.isBiometricLockEnabled(this)) {
+            window.addFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE)
+        }
         val savedLanguage = AppSettings.getLanguage(this)
         val currentLanguage = AppCompatDelegate.getApplicationLocales().get(0)?.language
         if (currentLanguage.isNullOrBlank() || currentLanguage != savedLanguage) {
@@ -213,8 +216,7 @@ class MainActivity : AppCompatActivity() {
             // بعد از اسپلش، اگر اپ قفل است یک‌بار خودکار اثر انگشت می‌خواهیم.
             LaunchedEffect(showSplash, locked) {
                 if (!showSplash && locked) {
-                    BiometricGate.prompt(
-                        activity = this@MainActivity,
+                    tryUnlockBiometric(
                         onSuccess = { locked = false; lockError = false },
                         onFailure = { lockError = true }
                     )
@@ -399,6 +401,42 @@ class MainActivity : AppCompatActivity() {
         }
     }
     // ==========================================
+
+    private fun tryUnlockBiometric(onSuccess: () -> Unit, onFailure: () -> Unit) {
+        val now = System.currentTimeMillis()
+        val lockoutUntil = AppSettings.getBiometricLockoutUntil(this)
+        if (lockoutUntil > now) {
+            val remaining = ((lockoutUntil - now) / 1000).toInt()
+            Toast.makeText(
+                this,
+                "قفل موقت: $remaining ثانیه دیگر تلاش کنید",
+                Toast.LENGTH_LONG
+            ).show()
+            onFailure()
+            return
+        }
+        BiometricGate.prompt(
+            activity = this,
+            onSuccess = {
+                AppSettings.setFailedBiometricAttempts(this, 0)
+                AppSettings.setBiometricLockoutUntil(this, 0L)
+                onSuccess()
+            },
+            onFailure = {
+                val attempts = AppSettings.getFailedBiometricAttempts(this) + 1
+                AppSettings.setFailedBiometricAttempts(this, attempts)
+                if (attempts >= 5) {
+                    AppSettings.setBiometricLockoutUntil(this, System.currentTimeMillis() + 5 * 60_000L)
+                    Toast.makeText(
+                        this,
+                        "تعداد تلاش‌ها بیش از حد - ۵ دقیقه قفل شد",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                onFailure()
+            }
+        )
+    }
 
     override fun onDestroy() {
         super.onDestroy()
