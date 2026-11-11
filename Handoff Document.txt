@@ -189,6 +189,9 @@
 - **Biometric Lockout**: تابع `tryUnlockBiometric` در `MainActivity`، ۴ تابع در `AppSettings` برای شمارش و lockout.
 - **FLAG_SECURE**: در `MainActivity.onCreate` (فقط اگر Biometric فعال).
 
+- **تولید ارائه**: `PresentationGenerator.kt` + تب پنجم در `AddDialog.kt` + `HorizontalPager` + تصاویر Pollinations.
+- **رفع باگ موسیقی**: دکمه‌های confirm در PR #94 جا افتاده بودند، در این PR اضافه شدند.
+
 ## 📋 قانون_پیشنهادات (Proposals Tracker)
 
 **قانون:** هر زمان که کاربر عبارت «پیشنهاد بده» را به کار برد، باید این لیست خوانده شود، وضعیت موارد انجام‌شده به‌روزرسانی شود و موارد باقی‌مانده به کاربر نمایش داده شود.
