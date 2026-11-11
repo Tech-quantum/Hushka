@@ -1,4 +1,11 @@
 package com.techquantum.hushka
+import androidx.compose.material.icons.filled.MicOff
+import androidx.compose.material.icons.filled.Mic
+import android.content.pm.PackageManager
+import android.Manifest
+import androidx.core.content.ContextCompat
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.material3.TabRow
 import androidx.compose.material.icons.filled.CompareArrows
 import android.widget.Toast
@@ -55,6 +62,8 @@ fun ChatScreen(
     onDismiss: () -> Unit = {}
 ) {
     val context = LocalContext.current
+    var isRecording by remember { mutableStateOf(false) }
+    var voiceStartTrigger by remember { mutableStateOf(false) }
     val application = context.applicationContext as Application
     val clipboard = LocalClipboardManager.current
 
@@ -69,6 +78,64 @@ fun ChatScreen(
         onDispose { ttsHelper.shutdown() }
     }
     val listState = rememberLazyListState()
+
+    LaunchedEffect(voiceStartTrigger) {
+        if (!voiceStartTrigger) return@LaunchedEffect
+        voiceStartTrigger = false
+        isRecording = true
+
+        val cm = context.getSystemService(android.content.Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager
+        val isOnline = cm.activeNetwork != null
+        val language = AppSettings.getLanguage(context)
+
+        val onResult: (String) -> Unit = { t ->
+            isRecording = false
+            if (t.isNotBlank()) viewModel.onInputChange(t)
+        }
+        val onError: (String) -> Unit = { err ->
+            isRecording = false
+            Toast.makeText(context, err, Toast.LENGTH_SHORT).show()
+        }
+
+        if (isOnline) {
+            val speechKey = AppSettings.getSpeechApiKey(context)
+            val aiKey = AppSettings.getAiApiKey(context)
+            val provider = AppSettings.getAiProvider(context)
+            val engine: OnlineSpeechEngine
+            val apiKey: String
+            if (speechKey.isNotBlank()) {
+                engine = if (provider == "gemini") OnlineSpeechEngine.GEMINI else OnlineSpeechEngine.GROQ
+                apiKey = speechKey
+            } else if (aiKey.isNotBlank()) {
+                engine = OnlineSpeechEngine.fromId(provider)
+                apiKey = aiKey
+            } else {
+                Toast.makeText(context, "برای ضبط آنلاین کلید API را در تنظیمات وارد کنید", Toast.LENGTH_SHORT).show()
+                isRecording = false
+                return@LaunchedEffect
+            }
+            var fbEngine: OnlineSpeechEngine? = null
+            var fbKey: String? = null
+            if (engine == OnlineSpeechEngine.GROQ && aiKey.isNotBlank() && provider == "gemini") {
+                fbEngine = OnlineSpeechEngine.GEMINI
+                fbKey = aiKey
+            }
+            VoiceRecorderHelper.startGroqRecording(
+                context = context, apiKey = apiKey, language = language,
+                onResult = onResult, onError = onError,
+                engine = engine, fallbackEngine = fbEngine, fallbackApiKey = fbKey
+            )
+        } else {
+            VoiceRecorderHelper.startVoskRecording(
+                context = context, language = language,
+                onResult = onResult, onError = onError
+            )
+        }
+    }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted -> if (granted) voiceStartTrigger = true }
     var selectedTabIndex by remember { mutableIntStateOf(0) }
 
     // === 🔄 همگام‌سازی مدل با تنظیمات (رفع باگ دیالوگ و چت) ===
@@ -260,6 +327,26 @@ fun ChatScreen(
                                 onSend = { if (uiState.inputText.isNotBlank()) viewModel.sendMessage() }
                             )
                         )
+                        IconButton(
+                            onClick = {
+                                if (isRecording) return@IconButton
+                                val hasPermission = ContextCompat.checkSelfPermission(
+                                    context, Manifest.permission.RECORD_AUDIO
+                                ) == PackageManager.PERMISSION_GRANTED
+                                if (!hasPermission) {
+                                    permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                                } else {
+                                    voiceStartTrigger = true
+                                }
+                            },
+                            modifier = Modifier.size(48.dp)
+                        ) {
+                            Icon(
+                                if (isRecording) Icons.Filled.MicOff else Icons.Filled.Mic,
+                                contentDescription = "Voice Input",
+                                tint = if (isRecording) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface
+                            )
+                        }
                         FilledIconButton(
                             onClick = { viewModel.sendMessage() },
                             enabled = uiState.hasApiKey && uiState.inputText.isNotBlank() && !uiState.isLoading,
