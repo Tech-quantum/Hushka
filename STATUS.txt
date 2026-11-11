@@ -51,8 +51,10 @@
 - هدف: کاهش خطا از ~۴۰٪ به ~۲٪.
 
 【 🛡 امنیت 】
-- Input Sanitization و Context Isolation برای جلوگیری از Prompt Injection.
-- قوانین امنیتی ثابت در SYSTEM prompt + بسته‌بندی نتایج وب در <untrusted_data>.
+- Input Sanitization و Context Isolation (PR #106).
+- ClipboardHelper: پاک‌سازی خودکار کلیپ‌بورد بعد از ۳۰ ثانیه (PR #108).
+- Biometric Lockout: قفل ۵ دقیقه‌ای بعد از ۵ تلاش ناموفق (PR #108).
+- FLAG_SECURE: جلوگیری از اسکرین‌شات (PR #108).
 
 【 وضعیت فنی 】
 - تشخیص سکوت آنلاین: `audio/SilenceDetector.kt` (کالیبراسیون نویز + آستانه‌ی تطبیقی)
