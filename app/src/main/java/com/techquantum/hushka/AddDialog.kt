@@ -1,4 +1,8 @@
 package com.techquantum.hushka
+import androidx.compose.foundation.background
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.pager.HorizontalPager
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.material3.CircularProgressIndicator
@@ -65,6 +69,13 @@ fun AddDialog(
     var mediaPlayer by remember { mutableStateOf<MediaPlayer?>(null) }
     val coroutineScope = rememberCoroutineScope()
 
+    // --- Presentation Gen State ---
+    var presentationTopic by remember { mutableStateOf("") }
+    var presentationSlideCount by remember { mutableStateOf(5) }
+    var presentationSlides by remember { mutableStateOf<List<PresentationSlide>>(emptyList()) }
+    var isGeneratingPresentation by remember { mutableStateOf(false) }
+    var presentationErrorMsg by remember { mutableStateOf<String?>(null) }
+
     // Colors
     val textColor = MaterialTheme.colorScheme.onSurface
     val textGrayColor = MaterialTheme.colorScheme.onSurfaceVariant
@@ -104,6 +115,11 @@ fun AddDialog(
                         selected = selectedTab == 3,
                         onClick = { selectedTab = 3 },
                         text = { Text(if (isRtl) "تولید موسیقی 🎵" else "Music Gen 🎵", fontWeight = if (selectedTab == 3) FontWeight.Bold else FontWeight.Normal) }
+                    )
+                    Tab(
+                        selected = selectedTab == 4,
+                        onClick = { selectedTab = 4 },
+                        text = { Text(if (isRtl) "ارائه 📊" else "Slides 📊", fontWeight = if (selectedTab == 4) FontWeight.Bold else FontWeight.Normal) }
                     )
                 }
                 Spacer(Modifier.height(16.dp))
@@ -214,7 +230,7 @@ fun AddDialog(
                             )
                         }
                     }
-                } else {
+                } else if (selectedTab == 3) {
                     // ==================== TAB 4: MUSIC GEN ====================
                     Column(
                         modifier = Modifier.fillMaxWidth(),
@@ -244,6 +260,77 @@ fun AddDialog(
                                 },
                                 shape = RoundedCornerShape(12.dp)
                             ) { Text("پخش / توقف", fontWeight = FontWeight.Bold) }
+                        }
+                    }
+                }
+                else {
+                    // ==================== TAB 5: PRESENTATION GEN ====================
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        OutlinedTextField(
+                            value = presentationTopic, onValueChange = { presentationTopic = it },
+                            modifier = Modifier.fillMaxWidth(),
+                            placeholder = { Text(if (isRtl) "موضوع ارائه..." else "Topic...", fontSize = 12.sp) },
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            listOf(3, 5, 7).forEach { cnt ->
+                                FilterChip(
+                                    selected = presentationSlideCount == cnt,
+                                    onClick = { presentationSlideCount = cnt },
+                                    label = { Text("$cnt اسلاید", fontSize = 11.sp) }
+                                )
+                            }
+                        }
+                        presentationErrorMsg?.let {
+                            Text(it, color = MaterialTheme.colorScheme.error, fontSize = 11.sp)
+                        }
+                        if (isGeneratingPresentation) {
+                            CircularProgressIndicator(color = purplePrimary)
+                            Text(if (isRtl) "در حال تولید..." else "Generating...", fontSize = 11.sp, color = textGrayColor)
+                        }
+                        if (presentationSlides.isNotEmpty()) {
+                            val pagerState = rememberPagerState(pageCount = { presentationSlides.size })
+                            HorizontalPager(
+                                state = pagerState,
+                                modifier = Modifier.fillMaxWidth().height(280.dp),
+                                pageSpacing = 8.dp
+                            ) { page ->
+                                val slide = presentationSlides[page]
+                                Box(modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(12.dp))) {
+                                    AsyncImage(
+                                        model = slide.imageUrl,
+                                        contentDescription = slide.title,
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                    Box(
+                                        modifier = Modifier.fillMaxSize().background(
+                                            androidx.compose.ui.graphics.Brush.verticalGradient(
+                                                listOf(
+                                                    androidx.compose.ui.graphics.Color.Transparent,
+                                                    androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.75f)
+                                                )
+                                            )
+                                        )
+                                    )
+                                    Column(modifier = Modifier.align(Alignment.BottomStart).padding(12.dp)) {
+                                        Text(slide.title, color = androidx.compose.ui.graphics.Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                        Text(slide.content, color = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.9f), fontSize = 11.sp, maxLines = 4)
+                                    }
+                                    Text("${page + 1} / ${presentationSlides.size}",
+                                        color = androidx.compose.ui.graphics.Color.White, fontSize = 10.sp,
+                                        modifier = Modifier.align(Alignment.TopEnd).padding(8.dp)
+                                            .background(androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.5f), RoundedCornerShape(6.dp))
+                                            .padding(horizontal = 6.dp, vertical = 2.dp))
+                                }
+                            }
                         }
                     }
                 }
@@ -304,6 +391,91 @@ fun AddDialog(
                         },
                         shape = RoundedCornerShape(12.dp)
                     ) { Text(if (isRtl) "دانلود" else "Download", fontWeight = FontWeight.Bold) }
+                }
+            } else if (selectedTab == 3) {
+                // ==================== MUSIC CONFIRM ====================
+                if (isMusicLoading) {
+                    CircularProgressIndicator(color = purplePrimary, modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
+                } else if (musicUrl == null) {
+                    Button(
+                        onClick = {
+                            val hfToken = AppSettings.getMusicApiKey(context)
+                            if (hfToken.isBlank()) {
+                                musicErrorMsg = if (isRtl) "کلید Hugging Face را در تنظیمات وارد کنید" else "Enter HF Token"
+                                return@Button
+                            }
+                            if (musicPrompt.isBlank()) {
+                                musicErrorMsg = if (isRtl) "توضیح را وارد کنید" else "Enter description"
+                                return@Button
+                            }
+                            isMusicLoading = true
+                            musicErrorMsg = null
+                            coroutineScope.launch {
+                                val musicBytes = MusicGenService.generateMusic(musicPrompt, hfToken)
+                                if (musicBytes != null) {
+                                    val file = java.io.File(context.cacheDir, "music_${System.currentTimeMillis()}.mp3")
+                                    file.writeBytes(musicBytes)
+                                    musicUrl = file.toURI().toString()
+                                    mediaPlayer = android.media.MediaPlayer().apply {
+                                        setDataSource(file.absolutePath)
+                                        prepare()
+                                    }
+                                } else {
+                                    musicErrorMsg = if (isRtl) "خطا در تولید" else "Generation failed"
+                                }
+                                isMusicLoading = false
+                            }
+                        },
+                        shape = RoundedCornerShape(12.dp)
+                    ) { Text(if (isRtl) "تولید موسیقی" else "Generate Music", fontWeight = FontWeight.Bold) }
+                } else {
+                    Button(
+                        onClick = {
+                            val request = DownloadManager.Request(Uri.parse(musicUrl))
+                                .setTitle("Hushka AI Music").setDescription("Downloaded from Hushka")
+                                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                                .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "Hushka_${System.currentTimeMillis()}.mp3")
+                            val dm = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                            dm.enqueue(request)
+                            Toast.makeText(context, if (isRtl) "دانلود شروع شد..." else "Downloading...", Toast.LENGTH_SHORT).show()
+                        },
+                        shape = RoundedCornerShape(12.dp)
+                    ) { Text(if (isRtl) "دانلود" else "Download", fontWeight = FontWeight.Bold) }
+                }
+            } else {
+                // ==================== PRESENTATION CONFIRM ====================
+                if (isGeneratingPresentation) {
+                    CircularProgressIndicator(color = purplePrimary, modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
+                } else if (presentationSlides.isEmpty()) {
+                    Button(
+                        onClick = {
+                            if (presentationTopic.isBlank()) {
+                                presentationErrorMsg = if (isRtl) "موضوع را وارد کنید" else "Enter topic"
+                                return@Button
+                            }
+                            if (AppSettings.getAiApiKey(context).isBlank()) {
+                                presentationErrorMsg = if (isRtl) "کلید API وارد نشده" else "API key not set"
+                                return@Button
+                            }
+                            isGeneratingPresentation = true
+                            presentationErrorMsg = null
+                            coroutineScope.launch {
+                                val result = PresentationGenerator.generateSlides(
+                                    context = context, topic = presentationTopic, slideCount = presentationSlideCount
+                                )
+                                result.fold(
+                                    onSuccess = { presentationSlides = it; isGeneratingPresentation = false },
+                                    onFailure = { presentationErrorMsg = it.message; isGeneratingPresentation = false }
+                                )
+                            }
+                        },
+                        shape = RoundedCornerShape(12.dp)
+                    ) { Text(if (isRtl) "تولید ارائه" else "Generate Slides", fontWeight = FontWeight.Bold) }
+                } else {
+                    Button(
+                        onClick = { presentationSlides = emptyList(); presentationErrorMsg = null },
+                        shape = RoundedCornerShape(12.dp)
+                    ) { Text(if (isRtl) "تولید مجدد" else "Regenerate", fontWeight = FontWeight.Bold) }
                 }
             }
         },
