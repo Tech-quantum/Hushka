@@ -1,4 +1,7 @@
 package com.techquantum.hushka
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.foundation.background
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.pager.rememberPagerState
@@ -95,32 +98,56 @@ fun AddDialog(
         },
         text = {
             Column(modifier = Modifier.fillMaxWidth()) {
-                TabRow(selectedTabIndex = selectedTab) {
-                    Tab(
-                        selected = selectedTab == 0,
-                        onClick = { selectedTab = 0 },
-                        text = { Text(if (isRtl) "پرامپت جدید" else "New Prompt", fontWeight = if (selectedTab == 0) FontWeight.Bold else FontWeight.Normal) }
-                    )
-                    Tab(
-                        selected = selectedTab == 1,
-                        onClick = { selectedTab = 1 },
-                        text = { Text(if (isRtl) "تولید تصویر 🎨" else "Image Gen 🎨", fontWeight = if (selectedTab == 1) FontWeight.Bold else FontWeight.Normal) }
-                    )
-                    Tab(
-                        selected = selectedTab == 2,
-                        onClick = { selectedTab = 2 },
-                        text = { Text(if (isRtl) "تولید ویدیو 🎬" else "Video Gen 🎬", fontWeight = if (selectedTab == 2) FontWeight.Bold else FontWeight.Normal) }
-                    )
-                    Tab(
-                        selected = selectedTab == 3,
-                        onClick = { selectedTab = 3 },
-                        text = { Text(if (isRtl) "تولید موسیقی 🎵" else "Music Gen 🎵", fontWeight = if (selectedTab == 3) FontWeight.Bold else FontWeight.Normal) }
-                    )
-                    Tab(
-                        selected = selectedTab == 4,
-                        onClick = { selectedTab = 4 },
-                        text = { Text(if (isRtl) "ارائه 📊" else "Slides 📊", fontWeight = if (selectedTab == 4) FontWeight.Bold else FontWeight.Normal) }
-                    )
+                var dropdownExpanded by remember { mutableStateOf(false) }
+                val tabOptions = listOf(
+                    Triple(0, "پرامپت جدید", "New Prompt"),
+                    Triple(1, "تولید تصویر 🎨", "Image Gen 🎨"),
+                    Triple(2, "تولید ویدیو 🎬", "Video Gen 🎬"),
+                    Triple(3, "تولید موسیقی 🎵", "Music Gen 🎵"),
+                    Triple(4, "تولید ارائه 📊", "Slides Gen 📊")
+                )
+                val currentOption = tabOptions[selectedTab]
+
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    OutlinedButton(
+                        onClick = { dropdownExpanded = true },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Text(
+                            text = if (isRtl) currentOption.second else currentOption.third,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                        Icon(
+                            imageVector = Icons.Filled.ArrowDropDown,
+                            contentDescription = "Select tab",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+
+                    DropdownMenu(
+                        expanded = dropdownExpanded,
+                        onDismissRequest = { dropdownExpanded = false },
+                        modifier = Modifier.fillMaxWidth(0.9f)
+                    ) {
+                        tabOptions.forEach { (index, fa, en) ->
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        text = if (isRtl) fa else en,
+                                        fontWeight = if (selectedTab == index) FontWeight.Bold else FontWeight.Normal,
+                                        color = if (selectedTab == index) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                                    )
+                                },
+                                onClick = {
+                                    selectedTab = index
+                                    dropdownExpanded = false
+                                }
+                            )
+                        }
+                    }
                 }
                 Spacer(Modifier.height(16.dp))
 
