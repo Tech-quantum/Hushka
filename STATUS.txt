@@ -50,6 +50,10 @@
 - ۱۰ قانون طلایی در Handoff Document.txt ثبت شده است.
 - هدف: کاهش خطا از ~۴۰٪ به ~۲٪.
 
+【 🛡 امنیت 】
+- Input Sanitization و Context Isolation برای جلوگیری از Prompt Injection.
+- قوانین امنیتی ثابت در SYSTEM prompt + بسته‌بندی نتایج وب در <untrusted_data>.
+
 【 وضعیت فنی 】
 - تشخیص سکوت آنلاین: `audio/SilenceDetector.kt` (کالیبراسیون نویز + آستانه‌ی تطبیقی)
 - FAB تنظیمات: `SettingsFab.kt` (UI) + `FabGeometry.kt` (منطق خالص) — موقعیت به‌صورت کسری ۰..۱ در `AppSettings` ذخیره می‌شود، نه پیکسل
