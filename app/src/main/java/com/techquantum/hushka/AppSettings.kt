@@ -64,6 +64,20 @@ object AppSettings {
             .apply()
     }
 
+    fun getFailedBiometricAttempts(context: Context): Int =
+        prefs(context).getInt("FAILED_BIOMETRIC_ATTEMPTS", 0)
+
+    fun setFailedBiometricAttempts(context: Context, value: Int) {
+        prefs(context).edit().putInt("FAILED_BIOMETRIC_ATTEMPTS", value).apply()
+    }
+
+    fun getBiometricLockoutUntil(context: Context): Long =
+        prefs(context).getLong("BIOMETRIC_LOCKOUT_UNTIL", 0L)
+
+    fun setBiometricLockoutUntil(context: Context, value: Long) {
+        prefs(context).edit().putLong("BIOMETRIC_LOCKOUT_UNTIL", value).apply()
+    }
+
     fun isGhostMode(context: Context): Boolean =
         prefs(context).getBoolean("GHOST_MODE", false)
 
