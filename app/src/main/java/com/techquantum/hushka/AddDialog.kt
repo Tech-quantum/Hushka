@@ -19,6 +19,7 @@ import android.net.Uri
 import android.os.Environment
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -130,7 +131,7 @@ fun AddDialog(
                     DropdownMenu(
                         expanded = dropdownExpanded,
                         onDismissRequest = { dropdownExpanded = false },
-                        modifier = Modifier.fillMaxWidth(0.9f)
+                        modifier = Modifier.width(280.dp)
                     ) {
                         tabOptions.forEach { (index, fa, en) ->
                             DropdownMenuItem(
