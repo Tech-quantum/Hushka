@@ -274,7 +274,7 @@ fun HomeScreen(
 
                     // 🔥 استریک — سمت راست، دقیقاً روبروی لوگو و هم‌اندازه‌ی آن
                     Box(
-                        modifier = Modifier.width(48.dp),
+                        modifier = Modifier.wrapContentWidth(),
                         contentAlignment = Alignment.Center
                     ) {
                         AnimatedStreakBadge(streak = currentStreak)
