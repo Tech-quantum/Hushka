@@ -623,7 +623,7 @@ fun HomeScreen(
                         onLockToggle = { viewModel.updatePrompt(prompt.copy(isLocked = !prompt.isLocked)) },
                         onCardClick = { 
                             if (prompt.isLocked) {
-                                val activity = appContext as? android.app.Activity
+                                val activity = appContext as? androidx.fragment.app.FragmentActivity
                                 if (activity != null) {
                                     BiometricGate.prompt(
                                         activity = activity,
@@ -637,7 +637,7 @@ fun HomeScreen(
                         },
                         onPreviewClick = { 
                             if (prompt.isLocked) {
-                                val activity = appContext as? android.app.Activity
+                                val activity = appContext as? androidx.fragment.app.FragmentActivity
                                 if (activity != null) {
                                     BiometricGate.prompt(
                                         activity = activity,
