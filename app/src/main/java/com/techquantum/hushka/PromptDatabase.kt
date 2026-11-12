@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [PromptEntity::class], version = 8, exportSchema = false)
+@Database(entities = [PromptEntity::class], version = 9, exportSchema = false)
 abstract class PromptDatabase : RoomDatabase() {
     abstract fun promptDao(): PromptDao
 
@@ -53,6 +53,12 @@ abstract class PromptDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_8_9 = object : Migration(8, 9) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE prompts ADD COLUMN isLocked INTEGER NOT NULL DEFAULT 0")
+            }
+        }
+
         @Volatile
         private var INSTANCE: PromptDatabase? = null
 
@@ -69,7 +75,8 @@ abstract class PromptDatabase : RoomDatabase() {
                         MIGRATION_3_4,
                         MIGRATION_4_5,
                         MIGRATION_5_6,
-                        MIGRATION_7_8
+                        MIGRATION_7_8,
+                        MIGRATION_8_9
                     )
                     .build()
                     .also { INSTANCE = it }

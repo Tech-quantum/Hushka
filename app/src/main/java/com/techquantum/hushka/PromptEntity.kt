@@ -19,5 +19,6 @@ data class PromptEntity(
     val collection: String = "",
     val role: String = "",
     val pinned: Boolean = false,
-    val lastUsedAt: Long = 0L
+    val lastUsedAt: Long = 0L,
+    val isLocked: Boolean = false
 )
