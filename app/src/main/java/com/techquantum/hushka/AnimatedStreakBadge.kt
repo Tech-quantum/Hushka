@@ -32,87 +32,31 @@ private val STREAK_ORANGE = Color(0xFFFF9800)
 private val STREAK_FLAME_HOT = Color(0xFFFFC107)
 
 @Composable
-fun AnimatedStreakBadge(
-    streak: Int,
-    modifier: Modifier = Modifier
-) {
+fun AnimatedStreakBadge(streak: Int) {
     if (streak <= 0) return
 
-    val transition = rememberInfiniteTransition(label = "streakFlame")
-
-    val flameScale by transition.animateFloat(
-        initialValue = 1f,
-        targetValue = 1.15f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 700, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "flameScale"
-    )
-
-    val flameLift by transition.animateFloat(
-        initialValue = 0f,
-        targetValue = 2f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 900, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "flameLift"
-    )
-
-    val glowAlpha by transition.animateFloat(
-        initialValue = 0.35f,
-        targetValue = 0.75f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 1100, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "streakGlow"
-    )
-
-    Surface(
-        modifier = modifier,
-        shape = RoundedCornerShape(50),
-        color = STREAK_ORANGE.copy(alpha = 0.15f)
+    androidx.compose.material3.Surface(
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(50),
+        color = androidx.compose.material3.MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
+        modifier = androidx.compose.ui.Modifier.padding(4.dp)
     ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-            verticalAlignment = Alignment.CenterVertically
+        androidx.compose.foundation.layout.Row(
+            modifier = androidx.compose.ui.Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Center
         ) {
-            Box(
-                modifier = Modifier.size(16.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(16.dp)
-                        .background(
-                            brush = Brush.radialGradient(
-                                colors = listOf(
-                                    STREAK_ORANGE.copy(alpha = glowAlpha),
-                                    STREAK_FLAME_HOT.copy(alpha = glowAlpha * 0.4f),
-                                    Color.Transparent
-                                )
-                            )
-                        )
-                )
-
-                Text(
-                    text = "\uD83D\uDD25",
-                    fontSize = 11.sp,
-                    modifier = Modifier
-                        .scale(flameScale)
-                        .padding(bottom = flameLift.dp)
-                )
-            }
-
-            Spacer(Modifier.width(2.dp))
-
-            Text(
-                text = "$streak",
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Bold,
-                color = STREAK_ORANGE
+            androidx.compose.material3.Text(
+                text = "🔥",
+                fontSize = 16.sp
+            )
+            androidx.compose.foundation.layout.Spacer(
+                modifier = androidx.compose.ui.Modifier.width(4.dp)
+            )
+            androidx.compose.material3.Text(
+                text = streak.toString(),
+                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                fontSize = 14.sp,
+                color = androidx.compose.ui.graphics.Color(0xFFFF9800)
             )
         }
     }
