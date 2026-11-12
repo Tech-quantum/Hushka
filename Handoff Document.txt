@@ -86,6 +86,13 @@
 - با این قانون: ~۹۸٪ موفقیت
 
 
+## 📜 قوانین حیاتی (۲، ۱۱، ۱۲)
+1. **قانون ۲ (مستندات)**: هر تغییر در ۳ فایل HISTORY, STATUS, Handoff ثبت شود.
+2. **قانون ۱۱ (replace)**: قبل از هر replace در اسکریپت، count چک شود.
+3. **قانون ۱۲ (شاخه)**: قبل از git commit، شاخه فعلی چک شود (هرگز روی main نباشید).
+
+---
+
 ## ⚠️ قوانین بسیار مهم (حتماً رعایت شود)
 1. **قانون شاخه‌ی کاری**: هرگز مستقیم روی `main` کد نزنید. برای هر تغییر یک شاخه‌ی تازه **از `origin/main`** بسازید (مثل `feature/...`، `fix/...`، `ui/...`، `docs/...`)، بعد Pull Request بزنید و پس از سبز شدن CI مرج کنید.
    - نکته‌ی مهم: شاخه را از `origin/main` بسازید، نه از تاریخچه‌ی کامل محلی — وگرنه پوش به‌خاطر حجم مدل‌های صوتی سنگین می‌شود.
@@ -114,7 +121,7 @@
 - برای دیالوگ‌ها از `AlertDialog` با `shape = RoundedCornerShape(24.dp)` استفاده می‌شود.
 - تمام حالت‌های UI باید با تم‌های AMOLED و ۴ زبان سازگار باشند.
 - هوشکا از پوشه `assets` برای فایل‌های JSON (پرامپت‌ها) و مدل‌های Vosk (به صورت ZIP با Git-LFS) استفاده می‌کند.
-- ماژول‌های کلیدی: `PromptVariables` (تشخیص متغیر مشترک)، `SmartSearchEngine` (جست‌وجوی تحمل‌پذیر)، `AnimatedStreakBadge` (شعله‌ی متحرک)، `HushkaLogo` (لوگوی LED متحرک)، `audio/SilenceDetector` (تشخیص سکوت تطبیقی ضبط آنلاین)، `SettingsFab` (FAB تنظیمات شناور؛ حرکت فقط بین هدر و فوتر) و `FabGeometry` (منطق خالص موقعیت‌دهی، تست‌شده در `FabPositionTest`).
+- ماژول‌های کلیدی: `PromptVariables` (تشخیص متغیر مشترک)، `SmartSearchEngine` (جست‌وجوی تحمل‌پذیر)، `AnimatedStreakBadge` (طراحی ثابت، بدون انیمیشن، با پس‌زمینه کپسولی)، `HushkaLogo` (لوگوی LED متحرک)، `audio/SilenceDetector` (تشخیص سکوت تطبیقی ضبط آنلاین)، `SettingsFab` (FAB تنظیمات شناور؛ حرکت فقط بین هدر و فوتر) و `FabGeometry` (منطق خالص موقعیت‌دهی، تست‌شده در `FabPositionTest`).
 - **شخصی‌سازی شعله**: الگوی `rememberInfiniteTransition` در `HushkaLogo.kt` و `AnimatedStreakBadge.kt` استفاده شده است.
 - **دسترسی میکروفون در Android 14+**: اگر ضبط در پس‌زمینه ادامه یابد، نیاز به Foreground Service با `foregroundServiceType="microphone"` + `POST_NOTIFICATIONS` در manifest است. در حالت فعلی ضبط همیشه foreground است، ولی برای آینده مستند شود.
 - **`LocalContext.current` در `LaunchedEffect`**: علت ممنوعیت — در snapshot نادرست می‌نشیند و lint آینده ایراد می‌گیرد؛ همیشه بیرون تعریف و پاس بدهید (قاعده‌ی ۴).
