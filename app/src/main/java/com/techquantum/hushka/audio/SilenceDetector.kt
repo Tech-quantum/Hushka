@@ -6,7 +6,7 @@ class SilenceDetector(
     private val sampleRate: Int = 16_000,
     private val minSpeechMs: Long = 1_000L,
     private val silenceStopMs: Long = 1_200L,
-    private val maxRecordMs: Long = 5_000L,
+    private val maxRecordMs: Long = 30_000L,
     private val calibrationStartMs: Long = 100L,
     private val calibrationEndMs: Long = 400L,
     private val maxNoiseFloor: Double = 800.0,
