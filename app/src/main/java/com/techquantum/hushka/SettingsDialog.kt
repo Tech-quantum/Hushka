@@ -263,9 +263,11 @@ private fun AppearanceTab(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
+        val isGhostModeState = remember { mutableStateOf(AppSettings.isGhostMode(context)) }
         androidx.compose.material3.Switch(
-            checked = AppSettings.isGhostMode(context),
+            checked = isGhostModeState.value,
             onCheckedChange = { 
+                isGhostModeState.value = it
                 AppSettings.setGhostMode(context, it)
             }
         )
