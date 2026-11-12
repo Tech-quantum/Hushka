@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [PromptEntity::class], version = 9, exportSchema = false)
+@Database(entities = [PromptEntity::class], version = 9, exportSchema = true)
 abstract class PromptDatabase : RoomDatabase() {
     abstract fun promptDao(): PromptDao
 
@@ -47,6 +47,13 @@ abstract class PromptDatabase : RoomDatabase() {
             }
         }
 
+        // 6->7: بدون تغییر در جدول prompts (جدول‌های جانبی در 7->8 پاک‌سازی می‌شوند). مهاجرت خالی برای پر کردن شکاف نسخه.
+        private val MIGRATION_6_7 = object : Migration(6, 7) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // عمداً خالی
+            }
+        }
+
         private val MIGRATION_7_8 = object : Migration(7, 8) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("DROP TABLE IF EXISTS web_cache")
@@ -75,6 +82,7 @@ abstract class PromptDatabase : RoomDatabase() {
                         MIGRATION_3_4,
                         MIGRATION_4_5,
                         MIGRATION_5_6,
+                        MIGRATION_6_7,
                         MIGRATION_7_8,
                         MIGRATION_8_9
                     )
