@@ -22,6 +22,8 @@ import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material3.*
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
@@ -58,9 +60,11 @@ fun PromptCard(
     roleId: String = "",
     isPinned: Boolean = false,
     isFavorite: Boolean = false,
+    isLocked: Boolean = false,
     lastUsedAt: Long = 0L,
     onFavoriteToggle: () -> Unit,
     onPinToggle: () -> Unit,
+    onLockToggle: () -> Unit = {},
     onCardClick: () -> Unit,
     onPreviewClick: () -> Unit,
     onCopyClick: () -> Unit,
@@ -226,6 +230,8 @@ fun PromptCard(
                     PinToggleButton(isPinned = isPinned, onClick = onPinToggle)
                     Spacer(Modifier.width(6.dp))
                     StarToggleButton(isFavorite = isFavorite, onClick = onFavoriteToggle)
+                    Spacer(Modifier.width(6.dp))
+                    LockToggleButton(isLocked = isLocked, onClick = onLockToggle)
                 }
             }
 
@@ -294,7 +300,7 @@ fun PromptCard(
 
             // ===== توضیحات =====
             Text(
-                description,
+                if (isLocked) "🔒 محتوای این پرامپت قفل است." else description,
                 fontSize = 12.sp,
                 lineHeight = 18.sp,
                 maxLines = 3,
@@ -436,6 +442,31 @@ private fun EyeCircleButton(onClick: () -> Unit) {
             Icon(
                 imageVector = Icons.Default.Visibility,
                 contentDescription = null,
+                tint = iconColor,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+    }
+}
+
+// ============================================================
+// 🔒 دکمه قفل — قفل قرمز / باز خاکستری
+// ============================================================
+@Composable
+private fun LockToggleButton(isLocked: Boolean, onClick: () -> Unit) {
+    val iconColor = if (isLocked) Color(0xFFE53935) else MaterialTheme.colorScheme.onSurfaceVariant
+    val bgColor = if (isLocked) Color(0xFFE53935).copy(alpha = 0.15f) else MaterialTheme.colorScheme.surfaceVariant
+
+    Surface(
+        shape = CircleShape,
+        color = bgColor,
+        modifier = Modifier.size(36.dp),
+        onClick = onClick
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Icon(
+                imageVector = if (isLocked) Icons.Default.Lock else Icons.Default.LockOpen,
+                contentDescription = "قفل",
                 tint = iconColor,
                 modifier = Modifier.size(20.dp)
             )

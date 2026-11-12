@@ -616,11 +616,39 @@ fun HomeScreen(
                         roleId = prompt.role,
                         isPinned = prompt.pinned,
                         isFavorite = prompt.favorite,
+                        isLocked = prompt.isLocked,
                         lastUsedAt = prompt.lastUsedAt,
                         onFavoriteToggle = { viewModel.toggleFavorite(prompt) },
                         onPinToggle = { viewModel.togglePinned(prompt) },
-                        onCardClick = { editingPrompt = prompt },
-                        onPreviewClick = { previewPrompt = prompt },
+                        onLockToggle = { viewModel.updatePrompt(prompt.copy(isLocked = !prompt.isLocked)) },
+                        onCardClick = { 
+                            if (prompt.isLocked) {
+                                val activity = appContext as? android.app.Activity
+                                if (activity != null) {
+                                    BiometricGate.prompt(
+                                        activity = activity,
+                                        onSuccess = { editingPrompt = prompt },
+                                        onFailure = { }
+                                    )
+                                }
+                            } else {
+                                editingPrompt = prompt 
+                            }
+                        },
+                        onPreviewClick = { 
+                            if (prompt.isLocked) {
+                                val activity = appContext as? android.app.Activity
+                                if (activity != null) {
+                                    BiometricGate.prompt(
+                                        activity = activity,
+                                        onSuccess = { previewPrompt = prompt },
+                                        onFailure = { }
+                                    )
+                                }
+                            } else {
+                                previewPrompt = prompt 
+                            }
+                        },
                         onCopyClick = {
                             if (!AppSettings.isGhostMode(appContext)) viewModel.markUsed(prompt)
                             val hasVars = Regex("\\[([^\\]]+)\\]|\\{([^}]+)\\}").containsMatchIn(prompt.text)
