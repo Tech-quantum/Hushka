@@ -25,7 +25,7 @@ private val ONLINE_SAMPLE_RATE = 16000
 private val ONLINE_CHANNEL_CONFIG = android.media.AudioFormat.CHANNEL_IN_MONO
 private val ONLINE_AUDIO_FORMAT = android.media.AudioFormat.ENCODING_PCM_16BIT
 
-private val ONLINE_MAX_RECORD_MS = 5000L
+private val ONLINE_MAX_RECORD_MS = 30000L
 private val ONLINE_RMS_THRESHOLD = 800.0
 private val ONLINE_MIN_SPEECH_MS = 1000L
 private val ONLINE_SILENCE_STOP_MS = 1200L
@@ -41,7 +41,7 @@ object VoiceRecorderHelper {
     private var isRecordingVosk = false
 
     /** حداکثر زمان ضبط آفلاین. */
-    private const val MAX_RECORD_MS = 5000L
+    private const val MAX_RECORD_MS = 30000L
 
     /** کم‌ترین زمانی که کاربر باید فرصت حرف‌زدن داشته باشد، حتی در سکوت کامل. */
     private const val MIN_SPEECH_MS = 1200L
