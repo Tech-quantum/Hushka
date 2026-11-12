@@ -114,7 +114,7 @@
 - برای دیالوگ‌ها از `AlertDialog` با `shape = RoundedCornerShape(24.dp)` استفاده می‌شود.
 - تمام حالت‌های UI باید با تم‌های AMOLED و ۴ زبان سازگار باشند.
 - هوشکا از پوشه `assets` برای فایل‌های JSON (پرامپت‌ها) و مدل‌های Vosk (به صورت ZIP با Git-LFS) استفاده می‌کند.
-- ماژول‌های کلیدی: `PromptVariables` (تشخیص متغیر مشترک)، `SmartSearchEngine` (جست‌وجوی تحمل‌پذیر)، `AnimatedStreakBadge` (شعله‌ی متحرک)، `HushkaLogo` (لوگوی LED متحرک)، `audio/SilenceDetector` (تشخیص سکوت تطبیقی ضبط آنلاین)، `SettingsFab` (FAB تنظیمات شناور؛ حرکت فقط بین هدر و فوتر) و `FabGeometry` (منطق خالص موقعیت‌دهی، تست‌شده در `FabPositionTest`).
+- ماژول‌های کلیدی: `PromptVariables` (تشخیص متغیر مشترک)، `SmartSearchEngine` (جست‌وجوی تحمل‌پذیر)، `AnimatedStreakBadge` (طراحی ثابت، بدون انیمیشن، با پس‌زمینه کپسولی)، `HushkaLogo` (لوگوی LED متحرک)، `audio/SilenceDetector` (تشخیص سکوت تطبیقی ضبط آنلاین)، `SettingsFab` (FAB تنظیمات شناور؛ حرکت فقط بین هدر و فوتر) و `FabGeometry` (منطق خالص موقعیت‌دهی، تست‌شده در `FabPositionTest`).
 - **شخصی‌سازی شعله**: الگوی `rememberInfiniteTransition` در `HushkaLogo.kt` و `AnimatedStreakBadge.kt` استفاده شده است.
 - **دسترسی میکروفون در Android 14+**: اگر ضبط در پس‌زمینه ادامه یابد، نیاز به Foreground Service با `foregroundServiceType="microphone"` + `POST_NOTIFICATIONS` در manifest است. در حالت فعلی ضبط همیشه foreground است، ولی برای آینده مستند شود.
 - **`LocalContext.current` در `LaunchedEffect`**: علت ممنوعیت — در snapshot نادرست می‌نشیند و lint آینده ایراد می‌گیرد؛ همیشه بیرون تعریف و پاس بدهید (قاعده‌ی ۴).
