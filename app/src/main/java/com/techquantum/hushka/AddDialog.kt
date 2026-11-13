@@ -440,7 +440,8 @@ fun AddDialog(
                             isMusicLoading = true
                             musicErrorMsg = null
                             coroutineScope.launch {
-                                val musicBytes = MusicGenService.generateMusic(musicPrompt, hfToken)
+                                val result = MusicGenService.generateMusic(musicPrompt, hfToken)
+                                val musicBytes = result.audioBytes
                                 if (musicBytes != null) {
                                     val file = java.io.File(context.cacheDir, "music_${System.currentTimeMillis()}.mp3")
                                     file.writeBytes(musicBytes)
@@ -450,7 +451,11 @@ fun AddDialog(
                                         prepare()
                                     }
                                 } else {
-                                    musicErrorMsg = if (isRtl) "خطا در تولید" else "Generation failed"
+                                    val details = buildString {
+                                        result.httpCode?.let { append("HTTP $it: ") }
+                                        append(result.error ?: "Unknown error")
+                                    }
+                                    musicErrorMsg = if (isRtl) "خطا در تولید: $details" else "Generation failed: $details"
                                 }
                                 isMusicLoading = false
                             }
