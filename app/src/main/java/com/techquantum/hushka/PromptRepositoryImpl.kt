@@ -15,6 +15,8 @@ class PromptRepositoryImpl(private val dao: PromptDao) : PromptRepository {
     }
 
     override suspend fun addPrompt(prompt: PromptEntity): Long = dao.insert(prompt)
+    override suspend fun getAllPrompts(): List<PromptEntity> = dao.getAll()
+    override suspend fun addPrompts(prompts: List<PromptEntity>) = dao.insertAll(prompts)
     override suspend fun updatePrompt(prompt: PromptEntity) = dao.update(prompt)
     override suspend fun deletePrompt(prompt: PromptEntity) {
         if (prompt.source.startsWith("${PromptLibraryRepository.sourceName}:")) {

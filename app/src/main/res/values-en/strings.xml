@@ -215,6 +215,14 @@
     <string name="toast_json_saved">JSON backup saved</string>
     <string name="toast_md_saved">Markdown backup saved</string>
     <string name="toast_importing">Importing...</string>
+    <string name="toast_backup_failed">Backup failed</string>
+    <string name="toast_import_done">%1$d added, %2$d duplicates skipped, %3$d invalid</string>
+    <string name="toast_import_bad_file">Not a valid backup file</string>
+    <string name="toast_import_unsupported">This backup file version is not supported; update the app</string>
+    <string name="toast_import_read_error">Could not read the file</string>
+    <string name="backup_locked_title">Locked prompts</string>
+    <string name="backup_locked_message">You have %1$d locked prompt(s). Their text will be saved unencrypted in the backup file. Continue?</string>
+    <string name="backup_locked_confirm">Save anyway</string>
     <string name="toast_coming_soon">This feature is coming soon</string>
     <string name="role_label">Persona / Role</string>
     <string name="role_placeholder">Choose a role</string>

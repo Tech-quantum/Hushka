@@ -215,6 +215,14 @@
     <string name="toast_json_saved">تم حفظ نسخة JSON الاحتياطية</string>
     <string name="toast_md_saved">تم حفظ نسخة Markdown الاحتياطية</string>
     <string name="toast_importing">جارٍ الاستيراد...</string>
+    <string name="toast_backup_failed">فشل النسخ الاحتياطي</string>
+    <string name="toast_import_done">تمت إضافة %1$d، وتخطي %2$d مكررة، و%3$d غير صالحة</string>
+    <string name="toast_import_bad_file">ملف النسخ الاحتياطي غير صالح</string>
+    <string name="toast_import_unsupported">إصدار ملف النسخ الاحتياطي غير مدعوم؛ حدّث التطبيق</string>
+    <string name="toast_import_read_error">تعذّرت قراءة الملف</string>
+    <string name="backup_locked_title">الأوامر المقفلة</string>
+    <string name="backup_locked_message">لديك %1$d أمر مقفل. سيُحفظ نصها بدون تشفير في ملف النسخ الاحتياطي. هل تريد المتابعة؟</string>
+    <string name="backup_locked_confirm">حفظ على أي حال</string>
     <string name="toast_coming_soon">ستتم إضافة هذه الميزة قريباً</string>
     <string name="role_label">الشخصية / الدور</string>
     <string name="role_placeholder">اختر دوراً</string>

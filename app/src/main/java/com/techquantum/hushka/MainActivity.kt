@@ -52,8 +52,13 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.CreateDocument("application/json")
     ) { uri: Uri? ->
         uri?.let {
-            viewModel.exportToJson(this, it, viewModel.uiState.value.prompts)
-            Toast.makeText(this, getString(R.string.toast_json_saved), Toast.LENGTH_SHORT).show()
+            viewModel.exportToJson(this, it, viewModel.uiState.value.prompts) { ok ->
+                Toast.makeText(
+                    this,
+                    getString(if (ok) R.string.toast_json_saved else R.string.toast_backup_failed),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 
@@ -70,9 +75,35 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.OpenDocument()
     ) { uri: Uri? ->
         uri?.let {
-            viewModel.importFromJson(this, it)
             Toast.makeText(this, getString(R.string.toast_importing), Toast.LENGTH_SHORT).show()
+            viewModel.importFromJson(this, it) { outcome -> showImportOutcome(outcome) }
         }
+    }
+
+    private fun showImportOutcome(outcome: BackupImportOutcome) {
+        val message = when (outcome) {
+            is BackupImportOutcome.Done ->
+                getString(R.string.toast_import_done, outcome.added, outcome.duplicates, outcome.invalid)
+            BackupImportOutcome.BadFile -> getString(R.string.toast_import_bad_file)
+            BackupImportOutcome.UnsupportedVersion -> getString(R.string.toast_import_unsupported)
+            BackupImportOutcome.ReadError -> getString(R.string.toast_import_read_error)
+        }
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
+
+    // پرامپت‌های قفل‌شده در فایل پشتیبان بدون رمز ذخیره می‌شوند؛ پیش از خروجی تأیید می‌گیریم.
+    private fun confirmLockedThenExport(action: () -> Unit) {
+        val lockedCount = viewModel.uiState.value.prompts.count { it.isLocked }
+        if (lockedCount == 0) {
+            action()
+            return
+        }
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle(R.string.backup_locked_title)
+            .setMessage(getString(R.string.backup_locked_message, lockedCount))
+            .setPositiveButton(R.string.backup_locked_confirm) { _, _ -> action() }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
     }
 
     private fun startVoiceSearch() {
@@ -306,10 +337,14 @@ class MainActivity : AppCompatActivity() {
                             )
                         },
                         onExportJson = {
-                            exportJsonLauncher.launch("hushka_backup_${System.currentTimeMillis()}.json")
+                            confirmLockedThenExport {
+                                exportJsonLauncher.launch("hushka_backup_${System.currentTimeMillis()}.json")
+                            }
                         },
                         onExportMarkdown = {
-                            exportMarkdownLauncher.launch("hushka_backup_${System.currentTimeMillis()}.md")
+                            confirmLockedThenExport {
+                                exportMarkdownLauncher.launch("hushka_backup_${System.currentTimeMillis()}.md")
+                            }
                         },
                         onImportJson = {
                             importJsonLauncher.launch(arrayOf("application/json"))

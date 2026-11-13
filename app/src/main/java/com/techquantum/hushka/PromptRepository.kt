@@ -7,6 +7,8 @@ interface PromptRepository {
 
     suspend fun initializeDefaults()
     suspend fun addPrompt(prompt: PromptEntity): Long
+    suspend fun getAllPrompts(): List<PromptEntity>
+    suspend fun addPrompts(prompts: List<PromptEntity>)
     suspend fun updatePrompt(prompt: PromptEntity)
     suspend fun deletePrompt(prompt: PromptEntity)
     suspend fun toggleFavorite(prompt: PromptEntity)

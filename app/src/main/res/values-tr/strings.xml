@@ -215,6 +215,14 @@
     <string name="toast_json_saved">JSON yedeği kaydedildi</string>
     <string name="toast_md_saved">Markdown yedeği kaydedildi</string>
     <string name="toast_importing">İçe aktarılıyor...</string>
+    <string name="toast_backup_failed">Yedekleme başarısız oldu</string>
+    <string name="toast_import_done">%1$d eklendi, %2$d tekrar atlandı, %3$d geçersiz</string>
+    <string name="toast_import_bad_file">Geçerli bir yedek dosyası değil</string>
+    <string name="toast_import_unsupported">Bu yedek dosyası sürümü desteklenmiyor; uygulamayı güncelleyin</string>
+    <string name="toast_import_read_error">Dosya okunamadı</string>
+    <string name="backup_locked_title">Kilitli promptlar</string>
+    <string name="backup_locked_message">%1$d kilitli promptunuz var. Metinleri yedek dosyasına şifresiz kaydedilecek. Devam edilsin mi?</string>
+    <string name="backup_locked_confirm">Yine de kaydet</string>
     <string name="toast_coming_soon">Bu özellik yakında eklenecek</string>
     <string name="role_label">Kişilik / Rol</string>
     <string name="role_placeholder">Bir rol seç</string>
