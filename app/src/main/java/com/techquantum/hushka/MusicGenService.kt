@@ -68,7 +68,7 @@ object MusicGenService {
 
                     val contentType = responseBody?.contentType()?.toString().orEmpty()
                     val bytes = responseBody?.bytes()
-                    if (bytes.isNullOrEmpty()) {
+                    if (bytes == null || bytes.isEmpty()) {
                         return@withContext MusicGenResult(
                             httpCode = response.code,
                             error = "Empty audio response"
