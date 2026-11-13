@@ -10,6 +10,10 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 
 import org.json.JSONObject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "hushka_settings")
@@ -30,6 +34,10 @@ object AppSettings {
 
     // Online speech-to-text settings (independent from the chat provider key)
     private const val SPEECH_API_KEY = "speech_api_key"
+
+    // Music generation API key
+    private const val MUSIC_API_KEY = "MUSIC_API_KEY"
+    private val musicApiKeyMutex = Mutex()
 
     // Floating settings button (position is stored as 0..1 fractions, not pixels)
     private const val FAB_X = "settings_fab_x"
@@ -166,12 +174,73 @@ object AppSettings {
     fun getSystemPrompt(context: Context): String =
         prefs(context).getString("SYSTEM_PROMPT", "") ?: ""
 
-    fun getMusicApiKey(context: Context): String =
-        prefs(context).getString("MUSIC_API_KEY", "") ?: ""
-
-    fun setMusicApiKey(context: Context, value: String) {
-        prefs(context).edit().putString("MUSIC_API_KEY", value).apply()
+    fun getMusicApiKey(context: Context): String {
+        val legacy = prefs(context).getString(MUSIC_API_KEY, "") ?: ""
+        return try {
+            SecureSettings.init(context)
+            SecureSettings.getString(MUSIC_API_KEY, "").ifBlank { legacy }
+        } catch (_: Exception) {
+            legacy
+        }
     }
+
+    suspend fun migrateMusicApiKey(
+        context: Context,
+        expectedLegacyValue: String
+    ): Boolean = musicApiKeyMutex.withLock {
+        withContext(Dispatchers.IO) {
+            try {
+                SecureSettings.init(context)
+                val encrypted = SecureSettings.getString(MUSIC_API_KEY, "")
+                val preferences = prefs(context)
+                val legacy = preferences.getString(MUSIC_API_KEY, "") ?: ""
+
+                if (encrypted.isNotBlank()) {
+                    return@withContext if (legacy.isBlank()) {
+                        true
+                    } else {
+                        preferences.edit().remove(MUSIC_API_KEY).commit()
+                    }
+                }
+
+                if (legacy.isBlank() || legacy != expectedLegacyValue) {
+                    return@withContext true
+                }
+
+                if (!SecureSettings.putStringSync(MUSIC_API_KEY, legacy)) {
+                    return@withContext false
+                }
+
+                preferences.edit().remove(MUSIC_API_KEY).commit()
+            } catch (_: Exception) {
+                false
+            }
+        }
+    }
+
+    suspend fun setMusicApiKey(context: Context, value: String): Boolean =
+        musicApiKeyMutex.withLock {
+            withContext(Dispatchers.IO) {
+                try {
+                    SecureSettings.init(context)
+
+                    if (value.isBlank()) {
+                        if (!prefs(context).edit().remove(MUSIC_API_KEY).commit()) {
+                            return@withContext false
+                        }
+                        return@withContext SecureSettings.removeSync(MUSIC_API_KEY)
+                    }
+
+                    if (!SecureSettings.putStringSync(MUSIC_API_KEY, value)) {
+                        return@withContext false
+                    }
+
+                    prefs(context).edit().remove(MUSIC_API_KEY).commit()
+                } catch (_: Exception) {
+                    false
+                }
+            }
+        }
 
     fun setSystemPrompt(context: Context, value: String) {
         prefs(context).edit().putString("SYSTEM_PROMPT", value).apply()
