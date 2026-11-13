@@ -6,97 +6,158 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONArray
 import org.json.JSONObject
+import java.net.URI
 import java.util.concurrent.TimeUnit
 
 data class MusicGenResult(
     val audioBytes: ByteArray? = null,
     val httpCode: Int? = null,
-    val error: String? = null
+    val error: String? = null,
+    val fileExtension: String = "wav"
 ) {
     val isSuccess: Boolean
         get() = audioBytes != null
 }
 
 object MusicGenService {
+    private const val BASE_URL = "https://sezoha-hushka-musicgen.hf.space"
+
     private val client = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
-        .readTimeout(120, TimeUnit.SECONDS)
+        .readTimeout(300, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)
         .build()
 
-    suspend fun generateMusic(prompt: String, apiKey: String): MusicGenResult =
+    suspend fun generateMusic(prompt: String): MusicGenResult =
         withContext(Dispatchers.IO) {
             try {
-                val json = JSONObject().apply {
-                    put("inputs", prompt)
-                    put("options", JSONObject().apply {
-                        put("wait_for_model", true)
-                    })
-                }
-
+                val json = JSONObject().put("prompt", prompt.trim())
                 val body = json.toString()
                     .toRequestBody("application/json".toMediaType())
 
                 val request = Request.Builder()
-                    .url("https://api-inference.huggingface.co/models/facebook/musicgen-small")
-                    .addHeader("Authorization", "Bearer $apiKey")
+                    .url("$BASE_URL/gradio_api/call/v2/generate_music")
                     .post(body)
                     .build()
 
-                client.newCall(request).execute().use { response ->
-                    val responseBody = response.body
-
+                val eventId = client.newCall(request).execute().use { response ->
+                    val raw = response.body?.string().orEmpty()
                     if (!response.isSuccessful) {
-                        val rawError = responseBody?.string().orEmpty()
-                        val serverError = try {
-                            JSONObject(rawError).optString("error")
-                                .takeIf { it.isNotBlank() }
-                        } catch (_: Exception) {
-                            null
-                        }
-
-                        val message = (serverError ?: rawError)
-                            .ifBlank { "Empty error response" }
-                            .take(300)
-
                         return@withContext MusicGenResult(
                             httpCode = response.code,
-                            error = message
+                            error = raw.take(300).ifBlank { "Request failed" }
+                        )
+                    }
+                    JSONObject(raw).optString("event_id")
+                        .takeIf { it.isNotBlank() }
+                        ?: return@withContext MusicGenResult(
+                            httpCode = response.code,
+                            error = "Missing generation event ID"
+                        )
+                }
+
+                val resultRequest = Request.Builder()
+                    .url("$BASE_URL/gradio_api/call/generate_music/$eventId")
+                    .get()
+                    .build()
+
+                val outputUrl = client.newCall(resultRequest).execute().use { response ->
+                    if (!response.isSuccessful) {
+                        return@withContext MusicGenResult(
+                            httpCode = response.code,
+                            error = response.body?.string().orEmpty()
+                                .take(300).ifBlank { "Generation result request failed" }
                         )
                     }
 
-                    val contentType = responseBody?.contentType()?.toString().orEmpty()
-                    val bytes = responseBody?.bytes()
+                    var completedData: String? = null
+                    var serverError: String? = null
+                    var currentEvent = ""
+
+                    response.body?.source()?.use { source ->
+                        while (!source.exhausted()) {
+                            val line = source.readUtf8Line() ?: continue
+
+                            when {
+                                line.startsWith("event:") ->
+                                    currentEvent = line.substringAfter(":").trim()
+
+                                line.startsWith("data:") -> {
+                                    val data = line.substringAfter(":").trim()
+                                    when (currentEvent) {
+                                        "complete" -> {
+                                            completedData = data
+                                            break
+                                        }
+                                        "error" -> {
+                                            serverError = data
+                                            break
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (serverError != null) {
+                        return@withContext MusicGenResult(
+                            error = serverError!!.take(300)
+                        )
+                    }
+
+                    val data = completedData
+                        ?: return@withContext MusicGenResult(
+                            error = "Generation timed out or stream ended unexpectedly"
+                        )
+
+                    val outputs = JSONArray(data)
+                    val output = outputs.optJSONObject(0)
+                        ?: return@withContext MusicGenResult(
+                            error = "Invalid audio response"
+                        )
+
+                    output.optString("url")
+                        .takeIf { it.isNotBlank() }
+                        ?: return@withContext MusicGenResult(
+                            error = "Audio URL missing from server response"
+                        )
+                }
+
+                val audioUrl = URI(BASE_URL).resolve(outputUrl).toString()
+                val audioRequest = Request.Builder().url(audioUrl).get().build()
+
+                client.newCall(audioRequest).execute().use { response ->
+                    if (!response.isSuccessful) {
+                        return@withContext MusicGenResult(
+                            httpCode = response.code,
+                            error = "Audio download failed: HTTP ${response.code}"
+                        )
+                    }
+
+                    val bytes = response.body?.bytes()
                     if (bytes == null || bytes.isEmpty()) {
                         return@withContext MusicGenResult(
                             httpCode = response.code,
-                            error = "Empty audio response"
+                            error = "Downloaded audio is empty"
                         )
                     }
 
-                    val startsWithJson = bytes.firstOrNull()?.toInt()?.toChar() == '{'
+                    val path = URI(audioUrl).path.orEmpty()
+                    val extension = path.substringAfterLast('.', "wav")
+                        .takeIf { it.matches(Regex("[a-zA-Z0-9]{2,5}")) }
+                        ?.lowercase() ?: "wav"
 
-                    if (contentType.contains("json", ignoreCase = true) || startsWithJson) {
-                        val raw = bytes.toString(Charsets.UTF_8)
-                        val message = try {
-                            JSONObject(raw).optString("error")
-                                .takeIf { it.isNotBlank() }
-                        } catch (_: Exception) {
-                            null
-                        } ?: "Server returned JSON instead of audio"
-
-                        return@withContext MusicGenResult(
-                            httpCode = response.code,
-                            error = message.take(300)
-                        )
-                    }
-
-                    MusicGenResult(audioBytes = bytes, httpCode = response.code)
+                    MusicGenResult(
+                        audioBytes = bytes,
+                        httpCode = response.code,
+                        fileExtension = extension
+                    )
                 }
             } catch (e: Exception) {
                 MusicGenResult(
-                    error = "Connection error: ${e.javaClass.simpleName}"
+                    error = "Connection error: ${e.javaClass.simpleName}: ${e.message.orEmpty().take(180)}"
                 )
             }
         }

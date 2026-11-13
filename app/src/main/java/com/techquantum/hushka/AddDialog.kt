@@ -69,6 +69,7 @@ fun AddDialog(
     var videoErrorMsg by remember { mutableStateOf<String?>(null) }
     var musicPrompt by remember { mutableStateOf("") }
     var musicUrl by remember { mutableStateOf<String?>(null) }
+    var musicFileExtension by remember { mutableStateOf("wav") }
     var isMusicLoading by remember { mutableStateOf(false) }
     var musicErrorMsg by remember { mutableStateOf<String?>(null) }
     var mediaPlayer by remember { mutableStateOf<MediaPlayer?>(null) }
@@ -428,11 +429,6 @@ fun AddDialog(
                 } else if (musicUrl == null) {
                     Button(
                         onClick = {
-                            val hfToken = AppSettings.getMusicApiKey(context)
-                            if (hfToken.isBlank()) {
-                                musicErrorMsg = if (isRtl) "کلید Hugging Face را در تنظیمات وارد کنید" else "Enter HF Token"
-                                return@Button
-                            }
                             if (musicPrompt.isBlank()) {
                                 musicErrorMsg = if (isRtl) "توضیح را وارد کنید" else "Enter description"
                                 return@Button
@@ -440,10 +436,14 @@ fun AddDialog(
                             isMusicLoading = true
                             musicErrorMsg = null
                             coroutineScope.launch {
-                                val result = MusicGenService.generateMusic(musicPrompt, hfToken)
+                                val result = MusicGenService.generateMusic(musicPrompt)
                                 val musicBytes = result.audioBytes
                                 if (musicBytes != null) {
-                                    val file = java.io.File(context.cacheDir, "music_${System.currentTimeMillis()}.mp3")
+                                    musicFileExtension = result.fileExtension
+                                    val file = java.io.File(
+                                        context.cacheDir,
+                                        "music_${System.currentTimeMillis()}.$musicFileExtension"
+                                    )
                                     file.writeBytes(musicBytes)
                                     musicUrl = file.toURI().toString()
                                     mediaPlayer = android.media.MediaPlayer().apply {
@@ -468,7 +468,7 @@ fun AddDialog(
                             val request = DownloadManager.Request(Uri.parse(musicUrl))
                                 .setTitle("Hushka AI Music").setDescription("Downloaded from Hushka")
                                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                                .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "Hushka_${System.currentTimeMillis()}.mp3")
+                                .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "Hushka_${System.currentTimeMillis()}.$musicFileExtension")
                             val dm = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
                             dm.enqueue(request)
                             Toast.makeText(context, if (isRtl) "دانلود شروع شد..." else "Downloading...", Toast.LENGTH_SHORT).show()
