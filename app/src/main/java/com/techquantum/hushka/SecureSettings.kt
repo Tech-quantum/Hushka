@@ -7,8 +7,10 @@ import androidx.security.crypto.MasterKey
 
 object SecureSettings {
     private const val PREFS_NAME = "hushka_secure_prefs"
+    @Volatile
     private var sharedPreferences: SharedPreferences? = null
 
+    @Synchronized
     fun init(context: Context) {
         if (sharedPreferences == null) {
             val masterKey = MasterKey.Builder(context)
@@ -35,5 +37,14 @@ object SecureSettings {
     
     fun remove(key: String) {
         sharedPreferences?.edit()?.remove(key)?.apply()
+    }
+
+    // Synchronous variants: call only from Dispatchers.IO.
+    fun putStringSync(key: String, value: String): Boolean {
+        return sharedPreferences?.edit()?.putString(key, value)?.commit() ?: false
+    }
+
+    fun removeSync(key: String): Boolean {
+        return sharedPreferences?.edit()?.remove(key)?.commit() ?: false
     }
 }

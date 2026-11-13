@@ -7,6 +7,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.foundation.layout.heightIn
 
 import android.widget.Toast
+import kotlinx.coroutines.launch
 import android.os.Build
 import androidx.biometric.BiometricManager
 import androidx.compose.foundation.border
@@ -704,7 +705,15 @@ private fun AiTab() {
     var providerMenuOpen by remember { mutableStateOf(false) }
     var systemPrompt by remember { mutableStateOf(AppSettings.getSystemPrompt(context)) }
     var musicKey by remember { mutableStateOf(AppSettings.getMusicApiKey(context)) }
+    val musicKeyScope = rememberCoroutineScope()
+    val initialMusicKey = musicKey
+    var musicKeySaveFailed by remember { mutableStateOf(false) }
 
+    LaunchedEffect(Unit) {
+        if (initialMusicKey.isNotBlank()) {
+            musicKeySaveFailed = !AppSettings.migrateMusicApiKey(context, initialMusicKey)
+        }
+    }
 
     Spacer(modifier = Modifier.height(16.dp))
     Text(
@@ -725,9 +734,11 @@ private fun AiTab() {
     Spacer(modifier = Modifier.height(4.dp))
     OutlinedTextField(
         value = musicKey,
-        onValueChange = { 
-            musicKey = it
-            AppSettings.setMusicApiKey(context, it)
+        onValueChange = { newValue ->
+            musicKey = newValue
+            musicKeyScope.launch {
+                musicKeySaveFailed = !AppSettings.setMusicApiKey(context, newValue)
+            }
         },
         modifier = Modifier.fillMaxWidth(),
         placeholder = { Text("hf_xxxxxxxxxxxxxxxxx", fontSize = 11.sp, color = grayColor) },
@@ -742,6 +753,13 @@ private fun AiTab() {
             unfocusedLabelColor = grayColor
         )
     )
+    if (musicKeySaveFailed) {
+        Text(
+            text = "ذخیره امن کلید موسیقی ناموفق بود؛ دوباره تلاش کنید.",
+            color = MaterialTheme.colorScheme.error,
+            fontSize = 11.sp
+        )
+    }
     Spacer(modifier = Modifier.height(4.dp))
     OutlinedTextField(
         value = systemPrompt,
