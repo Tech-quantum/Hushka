@@ -15,6 +15,13 @@ interface PromptDao {
     @Insert
     suspend fun insert(prompt: PromptEntity): Long
 
+    // درج گروهی: Room آن را در یک تراکنش اجرا می‌کند (همه یا هیچ).
+    @Insert
+    suspend fun insertAll(prompts: List<PromptEntity>)
+
+    @Query("SELECT * FROM prompts")
+    suspend fun getAll(): List<PromptEntity>
+
     @Update
     suspend fun update(prompt: PromptEntity)
 

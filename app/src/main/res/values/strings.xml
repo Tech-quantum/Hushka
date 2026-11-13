@@ -223,6 +223,14 @@
     <string name="toast_json_saved">پشتیبان JSON ذخیره شد</string>
     <string name="toast_md_saved">پشتیبان Markdown ذخیره شد</string>
     <string name="toast_importing">در حال درون‌ریزی...</string>
+    <string name="toast_backup_failed">پشتیبان‌گیری ناموفق بود</string>
+    <string name="toast_import_done">%1$d مورد اضافه شد، %2$d تکراری رد شد، %3$d نامعتبر</string>
+    <string name="toast_import_bad_file">فایل پشتیبان معتبر نیست</string>
+    <string name="toast_import_unsupported">نسخه‌ی این فایل پشتیبان پشتیبانی نمی‌شود؛ اپ را به‌روزرسانی کنید</string>
+    <string name="toast_import_read_error">خواندن فایل ناموفق بود</string>
+    <string name="backup_locked_title">پرامپت‌های قفل‌شده</string>
+    <string name="backup_locked_message">%1$d پرامپت قفل‌شده دارید. متن آن‌ها در فایل پشتیبان بدون رمز ذخیره می‌شود. ادامه می‌دهید؟</string>
+    <string name="backup_locked_confirm">ذخیره کن</string>
     <string name="toast_coming_soon">این ویژگی به‌زودی اضافه می‌شود</string>
 
     <!-- فرم پرامپت -->

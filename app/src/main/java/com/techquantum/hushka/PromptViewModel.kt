@@ -148,28 +148,24 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
 
     // ==================== Export / Import ====================
 
-    fun exportToJson(context: Context, uri: Uri, prompts: List<PromptEntity>) {
+    fun exportToJson(context: Context, uri: Uri, prompts: List<PromptEntity>, onDone: (Boolean) -> Unit = {}) {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val jsonArray = JSONArray()
-                prompts.forEach { p ->
-                    val obj = JSONObject().apply {
-                        put("id", p.id)
-                        put("title", p.title)
-                        put("category", p.category)
-                        put("tags", p.tags)
-                        put("text", p.text)
-                        put("collection", p.collection)
-                        put("role", p.role)
-                    }
-                    jsonArray.put(obj)
+            val ok = try {
+                val json = PromptBackupCodec.encode(prompts, System.currentTimeMillis())
+                val out = context.contentResolver.openOutputStream(uri)
+                if (out == null) {
+                    false
+                } else {
+                    out.use { it.write(json.toByteArray(Charsets.UTF_8)) }
+                    true
                 }
-                context.contentResolver.openOutputStream(uri)?.use { out ->
-                    out.write(jsonArray.toString(2).toByteArray())
-                }
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 Log.e(TAG, "Export JSON failed", e)
+                false
             }
+            withContext(Dispatchers.Main) { onDone(ok) }
         }
     }
 
@@ -196,29 +192,29 @@ class PromptViewModel(private val repository: PromptRepository) : ViewModel() {
         }
     }
 
-    fun importFromJson(context: Context, uri: Uri) {
+    fun importFromJson(context: Context, uri: Uri, onResult: (BackupImportOutcome) -> Unit = {}) {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val content = context.contentResolver.openInputStream(uri)?.bufferedReader()?.use { it.readText() } ?: return@launch
-                val jsonArray = JSONArray(content)
-                for (i in 0 until jsonArray.length()) {
-                    val obj = jsonArray.getJSONObject(i)
-                    val title = obj.optString("title", "")
-                    if (title.isBlank()) continue
-                    repository.addPrompt(
-                        PromptEntity(
-                            title = title,
-                            category = obj.optString("category", ""),
-                            tags = obj.optString("tags", ""),
-                            text = obj.optString("text", ""),
-                            collection = obj.optString("collection", ""),
-                            role = obj.optString("role", "")
-                        )
-                    )
+            val outcome: BackupImportOutcome = try {
+                val content = context.contentResolver.openInputStream(uri)
+                    ?.bufferedReader(Charsets.UTF_8)?.use { it.readText() }
+                if (content == null) {
+                    BackupImportOutcome.ReadError
+                } else {
+                    val parsed = PromptBackupCodec.parse(content)
+                    val dedupe = PromptBackupCodec.dedupe(parsed.prompts, repository.getAllPrompts())
+                    if (dedupe.toAdd.isNotEmpty()) repository.addPrompts(dedupe.toAdd)
+                    BackupImportOutcome.Done(dedupe.toAdd.size, dedupe.duplicates, parsed.invalid)
                 }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: BackupParseException) {
+                Log.e(TAG, "Import JSON: bad file", e)
+                if (e.unsupportedVersion) BackupImportOutcome.UnsupportedVersion else BackupImportOutcome.BadFile
             } catch (e: Exception) {
                 Log.e(TAG, "Import JSON failed", e)
+                BackupImportOutcome.ReadError
             }
+            withContext(Dispatchers.Main) { onResult(outcome) }
         }
     }
 
