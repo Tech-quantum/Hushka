@@ -704,16 +704,6 @@ private fun AiTab() {
     var speechKeyVisible by remember { mutableStateOf(false) }
     var providerMenuOpen by remember { mutableStateOf(false) }
     var systemPrompt by remember { mutableStateOf(AppSettings.getSystemPrompt(context)) }
-    var musicKey by remember { mutableStateOf(AppSettings.getMusicApiKey(context)) }
-    val musicKeyScope = rememberCoroutineScope()
-    val initialMusicKey = musicKey
-    var musicKeySaveFailed by remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-        if (initialMusicKey.isNotBlank()) {
-            musicKeySaveFailed = !AppSettings.migrateMusicApiKey(context, initialMusicKey)
-        }
-    }
 
     Spacer(modifier = Modifier.height(16.dp))
     Text(
@@ -722,45 +712,8 @@ private fun AiTab() {
         fontWeight = FontWeight.Bold,
         color = textColor
     )
-
-    
     Spacer(modifier = Modifier.height(16.dp))
-    Text(
-        text = "کلید هوش مصنوعی موسیقی (Hugging Face)",
-        fontSize = 12.sp,
-        fontWeight = FontWeight.Bold,
-        color = textColor
-    )
-    Spacer(modifier = Modifier.height(4.dp))
-    OutlinedTextField(
-        value = musicKey,
-        onValueChange = { newValue ->
-            musicKey = newValue
-            musicKeyScope.launch {
-                musicKeySaveFailed = !AppSettings.setMusicApiKey(context, newValue)
-            }
-        },
-        modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text("hf_xxxxxxxxxxxxxxxxx", fontSize = 11.sp, color = grayColor) },
-        singleLine = true,
-        shape = RoundedCornerShape(12.dp),
-        colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = primary,
-            unfocusedBorderColor = grayColor.copy(alpha = 0.4f),
-            focusedTextColor = textColor,
-            unfocusedTextColor = textColor,
-            focusedLabelColor = primary,
-            unfocusedLabelColor = grayColor
-        )
-    )
-    if (musicKeySaveFailed) {
-        Text(
-            text = "ذخیره امن کلید موسیقی ناموفق بود؛ دوباره تلاش کنید.",
-            color = MaterialTheme.colorScheme.error,
-            fontSize = 11.sp
-        )
-    }
-    Spacer(modifier = Modifier.height(4.dp))
+
     OutlinedTextField(
         value = systemPrompt,
         onValueChange = { 
